@@ -3,10 +3,10 @@
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card card-default">
-          <div class="card-header">Example Component</div>
+          <div class="card-header">SPA</div>
 
           <div class="card-body">
-            I'm an example component.
+            <h2>{{ welcome }}</h2>
           </div>
         </div>
       </div>
@@ -16,8 +16,11 @@
 
 <script>
   export default {
-    mounted() {
-      console.log('Component mounted.')
+    name: 'home',
+    computed: {
+      welcome() {
+        return this.$store.getters.welcome
+      }
     }
   }
 </script>
