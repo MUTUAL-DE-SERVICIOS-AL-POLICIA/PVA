@@ -12,7 +12,9 @@ class CompanySeeder extends Seeder
   public function run()
   {
     factory(App\Company::class)->create()->each(function ($company) {
-      for ($i = 0; $i < 5; $i++) {
+      $total_account_numbers = 2;
+      
+      for ($i = 0; $i < $total_account_numbers; $i++) {
         $company->account_numbers()->save(factory(App\CompanyAccountNumber::class)->make());
       }
     });
