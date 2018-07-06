@@ -13,4 +13,18 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::resource('company', 'CompanyController')->except(['create', 'edit']);
+Route::group([
+  'middleware' => 'api',
+  'prefix' => 'auth',
+], function ($router) {
+  Route::post('login', 'AuthController@login');  
+  Route::get('logout', 'AuthController@logout');
+  Route::get('refresh', 'AuthController@refresh');
+  Route::get('me', 'AuthController@me');
+});
+
+Route::group([
+  'middleware' => ['api', 'jwt.auth'],
+], function ($router) {
+  Route::resource('company', 'CompanyController')->except(['create', 'edit']);
+});

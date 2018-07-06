@@ -1,7 +1,6 @@
 <?php
 
 return [
-
   /*
   |--------------------------------------------------------------------------
   | Application Name
@@ -160,6 +159,8 @@ return [
     App\Providers\EventServiceProvider::class,
     App\Providers\RouteServiceProvider::class,
 
+    // JWT auth
+    Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
   ],
 
   /*
@@ -209,6 +210,9 @@ return [
     'Validator' => Illuminate\Support\Facades\Validator::class,
     'View' => Illuminate\Support\Facades\View::class,
 
+    // JWT Auth Facades
+    'JWTAuth' => 'Tymon\JWTAuth\Facades\JWTAuth',
+    'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
   ],
 
 ];
