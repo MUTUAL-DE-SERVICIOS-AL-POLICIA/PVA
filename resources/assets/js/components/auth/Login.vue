@@ -42,22 +42,18 @@
       }
     },
     methods: {
-      verify() {
-        console.log('aaaa')
-      },
       authenticate(auth) {
         this.$validator.validateAll().then(() => {
           this.$store.dispatch('login')
           return axios.post('/api/auth/login', auth)
-        }).then((response) => {
+        }).then(response => {
           localStorage.setItem('token', response.data.token)
           localStorage.setItem('token_type', response.data.token_type)
           localStorage.setItem('user', JSON.stringify(response.data.user))
-          // this.$router.push({
-          //   path: '/'
-          // })
-          location.replace('/')
-        }).catch((error) => {
+          this.$router.go({
+            name: 'home'
+          })
+        }).catch(error => {
           for (let key in error.response.data.errors) {
             error.response.data.errors[key].forEach(error => {
               this.toastr.error(error)

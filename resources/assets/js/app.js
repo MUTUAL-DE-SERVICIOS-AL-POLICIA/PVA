@@ -19,6 +19,7 @@ import fas from '@fortawesome/fontawesome-free-solid';
 import fab from '@fortawesome/fontawesome-free-brands';
 fontawesome.library.add(fas, fab);
 
+Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Resource)
 Vue.use(Vuex)
@@ -37,6 +38,16 @@ const router = new VueRouter({
   // hashbang: false,
   mode: 'history',
 })
+
+axios.interceptors.response.use(response => {
+  return response;
+}, error => {
+  if (error.response.status == 401) {
+    store.dispatch('logout')
+    router.push('login')
+  }
+  return error
+});
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)

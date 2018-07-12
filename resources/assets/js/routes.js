@@ -3,9 +3,11 @@ import Login from './components/auth/Login.vue'
 
 export const routes = [
   {
+    name: 'login',
     path: '/login',
     component: Login
   }, {
+    name: 'home',
     path: '/home',
     component: Home,
     meta: {
@@ -13,9 +15,8 @@ export const routes = [
     }
   }, {
     path: '*',
-    component: Home,
-    meta: {
-      requiresAuth: true
+    redirect: {
+      name: 'home'
     }
   }
 ]
