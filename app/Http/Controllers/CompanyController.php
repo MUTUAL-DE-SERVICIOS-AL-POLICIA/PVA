@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 Use App\Company;
-Use App\Helpers\JsonResponse;
 
 class CompanyController extends Controller
 {
@@ -15,7 +14,7 @@ class CompanyController extends Controller
    */
   public function index()
   {
-    return JsonResponse::response(Company::all(), 'Lista de entidades', 'Tabla de entidades vacía');
+    return response()->json(Company::all());
   }
 
   /**
@@ -37,7 +36,7 @@ class CompanyController extends Controller
    */
   public function show($id)
   {
-    return JsonResponse::response(Company::find($id), 'Entidad encontrada', 'Entidad inexistente');
+    return response()->json(Company::find($id));
   }
 
   /**
