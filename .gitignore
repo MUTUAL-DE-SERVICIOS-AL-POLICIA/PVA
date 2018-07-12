@@ -23,6 +23,7 @@ Homestead.json
 # Lock files
 composer.lock
 package-lock.json
+yarn.lock
 
 # Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
 .rocketeer/

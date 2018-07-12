@@ -4,9 +4,9 @@
       <router-link class="navbar-brand" to="/">RR.HH.</router-link>
       <ul class="nav navbar-nav">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ this.$store.getters.currentUser.username }}<span class="fa fa-bug"></span><span class="glyphicon glyphicon-user pull-right"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user pull-left"></span> {{ this.$store.getters.currentUser.username }}</a>
           <ul class="dropdown-menu">
-            <li><a v-on:click.stop="logout" href="/login">Salir</a></li>
+            <li><a v-on:click.prevent="logout" href="/login"><span class="fa fa-power-off pull-left"></span> Salir</a></li>
           </ul>
         </li>
       </ul>

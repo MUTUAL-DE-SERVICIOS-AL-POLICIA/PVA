@@ -14,6 +14,11 @@ import toastr from 'toastr'
 import 'toastr/build/toastr.min.css'
 Vue.prototype.toastr = toastr
 
+import fontawesome from '@fortawesome/fontawesome';
+import fas from '@fortawesome/fontawesome-free-solid';
+import fab from '@fortawesome/fontawesome-free-brands';
+fontawesome.library.add(fas, fab);
+
 Vue.use(VueRouter)
 Vue.use(Resource)
 Vue.use(Vuex)
