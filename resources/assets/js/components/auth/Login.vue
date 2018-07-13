@@ -47,20 +47,18 @@
           this.$store.dispatch('login')
           return axios.post('/api/auth/login', auth)
         }).then(res => {
-          return new Promise((resolve, reject) => {
-            if (res.response.status != 200) {
+          if (res.status == 200) {
+            localStorage.setItem('token', res.data.token)
+            localStorage.setItem('token_type', res.data.token_type)
+            localStorage.setItem('user', JSON.stringify(res.data.user))
+            this.$router.go({
+              name: 'home'
+            })
+          } else {
+            return new Promise((resolve, reject) => {
               return reject(res)
-            } else {
-              return resolve(res)
-            }
-          })
-        }).then(res => {
-          localStorage.setItem('token', res.data.token)
-          localStorage.setItem('token_type', res.data.token_type)
-          localStorage.setItem('user', JSON.stringify(res.data.user))
-          this.$router.go({
-            name: 'home'
-          })
+            })
+          }
         }).catch(error => {
           for (let key in error.response.data.errors) {
             error.response.data.errors[key].forEach(error => {

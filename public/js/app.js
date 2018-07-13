@@ -60567,20 +60567,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _this.$store.dispatch('login');
         return axios.post('/api/auth/login', auth);
       }).then(function (res) {
-        return new Promise(function (resolve, reject) {
-          if (res.response.status != 200) {
+        if (res.status == 200) {
+          localStorage.setItem('token', res.data.token);
+          localStorage.setItem('token_type', res.data.token_type);
+          localStorage.setItem('user', JSON.stringify(res.data.user));
+          _this.$router.go({
+            name: 'home'
+          });
+        } else {
+          return new Promise(function (resolve, reject) {
             return reject(res);
-          } else {
-            return resolve(res);
-          }
-        });
-      }).then(function (res) {
-        localStorage.setItem('token', res.data.token);
-        localStorage.setItem('token_type', res.data.token_type);
-        localStorage.setItem('user', JSON.stringify(res.data.user));
-        _this.$router.go({
-          name: 'home'
-        });
+          });
+        }
       }).catch(function (error) {
         for (var key in error.response.data.errors) {
           error.response.data.errors[key].forEach(function (error) {
