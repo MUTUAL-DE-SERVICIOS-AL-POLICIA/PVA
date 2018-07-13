@@ -60566,10 +60566,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.$validator.validateAll().then(function () {
         _this.$store.dispatch('login');
         return axios.post('/api/auth/login', auth);
-      }).then(function (response) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('token_type', response.data.token_type);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }).then(function (res) {
+        return new Promise(function (resolve, reject) {
+          if (res.response.status != 200) {
+            return reject(res);
+          } else {
+            return resolve(res);
+          }
+        });
+      }).then(function (res) {
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('token_type', res.data.token_type);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
         _this.$router.go({
           name: 'home'
         });
@@ -60852,15 +60860,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: 'app-main',
   components: {
     'app-header': __WEBPACK_IMPORTED_MODULE_0__AppHeader_vue___default.a
-  },
-  mounted: function mounted() {
-    axios.get('/api/auth/me').then(function (response) {
-      console.log('OK');
-      console.log(JSON.stringify(response.data, null, 2));
-    }).catch(function (error) {
-      console.log('BAD');
-      console.log(JSON.stringify(error, null, 2));
-    });
   }
 });
 

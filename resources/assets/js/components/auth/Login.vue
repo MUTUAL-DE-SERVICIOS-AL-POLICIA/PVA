@@ -46,10 +46,18 @@
         this.$validator.validateAll().then(() => {
           this.$store.dispatch('login')
           return axios.post('/api/auth/login', auth)
-        }).then(response => {
-          localStorage.setItem('token', response.data.token)
-          localStorage.setItem('token_type', response.data.token_type)
-          localStorage.setItem('user', JSON.stringify(response.data.user))
+        }).then(res => {
+          return new Promise((resolve, reject) => {
+            if (res.response.status != 200) {
+              return reject(res)
+            } else {
+              return resolve(res)
+            }
+          })
+        }).then(res => {
+          localStorage.setItem('token', res.data.token)
+          localStorage.setItem('token_type', res.data.token_type)
+          localStorage.setItem('user', JSON.stringify(res.data.user))
           this.$router.go({
             name: 'home'
           })

@@ -67,7 +67,10 @@ class AuthController extends Controller
       $user->save();
     } else {
       return response()->json([
-        'message' => 'Unauthorized'
+        'message' => 'No autorizado',
+        'errors' => [
+          'type' => ['Usuario o contraseña incorrectos'],
+        ]
       ], 401);
     }
 
