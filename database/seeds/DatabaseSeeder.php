@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
       'insurance_companies',
       'management_entities',
       'employer_numbers',
+      'position_groups',
+      'dependency_position_group',
     ];
     
     $this->command->info('Truncating existing tables');
@@ -37,5 +39,6 @@ class DatabaseSeeder extends Seeder
     $this->call(ManagementEntitySeeder::class);
     $this->call(CompanySeeder::class);
     $this->call(CompanyAddressSeeder::class);
+    $this->call(PositionGroupSeeder::class);
   }
 }

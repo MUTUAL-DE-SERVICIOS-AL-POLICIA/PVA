@@ -8,6 +8,6 @@ class City extends Model
 {
   public function employer_number()
 	{
-		return $this->belongsTo('App\EmployerNumber');
+		return $this->belongsTo(EmployerNumber::class);
 	}
 }
