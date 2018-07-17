@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
       'companies',
       'users',
       'cities',
+      'company_addresses',
     ];
     
     $this->command->info('Truncating existing tables');
@@ -30,5 +31,6 @@ class DatabaseSeeder extends Seeder
     $this->call(CompanySeeder::class);
     $this->call(UserSeeder::class);
     $this->call(CitySeeder::class);
+    $this->call(CompanyAddressSeeder::class);
   }
 }
