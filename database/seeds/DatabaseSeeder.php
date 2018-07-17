@@ -16,13 +16,14 @@ class DatabaseSeeder extends Seeder
     Model::unguard();
     
     $tables = [
-      'company_account_numbers',
+      'company_accounts',
       'companies',
       'users',
       'cities',
       'company_addresses',
       'insurance_companies',
       'management_entities',
+      'employer_numbers',
     ];
     
     $this->command->info('Truncating existing tables');
@@ -30,11 +31,11 @@ class DatabaseSeeder extends Seeder
       DB::statement('TRUNCATE TABLE ' . $table . ' CASCADE;');
     }
 
-    $this->call(CompanySeeder::class);
     $this->call(UserSeeder::class);
     $this->call(CitySeeder::class);
-    $this->call(CompanyAddressSeeder::class);
     $this->call(InsuranceCompanySeeder::class);
     $this->call(ManagementEntitySeeder::class);
+    $this->call(CompanySeeder::class);
+    $this->call(CompanyAddressSeeder::class);
   }
 }

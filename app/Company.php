@@ -8,8 +8,13 @@ class Company extends Model
 {
   protected $fillable = ['name', 'shortened'];
 
-  public function account_numbers()
+  public function accounts()
 	{
-		return $this->hasMany(CompanyAccountNumber::class, 'company_id', 'id');
+		return $this->hasMany('App\CompanyAccount');
+	}
+
+	public function employer_numbers()
+	{
+		return $this->hasMany('App\EmployerNumber');
 	}
 }

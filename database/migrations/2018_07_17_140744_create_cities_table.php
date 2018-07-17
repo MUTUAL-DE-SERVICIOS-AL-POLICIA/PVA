@@ -16,6 +16,8 @@ class CreateCitiesTable extends Migration
     Schema::create('cities', function (Blueprint $table) {
       $table->tinyIncrements('id');
       $table->string('name')->unique();
+      $table->integer('employer_number_id')->unsigned()->nullable();
+      $table->foreign('employer_number_id')->references('id')->on('employer_numbers');
       $table->string('shortened')->unique();
       $table->timestamps();
     });

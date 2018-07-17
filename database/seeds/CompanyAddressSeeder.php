@@ -11,6 +11,6 @@ class CompanyAddressSeeder extends Seeder
    */
   public function run()
   {
-    factory(App\CompanyAddress::class, 9)->create();
+    factory(App\CompanyAddress::class, 11)->create();
   }
 }

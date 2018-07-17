@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCompanyAccountNumbersTable extends Migration
+class CreateEmployerNumbersTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,14 +13,14 @@ class CreateCompanyAccountNumbersTable extends Migration
    */
   public function up()
   {
-    Schema::create('company_account_numbers', function (Blueprint $table) {
+    Schema::create('employer_numbers', function (Blueprint $table) {
       $table->increments('id');
-      $table->bigInteger('account_number')->unique();
-      $table->string('financial_entity');
-      $table->text('description');
+      $table->string('number')->unique();
       $table->integer('company_id')->unsigned();
-      $table->timestamps();
       $table->foreign('company_id')->references('id')->on('companies');
+      $table->integer('insurance_company_id')->unsigned();
+      $table->foreign('insurance_company_id')->references('id')->on('insurance_companies');
+      $table->timestamps();
     });
   }
 
@@ -31,6 +31,6 @@ class CreateCompanyAccountNumbersTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('company_account_numbers');
+    Schema::dropIfExists('employer_numbers');
   }
 }
