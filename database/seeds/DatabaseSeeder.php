@@ -19,14 +19,16 @@ class DatabaseSeeder extends Seeder
       'company_account_numbers',
       'companies',
       'users',
+      'cities',
     ];
     
     $this->command->info('Truncating existing tables');
-    foreach ($tables as $table) {  
+    foreach ($tables as $table) {
       DB::statement('TRUNCATE TABLE ' . $table . ' CASCADE;');
     }
 
     $this->call(CompanySeeder::class);
     $this->call(UserSeeder::class);
+    $this->call(CitySeeder::class);
   }
 }
