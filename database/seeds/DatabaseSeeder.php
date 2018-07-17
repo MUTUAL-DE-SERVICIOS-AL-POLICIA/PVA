@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
       'users',
       'cities',
       'company_addresses',
+      'insurance_companies',
     ];
     
     $this->command->info('Truncating existing tables');
@@ -32,5 +33,6 @@ class DatabaseSeeder extends Seeder
     $this->call(UserSeeder::class);
     $this->call(CitySeeder::class);
     $this->call(CompanyAddressSeeder::class);
+    $this->call(InsuranceCompanySeeder::class);
   }
 }
