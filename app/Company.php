@@ -10,11 +10,11 @@ class Company extends Model
 
   public function accounts()
 	{
-		return $this->hasMany('App\CompanyAccount');
+		return $this->hasMany(CompanyAccount::class);
 	}
 
 	public function employer_numbers()
 	{
-		return $this->hasMany('App\EmployerNumber');
+		return $this->hasMany(EmployerNumber::class);
 	}
 }

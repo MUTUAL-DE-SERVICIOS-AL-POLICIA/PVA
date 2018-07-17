@@ -15,4 +15,9 @@ class PositionGroup extends Model
   {
     return $this->belongsToMany(PositionGroup::class, 'dependency_position_group', 'superior_id', 'dependent_id');
   }
+
+  public function city()
+  {
+    return $this->belongsTo(Company::class);
+  }
 }

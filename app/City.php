@@ -10,4 +10,9 @@ class City extends Model
 	{
 		return $this->belongsTo(EmployerNumber::class);
 	}
+
+	public function position_groups()
+  {
+    return $this->hasMany(PositionGroup::class);
+  }
 }

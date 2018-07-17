@@ -17,6 +17,8 @@ class CreatePositionGroupsTable extends Migration
       $table->increments('id');
       $table->text('name');
       $table->string('shortened');
+      $table->integer('city_id')->unsigned();
+      $table->foreign('city_id')->references('id')->on('cities');
       $table->timestamps();
     });
   }

@@ -8,5 +8,6 @@ $factory->define(App\PositionGroup::class, function (Faker $faker) {
   return [
     'name' => $faker->unique()->catchPhrase,
     'shortened' => strtoupper($faker->unique()->firstname),
+    'city_id' => rand(1, 9),
   ];
 });
