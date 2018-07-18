@@ -18,5 +18,6 @@ class DatabaseProductionSeeder extends Seeder
     $this->call(CitySeeder::class);
     $this->call(InsuranceCompanySeeder::class);
     $this->call(ManagementEntitySeeder::class);
+    $this->call(RetirementReasonSeeder::class);
   }
 }

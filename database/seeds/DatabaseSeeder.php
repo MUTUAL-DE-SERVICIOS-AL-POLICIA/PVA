@@ -28,8 +28,9 @@ class DatabaseSeeder extends Seeder
       'dependency_position_group',
       'charges',
       'positions',
+      'retirement_reasons',
     ];
-    
+
     $this->command->info('Truncating existing tables');
     foreach ($tables as $table) {
       DB::statement('TRUNCATE TABLE ' . $table . ' CASCADE;');
@@ -44,5 +45,6 @@ class DatabaseSeeder extends Seeder
     $this->call(PositionGroupSeeder::class);
     $this->call(ChargeSeeder::class);
     $this->call(PositionSeeder::class);
+    $this->call(RetirementReasonSeeder::class);
   }
 }
