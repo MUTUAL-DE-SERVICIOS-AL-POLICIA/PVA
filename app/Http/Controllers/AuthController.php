@@ -23,18 +23,20 @@ class AuthController extends Controller
   {
     $this->middleware('auth:api', ['except' => ['login']]);
 
-    $this->config = array(
-      'user_id_key' => env("ADLDAP_ACCOUNT_PREFIX"),
-      'auto_connect' => env("ADLDAP_AUTO_CONNECT"),
-      'account_suffix' => env("ADLDAP_ACCOUNT_SUFFIX"),
-      'base_dn' => env("ADLDAP_BASEDN"),
-      'domain_controllers' => array(env("ADLDAP_CONTROLLERS")),
-      'ad_port' => env("ADLDAP_PORT"),
-      'use_ssl' => env("ADLDAP_USE_SSL"),
-      'use_tls' => env("ADLDAP_USE_TLS"),
-    );
-
-    $this->adldap = new \Adldap\Adldap($this->config);
+    if (env("ADLDAP_AUTHENTICATION")) {
+      $this->config = array(
+        'user_id_key' => env("ADLDAP_ACCOUNT_PREFIX"),
+        'auto_connect' => env("ADLDAP_AUTO_CONNECT"),
+        'account_suffix' => env("ADLDAP_ACCOUNT_SUFFIX"),
+        'base_dn' => env("ADLDAP_BASEDN"),
+        'domain_controllers' => array(env("ADLDAP_CONTROLLERS")),
+        'ad_port' => env("ADLDAP_PORT"),
+        'use_ssl' => env("ADLDAP_USE_SSL"),
+        'use_tls' => env("ADLDAP_USE_TLS"),
+      );
+  
+      $this->adldap = new \Adldap\Adldap($this->config);
+    }
   }
 
   /**
@@ -46,7 +48,11 @@ class AuthController extends Controller
   {
     $credentials = request(['username', 'password']);
 
-    $bind = $this->adldap->authenticate($this->config['user_id_key'].'='.$credentials['username'].',', $credentials['password']);
+    if (env("ADLDAP_AUTHENTICATION")) {
+      $bind = $this->adldap->authenticate($this->config['user_id_key'].'='.$credentials['username'].',', $credentials['password']);
+    } else {
+      $bind = true;
+    }
 
     if ($bind) {
       $user = User::where('username', $credentials['username'])->first();
