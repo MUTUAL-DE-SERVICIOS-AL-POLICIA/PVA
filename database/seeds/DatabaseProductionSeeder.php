@@ -19,5 +19,6 @@ class DatabaseProductionSeeder extends Seeder
     $this->call(InsuranceCompanySeeder::class);
     $this->call(ManagementEntitySeeder::class);
     $this->call(RetirementReasonSeeder::class);
+    $this->call(ContractTypeSeeder::class);
   }
 }
