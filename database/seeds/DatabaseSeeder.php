@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
       'position_groups',
       'dependency_position_group',
       'charges',
+      'positions',
     ];
     
     $this->command->info('Truncating existing tables');
@@ -42,5 +43,6 @@ class DatabaseSeeder extends Seeder
     $this->call(CompanyAddressSeeder::class);
     $this->call(PositionGroupSeeder::class);
     $this->call(ChargeSeeder::class);
+    $this->call(PositionSeeder::class);
   }
 }

@@ -20,6 +20,7 @@ class CreatePositionGroupsTable extends Migration
       $table->tinyInteger('company_address_id')->unsigned();
       $table->foreign('company_address_id')->references('id')->on('company_addresses');
       $table->timestamps();
+      $table->softDeletes();
     });
   }
 

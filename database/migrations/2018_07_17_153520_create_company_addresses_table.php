@@ -19,6 +19,7 @@ class CreateCompanyAddressesTable extends Migration
       $table->tinyInteger('city_id')->unsigned();
       $table->foreign('city_id')->references('id')->on('cities');
       $table->timestamps();
+      $table->softDeletes();
     });
   }
 
