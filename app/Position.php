@@ -10,6 +10,16 @@ class Position extends Model
   use SoftDeletes;
   protected $dates = ['deleted_at'];
 
+  public function depends_from()
+  {
+    return $this->belongsToMany(PositionGroup::class, 'dependency_positions', 'dependent_id', 'superior_id');
+  }
+
+  public function dependents()
+  {
+    return $this->belongsToMany(PositionGroup::class, 'dependency_positions', 'superior_id', 'dependent_id');
+  }
+
   public function charge()
   {
     return $this->belongsTo(Charge::class);
