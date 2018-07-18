@@ -16,6 +16,8 @@ class CreateCompanyAddressesTable extends Migration
     Schema::create('company_addresses', function (Blueprint $table) {
       $table->increments('id');
       $table->text('address');
+      $table->tinyInteger('city_id')->unsigned();
+      $table->foreign('city_id')->references('id')->on('cities');
       $table->timestamps();
     });
   }
