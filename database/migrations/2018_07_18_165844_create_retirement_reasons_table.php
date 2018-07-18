@@ -15,6 +15,7 @@ class CreateRetirementReasonsTable extends Migration
   {
     Schema::create('retirement_reasons', function (Blueprint $table) {
       $table->increments('id');
+      $table->integer('ovt_id');
       $table->string('name')->unique();
       $table->timestamps();
     });

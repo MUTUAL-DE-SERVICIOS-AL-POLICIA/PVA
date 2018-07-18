@@ -15,6 +15,7 @@ class CreateInsuranceCompaniesTable extends Migration
   {
     Schema::create('insurance_companies', function (Blueprint $table) {
       $table->increments('id');
+      $table->integer('ovt_id');
       $table->string('name')->unique();
       $table->string('shortened')->unique()->nullable();
       $table->timestamps();

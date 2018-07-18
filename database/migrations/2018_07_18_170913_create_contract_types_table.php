@@ -15,6 +15,7 @@ class CreateContractTypesTable extends Migration
     {
         Schema::create('contract_types', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('ovt_id');
             $table->string('name')->unique();
             $table->timestamps();
         });

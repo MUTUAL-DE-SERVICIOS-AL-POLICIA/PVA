@@ -12,11 +12,11 @@ class ContractTypeSeeder extends Seeder
   public function run()
   {
     $types = [
-      ['name' => 'Tiempo indefinido'],
-      ['name' => 'A plazo fijo'],
-      ['name' => 'Por temporada'],
-      ['name' => 'Por realización de obra o servicio'],
-      ['name' => 'Condicional o eventual'],
+      ['ovt_id' => 1,'name' => 'Tiempo indefinido'],
+      ['ovt_id' => 2,'name' => 'A plazo fijo'],
+      ['ovt_id' => 3,'name' => 'Por temporada'],
+      ['ovt_id' => 4,'name' => 'Por realización de obra o servicio'],
+      ['ovt_id' => 5,'name' => 'Condicional o eventual'],
     ];
 
     foreach ($types as $type) {
