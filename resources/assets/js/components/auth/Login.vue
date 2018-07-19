@@ -20,7 +20,7 @@
               </p>
             </div>
             <div class="form-group-row">
-              <input type="submit" v-on:click="authenticate(auth)" value="Ingresar">
+              <v-btn color="success" v-on:click="authenticate(auth)"> Ingresar </v-btn>
             </div>
           </div>
         </div>

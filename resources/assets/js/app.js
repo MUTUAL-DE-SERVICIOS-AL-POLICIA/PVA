@@ -19,6 +19,9 @@ import fas from '@fortawesome/fontawesome-free-solid';
 import fab from '@fortawesome/fontawesome-free-brands';
 fontawesome.library.add(fas, fab);
 
+import Vuetify from 'vuetify'
+Vue.use(Vuetify, {iconfont: 'fa'} )
+
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Resource)
