@@ -21,6 +21,11 @@ fontawesome.library.add(fas, fab);
 
 import Vuetify from 'vuetify'
 Vue.use(Vuetify, {iconfont: 'fa'} )
+import { createSimpleTransition } from 'vuetify/es5/util/helpers'
+
+const myTransition = createSimpleTransition('my-transition')
+ 
+Vue.component('my-transition', myTransition)
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)

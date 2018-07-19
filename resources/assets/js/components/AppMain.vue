@@ -10,19 +10,17 @@
       app
       v-if="this.$store.getters.currentUser"
     >
-      <v-list>
-        <v-list-tile
-          value="true"
-          v-for="(item, i) in menu_left"
-          :key="i"
-        >
+      <v-list dense>
+        <v-list-tile v-for="item in menu_left" :key="item.title" @click="" :to="{name: item.href}">
           <v-list-tile-action>
-            <v-icon v-html="item.icon"></v-icon>
+            <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+            <v-list-tile-title>
+              {{ item.title }}
+            </v-list-tile-title>
           </v-list-tile-content>
-        </v-list-tile>
+        </v-list-tile>        
       </v-list>
     </v-navigation-drawer>
     <v-toolbar app :clipped-left="clipped" v-if="this.$store.getters.currentUser">
@@ -53,7 +51,7 @@
           <v-list>
             <v-list-tile
               v-for="(item, i) in menu_user"
-              :key="index"
+              :key="item.title"
               @click=""
             >
               <v-list-tile-title @click="logout">{{ item.title }}</v-list-tile-title>
@@ -63,7 +61,9 @@
       </v-toolbar-items>      
      </v-toolbar>
      <v-content>
+      <v-scale-transition>
       <router-view></router-view>
+      </v-scale-transition>
      </v-content>
      <v-footer :fixed="fixed" app>
       <span>&copy; 2017</span>
@@ -72,16 +72,14 @@
 </template>
 
 <script>
+import Menu from '../menu.js'
   export default {
     data () {
       return {
         clipped: false,
         drawer: true,
         fixed: false,
-        menu_left: [{
-          icon: '',
-          title: 'Menu principal'
-        }],
+        menu_left: Menu,
         menu_user: [{
           icon: '',
           title: 'Salir'

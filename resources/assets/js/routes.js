@@ -1,5 +1,6 @@
 import Home from './components/Home.vue'
 import Login from './components/auth/Login.vue'
+import About from './components/about/AboutIndex.vue'
 
 export const routes = [
   {
@@ -17,6 +18,13 @@ export const routes = [
     path: '*',
     redirect: {
       name: 'home'
+    }
+  },{
+    path: '/about', 
+    component: About, 
+    name: 'aboutIndex',
+    meta: {
+      requiresAuth: true
     }
   }
 ]
