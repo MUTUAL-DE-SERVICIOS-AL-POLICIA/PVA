@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInsuranceCompaniesTable extends Migration
+class CreateContractTypesTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,11 +13,10 @@ class CreateInsuranceCompaniesTable extends Migration
    */
   public function up()
   {
-    Schema::create('insurance_companies', function (Blueprint $table) {
+    Schema::create('contract_types', function (Blueprint $table) {
       $table->increments('id');
       $table->integer('ovt_id')->unsigned();
       $table->string('name')->unique();
-      $table->string('shortened')->unique()->nullable();
       $table->timestamps();
     });
   }
@@ -29,6 +28,6 @@ class CreateInsuranceCompaniesTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('insurance_companies');
+    Schema::dropIfExists('contract_types');
   }
 }

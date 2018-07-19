@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
       'charges',
       'positions',
       'retirement_reasons',
+      'contract_types',
+      'employees',
     ];
 
     $this->command->info('Truncating existing tables');
@@ -46,5 +48,7 @@ class DatabaseSeeder extends Seeder
     $this->call(ChargeSeeder::class);
     $this->call(PositionSeeder::class);
     $this->call(RetirementReasonSeeder::class);
+    $this->call(ContractTypeSeeder::class);
+    $this->call(EmployeeSeeder::class);
   }
 }
