@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateContractTypesTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,11 +13,10 @@ class CreateUsersTable extends Migration
    */
   public function up()
   {
-    Schema::create('users', function (Blueprint $table) {
-      $table->bigIncrements('id');
-      $table->string('username')->unique();
-      $table->string('password');
-      $table->text('remember_token')->nullable();
+    Schema::create('contract_types', function (Blueprint $table) {
+      $table->increments('id');
+      $table->integer('ovt_id')->unsigned();
+      $table->string('name')->unique();
       $table->timestamps();
     });
   }
@@ -29,6 +28,6 @@ class CreateUsersTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('users');
+    Schema::dropIfExists('contract_types');
   }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateInsuranceCompaniesTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,11 +13,11 @@ class CreateUsersTable extends Migration
    */
   public function up()
   {
-    Schema::create('users', function (Blueprint $table) {
-      $table->bigIncrements('id');
-      $table->string('username')->unique();
-      $table->string('password');
-      $table->text('remember_token')->nullable();
+    Schema::create('insurance_companies', function (Blueprint $table) {
+      $table->increments('id');
+      $table->integer('ovt_id')->unsigned();
+      $table->string('name')->unique();
+      $table->string('shortened')->unique()->nullable();
       $table->timestamps();
     });
   }
@@ -29,6 +29,6 @@ class CreateUsersTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('users');
+    Schema::dropIfExists('insurance_companies');
   }
 }

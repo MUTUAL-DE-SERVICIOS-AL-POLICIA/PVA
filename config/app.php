@@ -64,7 +64,8 @@ return [
   |
   */
 
-  'timezone' => 'UTC',
+  // 'timezone' => 'UTC',
+  'timezone' => env('APP_TIMEZONE', 'UTC'),
 
   /*
   |--------------------------------------------------------------------------
@@ -77,7 +78,8 @@ return [
   |
   */
 
-  'locale' => 'en',
+  // 'locale' => 'en',
+  'locale' => env('APP_LOCALE', 'en'),
 
   /*
   |--------------------------------------------------------------------------
@@ -161,6 +163,9 @@ return [
 
     // JWT auth
     Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+
+    // ACL Entrust
+    Zizaco\Entrust\EntrustServiceProvider::class,
   ],
 
   /*
@@ -211,8 +216,11 @@ return [
     'View' => Illuminate\Support\Facades\View::class,
 
     // JWT Auth Facades
-    'JWTAuth' => 'Tymon\JWTAuth\Facades\JWTAuth',
-    'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
+    'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+    'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+
+    // ACL Entrust
+    'Entrust' => Zizaco\Entrust\EntrustFacade::class,
   ],
 
 ];

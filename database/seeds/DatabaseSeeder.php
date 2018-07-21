@@ -16,17 +16,39 @@ class DatabaseSeeder extends Seeder
     Model::unguard();
     
     $tables = [
-      'company_account_numbers',
+      'company_accounts',
       'companies',
       'users',
+      'cities',
+      'company_addresses',
+      'insurance_companies',
+      'management_entities',
+      'employer_numbers',
+      'position_groups',
+      'dependency_position_group',
+      'charges',
+      'positions',
+      'retirement_reasons',
+      'contract_types',
+      'employees',
     ];
-    
+
     $this->command->info('Truncating existing tables');
-    foreach ($tables as $table) {  
+    foreach ($tables as $table) {
       DB::statement('TRUNCATE TABLE ' . $table . ' CASCADE;');
     }
 
-    $this->call(CompanySeeder::class);
     $this->call(UserSeeder::class);
+    $this->call(CitySeeder::class);
+    $this->call(InsuranceCompanySeeder::class);
+    $this->call(ManagementEntitySeeder::class);
+    $this->call(CompanySeeder::class);
+    $this->call(CompanyAddressSeeder::class);
+    $this->call(PositionGroupSeeder::class);
+    $this->call(ChargeSeeder::class);
+    $this->call(PositionSeeder::class);
+    $this->call(RetirementReasonSeeder::class);
+    $this->call(ContractTypeSeeder::class);
+    $this->call(EmployeeSeeder::class);
   }
 }
