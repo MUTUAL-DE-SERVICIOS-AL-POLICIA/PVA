@@ -2,18 +2,18 @@
   <div class="login row justify-content-center">
     <div class="col-md-4">
       <div class="card">
-        <div class="card-header">Login</div>
+        <div class="card-header">RR.HH.</div>
         <div class="card-body">
           <div>
             <div class="form-group-row">
               <label for="username">Usuario: </label>
-              <input id="username" type="text" class="form-control" v-model="auth.username" name="usuario" v-validate="'required'" autofocus="">
+              <input v-on:keyup.enter="focusPassword()" id="username" type="text" class="form-control" v-model="auth.username" name="usuario" v-validate="'required'" autofocus="">
               <p v-if="errors.has('usuario')" class="alert-danger">
                 {{ errors.first('usuario') }}
               </p>
             </div>
             <div class="form-group-row">
-              <label for="password">password: </label>
+              <label for="password">Contraseña: </label>
               <input v-on:keyup.enter="authenticate(auth)" id="password" type="password" class="form-control" v-model="auth.password" name="contraseña" v-validate="'required'" ref="password">
               <p v-if="errors.has('contraseña')" class="alert-danger">
                 {{ errors.first('contraseña') }}
@@ -42,6 +42,9 @@
       }
     },
     methods: {
+      focusPassword() {
+        this.$refs.password.focus();
+      },
       authenticate(auth) {
         this.$validator.validateAll().then(() => {
           this.$store.dispatch('login')
@@ -66,7 +69,7 @@
             });
           }
           auth.password = ''
-          this.$refs.password.focus();
+          this.focusPassword();
         })
       }
     },
