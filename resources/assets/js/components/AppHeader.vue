@@ -8,7 +8,9 @@
             <span class="fa fa-user pull-left"></span> {{ this.$store.getters.currentUser.username }} <span class="caret"></span>
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownProfile">
-            <a v-on:click.prevent="logout" href="/login" class="dropdown-item"><span class="fa fa-power-off pull-left"></span> Salir</a>
+            <router-link @click.native="logout" class="dropdown-item" tag="a" to="/login">
+              <span class="fa fa-power-off pull-left"></span> Salir
+            </router-link>
           </div>
         </li>
       </ul>
@@ -21,8 +23,16 @@
     name: 'app-header',
     methods: {
       logout() {
-        this.$store.dispatch('logout')
-        this.$router.push('login')
+        axios.get('/api/auth/logout').then(res => {
+          this.$store.dispatch('logout')
+          this.$router.push('login')
+        }).catch(error => {
+          for (let key in error.response.data.errors) {
+            error.response.data.errors[key].forEach(error => {
+              this.toastr.error(error)
+            });
+          }
+        })
       }
     },
   }

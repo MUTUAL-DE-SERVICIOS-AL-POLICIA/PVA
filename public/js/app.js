@@ -12273,7 +12273,9 @@ window.axios = __webpack_require__(17);
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common['Accept'] = 'application/json';
 window.axios.defaults.headers.common['Content-Type'] = 'application/json';
-window.axios.defaults.headers.common['Authorization'] = localStorage.getItem('token_type') + ' ' + localStorage.getItem('token');
+if (localStorage.getItem('token_type') && localStorage.getItem('token')) {
+  window.axios.defaults.headers.common['Authorization'] = localStorage.getItem('token_type') + ' ' + localStorage.getItem('token');
+}
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
@@ -43756,6 +43758,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   methods: {
+    focusPassword: function focusPassword() {
+      this.$refs.password.focus();
+    },
     authenticate: function authenticate(auth) {
       var _this = this;
 
@@ -43782,7 +43787,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           });
         }
         auth.password = '';
-        _this.$refs.password.focus();
+        _this.focusPassword();
       });
     }
   }
@@ -43799,7 +43804,7 @@ var render = function() {
   return _c("div", { staticClass: "login row justify-content-center" }, [
     _c("div", { staticClass: "col-md-4" }, [
       _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header" }, [_vm._v("Login")]),
+        _c("div", { staticClass: "card-header" }, [_vm._v("RR.HH.")]),
         _vm._v(" "),
         _c("div", { staticClass: "card-body" }, [
           _c("div", [
@@ -43832,6 +43837,15 @@ var render = function() {
                 },
                 domProps: { value: _vm.auth.username },
                 on: {
+                  keyup: function($event) {
+                    if (
+                      !("button" in $event) &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
+                    _vm.focusPassword()
+                  },
                   input: function($event) {
                     if ($event.target.composing) {
                       return
@@ -43854,7 +43868,7 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "form-group-row" }, [
               _c("label", { attrs: { for: "password" } }, [
-                _vm._v("password: ")
+                _vm._v("Contraseña: ")
               ]),
               _vm._v(" "),
               _c("input", {
