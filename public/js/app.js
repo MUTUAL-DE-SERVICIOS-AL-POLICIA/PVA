@@ -43513,6 +43513,7 @@ var index_esm = {
 
 
 
+//import Employee from './components/employee/EmployeeIndex.vue'
 
 var routes = [{
   name: 'login',
@@ -43535,8 +43536,15 @@ var routes = [{
   component: __WEBPACK_IMPORTED_MODULE_2__components_about_AboutIndex_vue___default.a,
   name: 'aboutIndex',
   meta: {
-    requiresAuth: true
-  }
+    requiresAuth: false
+  } /*,{
+     path: '/employee', 
+     component: Employee, 
+     name: 'employeeIndex',
+     meta: {
+       requiresAuth: true
+     }
+    }*/
 }];
 
 /***/ }),
@@ -43994,7 +44002,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+	methods: {
+		abc: function abc() {
+			axios.get('company').then(function (resp) {
+				console.log(resp.data);
+			}).catch(function (resp) {
+				console.log(resp);
+				alert("Could not load employees");
+			});
+		}
+	}
+});
 
 /***/ }),
 /* 52 */
@@ -44006,7 +44026,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "v-card",
-    [_c("v-card-title", [_vm._v("\n\t\tDesarrollado por MUSERPOL\n\t")])],
+    [
+      _c("v-card-title", [
+        _vm._v("\n\t\tDesarrollado por MUSERPOL " + _vm._s(_vm.abc()) + "\n\t")
+      ])
+    ],
     1
   )
 }
@@ -44539,7 +44563,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony default export */ __webpack_exports__["a"] = ([{ 'header': 'Admin' }, { 'href': 'home', 'title': 'Inicio', 'icon': 'fa fa-home' }, { 'href': 'employeeIndex', 'title': 'Empleados', 'icon': 'fa fa-users' }, { 'href': 'contractIndex', 'title': 'Contratos', 'icon': 'fa fa-briefcase' }, { 'href': 'payrollIndex', 'title': 'Planillas', 'icon': 'fa fa-list-ol' }, { 'href': 'reportIndex', 'title': 'Reportes', 'icon': 'fa fa-file-pdf' }, { 'href': 'aboutIndex', 'title': 'Acerca de', 'icon': 'fa fa-question' }]);
+/* harmony default export */ __webpack_exports__["a"] = ([{ 'header': 'Admin' }, { 'href': 'home', 'title': 'Inicio', 'icon': 'fa fa-home' },
+/*{ 'href': 'employeeIndex', 'title': 'Empleados', 'icon': 'fa fa-users' },
+{ 'href': 'contractIndex', 'title': 'Contratos', 'icon': 'fa fa-briefcase' },
+{ 'href': 'payrollIndex', 'title': 'Planillas', 'icon': 'fa fa-list-ol' },
+{ 'href': 'reportIndex', 'title': 'Reportes', 'icon': 'fa fa-file-pdf' },*/
+{ 'href': 'aboutIndex', 'title': 'Acerca de', 'icon': 'fa fa-question' }]);
 
 /***/ }),
 /* 61 */

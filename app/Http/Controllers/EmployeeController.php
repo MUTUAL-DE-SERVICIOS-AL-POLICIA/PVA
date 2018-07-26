@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-Use App\Company;
 
-class CompanyController extends Controller
+use App\Employee;
+
+class EmployeeController extends Controller
 {
-  /**
+   /**
    * Display a listing of the resource.
    *
    * @return \Illuminate\Http\Response
@@ -15,8 +16,7 @@ class CompanyController extends Controller
   public function index()
   {
     //return response()->json(Company::all());
-    //return Company::all();
-    return response()->json('hola company');
+    return Employee::all();
   }
 
   /**

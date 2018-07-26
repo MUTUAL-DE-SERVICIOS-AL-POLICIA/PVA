@@ -1,6 +1,7 @@
 import Home from './components/Home.vue'
 import Login from './components/auth/Login.vue'
 import About from './components/about/AboutIndex.vue'
+//import Employee from './components/employee/EmployeeIndex.vue'
 
 export const routes = [
   {
@@ -24,7 +25,14 @@ export const routes = [
     component: About, 
     name: 'aboutIndex',
     meta: {
+      requiresAuth: false
+    }
+  }/*,{
+    path: '/employee', 
+    component: Employee, 
+    name: 'employeeIndex',
+    meta: {
       requiresAuth: true
     }
-  }
+  }*/
 ]
