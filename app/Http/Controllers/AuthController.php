@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -50,37 +52,42 @@ class AuthController extends Controller
 
     if (env("ADLDAP_AUTHENTICATION")) {
       $bind = $this->adldap->authenticate($this->config['user_id_key'].'='.$credentials['username'].',', $credentials['password']);
-    } else {
-      $bind = true;
-    }
 
-    if ($bind) {
-      $user = User::where('username', $credentials['username'])->first();
-      if ($user) {
-        if (!Hash::check($credentials['password'], $user->password)) {
+      if ($bind) {
+        $user = User::where('username', $credentials['username'])->first();
+        if ($user) {
+          if (!Hash::check($credentials['password'], $user->password)) {
+            $user->password = Hash::make($credentials['password']);
+            $user->remember_token = null;
+            $user->save();
+          }
+        } else {
+          $user = new User();
+          $user->username = $credentials['username'];
           $user->password = Hash::make($credentials['password']);
-          $user->remember_token = null;
           $user->save();
         }
-      } else {
-        $user = new User();
-        $user->username = $credentials['username'];
-        $user->password = Hash::make($credentials['password']);
+        $token = auth('api')->attempt($credentials);
+        Log::debug($token);
+        $user->remember_token = $token;
         $user->save();
+
+        return $this->respondWithToken($token);
       }
-      $token = auth('api')->attempt($credentials);
-      $user->remember_token = $token;
-      $user->save();
     } else {
-      return response()->json([
-        'message' => 'No autorizado',
-        'errors' => [
-          'type' => ['Usuario o contraseña incorrectos'],
-        ]
-      ], 401);
+      $token = auth('api')->attempt($credentials);
+
+      if ($token) {
+        return $this->respondWithToken($token);
+      }
     }
 
-    return $this->respondWithToken($token);
+    return response()->json([
+      'message' => 'No autorizado',
+      'errors' => [
+        'type' => ['Usuario o contraseña incorrectos'],
+      ]
+    ], 401);
   }
 
   /**
@@ -101,7 +108,9 @@ class AuthController extends Controller
   public function logout()
   {
     auth('api')->logout();
-    return response()->json(null, 201);
+    return response()->json([
+      'message' => 'Logged out successfully',
+    ], 201);
   }
 
   /**
