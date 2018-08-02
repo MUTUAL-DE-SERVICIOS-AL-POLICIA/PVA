@@ -27,4 +27,5 @@ Route::group([
   'middleware' => ['api', 'jwt.auth'],
 ], function ($router) {
   Route::resource('company', 'CompanyController')->except(['create', 'edit']);
+  Route::resource('employee', 'EmployeeController');
 });

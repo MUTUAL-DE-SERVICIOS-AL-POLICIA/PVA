@@ -130,15 +130,12 @@
   methods: {
     initialize () {
       var app = this;
-            axios.get('employeddde')
-                .then(function (resp) {
-                	console.log(resp.data);
-                    app.employees = [];
-                })
-                .catch(function (resp) {
-                    console.log(resp);
-                    alert("Could not load employees");
-                });
+      axios
+        .get('api/employee')
+        .then(response => {
+          console.log(response.data)
+          app.employees = response;
+        })
     },
 
     editItem (item) {

@@ -14,6 +14,3 @@
 Route::get('{any}', function () {
   return view('index');
 })->where('any', '.*');
-
-Route::resource('company','CompanyController');
-Route::resource('employee','EmployeeController');

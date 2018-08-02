@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Employee;
 
 class EmployeeController extends Controller
@@ -15,8 +14,7 @@ class EmployeeController extends Controller
    */
   public function index()
   {
-    //return response()->json(Company::all());
-    return Employee::all();
+    return response()->json(Employee::all());
   }
 
   /**
@@ -38,7 +36,7 @@ class EmployeeController extends Controller
    */
   public function show($id)
   {
-    return response()->json(Company::find($id));
+    return response()->json(Employee::find($id));
   }
 
   /**
