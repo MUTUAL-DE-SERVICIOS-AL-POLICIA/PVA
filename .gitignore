@@ -14,8 +14,8 @@ app/storage/
 public/docs
 public/storage
 public/hot
-public/js/*
-public/css/*
+public/js/
+public/css/
 storage/*.key
 .env.*.php
 .env.php

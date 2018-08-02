@@ -27,7 +27,7 @@
     },
     mounted () {
       axios
-        .get('api/company')
+        .get('api/v1/company')
         .then(response => {
           console.log(response.data)
           this.info = response.data.bpi
