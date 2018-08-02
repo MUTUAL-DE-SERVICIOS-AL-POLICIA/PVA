@@ -166,6 +166,9 @@ return [
 
     // ACL Entrust
     Zizaco\Entrust\EntrustServiceProvider::class,
+
+    // ApiDoc Generator
+    Mpociot\ApiDoc\ApiDocGeneratorServiceProvider::class,
   ],
 
   /*

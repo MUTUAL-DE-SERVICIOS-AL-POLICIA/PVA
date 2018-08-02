@@ -13,4 +13,5 @@ php artisan vendor:publish
 php artisan key:generate
 php artisan jwt:secret
 php artisan migrate:fresh --seed
+php artisan api:generate --routePrefix="api/v1/*"
 ```
