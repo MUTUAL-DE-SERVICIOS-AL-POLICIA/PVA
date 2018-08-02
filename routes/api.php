@@ -28,4 +28,5 @@ Route::group([
   'prefix' => 'v1'
 ], function ($router) {
   Route::resource('company', 'CompanyController')->except(['create', 'edit']);
+  Route::resource('employee', 'EmployeeController');
 });
