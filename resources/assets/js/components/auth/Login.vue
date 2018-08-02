@@ -20,7 +20,7 @@
               </p>
             </div>
             <div class="form-group-row">
-              <input type="submit" v-on:click="authenticate(auth)" value="Ingresar">
+              <v-btn color="success" v-on:click="authenticate(auth)"> Ingresar </v-btn>
             </div>
           </div>
         </div>
@@ -48,7 +48,7 @@
       authenticate(auth) {
         this.$validator.validateAll().then(() => {
           this.$store.dispatch('login')
-          return axios.post('/api/auth/login', auth)
+          return axios.post('/api/v1/auth/login', auth)
         }).then(res => {
           if (res.status == 200) {
             localStorage.setItem('token', res.data.token)

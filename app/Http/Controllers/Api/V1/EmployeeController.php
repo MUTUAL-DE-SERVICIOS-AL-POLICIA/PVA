@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-Use App\Company;
+use App\Employee;
 
-class CompanyController extends Controller
+class EmployeeController extends Controller
 {
-  /**
+   /**
    * Display a listing of the resource.
    *
    * @return \Illuminate\Http\Response
    */
   public function index()
   {
-    return response()->json(Company::all());
+    return response()->json(Employee::all());
   }
 
   /**
@@ -36,7 +36,7 @@ class CompanyController extends Controller
    */
   public function show($id)
   {
-    return response()->json(Company::find($id));
+    return response()->json(Employee::find($id));
   }
 
   /**
