@@ -11,6 +11,7 @@ bootstrap/compiled.php
 app/storage/
 
 # Laravel 5 & Lumen specific
+public/docs
 public/storage
 public/hot
 public/js/*
