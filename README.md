@@ -9,6 +9,7 @@ cp .env.example .env
 composer install
 npm install
 npm run dev
+php artisan vendor:publish
 php artisan key:generate
 php artisan jwt:secret
 php artisan migrate:fresh --seed
