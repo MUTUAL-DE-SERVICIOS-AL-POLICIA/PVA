@@ -12,7 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/vuetify.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/all.css') }}" rel="stylesheet" type="text/css">
   </head>
   <body>
     <div id="app">

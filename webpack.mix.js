@@ -12,4 +12,7 @@ let mix = require('laravel-mix')
  */
 
 mix.js('resources/assets/js/app.js', 'public/js')
+	.styles([
+       'resources/assets/css/vuetify.min.css'
+    ], 'public/css/all.css')
    //.sass('resources/assets/sass/app.scss', 'public/css')
