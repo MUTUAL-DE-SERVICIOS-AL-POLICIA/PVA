@@ -16,14 +16,19 @@ class Employee extends Model
     return Util::fullName($this, $style, $order);
   }
 
-  public function insurance_company()
-  {
-    return $this->belongsTo(InsuranceCompany::class);
-  }
-
   public function city_identity_card()
   {
     return $this->belongsTo(City::class, 'city_identity_card_id', 'id');
+  }
+
+  public function city_birth()
+  {
+    return $this->belongsTo(City::class, 'city_birth_id', 'id');
+  }
+
+  public function insurance_company()
+  {
+    return $this->belongsTo(InsuranceCompany::class);
   }
 
   public function management_entity()
@@ -31,8 +36,8 @@ class Employee extends Model
     return $this->belongsTo(ManagementEntity::class);
   }
 
-  public function city_birth()
+  public function contracts()
   {
-    return $this->belongsTo(City::class, 'city_birth_id', 'id');
+    return $this->hasMany(Contract::class);
   }
 }

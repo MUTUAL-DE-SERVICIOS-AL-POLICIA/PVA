@@ -24,6 +24,7 @@ Homestead.yaml
 Homestead.json
 
 # Lock files
+.phpfmt.ini
 composer.lock
 package-lock.json
 yarn.lock
