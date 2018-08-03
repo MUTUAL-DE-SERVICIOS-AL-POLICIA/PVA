@@ -34,6 +34,14 @@ class CreateEmployeesTable extends Migration
       $table->string('country_birth')->nullable();
       $table->string('nua_cua')->nullable();
       $table->enum('gender', ['M', 'F'])->nullable();
+
+      $table->string('nationality')->nullable();
+      $table->string('location')->nullable();
+      $table->string('zone')->nullable();
+      $table->string('street')->nullable();
+      $table->string('number')->nullable();
+      $table->boolean('status')->default(1);
+
       $table->timestamps();
       $table->softDeletes();
     });

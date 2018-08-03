@@ -24,9 +24,13 @@ Route::group([
 });
 
 Route::group([
-  'middleware' => ['api', 'jwt.auth'],
+  //'middleware' => ['api', 'jwt.auth'],
+  'middleware' => ['api'],
   'prefix' => 'v1'
 ], function ($router) {
   Route::resource('company', 'CompanyController')->except(['create', 'edit']);
+  
+  Route::get('employee/list','EmployeeController@list');
   Route::resource('employee', 'EmployeeController')->except(['create', 'edit']);
+
 });

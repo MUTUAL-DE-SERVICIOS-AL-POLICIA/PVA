@@ -1,5 +1,4 @@
 <template>
-
   <v-container >
       <v-toolbar flat color="white">
         <v-toolbar-title>Empleados</v-toolbar-title>
@@ -9,7 +8,7 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="900px">
           <v-btn slot="activator" color="primary" dark class="mb-2">Nuevo Empleado</v-btn>
           <v-card>
             <v-card-title>
@@ -20,7 +19,7 @@
               <v-container grid-list-md>
                 <v-layout wrap>
                   <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedItem.no" label="Dessert name"></v-text-field>
+                    <v-text-field v-model="editedItem.identity_card" label="C.I."></v-text-field>
                   </v-flex>
                   <v-flex xs12 sm6 md4>
                     <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
@@ -48,13 +47,19 @@
       </v-toolbar>
       <v-data-table
         :headers="headers"
-        :items="employees"
+        :items="desserts"
         hide-actions
         class="elevation-1"
       >
         <template slot="items" slot-scope="props">
-          <td>{{ props.item.name }}</td>
-          <td class="text-xs-right">{{ props.item.calories }}</td>
+          <td class="text-xs-center">{{ props.item.identity_card }} </td>
+          <td class="text-xs-left">{{ props.item.fullname }}</td>
+          <td class="text-xs-center">{{ props.item.birth }}</td>
+          <td class="text-xs-center">{{ props.item.account }}</td>
+          <td class="text-xs-center">{{ props.item.afp }}</td>
+          <td class="text-xs-center">{{ props.item.nua_cua }}</td>
+          <td class="text-xs-center">{{ props.item.gender }}</td>
+
           <td class="justify-center layout px-0">
             <v-icon
               small
@@ -72,28 +77,33 @@
           </td>
         </template>
         <template slot="no-data">
-          <v-btn color="primary" @click="initialize">Reset</v-btn>
+          <v-btn color="primary" @click="initialize">Recargar</v-btn>
         </template>
       </v-data-table>
-    </v-container>
-
+  </v-container>
 </template>
 <script type="text/javascript">
 	export default {
 
-  data: () => ({
+    data: () => ({
     dialog: false,
     headers: [
-      {
+      /*{
         text: '#',
         align: 'left',
         sortable: false,
         value: 'name'
-      },
-      { text: 'C.I.', value: 'identify_card' },
-      { text: 'Acciones', value: 'name', sortable: false }
+      },*/
+      { text: 'C.I.'},
+      { text: 'Funcionario'},
+      { text: 'Fecha de Nacimiento'},
+      { text: '# Cuenta'},
+      { text: 'AFP'},
+      { text: 'CUA/NUA'},
+      { text: 'Estado'},
+      { text: 'Actions', value: 'name', sortable: false }
     ],
-    employees: [],
+    desserts: [],
     editedIndex: -1,
     editedItem: {
       name: '',
@@ -113,7 +123,7 @@
 
   computed: {
     formTitle () {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      return this.editedIndex === -1 ? 'Nuevo Empleado' : 'Editar Empleado'
     }
   },
 
@@ -129,12 +139,13 @@
 
   methods: {
     initialize () {
-      var app = this;
       axios
-        .get('api/v1/employee')
+        .get('api/v1/employee/list')
         .then(response => {
-          console.log(response.data)
-          app.employees = response;
+          this.desserts = response.data
+        })
+        .catch(error => {
+          console.log(error)
         })
     },
 
