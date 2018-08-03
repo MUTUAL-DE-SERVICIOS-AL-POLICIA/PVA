@@ -17,6 +17,7 @@ class CreateCompaniesTable extends Migration
       $table->increments('id');
       $table->string('name');
       $table->string('shortened');
+      $table->bigInteger('tax_id_number');
       $table->timestamps();
       $table->unique('name');
       $table->unique('shortened');
