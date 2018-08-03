@@ -26,8 +26,6 @@ class CreateContractsTable extends Migration {
 			$table->date('start_date');
 			$table->date('end_date')->nullable();
 			$table->date('retirement_date')->nullable();
-			$table->integer('job_schedule_id')->nullable();
-			$table->foreign('job_schedule_id')->references('id')->on('job_schedules');
 			$table->boolean('status')->default(true);
 			$table->string('rrhh_cite')->nullable();
 			$table->date('rrhh_cite_date')->nullable();

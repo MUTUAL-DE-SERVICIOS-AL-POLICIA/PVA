@@ -22,8 +22,11 @@ class ContractSeeder extends Seeder {
 			$contract->position_id = $positions[array_rand($positions)]->id;
 			$contract->contract_type_id = $contract_types[array_rand($contract_types)]->id;
 			$contract->contract_mode_id = $contract_modes[array_rand($contract_modes)]->id;
-			$contract->job_schedule_id = $job_schedules[array_rand($job_schedules)]->id;
 			$contract->save();
+
+			for ($i = 0; $i < rand(1, 2); $i++) {
+				$contract->job_schedules()->attach($job_schedules[$i]);
+			}
 		}
 	}
 }

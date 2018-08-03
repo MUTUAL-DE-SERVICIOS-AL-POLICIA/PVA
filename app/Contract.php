@@ -29,7 +29,7 @@ class Contract extends Model {
 		return $this->belongsTo(RetirementReason::class);
 	}
 
-	public function job_schedule() {
-		return $this->belongsTo(JobSchedule::class);
+	public function job_schedules() {
+		return $this->belongsToMany(JobSchedule::class);
 	}
 }
