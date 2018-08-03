@@ -43,8 +43,9 @@ class DatabaseSeeder extends Seeder
     $this->call(InsuranceCompanySeeder::class);
     $this->call(ManagementEntitySeeder::class);
     $this->call(CompanySeeder::class);
-    $this->call(CompanyAddressSeeder::class);
     $this->call(PositionGroupSeeder::class);
+    $this->call(CompanyAddressSeeder::class);
+    $this->call(PositionGroupAddressSeeder::class);
     $this->call(ChargeSeeder::class);
     $this->call(PositionSeeder::class);
     $this->call(RetirementReasonSeeder::class);

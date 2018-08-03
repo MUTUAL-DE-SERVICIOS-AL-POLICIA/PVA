@@ -12,11 +12,11 @@ class ManagementEntitySeeder extends Seeder
   public function run()
   {
     $management_entities = [
-      ['name' => 'PREVISION'],
-      ['name' => 'FUTURO'],
+      ['ovt_id' => 1, 'name' => 'PREVISION'],
+      ['ovt_id' => 2, 'name' => 'FUTURO'],
     ];
 
-    foreach($management_entities as $management_entity) {
+    foreach($management_entities as $i => $management_entity) {
       App\ManagementEntity::create($management_entity);
     }
   }

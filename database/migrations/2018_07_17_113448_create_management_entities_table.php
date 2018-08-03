@@ -15,6 +15,7 @@ class CreateManagementEntitiesTable extends Migration
   {
     Schema::create('management_entities', function (Blueprint $table) {
       $table->increments('id');
+      $table->integer('ovt_id')->unsigned();
       $table->string('name')->unique();
       $table->timestamps();
     });
