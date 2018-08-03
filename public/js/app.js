@@ -44104,19 +44104,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
   data: function data() {
     return {
       dialog: false,
-      headers: [{
+      headers: [
+      /*{
         text: '#',
         align: 'left',
         sortable: false,
         value: 'name'
-      }, { text: 'C.I.', value: 'identify_card' }, { text: 'Acciones', value: 'name', sortable: false }],
-      employees: [],
+      },*/
+      { text: 'C.I.' }, { text: 'Funcionario' }, { text: 'Fecha de Nacimiento' }, { text: '# Cuenta' }, { text: 'AFP' }, { text: 'CUA/NUA' }, { text: 'Estado' }, { text: 'Actions', value: 'name', sortable: false }],
+      desserts: [],
       editedIndex: -1,
       editedItem: {
         name: '',
@@ -44154,10 +44160,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     initialize: function initialize() {
-      var app = this;
-      axios.get('api/v1/employee').then(function (response) {
-        console.log(response.data);
-        app.employees = response;
+      var _this = this;
+
+      axios.get('api/v1/employee/list').then(function (response) {
+        _this.desserts = response.data;
+      }).catch(function (error) {
+        console.log(error);
       });
     },
     editItem: function editItem(item) {
@@ -44170,12 +44178,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1);
     },
     close: function close() {
-      var _this = this;
+      var _this2 = this;
 
       this.dialog = false;
       setTimeout(function () {
-        _this.editedItem = Object.assign({}, _this.defaultItem);
-        _this.editedIndex = -1;
+        _this2.editedItem = Object.assign({}, _this2.defaultItem);
+        _this2.editedIndex = -1;
       }, 300);
     },
     save: function save() {
@@ -44216,7 +44224,7 @@ var render = function() {
           _c(
             "v-dialog",
             {
-              attrs: { "max-width": "500px" },
+              attrs: { "max-width": "900px" },
               model: {
                 value: _vm.dialog,
                 callback: function($$v) {
@@ -44261,13 +44269,17 @@ var render = function() {
                                 { attrs: { xs12: "", sm6: "", md4: "" } },
                                 [
                                   _c("v-text-field", {
-                                    attrs: { label: "Dessert name" },
+                                    attrs: { label: "C.I." },
                                     model: {
-                                      value: _vm.editedItem.no,
+                                      value: _vm.editedItem.identity_card,
                                       callback: function($$v) {
-                                        _vm.$set(_vm.editedItem, "no", $$v)
+                                        _vm.$set(
+                                          _vm.editedItem,
+                                          "identity_card",
+                                          $$v
+                                        )
                                       },
-                                      expression: "editedItem.no"
+                                      expression: "editedItem.identity_card"
                                     }
                                   })
                                 ],
@@ -44408,7 +44420,7 @@ var render = function() {
           staticClass: "elevation-1",
           attrs: {
             headers: _vm.headers,
-            items: _vm.employees,
+            items: _vm.desserts,
             "hide-actions": ""
           },
           scopedSlots: _vm._u([
@@ -44416,10 +44428,32 @@ var render = function() {
               key: "items",
               fn: function(props) {
                 return [
-                  _c("td", [_vm._v(_vm._s(props.item.name))]),
+                  _c("td", { staticClass: "text-xs-center" }, [
+                    _vm._v(_vm._s(props.item.identity_card) + " ")
+                  ]),
                   _vm._v(" "),
-                  _c("td", { staticClass: "text-xs-right" }, [
-                    _vm._v(_vm._s(props.item.calories))
+                  _c("td", { staticClass: "text-xs-left" }, [
+                    _vm._v(_vm._s(props.item.fullname))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-center" }, [
+                    _vm._v(_vm._s(props.item.birth))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-center" }, [
+                    _vm._v(_vm._s(props.item.account))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-center" }, [
+                    _vm._v(_vm._s(props.item.afp))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-center" }, [
+                    _vm._v(_vm._s(props.item.nua_cua))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-xs-center" }, [
+                    _vm._v(_vm._s(props.item.gender))
                   ]),
                   _vm._v(" "),
                   _c(
@@ -44468,7 +44502,7 @@ var render = function() {
               _c(
                 "v-btn",
                 { attrs: { color: "primary" }, on: { click: _vm.initialize } },
-                [_vm._v("Reset")]
+                [_vm._v("Recargar")]
               )
             ],
             1
@@ -62156,7 +62190,8 @@ __webpack_require__.r(__webpack_exports__);
     data: function data(vm) {
         return {
             attrsInput: null,
-            lazySearch: vm.searchInput
+            lazySearch: vm.searchInput,
+            lazyValue: vm.value != null ? vm.value : vm.multiple ? [] : undefined
         };
     },
     computed: {
@@ -62319,7 +62354,7 @@ __webpack_require__.r(__webpack_exports__);
             }
         },
         clearableCallback: function clearableCallback() {
-            this.internalSearch = undefined;
+            this.internalSearch = null;
             _VSelect_VSelect__WEBPACK_IMPORTED_MODULE_1__["default"].methods.clearableCallback.call(this);
         },
         genInput: function genInput() {
@@ -62370,10 +62405,14 @@ __webpack_require__.r(__webpack_exports__);
             this.setSearch();
         },
         setSelectedItems: function setSelectedItems() {
-            _VSelect_VSelect__WEBPACK_IMPORTED_MODULE_1__["default"].methods.setSelectedItems.call(this);
-            // #4273 Don't replace if searching
-            // #4403 Don't replace if focused
-            if (!this.isFocused) this.setSearch();
+            if (this.internalValue == null || this.internalValue === '') {
+                this.selectedItems = [];
+            } else {
+                _VSelect_VSelect__WEBPACK_IMPORTED_MODULE_1__["default"].methods.setSelectedItems.call(this);
+                // #4273 Don't replace if searching
+                // #4403 Don't replace is focused
+                if (!this.isFocused) this.setSearch();
+            }
         },
         setSearch: function setSearch() {
             var _this = this;
@@ -66866,7 +66905,7 @@ var __spread = undefined && undefined.__spread || function () {
             return this.$createElement('transition', {
                 attrs: { name: 'fade-transition' }
             }, [this.$createElement('div', {
-                staticClass: 'v-expansion-panel__header__icon',
+                staticClass: 'header__icon',
                 directives: [{
                     name: 'show',
                     value: !this.isDisabled
@@ -66994,8 +67033,7 @@ __webpack_require__.r(__webpack_exports__);
          * @return {number}
          */
         updateApplication: function updateApplication() {
-            var height = parseInt(this.height);
-            return isNaN(height) ? this.$el ? this.$el.clientHeight : 0 : height;
+            return isNaN(this.height) ? this.$el ? this.$el.clientHeight : 0 : this.height;
         }
     },
     render: function render(h) {
@@ -69253,23 +69291,18 @@ __webpack_require__.r(__webpack_exports__);
                 'theme--light': this.light
             };
         },
-        hasApp: function hasApp() {
-            return this.app && !this.isMobile && !this.temporary;
-        },
         isMobile: function isMobile() {
             return !this.stateless && !this.permanent && !this.temporary && this.$vuetify.breakpoint.width < parseInt(this.mobileBreakPoint, 10);
         },
         marginTop: function marginTop() {
-            if (!this.hasApp) return 0;
+            if (!this.app) return 0;
             var marginTop = this.$vuetify.application.bar;
             marginTop += this.clipped ? this.$vuetify.application.top : 0;
             return marginTop;
         },
         maxHeight: function maxHeight() {
-            if (!this.hasApp) return null;
-            var maxHeight = this.$vuetify.application.bottom + this.$vuetify.application.footer + this.$vuetify.application.bar;
-            if (!this.clipped) return maxHeight;
-            return maxHeight + this.$vuetify.application.top;
+            if (!this.app) return '100%';
+            return this.clipped ? this.$vuetify.application.top + this.$vuetify.application.bottom : this.$vuetify.application.bottom;
         },
         reactsToClick: function reactsToClick() {
             return !this.stateless && !this.permanent && (this.isMobile || this.temporary);
@@ -69290,7 +69323,7 @@ __webpack_require__.r(__webpack_exports__);
             var styles = {
                 height: Object(_util_helpers__WEBPACK_IMPORTED_MODULE_8__["convertToUnit"])(this.height),
                 marginTop: this.marginTop + "px",
-                maxHeight: "calc(100% - " + +this.maxHeight + "px)",
+                maxHeight: "calc(100% - " + this.maxHeight + "px)",
                 transform: "translateX(" + this.calculatedTransform + "px)",
                 width: this.calculatedWidth + "px"
             };
@@ -69682,7 +69715,7 @@ var __spread = undefined && undefined.__spread || function () {
             var even = maxLength % 2 === 0 ? 1 : 0;
             var left = Math.floor(maxLength / 2);
             var right = this.length - left + 1 + even;
-            if (this.value > left && this.value < right) {
+            if (this.value >= left && this.value <= right) {
                 var start = this.value - left + 2;
                 var end = this.value + left - 2 - even;
                 return __spread([1, '...'], this.range(start, end), ['...', this.length]);
@@ -70462,8 +70495,7 @@ var __assign = undefined && undefined.__assign || Object.assign || function (t) 
             return this.$createElement('input', {
                 attrs: Object.assign({}, attrs, {
                     'aria-label': this.label,
-                    name: this.radio.name || (this.radio._uid ? 'v-radio-' + this.radio._uid : false),
-                    value: this.value,
+                    name: this.radio.name || false,
                     role: type,
                     type: type
                 }),
@@ -71028,7 +71060,7 @@ var fakeMenuable = {
             // As long as a value is defined, show it
             // Otherwise, check if multiple
             // to determine which default to provide
-            lazyValue: vm.value !== undefined ? vm.value : vm.multiple ? [] : undefined,
+            lazyValue: vm.value != null ? vm.value : vm.multiple ? [] : undefined,
             selectedIndex: -1,
             selectedItems: []
         };
@@ -71081,7 +71113,7 @@ var fakeMenuable = {
                 openOnClick: false,
                 value: this.isMenuActive,
                 offsetY: this.offsetY,
-                nudgeBottom: this.nudgeBottom ? this.nudgeBottom : this.offsetY ? 1 : 0 // convert to int
+                nudgeBottom: this.offsetY ? 1 : 0 // convert to int
             };
         },
         listData: function listData() {
@@ -71164,7 +71196,8 @@ var fakeMenuable = {
         },
         clearableCallback: function clearableCallback() {
             var _this = this;
-            this.internalValue = this.multiple ? [] : undefined;
+            this.internalValue = this.multiple ? [] : null;
+            this.$emit('change', this.internalValue);
             this.$nextTick(function () {
                 return _this.$refs.input.focus();
             });
@@ -71722,7 +71755,7 @@ var __values = undefined && undefined.__values || function (o) {
             return Boolean(Object(_util_helpers__WEBPACK_IMPORTED_MODULE_7__["getPropertyFromItem"])(item, this.itemDisabled, false));
         },
         getText: function getText(item) {
-            return String(Object(_util_helpers__WEBPACK_IMPORTED_MODULE_7__["getPropertyFromItem"])(item, this.itemText, item));
+            return (Object(_util_helpers__WEBPACK_IMPORTED_MODULE_7__["getPropertyFromItem"])(item, this.itemText, item) || '').toString();
         },
         getValue: function getValue(item) {
             return Object(_util_helpers__WEBPACK_IMPORTED_MODULE_7__["getPropertyFromItem"])(item, this.itemValue, this.getText(item));
@@ -71735,7 +71768,7 @@ var __values = undefined && undefined.__values || function (o) {
             for (var _b = __values(this.items), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var item = _c.value;
                 if (this.hideSelected && this.hasItem(item)) continue;
-                if (item == null) children.push(this.genTile(item));else if (item.header) children.push(this.genHeader(item));else if (item.divider) children.push(this.genDivider(item));else children.push(this.genTile(item));
+                if (item.header) children.push(this.genHeader(item));else if (item.divider) children.push(this.genDivider(item));else children.push(this.genTile(item));
             }
         } catch (e_1_1) {
             e_1 = { error: e_1_1 };
@@ -72078,13 +72111,13 @@ var __assign = undefined && undefined.__assign || Object.assign || function (t) 
             return children;
         },
         genListeners: function genListeners() {
-            return {
+            return Object.assign({}, {
                 blur: this.onBlur,
                 click: this.onSliderClick,
                 focus: this.onFocus,
                 keydown: this.onKeyDown,
                 keyup: this.onKeyUp
-            };
+            });
         },
         genInput: function genInput() {
             return this.$createElement('input', {
@@ -72093,6 +72126,7 @@ var __assign = undefined && undefined.__assign || Object.assign || function (t) 
                     name: this.name,
                     role: 'slider',
                     tabindex: this.disabled ? -1 : this.$attrs.tabindex,
+                    type: 'range',
                     value: this.internalValue,
                     readonly: true,
                     'aria-readonly': String(this.readonly)
@@ -72312,8 +72346,7 @@ var __assign = undefined && undefined.__assign || Object.assign || function (t) 
             // of decimals places as in the step prop
             var trimmedStep = this.step.toString().trim();
             var decimals = trimmedStep.indexOf('.') > -1 ? trimmedStep.length - trimmedStep.indexOf('.') - 1 : 0;
-            var offset = this.min % this.stepNumeric;
-            var newValue = Math.round((value - offset) / this.stepNumeric) * this.stepNumeric + offset;
+            var newValue = Math.round(value / this.stepNumeric) * this.stepNumeric;
             return parseFloat(Math.min(newValue, this.max).toFixed(decimals));
         },
         setInternalValue: function setInternalValue(value) {
@@ -75393,7 +75426,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_themeable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../mixins/themeable */ "./src/mixins/themeable.ts");
 /* harmony import */ var _mixins_ssr_bootable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../mixins/ssr-bootable */ "./src/mixins/ssr-bootable.ts");
 /* harmony import */ var _directives_scroll__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../directives/scroll */ "./src/directives/scroll.ts");
-/* harmony import */ var _util_console__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../util/console */ "./src/util/console.ts");
 // Styles
 
 // Mixins
@@ -75402,7 +75434,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // Directives
-
 
 /* @vue/component */
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -75433,7 +75464,6 @@ __webpack_require__.r(__webpack_exports__);
         manualScroll: Boolean,
         prominent: Boolean,
         scrollOffScreen: Boolean,
-        /* @deprecated */
         scrollToolbarOffScreen: Boolean,
         scrollTarget: String,
         scrollThreshold: {
@@ -75462,14 +75492,6 @@ __webpack_require__.r(__webpack_exports__);
         };
     },
     computed: {
-        canScroll: function canScroll() {
-            // TODO: remove
-            if (this.scrollToolbarOffScreen) {
-                Object(_util_console__WEBPACK_IMPORTED_MODULE_6__["deprecate"])('scrollToolbarOffScreen', 'scrollOffScreen', this);
-                return true;
-            }
-            return this.scrollOffScreen || this.invertedScroll;
-        },
         computedContentHeight: function computedContentHeight() {
             if (this.height) return parseInt(this.height);
             if (this.dense) return this.heights.dense;
@@ -75493,7 +75515,7 @@ __webpack_require__.r(__webpack_exports__);
         classes: function classes() {
             return this.addBackgroundColorClassChecks({
                 'v-toolbar': true,
-                'elevation-0': this.flat || !this.isActive && !this.tabs && this.canScroll,
+                'elevation-0': this.flat || !this.isActive && !this.tabs && !this.scrollToolbarOffScreen,
                 'v-toolbar--absolute': this.absolute,
                 'v-toolbar--card': this.card,
                 'v-toolbar--clipped': this.clippedLeft || this.clippedRight,
@@ -75515,7 +75537,7 @@ __webpack_require__.r(__webpack_exports__);
             return this.$vuetify.application.right;
         },
         computedTransform: function computedTransform() {
-            return !this.isActive ? this.canScroll ? -this.computedContentHeight : -this.computedHeight : 0;
+            return !this.isActive ? this.scrollToolbarOffScreen ? -this.computedContentHeight : -this.computedHeight : 0;
         },
         currentThreshold: function currentThreshold() {
             return Math.abs(this.currentScroll - this.savedScroll);
@@ -75561,7 +75583,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     methods: {
         onScroll: function onScroll() {
-            if (!this.canScroll || this.manualScroll || typeof window === 'undefined') return;
+            if (!this.scrollOffScreen && !this.scrollToolbarOffScreen || this.manualScroll || typeof window === 'undefined') return;
             var target = this.target || window;
             this.currentScroll = this.scrollTarget ? target.scrollTop : target.pageYOffset || document.documentElement.scrollTop;
             this.isScrollingUp = this.currentScroll < this.previousScroll;
@@ -75940,7 +75962,7 @@ var Vuetify = {
             });
         }
     },
-    version: '1.1.9'
+    version: '1.1.6'
 };
 function checkVueVersion(Vue, requiredVue) {
     var vueDep = requiredVue || '^2.5.10';
@@ -76752,7 +76774,7 @@ __webpack_require__.r(__webpack_exports__);
             el.style.display = 'block';
             expandedParentClass && el._parent.classList.add(expandedParentClass);
             setTimeout(function () {
-                el.style.height = !el.scrollHeight ? 'auto' : el.scrollHeight + "px";
+                return el.style.height = el.scrollHeight + "px";
             }, 100);
         },
         afterEnter: function afterEnter(el) {
@@ -76764,7 +76786,7 @@ __webpack_require__.r(__webpack_exports__);
             Object(_util_helpers__WEBPACK_IMPORTED_MODULE_0__["addOnceEventListener"])(el, 'transitionend', done);
             // Set height before we transition to 0
             el.style.overflow = 'hidden';
-            el.style.height = el.scrollHeight + "px";
+            el.style.height = el.offsetHeight + "px";
             setTimeout(function () {
                 return el.style.height = 0;
             }, 100);
@@ -77358,7 +77380,7 @@ var Vuetify = {
         Vue.use(VuetifyComponent, __assign({ components: _components__WEBPACK_IMPORTED_MODULE_1__,
             directives: _directives__WEBPACK_IMPORTED_MODULE_2__ }, args));
     },
-    version: '1.1.9'
+    version: '1.1.6'
 };
 if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.use(Vuetify);
@@ -79030,8 +79052,6 @@ __webpack_require__.r(__webpack_exports__);
             // eslint-disable-next-line no-unused-expressions
             this.overlay.clientHeight; // Force repaint
             requestAnimationFrame(function () {
-                // https://github.com/vuetifyjs/vuetify/issues/4678
-                if (!_this.overlay) return;
                 _this.overlay.className += ' v-overlay--active';
                 if (_this.activeZIndex !== undefined) {
                     _this.overlay.style.zIndex = _this.activeZIndex - 1;
@@ -79066,9 +79086,7 @@ __webpack_require__.r(__webpack_exports__);
          */
         scrollListener: function scrollListener(e) {
             if (e.type === 'keydown') {
-                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) ||
-                // https://github.com/vuetifyjs/vuetify/issues/4715
-                e.target.isContentEditable) return;
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
                 var up = [_util_helpers__WEBPACK_IMPORTED_MODULE_1__["keyCodes"].up, _util_helpers__WEBPACK_IMPORTED_MODULE_1__["keyCodes"].pageup];
                 var down = [_util_helpers__WEBPACK_IMPORTED_MODULE_1__["keyCodes"].down, _util_helpers__WEBPACK_IMPORTED_MODULE_1__["keyCodes"].pagedown];
                 if (up.includes(e.keyCode)) {
@@ -80007,12 +80025,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _util_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/helpers */ "./src/util/helpers.ts");
-/* harmony import */ var _registrable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./registrable */ "./src/mixins/registrable.ts");
-/* harmony import */ var _util_console__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/console */ "./src/util/console.ts");
-/* harmony import */ var _colorable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./colorable */ "./src/mixins/colorable.ts");
+/* harmony import */ var _registrable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./registrable */ "./src/mixins/registrable.ts");
+/* harmony import */ var _util_console__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/console */ "./src/util/console.ts");
+/* harmony import */ var _colorable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./colorable */ "./src/mixins/colorable.ts");
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 
 
 
@@ -80021,7 +80037,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 /* @vue/component */
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: 'validatable',
-    mixins: [_colorable__WEBPACK_IMPORTED_MODULE_3__["default"], Object(_registrable__WEBPACK_IMPORTED_MODULE_1__["inject"])('form')],
+    mixins: [_colorable__WEBPACK_IMPORTED_MODULE_2__["default"], Object(_registrable__WEBPACK_IMPORTED_MODULE_0__["inject"])('form')],
     props: {
         error: Boolean,
         errorCount: {
@@ -80116,8 +80132,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     },
     watch: {
         rules: {
-            handler: function handler(newVal, oldVal) {
-                if (Object(_util_helpers__WEBPACK_IMPORTED_MODULE_0__["deepEqual"])(newVal, oldVal)) return;
+            handler: function handler() {
                 this.validate();
             },
             deep: true
@@ -80177,7 +80192,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 if (valid === false || typeof valid === 'string') {
                     errorBucket.push(valid);
                 } else if (valid !== true) {
-                    Object(_util_console__WEBPACK_IMPORTED_MODULE_2__["consoleError"])("Rules should return a string or boolean, received '" + (typeof valid === 'undefined' ? 'undefined' : _typeof(valid)) + "' instead", this);
+                    Object(_util_console__WEBPACK_IMPORTED_MODULE_1__["consoleError"])("Rules should return a string or boolean, received '" + (typeof valid === 'undefined' ? 'undefined' : _typeof(valid)) + "' instead", this);
                 }
             }
             this.errorBucket = errorBucket;
@@ -81283,7 +81298,7 @@ function createSimpleTransition(name, origin, mode) {
 }
 function createJavaScriptTransition(name, functions, css, mode) {
     if (css === void 0) {
-        css = false;
+        css = true;
     }
     if (mode === void 0) {
         mode = 'in-out';
@@ -81337,10 +81352,6 @@ function getNestedValue(obj, path, fallback) {
 }
 function deepEqual(a, b) {
     if (a === b) return true;
-    if (a instanceof Date && b instanceof Date) {
-        // If the values are Date, they were convert to timestamp with getTime and compare it
-        if (a.getTime() !== b.getTime()) return false;
-    }
     if (a !== Object(a) || b !== Object(b)) {
         // If the values aren't objects, they were already checked for equality
         return false;
@@ -81829,7 +81840,7 @@ function createSimpleTransition(name) {
     };
 }
 function createJavaScriptTransition(name, functions) {
-    var css = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var css = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
     var mode = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'in-out';
 
     return {
@@ -81884,10 +81895,6 @@ function getNestedValue(obj, path, fallback) {
 }
 function deepEqual(a, b) {
     if (a === b) return true;
-    if (a instanceof Date && b instanceof Date) {
-        // If the values are Date, they were convert to timestamp with getTime and compare it
-        if (a.getTime() !== b.getTime()) return false;
-    }
     if (a !== Object(a) || b !== Object(b)) {
         // If the values aren't objects, they were already checked for equality
         return false;
