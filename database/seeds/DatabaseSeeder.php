@@ -16,21 +16,30 @@ class DatabaseSeeder extends Seeder
     Model::unguard();
     
     $tables = [
-      'company_accounts',
-      'companies',
-      'users',
-      'cities',
-      'company_addresses',
-      'insurance_companies',
-      'management_entities',
-      'employer_numbers',
-      'position_groups',
-      'dependency_position_group',
       'charges',
+      'cities',
+      'companies',
+      'company_accounts',
+      'company_address_position_group',
+      'company_addresses',
+      'contract_types',
+      'contract_modes',
+      'dependency_position_group',
+      'dependency_positions',
+      'employees',
+      'employer_numbers',
+      'insurance_companies',
+      'job_schedules',
+      'management_entities',
+      'migrations',
+      'permission_role',
+      'permissions',
+      'position_groups',
       'positions',
       'retirement_reasons',
-      'contract_types',
-      'employees',
+      'role_user',
+      'roles',
+      'users',
     ];
 
     $this->command->info('Truncating existing tables');
@@ -48,8 +57,10 @@ class DatabaseSeeder extends Seeder
     $this->call(PositionGroupAddressSeeder::class);
     $this->call(ChargeSeeder::class);
     $this->call(PositionSeeder::class);
+    $this->call(EmployeeSeeder::class);
+    $this->call(JobScheduleSeeder::class);
     $this->call(RetirementReasonSeeder::class);
     $this->call(ContractTypeSeeder::class);
-    $this->call(EmployeeSeeder::class);
+    $this->call(ContractModeSeeder::class);
   }
 }
