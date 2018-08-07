@@ -20,4 +20,8 @@ class Procedure extends Model {
 	public function employer_contribution() {
 		return $this->belongsTo(EmployerContribution::class);
 	}
+
+	public function payrolls() {
+		return $this->hasMany(Payroll::class);
+	}
 }

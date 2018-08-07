@@ -24,4 +24,8 @@ class PositionGroup extends Model {
 	public function positions() {
 		return $this->hasMany(Position::class);
 	}
+
+	public function payrolls() {
+		return $this->hasMany(Payroll::class);
+	}
 }
