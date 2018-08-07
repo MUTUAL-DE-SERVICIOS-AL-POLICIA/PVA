@@ -12,8 +12,8 @@ class CreateMonthsTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('months', function (Blueprint $table) {
-			$table->increments('id');
-			$table->smallInteger('order');
+			$table->smallIncrements('id');
+			$table->smallInteger('order')->unique();
 			$table->string('name')->unique();
 			$table->string('shortened')->unique()->nullable();
 			$table->timestamps();

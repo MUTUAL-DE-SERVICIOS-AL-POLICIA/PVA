@@ -9,4 +9,7 @@ class EmployerContribution extends Model {
 	use SoftDeletes;
 	protected $dates = ['deleted_at'];
 
+	public function procedures() {
+		return $this->hasMany(Procedure::class);
+	}
 }
