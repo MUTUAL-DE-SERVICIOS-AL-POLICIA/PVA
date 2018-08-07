@@ -38,6 +38,9 @@ class DatabaseSeeder extends Seeder {
 			'role_user',
 			'roles',
 			'users',
+			'employee_discounts',
+			'employer_contributions',
+			'months',
 		];
 
 		$this->command->info('Truncating existing tables');
@@ -61,5 +64,8 @@ class DatabaseSeeder extends Seeder {
 		$this->call(ContractTypeSeeder::class);
 		$this->call(ContractModeSeeder::class);
 		$this->call(ContractSeeder::class);
+		$this->call(EmployeeDiscountSeeder::class);
+		$this->call(EmployerContributionSeeder::class);
+		$this->call(MonthSeeder::class);
 	}
 }
