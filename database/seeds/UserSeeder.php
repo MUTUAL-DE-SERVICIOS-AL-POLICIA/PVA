@@ -2,49 +2,49 @@
 
 use Illuminate\Database\Seeder;
 
-class UserSeeder extends Seeder
-{
-  /**
-   * Run the database seeds.
-   *
-   * @return void
-   */
-  public function run()
-  {
-    $role = App\Role::create([
-      'name' => 'admin',
-      'display_name' => 'Administrador',
-      'description' => 'Rol administrador'
-    ]);
+class UserSeeder extends Seeder {
+	/**
+	 * Run the database seeds.
+	 *
+	 * @return void
+	 */
+	public function run() {
+		$role = App\Role::create([
+			'name' => 'admin',
+			'display_name' => 'Administrador',
+			'description' => 'Rol administrador',
+		]);
 
-    $user = App\User::create([
-      'username' => 'admin',
-      'password' => bcrypt('admin'),
-    ]);
-    
-    $user->attachRole($role);
+		$user = App\User::create([
+			'username' => 'admin',
+			'password' => bcrypt('admin'),
+		]);
 
-    $permission = App\Permission::create([
-      'name' => 'view',
-      'display_name' => 'Vista',
-      'description' => 'Permiso para obtener datos sin modificarlos'
-    ]);
+		$user->attachRole($role);
 
-    $role = App\Role::create([
-      'name' => 'guest',
-      'display_name' => 'Invitado',
-      'description' => 'Rol invitado'
-    ]);
+		if (config('app.debug')) {
+			$permission = App\Permission::create([
+				'name' => 'view',
+				'display_name' => 'Vista',
+				'description' => 'Permiso para obtener datos sin modificarlos',
+			]);
 
-    $role->attachPermission($permission);
+			$role = App\Role::create([
+				'name' => 'guest',
+				'display_name' => 'Invitado',
+				'description' => 'Rol invitado',
+			]);
 
-    $user = App\User::create([
-      'username' => 'guest',
-      'password' => bcrypt('guest'),
-    ]);
-    
-    $user->attachRole($role);
+			$role->attachPermission($permission);
 
-    factory(App\User::class, 5)->create();
-  }
+			$user = App\User::create([
+				'username' => 'guest',
+				'password' => bcrypt('guest'),
+			]);
+
+			$user->attachRole($role);
+
+			factory(App\User::class, 5)->create();
+		}
+	}
 }
