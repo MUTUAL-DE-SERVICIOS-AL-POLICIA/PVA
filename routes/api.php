@@ -28,9 +28,10 @@ Route::group([
   'middleware' => ['api'],
   'prefix' => 'v1'
 ], function ($router) {
-  Route::resource('company', 'CompanyController')->except(['create', 'edit']);
-  
-  Route::get('employee/list','EmployeeController@list');
+  Route::resource('company', 'CompanyController')->except(['create', 'edit']);  
   Route::resource('employee', 'EmployeeController')->except(['create', 'edit']);
+  Route::resource('city', 'CityController')->except(['create', 'edit']);
+  Route::resource('management_entity', 'ManagementEntityController')->except(['create', 'edit']);
+  Route::resource('insurance_company', 'InsuranceCompanyController')->except(['create', 'edit']);
 
 });
