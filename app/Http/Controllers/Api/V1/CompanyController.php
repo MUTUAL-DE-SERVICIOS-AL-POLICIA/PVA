@@ -13,10 +13,6 @@ use Illuminate\Http\Request;
  */
 
 class CompanyController extends Controller {
-	public $guarded = ['id'];
-	protected $timestamps = true;
-	protected $fillable = ['name', 'shortened', 'tax_number'];
-
 	/**
 	 * Display Company's data.
 	 *
