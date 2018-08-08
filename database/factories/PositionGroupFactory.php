@@ -3,10 +3,11 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\PositionGroup::class, function (Faker $faker) {
-  $faker->addProvider(new \Faker\Provider\en_US\Company($faker));
+	$faker->addProvider(new \Faker\Provider\en_US\Company($faker));
 
-  return [
-    'name' => $faker->unique()->catchPhrase,
-    'shortened' => strtoupper($faker->unique()->firstname)
-  ];
+	return [
+		'name' => $faker->unique()->catchPhrase,
+		'shortened' => strtoupper($faker->unique()->firstname),
+		'active' => true,
+	];
 });

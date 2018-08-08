@@ -23,7 +23,7 @@ class CompanyEditForm extends FormRequest {
 		return [
 			'name' => 'min:3',
 			'shortened' => 'min:3|max:255',
-			'tax_number' => 'min:1|max:255',
+			'tax_number' => 'min:1|max:9223372036854775808',
 		];
 	}
 
@@ -33,7 +33,7 @@ class CompanyEditForm extends FormRequest {
 			'shortened.min' => 'El número mínimo de caracteres es 3',
 			'shortened.max' => 'El número máximo de caracteres es 255',
 			'tax_number.min' => 'El número mínimo de caracteres es 1',
-			'tax_number.max' => 'El número máximo de caracteres es 255',
+			'tax_number.max' => 'El número máximo de caracteres es 9223372036854775808',
 		];
 	}
 }

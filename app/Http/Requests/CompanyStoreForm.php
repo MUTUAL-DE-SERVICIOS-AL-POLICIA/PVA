@@ -23,7 +23,7 @@ class CompanyStoreForm extends FormRequest {
 		return [
 			'name' => 'required|unique:companies|min:3',
 			'shortened' => 'required|unique:companies|min:3|max:255',
-			'tax_number' => 'required|min:1|max:255',
+			'tax_number' => 'required|min:1|max:9223372036854775808',
 		];
 	}
 
@@ -37,7 +37,7 @@ class CompanyStoreForm extends FormRequest {
 			'shortened.min' => 'El número mínimo de caracteres es 3',
 			'tax_number.required' => 'El código de impuestos no puede estar vacío',
 			'tax_number.min' => 'El número mínimo de caracteres es 1',
-			'tax_number.max' => 'El número máximo de caracteres es 255',
+			'tax_number.max' => 'El número máximo de caracteres es 9223372036854775808',
 		];
 	}
 }
