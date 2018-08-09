@@ -8,7 +8,7 @@ $factory->define(App\CompanyAccount::class, function (Faker $faker) {
 
 	return [
 		'account' => $faker->unique()->randomNumber(8, true) * pow(10, 6),
-		'financial_entity' => $faker->bank,
+		'financial_entity' => strtoupper($faker->bank),
 		'description' => $faker->sentence(),
 	];
 });

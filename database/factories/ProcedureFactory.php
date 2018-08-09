@@ -12,6 +12,6 @@ $factory->define(App\Procedure::class, function (Faker $faker) {
 		'month_id' => Carbon::now()->month,
 		'employee_discount_id' => $employee_discount->id,
 		'employer_contribution_id' => $employee_contribution->id,
-		'closed' => false,
+		'active' => false,
 	];
 });

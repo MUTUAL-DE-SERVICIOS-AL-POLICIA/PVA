@@ -27,7 +27,7 @@ class CreateEmployeesTable extends Migration {
 			$table->tinyInteger('city_birth_id')->unsigned()->nullable();
 			$table->foreign('city_birth_id')->references('id')->on('cities');
 			$table->string('account_number')->nullable();
-			$table->string('country_birth')->default('Bolivia');
+			$table->string('country_birth')->default('BOLIVIA');
 			$table->string('nua_cua')->nullable();
 			$table->enum('gender', ['M', 'F'])->nullable();
 			$table->string('location')->nullable();
