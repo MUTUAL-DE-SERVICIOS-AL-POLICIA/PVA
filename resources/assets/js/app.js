@@ -19,18 +19,24 @@ import fas from '@fortawesome/fontawesome-free-solid';
 import fab from '@fortawesome/fontawesome-free-brands';
 fontawesome.library.add(fas, fab);
 
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import ess from './es.js'
 import Vuetify from 'vuetify'
-Vue.use(Vuetify, {iconfont: 'fa'} )
+Vue.use(Vuetify, {
+  lang: {
+    locales: { ess },
+    current: 'ess'
+  }
+})
 import { createSimpleTransition } from 'vuetify/es5/util/helpers'
-
-const myTransition = createSimpleTransition('my-transition')
- 
+const myTransition = createSimpleTransition('my-transition') 
 Vue.component('my-transition', myTransition)
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Resource)
 Vue.use(Vuex)
+Vue.use(require('vue-moment'));
 
 Validator.localize({
   es: es
