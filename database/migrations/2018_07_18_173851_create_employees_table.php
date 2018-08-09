@@ -21,10 +21,8 @@ class CreateEmployeesTable extends Migration {
 			$table->foreign('management_entity_id')->references('id')->on('management_entities');
 			$table->string('identity_card');
 			$table->string('first_name');
-			$table->string('second_name')->nullable();
 			$table->string('last_name')->nullable();
 			$table->string('mothers_last_name')->nullable();
-			$table->string('surname_husband')->nullable();
 			$table->date('birth_date')->nullable();
 			$table->tinyInteger('city_birth_id')->unsigned()->nullable();
 			$table->foreign('city_birth_id')->references('id')->on('cities');
