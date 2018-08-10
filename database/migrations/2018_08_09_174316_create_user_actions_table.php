@@ -4,18 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateActionsTable extends Migration {
+class CreateUserActionsTable extends Migration {
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('actions', function (Blueprint $table) {
+		Schema::create('user_actions', function (Blueprint $table) {
 			$table->increments('id');
-			$table->string('name');
-			$table->text('description')->nullable();
+			$table->integer('user_id');
+			$table->foreign('user_id')->references('id')->on('users');
+			$table->string('method');
+			$table->string('path');
+			$table->json('data');
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 
@@ -25,6 +29,6 @@ class CreateActionsTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::dropIfExists('actions');
+		Schema::dropIfExists('user_actions');
 	}
 }

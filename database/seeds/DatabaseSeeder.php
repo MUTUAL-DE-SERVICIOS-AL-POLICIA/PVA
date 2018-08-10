@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder {
 			'months',
 			'procedures',
 			'payrolls',
-			'actions',
+			'user_actions',
 		];
 
 		$this->command->info('Truncating existing tables');
@@ -72,6 +72,6 @@ class DatabaseSeeder extends Seeder {
 		$this->call(MonthSeeder::class);
 		$this->call(ProcedureSeeder::class);
 		$this->call(PayrollSeeder::class);
-		$this->call(ActionSeeder::class);
+		$this->call(UserActionSeeder::class);
 	}
 }
