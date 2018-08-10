@@ -17,6 +17,7 @@ if (config('app.debug')) {
 	], function ($router) {
 		Route::resource('user', 'UserController')->except(['store', 'create', 'edit']);
 		Route::resource('user_action', 'UserActionController')->except(['create', 'store', 'edit', 'update']);
+		Route::resource('role', 'RoleController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 		Route::resource('company', 'CompanyController')->except(['create', 'edit', 'destroy']);
 		Route::resource('employee', 'EmployeeController')->except(['create', 'edit']);
 		Route::resource('city', 'CityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
@@ -33,6 +34,7 @@ if (config('app.debug')) {
 		], function ($r) {
 			Route::resource('user', 'UserController')->except(['store', 'create', 'edit']);
 			Route::resource('user_action', 'UserActionController')->except(['create', 'store', 'edit', 'update']);
+			Route::resource('role', 'RoleController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 		});
 		Route::resource('company', 'CompanyController')->except(['create', 'edit', 'destroy']);
 		Route::resource('employee', 'EmployeeController')->except(['create', 'edit']);
