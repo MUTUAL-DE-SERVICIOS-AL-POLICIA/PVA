@@ -62,11 +62,19 @@ class AuthController extends Controller {
 
 		$credentials = request(['username', 'password']);
 
+		if ($credentials['username'] == 'admin') {
+			$token = auth('api')->attempt($credentials);
+
+			if ($token) {
+				return $this->respondWithToken($token);
+			}
+		}
+
 		if (env("ADLDAP_AUTHENTICATION")) {
 			$bind = $this->adldap->authenticate($this->config['user_id_key'] . '=' . $credentials['username'] . ',', $credentials['password']);
 
 			if ($bind) {
-				$user = User::where('username', $credentials['username'])->first();
+				$user = User::where('username', $credentials['username'])->where('active', true)->first();
 				if ($user) {
 					if (!Hash::check($credentials['password'], $user->password)) {
 						$user->password = Hash::make($credentials['password']);

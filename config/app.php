@@ -165,7 +165,7 @@ return [
 		Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
 		// ACL Entrust
-		Zizaco\Entrust\EntrustServiceProvider::class,
+		Laratrust\LaratrustServiceProvider::class,
 
 		// ApiDoc Generator
 		Mpociot\ApiDoc\ApiDocGeneratorServiceProvider::class,
@@ -226,7 +226,7 @@ return [
 		'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
 
 		// ACL Entrust
-		'Entrust' => Zizaco\Entrust\EntrustFacade::class,
+		'Laratrust' => Laratrust\LaratrustFacade::class,
 	],
 
 ];

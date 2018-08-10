@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model {
-	public $timestamps = false;
+	public $timestamps = true;
 	public $guarded = ['id'];
 	protected $fillable = ['name', 'shortened', 'tax_number'];
 
