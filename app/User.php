@@ -10,6 +10,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject {
 	use LaratrustUserTrait, Notifiable, SoftDeletes;
+
+	public $timestamps = true;
+	public $guarded = ['id'];
 	protected $dates = ['deleted_at'];
 
 	/**
@@ -17,7 +20,7 @@ class User extends Authenticatable implements JWTSubject {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['username', 'password'];
+	protected $fillable = ['password'];
 
 	/**
 	 * The attributes that should be hidden for arrays.

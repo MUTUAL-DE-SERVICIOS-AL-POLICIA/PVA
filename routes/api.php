@@ -16,6 +16,11 @@ Route::group([
 	'middleware' => $debug_middleware,
 	'prefix' => 'v1',
 ], function ($router) {
+	Route::group([
+		'middleware' => ['role:admin'],
+	], function ($r) {
+		Route::resource('user', 'UserController')->except(['store', 'create', 'edit']);
+	});
 	Route::resource('company', 'CompanyController')->except(['create', 'edit', 'destroy']);
 	Route::resource('employee', 'EmployeeController')->except(['create', 'edit']);
 	Route::resource('city', 'CityController')->except(['create', 'edit']);

@@ -74,7 +74,7 @@ class AuthController extends Controller {
 			$bind = $this->adldap->authenticate($this->config['user_id_key'] . '=' . $credentials['username'] . ',', $credentials['password']);
 
 			if ($bind) {
-				$user = User::where('username', $credentials['username'])->first();
+				$user = User::where('username', $credentials['username'])->where('active', true)->first();
 				if ($user) {
 					if (!Hash::check($credentials['password'], $user->password)) {
 						$user->password = Hash::make($credentials['password']);
