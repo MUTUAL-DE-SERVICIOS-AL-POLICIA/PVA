@@ -6,6 +6,9 @@ use App\Employee;
 use Illuminate\Http\Request;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9ccdbfaa02c084b9908b1478639a46c3103afe91
 /** @resource Employee
  *
  * Resource to retrieve, store and edit Employee data
@@ -102,6 +105,7 @@ class EmployeeController extends Controller
     {
         //
     }
+<<<<<<< HEAD
 =======
 class EmployeeController extends Controller {
 	/**
@@ -183,4 +187,6 @@ class EmployeeController extends Controller {
 		//
 	}
 >>>>>>> b033a06f79aaac3907287f0d8c9ac801745eedfa
+=======
+>>>>>>> 9ccdbfaa02c084b9908b1478639a46c3103afe91
 }
