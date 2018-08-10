@@ -2,13 +2,15 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laratrust\Traits\LaratrustUserTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable implements JWTSubject {
-	use Notifiable, EntrustUserTrait;
+	use LaratrustUserTrait, Notifiable, SoftDeletes;
+	protected $dates = ['deleted_at'];
 
 	/**
 	 * The attributes that are mass assignable.

@@ -13,10 +13,24 @@ class DatabaseProductionSeeder extends Seeder {
 		$this->command->info('Unguarding models');
 		Model::unguard();
 
+		$role = App\Role::create([
+			'name' => 'admin',
+			'display_name' => 'Administrador',
+			'description' => 'Rol administrador',
+		]);
+
+		$user = App\User::create([
+			'username' => 'admin',
+			'password' => bcrypt('admin'),
+		]);
+
+		$user->attachRole($role);
+
 		$this->call(CitySeeder::class);
 		$this->call(InsuranceCompanySeeder::class);
 		$this->call(ManagementEntitySeeder::class);
 		$this->call(RetirementReasonSeeder::class);
 		$this->call(ContractTypeSeeder::class);
+		$this->call(MonthSeeder::class);
 	}
 }
