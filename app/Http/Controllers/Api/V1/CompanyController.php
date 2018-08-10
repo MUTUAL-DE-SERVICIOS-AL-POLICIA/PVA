@@ -19,7 +19,7 @@ class CompanyController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return response()->json(Company::first());
+		return Company::get();
 	}
 
 	/**
@@ -30,7 +30,7 @@ class CompanyController extends Controller {
 	 */
 	public function store(CompanyStoreForm $request) {
 		if (Company::count() == 0) {
-			return response()->json(Company::create($request));
+			return Company::create($request);
 		} else {
 			return response()->json([
 				'message' => 'Ya existe una Compañia, para cambiar los datos debe editarla',
@@ -48,7 +48,7 @@ class CompanyController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id) {
-		return response()->json(Company::find($id));
+		return Company::findOrFail($id);
 	}
 
 	/**
@@ -59,18 +59,9 @@ class CompanyController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(CompanyEditForm $request, $id) {
-		$company = Company::find($id);
-		if ($company) {
-			$company->fill($request->all());
-			$company->save();
-			return response()->json($company);
-		} else {
-			return response()->json([
-				'message' => 'No existe la Compañia buscada',
-				'errors' => [
-					'type' => ['ID inexistente'],
-				],
-			], 400);
-		}
+		$company = Company::findOrFail($id);
+		$company->fill($request->all());
+		$company->save();
+		return $company;
 	}
 }

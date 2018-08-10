@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder {
 			'job_schedules',
 			'management_entities',
 			'permission_role',
+			'permission_user',
 			'permissions',
 			'position_groups',
 			'positions',
@@ -43,6 +44,7 @@ class DatabaseSeeder extends Seeder {
 			'months',
 			'procedures',
 			'payrolls',
+			'user_actions',
 		];
 
 		$this->command->info('Truncating existing tables');
@@ -71,5 +73,6 @@ class DatabaseSeeder extends Seeder {
 		$this->call(MonthSeeder::class);
 		$this->call(ProcedureSeeder::class);
 		$this->call(PayrollSeeder::class);
+		$this->call(UserActionSeeder::class);
 	}
 }

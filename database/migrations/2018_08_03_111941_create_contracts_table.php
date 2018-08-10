@@ -26,7 +26,7 @@ class CreateContractsTable extends Migration {
 			$table->date('retirement_date')->nullable();
 			$table->integer('retirement_reason_id')->nullable();
 			$table->foreign('retirement_reason_id')->references('id')->on('retirement_reasons');
-			$table->boolean('status')->default(true);
+			$table->boolean('active')->default(true);
 			$table->string('rrhh_cite')->nullable();
 			$table->date('rrhh_cite_date')->nullable();
 			$table->string('performance_cite')->nullable();

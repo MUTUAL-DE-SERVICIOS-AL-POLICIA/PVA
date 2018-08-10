@@ -21,15 +21,13 @@ class CreateEmployeesTable extends Migration {
 			$table->foreign('management_entity_id')->references('id')->on('management_entities');
 			$table->string('identity_card');
 			$table->string('first_name');
-			$table->string('second_name')->nullable();
 			$table->string('last_name')->nullable();
 			$table->string('mothers_last_name')->nullable();
-			$table->string('surname_husband')->nullable();
 			$table->date('birth_date')->nullable();
 			$table->tinyInteger('city_birth_id')->unsigned()->nullable();
 			$table->foreign('city_birth_id')->references('id')->on('cities');
 			$table->string('account_number')->nullable();
-			$table->string('country_birth')->default('Bolivia');
+			$table->string('country_birth')->default('BOLIVIA');
 			$table->string('nua_cua')->nullable();
 			$table->enum('gender', ['M', 'F'])->nullable();
 			$table->string('location')->nullable();
