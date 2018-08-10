@@ -13,7 +13,7 @@
     "laravel/tinker": "^1.0",
     "mpociot/laravel-apidoc-generator": "^2.0",
     "tymon/jwt-auth": "^1.0.0-rc.2",
-    "zizaco/entrust": "dev-master"
+    "santigarcor/laratrust": "5.0.*"
   },
   "require-dev": {
     "filp/whoops": "^2.0",

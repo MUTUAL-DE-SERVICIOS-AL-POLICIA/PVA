@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder {
 			'job_schedules',
 			'management_entities',
 			'permission_role',
+			'permission_user',
 			'permissions',
 			'position_groups',
 			'positions',
