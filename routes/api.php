@@ -23,7 +23,7 @@ Route::group([
 	});
 	Route::resource('company', 'CompanyController')->except(['create', 'edit', 'destroy']);
 	Route::resource('employee', 'EmployeeController')->except(['create', 'edit']);
-	Route::resource('city', 'CityController')->except(['create', 'edit']);
-	Route::resource('management_entity', 'ManagementEntityController')->except(['create', 'edit']);
-	Route::resource('insurance_company', 'InsuranceCompanyController')->except(['create', 'edit']);
+	Route::resource('city', 'CityController')->except(['create', 'edit','store','show','update','destroy']);
+	Route::resource('management_entity', 'ManagementEntityController')->except(['create', 'edit','store','show','update','destroy']);
+	Route::resource('insurance_company', 'InsuranceCompanyController')->except(['create', 'edit','store','show','update','destroy']);
 });

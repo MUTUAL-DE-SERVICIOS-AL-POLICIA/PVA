@@ -162,19 +162,25 @@
         class="elevation-1"
       >
         <template slot="items" slot-scope="props">
-          
-          <td class="text-xs-center">{{ props.item.identity_card + ' ' + props.item.city_identity_card.shortened }} </td>
-          <td class="text-xs-left">{{ props.item.first_name + ' ' + props.item.second_name + ' ' + props.item.last_name + ' ' + props.item.mothers_last_name }}</td>
-          <td class="text-xs-center">{{ props.item.birth_date | moment("DD/MM/YYYY") }} </td>
-          <td class="text-xs-center">{{ props.item.account_number }} </td>
-          <td class="text-xs-center">{{ props.item.management_entity.name }} </td>
-          <td class="text-xs-center">{{ props.item.nua_cua }} </td>
-          <td class="text-xs-center">{{ props.item.status }} </td>
+          <tr>
+            <td><v-icon small @click="toggle(props.item.identity_card)"> add_circle_outline </v-icon></td>
+            <td class="text-xs-center"> {{ props.item.identity_card + ' ' + props.item.city_identity_card.shortened }} </td>
+            <td class="text-xs-left">{{ props.item.first_name + ' ' + props.item.second_name + ' ' + props.item.last_name + ' ' + props.item.mothers_last_name }}</td>
+            <td class="text-xs-center">{{ props.item.birth_date | moment("DD/MM/YYYY") }} </td>
+            <td class="text-xs-center">{{ props.item.account_number }} </td>
+            <td class="text-xs-center">{{ props.item.management_entity.name }} </td>
+            <td class="text-xs-center">{{ props.item.nua_cua }} </td>
+            <td class="text-xs-center">{{ props.item.status }} </td>
 
-          <td class="justify-center layout px-0">
-            <v-icon small class="material-icons" @click="editItem(props.item)">edit</v-icon>
-            <v-icon small @click="deleteItem(props.item)"> close </v-icon>
-          </td>
+            <td class="justify-center layout px-0">
+              <v-icon small class="material-icons" @click="editItem(props.item)">edit</v-icon>
+              <v-icon small @click="deleteItem(props.item)"> close </v-icon>
+            </td>
+          </tr>
+          <tr :ref="props.item.identity_card" style="display:none">
+            <td colspan="5">abcde</td>
+
+          </tr>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="fa fa-times">
           Tu Busqueda de "{{ search }}" no encontró resultados.
@@ -195,6 +201,7 @@
     dialog: false,
     search: '',
     headers: [
+      { text: '#', sortable: false},
       { text: 'C.I.', value: 'identity_card'},
       { text: 'Funcionario', value: 'last_name'},
       { text: 'Fecha de Nacimiento', value: 'birth_date'},
@@ -218,6 +225,7 @@
     alert_type: null,
     alert_msg: null,
     dialogDel: false,
+    isOpen: false
   }),
 
   computed: {
@@ -335,6 +343,12 @@
         .catch(error => {
           console.log(error)
         })
+    },
+    toggle(dato) {
+      if(this.$refs[dato].style.display == "none")
+        this.$refs[dato].style.display = "block"
+      else
+        this.$refs[dato].style.display = "none"
     }
   }
 	}
