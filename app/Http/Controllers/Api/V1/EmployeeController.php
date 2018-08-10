@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Employee;
 use Illuminate\Http\Request;
 
+/** @resource Employee
+ *
+ * Resource to retrieve, store and edit Employee data
+ */
+
 class EmployeeController extends Controller {
 	/**
 	 * Display a listing of the resource.
