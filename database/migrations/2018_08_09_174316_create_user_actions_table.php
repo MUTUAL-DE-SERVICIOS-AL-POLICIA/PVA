@@ -13,7 +13,7 @@ class CreateUserActionsTable extends Migration {
 	public function up() {
 		Schema::create('user_actions', function (Blueprint $table) {
 			$table->increments('id');
-			$table->integer('user_id');
+			$table->integer('user_id')->nullable();
 			$table->foreign('user_id')->references('id')->on('users');
 			$table->string('method');
 			$table->string('path');

@@ -4,7 +4,7 @@ use Faker\Generator as Faker;
 
 $factory->define(App\UserAction::class, function (Faker $faker) {
 	$users = App\User::get()->all();
-	$methods = ['post', 'put', 'patch', 'delete'];
+	$methods = ['POST', 'PUT', 'PATCH', 'DELETE'];
 	$routes = Route::getRoutes();
 	$paths = array();
 	$employees = App\Employee::get()->all();
