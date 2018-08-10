@@ -46,7 +46,7 @@
             color="primary"
             dark
           >
-            Admin
+            {{ this.$store.getters.currentUser.username }} [ {{ this.$store.getters.currentUser.roles[0].name }} ]
           </v-btn>
           <v-list>
             <v-list-tile
@@ -72,14 +72,15 @@
 </template>
 
 <script>
-import Menu from '../menu.js'
+import { guest, admin } from '../menu.js'
   export default {
     data () {
       return {
         clipped: false,
         drawer: true,
         fixed: false,
-        menu_left: Menu,
+        menu_left: null ,
+        role: null,
         menu_user: [{
           icon: '',
           title: 'Salir'
@@ -97,6 +98,11 @@ import Menu from '../menu.js'
         this.$router.push('login')
       }
     },
+    created: function () {
+      console.log(this.$store.getters.currentUser.roles[0].name)
+      var aux = this.$store.getters.currentUser.roles[0].name
+      this.menu_left = admin
+    }
   }
 </script>
 
