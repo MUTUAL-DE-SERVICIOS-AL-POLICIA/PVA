@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Charge extends Model {
 	use SoftDeletes;
-	protected $dates = ['deleted_at'];
+    protected $dates    = ['deleted_at'];
+    public $timestamps  = false;
+    public $guarded     = ['id'];
+    protected $fillable = ['name', 'base_wage', 'active'];
 
 	public function positions() {
 		return $this->hasMany(Position::class);
