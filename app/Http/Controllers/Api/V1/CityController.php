@@ -16,7 +16,7 @@ class CityController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return City::all();
+		return City::get();
 	}
 
 	/**
