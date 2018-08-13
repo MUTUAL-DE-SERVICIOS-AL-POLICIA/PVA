@@ -20,9 +20,9 @@ class AuthController extends Controller {
 
 	public function __construct() {
 		if (config('app.debug')) {
-			$this->middleware('auth:api', ['except' => ['login', 'me', 'refresh', 'logout']]);
+			$this->middleware('auth:api', ['except' => ['store', 'show', 'update', 'destroy']]);
 		} else {
-			$this->middleware('auth:api', ['except' => ['login']]);
+			$this->middleware('auth:api', ['except' => ['store']]);
 		}
 
 		if (env("ADLDAP_AUTHENTICATION")) {
@@ -48,7 +48,7 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function login(AuthForm $request) {
+	public function store(AuthForm $request) {
 		if (config('app.debug')) {
 			$token = auth('api')->attempt([
 				'username' => 'admin',
@@ -116,7 +116,7 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function me() {
+	public function show() {
 		if (config('app.debug')) {
 			$token = auth('api')->attempt([
 				'username' => 'admin',
@@ -135,7 +135,7 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function logout() {
+	public function destroy() {
 		if (config('app.debug')) {
 			return response()->json([
 				'message' => 'Logged out successfully',
@@ -152,7 +152,7 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function refresh() {
+	public function update() {
 		if (config('app.debug')) {
 			$token = auth('api')->attempt([
 				'username' => 'admin',
