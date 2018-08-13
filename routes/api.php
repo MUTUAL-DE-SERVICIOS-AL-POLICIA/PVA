@@ -10,7 +10,6 @@ Route::macro('common_routes', function () {
 	Route::resource('position', 'PositionController')->except(['create', 'edit']);
 	Route::resource('contract', 'ContractController')->except(['create', 'edit']);
 	Route::resource('jobs_chedule', 'JobScheduleController')->except(['create', 'edit']);
-	Route::resource('position_group', 'PositionGroupController')->except(['create', 'edit']);
 	Route::group([
 		'prefix' => 'employee/{employee_id}/contract',
 	], function () {
@@ -39,6 +38,19 @@ Route::macro('general_routes', function () {
 	], function () {
 		Route::get('', 'CompanyAddressCityController@get_city');
 		Route::patch('', 'CompanyAddressCityController@set_city');
+	});
+	Route::resource('position_group', 'PositionGroupController')->except(['create', 'edit']);
+	Route::group([
+		'prefix' => 'position_group/{position_group_id}/company_address',
+	], function () {
+		Route::get('', 'PositionGroupCompanyAddressController@get_addresses');
+		Route::group([
+			'prefix' => '/{company_address_id}',
+		], function () {
+			Route::get('', 'PositionGroupCompanyAddressController@get_address');
+			Route::patch('', 'PositionGroupCompanyAddressController@set_address');
+			Route::delete('', 'PositionGroupCompanyAddressController@unset_address');
+		});
 	});
 });
 
