@@ -43,6 +43,19 @@ Route::macro('general_routes', function () {
 	});
 	Route::resource('position_group', 'PositionGroupController')->except(['create', 'edit']);
 	Route::group([
+		'prefix' => 'position_group/{superior_id}',
+	], function () {
+		Route::get('/dependency', 'DependencyPositionGroupController@get_dependency');
+		Route::get('/dependents', 'DependencyPositionGroupController@get_dependents');
+		Route::group([
+			'prefix' => '/dependents/{dependent_id}',
+		], function () {
+			Route::get('', 'DependencyPositionGroupController@get_dependent');
+			Route::patch('', 'DependencyPositionGroupController@set_dependent');
+			Route::delete('', 'DependencyPositionGroupController@unset_dependent');
+		});
+	});
+	Route::group([
 		'prefix' => 'position_group/{position_group_id}/company_address',
 	], function () {
 		Route::get('', 'PositionGroupCompanyAddressController@get_addresses');
