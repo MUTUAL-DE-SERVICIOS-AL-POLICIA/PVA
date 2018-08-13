@@ -29,6 +29,10 @@ Route::macro('common_routes', function () {
 	});
 });
 
+Route::macro('general_routes', function () {
+	Route::resource('company_account', 'CompanyAccountController')->except(['create', 'edit']);
+});
+
 Route::macro('admin_routes', function () {
 	Route::resource('user', 'UserController')->except(['store', 'create', 'edit']);
 	Route::resource('user_action', 'UserActionController')->except(['create', 'store', 'edit', 'update']);
@@ -61,6 +65,7 @@ if (config('app.debug')) {
 	], function ($router) {
 		Route::admin_routes();
 		Route::common_routes();
+		Route::general_routes();
 	});
 } else {
 	Route::group([
@@ -73,5 +78,6 @@ if (config('app.debug')) {
 			Route::admin_routes();
 		});
 		Route::common_routes();
+		Route::general_routes();
 	});
 }
