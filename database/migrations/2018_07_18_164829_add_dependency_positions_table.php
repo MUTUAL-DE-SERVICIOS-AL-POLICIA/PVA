@@ -18,6 +18,7 @@ class AddDependencyPositionsTable extends Migration
       $table->foreign('superior_id')->references('id')->on('positions');
       $table->integer('dependent_id')->unsigned();
       $table->foreign('dependent_id')->references('id')->on('positions');
+      $table->boolean('active')->default(true);
     });
   }
 
