@@ -53,6 +53,7 @@ Route::macro('general_routes', function () {
 		});
 	});
 	Route::resource('management_entity', 'ManagementEntityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::resource('contract_mode', 'ContractModeController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 });
 
 Route::macro('admin_routes', function () {
