@@ -6,6 +6,8 @@ Route::macro('common_routes', function () {
 	Route::resource('city', 'CityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::resource('management_entity', 'ManagementEntityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::resource('insurance_company', 'InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+  Route::resource('charge', 'ChargeController')->except(['create', 'edit']);
+  Route::resource('position', 'PositionController')->except(['create', 'edit']);
 });
 
 Route::macro('admin_routes', function () {
