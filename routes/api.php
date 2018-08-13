@@ -9,6 +9,17 @@ Route::macro('common_routes', function () {
 	Route::resource('charge', 'ChargeController')->except(['create', 'edit']);
 	Route::resource('position', 'PositionController')->except(['create', 'edit']);
 	Route::resource('contract', 'ContractController')->except(['create', 'edit']);
+	Route::resource('jobschedule', 'JobScheduleController')->except(['create', 'edit']);
+	Route::group([
+		'prefix' => 'employee/{employee_id}/contract',
+	], function () {
+		Route::get('', 'EmployeeContractController@get_contracts');
+		Route::group([
+			'prefix' => '/{contract_id}',
+		], function () {
+			Route::get('', 'EmployeeContractController@get_contract');
+		});
+	});
 	Route::resource('employer_number', 'EmployerNumberController')->except(['create', 'edit']);
 	Route::group([
 		'prefix' => 'employer_number/{employer_number_id}/insurance_company/{insurance_company_id}',
