@@ -8,6 +8,7 @@ Route::macro('common_routes', function () {
 	Route::resource('insurance_company', 'InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::resource('charge', 'ChargeController')->except(['create', 'edit']);
 	Route::resource('position', 'PositionController')->except(['create', 'edit']);
+	Route::resource('contract', 'ContractController')->except(['create', 'edit']);
 	Route::resource('employer_number', 'EmployerNumberController')->except(['create', 'edit']);
 });
 
