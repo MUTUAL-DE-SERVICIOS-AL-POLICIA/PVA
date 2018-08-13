@@ -16,13 +16,13 @@ class ManagementEntityController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return ManagementEntity::all();
+		return ManagementEntity::get();
 	}
 
 	/**
 	 * Display the specified management entity.
 	 *
-	 * @param  \App\ManagementEntity  $managementEntity
+	 * @param  \App\ManagementEntity  $id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id) {

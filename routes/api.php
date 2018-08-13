@@ -10,7 +10,7 @@ Route::macro('common_routes', function () {
 	Route::resource('position', 'PositionController')->except(['create', 'edit']);
 	Route::resource('contract', 'ContractController')->except(['create', 'edit']);
 	Route::resource('jobs_chedule', 'JobScheduleController')->except(['create', 'edit']);
-  Route::resource('position_group', 'PositionGroupController')->except(['create', 'edit']);
+	Route::resource('position_group', 'PositionGroupController')->except(['create', 'edit']);
 	Route::group([
 		'prefix' => 'employee/{employee_id}/contract',
 	], function () {
@@ -32,6 +32,7 @@ Route::macro('common_routes', function () {
 
 Route::macro('general_routes', function () {
 	Route::resource('company_account', 'CompanyAccountController')->except(['create', 'edit']);
+	Route::resource('insurance_company', 'InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 });
 
 Route::macro('admin_routes', function () {
