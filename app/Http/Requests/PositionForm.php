@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ChargeForm extends FormRequest
+class PositionForm extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,11 @@ class ChargeForm extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'base_wage' => 'required',
-            'active' => 'required'
+            'name'              => 'required',
+            'item'              => 'required',
+            'charge_id'         => 'required',
+            'position_group_id' => 'required',
+            'active'            => 'required',
         ];
     }
     public function messages()

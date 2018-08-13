@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Position extends Model {
 	use SoftDeletes;
-	protected $dates = ['deleted_at'];
+    protected $dates    = ['deleted_at'];
+    public $timestamps  = false;
+    public $guarded     = ['id'];
+    protected $fillable = ['name', 'item', 'charge_id', 'position_group_id', 'active'];
 
 	public function depends_from() {
 		return $this->belongsToMany(PositionGroup::class, 'dependency_positions', 'dependent_id', 'superior_id');
