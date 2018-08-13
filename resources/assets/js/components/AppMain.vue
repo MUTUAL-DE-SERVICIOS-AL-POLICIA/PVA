@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { guest, admin } from '../menu.js'
+import {guest, admin} from '../menu.js'
   export default {
     data () {
       return {
