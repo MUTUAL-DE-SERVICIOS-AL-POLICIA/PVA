@@ -11,7 +11,7 @@ class PositionGroup extends Model
     protected $dates    = ['deleted_at'];
     public $timestamps  = false;
     public $guarded     = ['id'];
-    protected $fillable = ['name', 'shortened', 'active'];
+    protected $fillable = ['name', 'shortened', 'active', 'document_id'];
 
     public function depends_from()
     {
@@ -36,5 +36,10 @@ class PositionGroup extends Model
     public function payrolls()
     {
         return $this->hasMany(Payroll::class);
+    }
+
+    public function document()
+    {
+        return $this->belongsTo(Document::class);
     }
 }

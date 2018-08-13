@@ -10,7 +10,8 @@ Route::macro('common_routes', function () {
 	Route::resource('position', 'PositionController')->except(['create', 'edit']);
 	Route::resource('contract', 'ContractController')->except(['create', 'edit']);
 	Route::resource('jobs_chedule', 'JobScheduleController')->except(['create', 'edit']);
-  Route::resource('position_group', 'PositionGroupController')->except(['create', 'edit']);
+    Route::resource('position_group', 'PositionGroupController')->except(['create', 'edit']);
+    Route::resource('document', 'DocumentController')->except(['create', 'edit']);
 	Route::group([
 		'prefix' => 'employee/{employee_id}/contract',
 	], function () {
@@ -42,7 +43,7 @@ Route::macro('admin_routes', function () {
 			'prefix' => '/{role_id}',
 		], function () {
 			Route::get('', 'UserRoleController@get_role');
-			Route::post('', 'UserRoleController@set_role');
+            Route::post('', 'UserRoleController@set_role');
 			Route::delete('', 'UserRoleController@unset_role');
 		});
 	});
