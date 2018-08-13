@@ -6,9 +6,14 @@ use App\Http\Requests\UserForm;
 use App\User;
 use Illuminate\Http\Request;
 
+/** @resource User
+ *
+ * Resource to retrieve, show, update and destroy User data
+ */
+
 class UserController extends Controller {
 	/**
-	 * Display a listing of the resource.
+	 * Display User's data.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
@@ -17,14 +22,7 @@ class UserController extends Controller {
 	}
 
 	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
-
-	/**
-	 * Display the specified resource.
+	 * Display the specified user.
 	 *
 	 * @param  \App\User  $user
 	 * @return \Illuminate\Http\Response
@@ -34,7 +32,7 @@ class UserController extends Controller {
 	}
 
 	/**
-	 * Update the specified resource in storage.
+	 * Update the specified user in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @param  \App\User  $user
@@ -49,7 +47,7 @@ class UserController extends Controller {
 	}
 
 	/**
-	 * Remove the specified resource from storage.
+	 * Remove the specified user from storage.
 	 *
 	 * @param  \App\User  $user
 	 * @return \Illuminate\Http\Response
