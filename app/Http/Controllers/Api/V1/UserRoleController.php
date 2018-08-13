@@ -8,7 +8,7 @@ use App\User;
 
 /** @resource UserRole
  *
- * Resource to retrieve, show, update and destroy UserRole relation
+ * Resource to retrieve, show, update and destroy User-Role relation
  */
 
 class UserRoleController extends Controller {
@@ -47,7 +47,7 @@ class UserRoleController extends Controller {
 	 * @param  \App\Role  $role_id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function attach_role($user_id, $role_id) {
+	public function set_role($user_id, $role_id) {
 		$user = User::findOrFail($user_id);
 		$role = Role::findOrFail($role_id);
 		$user->attachRole($role);
@@ -62,7 +62,7 @@ class UserRoleController extends Controller {
 	 * @param  \App\Role  $role_id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function detach_role($user_id, $role_id) {
+	public function unset_role($user_id, $role_id) {
 		$user = User::findOrFail($user_id);
 		$role = Role::findOrFail($role_id);
 		$user->detachRole($role);

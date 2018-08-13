@@ -10,6 +10,12 @@ Route::macro('common_routes', function () {
 	Route::resource('position', 'PositionController')->except(['create', 'edit']);
 	Route::resource('contract', 'ContractController')->except(['create', 'edit']);
 	Route::resource('employer_number', 'EmployerNumberController')->except(['create', 'edit']);
+	Route::group([
+		'prefix' => 'employer_number/{employer_number_id}/insurance_company/{insurance_company_id}',
+	], function () {
+		Route::get('', 'EmployerNumberInsuranceCompanyController@get_insurance_company');
+		Route::patch('', 'EmployerNumberInsuranceCompanyController@set_insurance_company');
+	});
 });
 
 Route::macro('admin_routes', function () {
@@ -24,8 +30,8 @@ Route::macro('admin_routes', function () {
 			'prefix' => '/{role_id}',
 		], function () {
 			Route::get('', 'UserRoleController@get_role');
-			Route::post('', 'UserRoleController@attach_role');
-			Route::delete('', 'UserRoleController@detach_role');
+			Route::post('', 'UserRoleController@set_role');
+			Route::delete('', 'UserRoleController@unset_role');
 		});
 	});
 });
