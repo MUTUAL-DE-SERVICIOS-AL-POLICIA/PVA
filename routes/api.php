@@ -33,10 +33,18 @@ Route::macro('common_routes', function () {
 Route::macro('general_routes', function () {
 	Route::resource('company_account', 'CompanyAccountController')->except(['create', 'edit']);
 	Route::resource('insurance_company', 'InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::resource('company_address', 'CompanyAddressController')->except(['create', 'edit']);
+	Route::group([
+		'prefix' => 'company_address/{company_address_id}/city/{city_id}',
+	], function () {
+		Route::get('', 'CompanyAddressCityController@get_city');
+		Route::patch('', 'CompanyAddressCityController@set_city');
+	});
 });
 
 Route::macro('admin_routes', function () {
-	Route::resource('user', 'UserController')->except(['store', 'create', 'edit']);
+	// Route::resource('user', 'UserController')->except(['store', 'create', 'edit']);
+	Route::resource('user', 'UserController')->except(['store', 'create', 'edit', 'destroy']);
 	Route::resource('user_action', 'UserActionController')->except(['create', 'store', 'edit', 'update']);
 	Route::resource('role', 'RoleController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::group([
