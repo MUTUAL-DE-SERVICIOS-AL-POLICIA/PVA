@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Employee;
-use App\Http\Requests\EmployeeForm;
+use App\Charge;
+use App\Http\Requests\ChargeForm;
 use Illuminate\Http\Request;
 
-/** @resource Employee
+/** @resource Charge
  *
- * Resource to retrieve, store and update Emmployee data
+ * Resource to retrieve, store and update charge data
  */
-
-class EmployeeController extends Controller
+class ChargeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,11 +19,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return Employee::with('city_identity_card')
-            ->with('insurance_company')
-            ->with('management_entity')
-            ->with('city_birth')
-            ->get();
+        return Charge::get();
     }
 
     /**
@@ -33,10 +28,10 @@ class EmployeeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(EmployeeForm $request)
+    public function store(ChargeForm $request)
     {
-        $employee = Employee::create($request->all());
-        return $employee;
+        $charge = Charge::create($request->all());
+        return $charge;
     }
 
     /**
@@ -47,7 +42,7 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        return Employee::findOrFail($id);
+        return Charge::findOrFail($id);
     }
 
     /**
@@ -57,12 +52,12 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(EmployeeForm $request, $id)
+    public function update(ChargeForm $request, $id)
     {
-        $employee = Employee::findOrFail($id);
-        $employee->fill($request->all());
-        $employee->save();
-        return $employee;
+        $charge = Charge::findOrFail($id);
+        $charge->fill($request->all());
+        $charge->save();
+        return $charge;
     }
 
     /**
@@ -73,8 +68,8 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        $employee = Employee::findOrFail($id);
-        $employee->delete();
-        return $employee;
+        $charge = Charge::findOrFail($id);
+        $charge->delete();
+        return $charge;
     }
 }
