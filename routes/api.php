@@ -72,6 +72,18 @@ Route::macro('general_routes', function () {
 	Route::resource('contract_type', 'Api\V1\ContractTypeController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::resource('retirement_reason', 'Api\V1\RetirementReasonController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::resource('month', 'Api\V1\MonthController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::group([
+		'prefix' => 'role/{role_id}/permission',
+	], function () {
+		Route::get('', 'Api\V1\RolePermissionController@get_permissions');
+		Route::group([
+			'prefix' => '/{permission_id}',
+		], function () {
+			Route::get('', 'Api\V1\RolePermissionController@get_permission');
+			Route::patch('', 'Api\V1\RolePermissionController@set_permission');
+			Route::delete('', 'Api\V1\RolePermissionController@unset_permission');
+		});
+	});
 });
 
 Route::macro('admin_routes', function () {
