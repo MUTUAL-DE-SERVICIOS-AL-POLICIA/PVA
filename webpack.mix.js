@@ -15,4 +15,5 @@ mix.js('resources/assets/js/app.js', 'public/js')
 	.styles([
        'resources/assets/css/vuetify.min.css'
     ], 'public/css/all.css')
+  .copy('resources/assets/img', 'public/img', false)
    //.sass('resources/assets/sass/app.scss', 'public/css')
