@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EmployeeForm extends FormRequest {
+class EmployerContributionForm extends FormRequest {
 	/**
 	 * Determine if the user is authorized to make this request.
 	 *
@@ -21,18 +21,17 @@ class EmployeeForm extends FormRequest {
 	 */
 	public function rules() {
 		return [
-			'insurance_company_id' => 'required',
-			'city_identity_card_id' => 'required',
-			'management_entity_id' => 'required',
-			'identity_card' => 'required',
-			'first_name' => 'required',
-			'gender' => 'required',
-			'active' => 'required',
+			'insurance_company' => 'required|between:0,99.99',
+			'professional_risk' => 'required|between:0,99.99',
+			'solidary' => 'required|between:0,99.99',
+			'housing' => 'required|between:0,99.99',
 		];
 	}
+
 	public function messages() {
 		return [
-			'required' => 'No puede estar vacio',
+			'required' => 'El campo es requerido',
+			'between' => 'El rango porcentual es de 0% a 99.99%',
 		];
 	}
 }

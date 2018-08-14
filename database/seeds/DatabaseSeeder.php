@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder {
 			'contracts',
 			'dependency_position_group',
 			'dependency_positions',
+			'document_types',
+			'documents',
 			'employees',
 			'employer_numbers',
 			'insurance_companies',
@@ -56,6 +58,8 @@ class DatabaseSeeder extends Seeder {
 		$this->call(CitySeeder::class);
 		$this->call(InsuranceCompanySeeder::class);
 		$this->call(ManagementEntitySeeder::class);
+		$this->call(DocumentTypeSeeder::class);
+		$this->call(DocumentSeeder::class);
 		$this->call(CompanySeeder::class);
 		$this->call(PositionGroupSeeder::class);
 		$this->call(CompanyAddressSeeder::class);

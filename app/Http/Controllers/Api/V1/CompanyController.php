@@ -31,7 +31,7 @@ class CompanyController extends Controller {
 	 */
 	public function store(CompanyStoreForm $request) {
 		if (Company::count() == 0) {
-			return Company::create($request);
+			return Company::create($request->all());
 		} else {
 			return response()->json([
 				'message' => 'Ya existe una Compañia, para cambiar los datos debe editarla',

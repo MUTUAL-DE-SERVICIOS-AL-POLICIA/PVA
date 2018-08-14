@@ -16,6 +16,8 @@ class CreateCompaniesTable extends Migration {
 			$table->text('name');
 			$table->string('shortened');
 			$table->bigInteger('tax_number');
+			$table->integer('document_id')->nullable();
+			$table->foreign('document_id')->references('id')->on('documents');
 			$table->timestamps();
 			$table->unique('name');
 			$table->unique('shortened');
