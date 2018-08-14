@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\InsuranceCompany;
 
 /** @resource InsuranceCompany
@@ -11,18 +12,18 @@ use App\InsuranceCompany;
 
 class InsuranceCompanyController extends Controller {
 	/**
-	 * Display a listing of the insurance companies.
+	 * Display a listing of the insurance companies' data.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return InsuranceCompany::all();
+		return InsuranceCompany::get();
 	}
 
 	/**
 	 * Display the specified insurance company.
 	 *
-	 * @param  \App\InsuranceCompany  $insuranceCompany
+	 * @param  \App\InsuranceCompany  $id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id) {

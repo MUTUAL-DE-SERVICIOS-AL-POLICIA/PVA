@@ -1,21 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
 use App\EmployerNumber;
+use App\Http\Controllers\Controller;
 use App\InsuranceCompany;
 
 /** @resource EmployerNumberInsuranceCompany
  *
- * Resource to retrieve, show and update EmployerNumber-InsuranceCompany relation
+ * Resource to show and update EmployerNumber-InsuranceCompany relation
  */
 
 class EmployerNumberInsuranceCompanyController extends Controller {
 	/**
 	 * Display the specified insurance companies related to employer number.
 	 *
-	 * @param  \App\User  $user_id
-	 * @param  \App\Role  $role_id
+	 * @param  \App\EmployerNumber  $employer_number_id
+	 * @param  \App\InsuranceCompany  $insurance_company_id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function get_insurance_company($employer_number_id, $insurance_company_id) {
@@ -30,8 +31,8 @@ class EmployerNumberInsuranceCompanyController extends Controller {
 	/**
 	 * Attach insurance company to a employer number.
 	 *
-	 * @param  \App\User  $user_id
-	 * @param  \App\Role  $role_id
+	 * @param  \App\EmployerNumber  $employer_number_id
+	 * @param  \App\InsuranceCompany  $insurance_company_id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function set_insurance_company($employer_number_id, $insurance_company_id) {
