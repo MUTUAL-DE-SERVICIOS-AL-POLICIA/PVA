@@ -84,6 +84,7 @@ Route::macro('general_routes', function () {
 			Route::delete('', 'Api\V1\RolePermissionController@unset_permission');
 		});
 	});
+	Route::resource('employer_contribution', 'Api\V1\EmployerContributionController')->except(['create', 'edit', 'update']);
 });
 
 Route::macro('admin_routes', function () {
