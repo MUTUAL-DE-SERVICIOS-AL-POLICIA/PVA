@@ -8,7 +8,7 @@
             height="130px"
           ></v-card-media>
           <v-card-title primary-title class="justify-center">
-            <h2>MÓDULO RR.HH.</h2>
+            <h2 id="subtitle">MÓDULO RR.HH.</h2>
           </v-card-title>
           <v-divider
             horizontal
@@ -45,6 +45,7 @@
               primary
               large
               block
+              color="success"
             > Ingresar </v-btn>
           </v-card-actions>
         </v-form>
@@ -105,7 +106,13 @@
   }
 
   #top-divider {
+    margin-top: 0;
     margin-bottom: 3em;
+  }
+
+  #subtitle {
+    color: slategray;
+    margin-top: 0;
   }
 
   #background-page {
