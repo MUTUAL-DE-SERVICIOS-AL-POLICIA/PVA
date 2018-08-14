@@ -71,6 +71,7 @@ Route::macro('general_routes', function () {
 	Route::resource('contract_mode', 'Api\V1\ContractModeController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::resource('contract_type', 'Api\V1\ContractTypeController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::resource('retirement_reason', 'Api\V1\RetirementReasonController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::resource('month', 'Api\V1\MonthController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 });
 
 Route::macro('admin_routes', function () {
