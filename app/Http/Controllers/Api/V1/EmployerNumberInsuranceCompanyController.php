@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
 use App\EmployerNumber;
+use App\Http\Controllers\Controller;
 use App\InsuranceCompany;
 
 /** @resource EmployerNumberInsuranceCompany
