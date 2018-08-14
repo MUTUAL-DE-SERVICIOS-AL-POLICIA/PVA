@@ -4,20 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePositionGroupsTable extends Migration {
+class CreateDocumentsTable extends Migration {
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('position_groups', function (Blueprint $table) {
+		Schema::create('documents', function (Blueprint $table) {
 			$table->increments('id');
-			$table->text('name');
-			$table->string('shortened');
-			$table->integer('document_id')->nullable();
-			$table->foreign('document_id')->references('id')->on('documents');
-			$table->boolean('active')->default(true);
+			$table->integer('document_type_id')->unsigned();
+			$table->foreign('document_type_id')->references('id')->on('document_types');
+			$table->string('name');
+			$table->text('description')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 		});
@@ -29,6 +28,6 @@ class CreatePositionGroupsTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::dropIfExists('position_groups');
+		Schema::dropIfExists('documents');
 	}
 }
