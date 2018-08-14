@@ -8,10 +8,23 @@ Route::macro('common_routes', function () {
 	Route::resource('insurance_company', 'Api\V1\InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::resource('charge', 'Api\V1\ChargeController')->except(['create', 'edit']);
 	Route::resource('position', 'Api\V1\PositionController')->except(['create', 'edit']);
+	Route::group([
+		'prefix' => 'position/{superior_id}',
+	], function () {
+		Route::get('/dependency', 'Api\V1\DependencyPositionController@get_dependency');
+		Route::get('/dependents', 'Api\V1\DependencyPositionController@get_dependents');
+		Route::group([
+			'prefix' => '/dependents/{dependent_id}',
+		], function () {
+			Route::get('', 'Api\V1\DependencyPositionController@get_dependent');
+			Route::patch('', 'Api\V1\DependencyPositionController@set_dependent');
+			Route::delete('', 'Api\V1\DependencyPositionController@unset_dependent');
+		});
+	});
 	Route::resource('contract', 'Api\V1\ContractController')->except(['create', 'edit']);
 	Route::resource('jobs_chedule', 'Api\V1\JobScheduleController')->except(['create', 'edit']);
 	Route::resource('document', 'Api\V1\DocumentController')->except(['create', 'edit']);
-  Route::resource('procedure', 'Api\V1\ProcedureController')->except(['create', 'edit']);
+	Route::resource('procedure', 'Api\V1\ProcedureController')->except(['create', 'edit']);
 	Route::group([
 		'prefix' => 'employee/{employee_id}/contract',
 	], function () {
