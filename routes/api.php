@@ -8,6 +8,7 @@ Route::macro('common_routes', function () {
     Route::resource('insurance_company', 'Api\V1\InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
     Route::resource('charge', 'Api\V1\ChargeController')->except(['create', 'edit']);
     Route::resource('position', 'Api\V1\PositionController')->except(['create', 'edit']);
+    Route::resource('payroll', 'Api\V1\PayrollController')->except(['create', 'edit']);
     Route::group([
         'prefix' => 'position/{superior_id}',
     ], function () {
