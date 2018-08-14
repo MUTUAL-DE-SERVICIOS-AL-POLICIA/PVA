@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
 use App\City;
+use App\Http\Controllers\Controller;
 
 /** @resource City
  *

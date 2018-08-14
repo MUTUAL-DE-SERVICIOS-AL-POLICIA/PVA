@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Company;
 use App\CompanyAccount;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CompanyAccountEditForm;
 use App\Http\Requests\CompanyAccountStoreForm;
 use Illuminate\Http\Request;
