@@ -48,7 +48,7 @@
       authenticate(auth) {
         this.$validator.validateAll().then(() => {
           this.$store.dispatch('login')
-          return axios.post('/api/v1/auth/login', auth)
+          return axios.post('/api/v1/auth', auth)
         }).then(res => {
           if (res.status == 200) {
             localStorage.setItem('token', res.data.token)
