@@ -46,7 +46,10 @@
             color="primary"
             dark
           >
+          <template v-if="this.$store.getters.currentUser.username">
+            <label>Username</label>
             {{ this.$store.getters.currentUser.username }} [ {{ this.$store.getters.currentUser.roles[0].name }} ]
+          </template>
           </v-btn>
           <v-list>
             <v-list-tile
@@ -65,7 +68,7 @@
       <router-view></router-view>
       </v-scale-transition>
      </v-content>
-     <v-footer :fixed="fixed" app>
+     <v-footer :fixed="fixed" app v-if="this.$store.getters.currentUser">
       <span>&copy; 2017</span>
     </v-footer>
     </v-app>
@@ -99,15 +102,10 @@ import {guest, admin} from '../menu.js'
       }
     },
     created: function () {
-      console.log(this.$store.getters.currentUser.roles[0].name)
-      var aux = this.$store.getters.currentUser.roles[0].name
-      this.menu_left = admin
+      if (this.$store.getters.currentUser) {
+        var aux = this.$store.getters.currentUser.roles[0].name
+        this.menu_left = admin
+      }
     }
   }
 </script>
-
-<style>
-  .btn {
-    background-color: transparent;
-  }
-</style>
