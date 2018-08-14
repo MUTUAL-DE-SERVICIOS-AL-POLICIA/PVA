@@ -25,6 +25,7 @@ class CreatePayrollsTable extends Migration {
 			$table->foreign('position_group_id')->references('id')->on('position_groups');
 			$table->bigInteger('position_id');
 			$table->foreign('position_id')->references('id')->on('positions');
+			$table->decimal('faults', 7, 2)->default(0);
 			$table->decimal('next_month_balance', 7, 2)->default(0);
 			$table->decimal('previous_month_balance', 7, 2)->default(0);
 			$table->timestamps();

@@ -39,7 +39,7 @@ class EmployerContributionController extends Controller {
 	}
 
 	/**
-	 * Display the specified employer contribution contribution.
+	 * Display the specified employer contribution.
 	 *
 	 * @param  \App\EmployerContribution  $id
 	 * @return \Illuminate\Http\Response
@@ -49,14 +49,31 @@ class EmployerContributionController extends Controller {
 	}
 
 	/**
-	 * Remove the specified employer contribution from storage.
+	 * Enable the specified employer contribution from storage.
+	 *
+	 * @param  \App\EmployerContribution  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update($id) {
+		$employer_contribution = EmployerContribution::findOrFail($id);
+		EmployerContribution::where('active', true)->update([
+			'active' => false,
+		]);
+		$employer_contribution->active = true;
+		$employer_contribution->save();
+		return $employer_contribution;
+	}
+
+	/**
+	 * Disable the specified employer contribution from storage.
 	 *
 	 * @param  \App\EmployerContribution  $id
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
-		$company_account = EmployerContribution::findOrFail($id);
-		$company_account->delete();
-		return $company_account;
+		$employer_contribution = EmployerContribution::findOrFail($id);
+		$employer_contribution->active = false;
+		$employer_contribution->save();
+		return $employer_contribution;
 	}
 }

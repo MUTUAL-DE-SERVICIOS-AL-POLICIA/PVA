@@ -19,7 +19,6 @@ class CreateEmployeeDiscountsTable extends Migration {
 			$table->decimal('solidary', 5, 2)->default(0);
 			$table->decimal('national', 5, 2)->default(0);
 			$table->decimal('rc_iva', 5, 2)->default(0);
-			$table->decimal('faults', 5, 2)->default(0);
 			$table->boolean('active');
 			$table->timestamps();
 			$table->softDeletes();

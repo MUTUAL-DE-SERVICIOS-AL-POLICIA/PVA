@@ -24,6 +24,7 @@ class PayrollSeeder extends Seeder {
 				'charge_id' => $contract->position->charge_id,
 				'position_group_id' => $contract->position->position_group_id,
 				'position_id' => $contract->position_id,
+				'faults' => rand(0, 99999) / 100,
 				'next_month_balance' => rand(0, 50),
 				'previous_month_balance' => rand(0, 100),
 			]);

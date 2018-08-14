@@ -10,7 +10,7 @@ class EmployeeDiscount extends Model {
 	public $timestamps = true;
 	public $guarded = ['id'];
 	protected $dates = ['deleted_at'];
-	protected $fillable = ['elderly', 'common_risk', 'comission', 'solidary', 'national', 'rc_iva', 'faults', 'active'];
+	protected $fillable = ['elderly', 'common_risk', 'comission', 'solidary', 'national', 'rc_iva', 'active'];
 
 	public function procedures() {
 		return $this->hasMany(Procedure::class);
