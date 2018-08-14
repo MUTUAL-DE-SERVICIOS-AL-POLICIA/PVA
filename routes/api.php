@@ -1,6 +1,20 @@
 <?php
 
 Route::macro('common_routes', function () {
+<<<<<<< HEAD
+	Route::resource('company', 'CompanyController')->except(['create', 'edit', 'destroy']);
+	Route::resource('employee', 'EmployeeController')->except(['create', 'edit']);
+	Route::resource('city', 'CityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::resource('management_entity', 'ManagementEntityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::resource('insurance_company', 'InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::resource('charge', 'ChargeController')->except(['create', 'edit']);
+	Route::resource('position', 'PositionController')->except(['create', 'edit']);
+	Route::resource('contract', 'ContractController')->except(['create', 'edit']);
+	Route::resource('jobs_chedule', 'JobScheduleController')->except(['create', 'edit']);
+    Route::resource('position_group', 'PositionGroupController')->except(['create', 'edit']);
+    Route::resource('document', 'DocumentController')->except(['create', 'edit']);
+    Route::resource('procedure', 'ProcedureController')->except(['create', 'edit']);
+=======
 	Route::resource('company', 'Api\V1\CompanyController')->except(['create', 'edit', 'destroy']);
 	Route::resource('employee', 'Api\V1\EmployeeController')->except(['create', 'edit']);
 	Route::resource('city', 'Api\V1\CityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
@@ -12,6 +26,7 @@ Route::macro('common_routes', function () {
 	Route::resource('jobs_chedule', 'Api\V1\JobScheduleController')->except(['create', 'edit']);
 	Route::resource('document', 'Api\V1\DocumentController')->except(['create', 'edit']);
 
+>>>>>>> dce4b742bb2010c3767835b2224a737b8c31c337
 	Route::group([
 		'prefix' => 'employee/{employee_id}/contract',
 	], function () {
