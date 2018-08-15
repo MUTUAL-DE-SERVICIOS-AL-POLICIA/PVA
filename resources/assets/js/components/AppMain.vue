@@ -11,7 +11,7 @@
       v-if="this.$store.getters.currentUser"
     >
       <v-list dense>
-        <v-list-tile v-for="item in menu_left" :key="item.title" @click="" :to="{name: item.href}">
+        <v-list-tile v-for="item in menu_left" :key="item.title" :to="{name: item.href}">
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>
@@ -53,9 +53,8 @@
           </v-btn>
           <v-list>
             <v-list-tile
-              v-for="(item, i) in menu_user"
+              v-for="item in menu_user"
               :key="item.title"
-              @click=""
             >
               <v-list-tile-title @click="logout">{{ item.title }}</v-list-tile-title>
             </v-list-tile>
@@ -75,37 +74,39 @@
 </template>
 
 <script>
-import {guest, admin} from '../menu.js'
-  export default {
-    data () {
-      return {
-        clipped: false,
-        drawer: true,
-        fixed: false,
-        menu_left: null ,
-        role: null,
-        menu_user: [{
-          icon: '',
-          title: 'Salir'
-        }],
-        miniVariant: false,
-        right: true,
-        rightDrawer: false,
-        title: 'RRHH'
-      }
-    },
-    name: 'app-header',
-    methods: {
-      logout() {
-        this.$store.dispatch('logout')
-        this.$router.push('login')
-      }
-    },
-    created: function () {
-      if (this.$store.getters.currentUser) {
-        var aux = this.$store.getters.currentUser.roles[0].name
-        this.menu_left = admin
-      }
+import { guest, admin } from "../menu.js";
+export default {
+  data() {
+    return {
+      clipped: false,
+      drawer: true,
+      fixed: false,
+      menu_left: null,
+      role: null,
+      menu_user: [
+        {
+          icon: "",
+          title: "Salir"
+        }
+      ],
+      miniVariant: false,
+      right: true,
+      rightDrawer: false,
+      title: "RRHH"
+    };
+  },
+  name: "app-header",
+  methods: {
+    logout() {
+      this.$store.dispatch("logout");
+      this.$router.push("login");
+    }
+  },
+  created: function() {
+    if (this.$store.getters.currentUser) {
+      var aux = this.$store.getters.currentUser.roles[0].name;
+      this.menu_left = admin;
     }
   }
+};
 </script>

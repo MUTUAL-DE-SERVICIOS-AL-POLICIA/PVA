@@ -56,7 +56,7 @@ class RolePermissionController extends Controller {
 			$role->permissions;
 			return $role;
 		} else {
-			return App::abort(400);
+			abort(403);
 		}
 	}
 

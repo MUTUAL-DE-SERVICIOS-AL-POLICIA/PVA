@@ -33,12 +33,7 @@ class CompanyController extends Controller {
 		if (Company::count() == 0) {
 			return Company::create($request->all());
 		} else {
-			return response()->json([
-				'message' => 'Ya existe una Compañia, para cambiar los datos debe editarla',
-				'errors' => [
-					'type' => ['Solo puede existir una Compañia'],
-				],
-			], 400);
+			abort(403);
 		}
 	}
 

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App;
 use App\Http\Controllers\Controller;
 use App\Position;
 
@@ -66,7 +65,7 @@ class DependencyPositionController extends Controller {
 			$superior->dependents;
 			return $superior;
 		} else {
-			return App::abort(400);
+			abort(403);
 		}
 	}
 

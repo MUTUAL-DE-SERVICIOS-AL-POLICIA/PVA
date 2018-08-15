@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler {
@@ -58,6 +59,12 @@ class Handler extends ExceptionHandler {
 				'data' => null,
 				'message' => 'Request data error',
 			], 400);
+		} elseif ($exception instanceof HttpException && $exception->getStatusCode() == 403) {
+			return response()->json([
+				'status' => 'failed',
+				'data' => null,
+				'message' => 'Forbidden',
+			], 403);
 		}
 		return parent::render($request, $exception);
 	}
