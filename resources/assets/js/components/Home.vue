@@ -17,28 +17,27 @@
 </template>
 
 <script>
-  export default {
-    name: 'home',
-    data () {
-      return {
-        info: null,
-        name: 0
-      }
-    },
-    mounted () {
-      axios
-        .get('api/v1/company')
-        .then(response => {
-          console.log(response.data)
-          this.info = response.data.bpi
-        })
-
-    },
-    computed: {
-      welcome() {
-        return this.$store.getters.welcome
-      },
-      
+export default {
+  name: "home",
+  data() {
+    return {
+      info: null,
+      name: 0
+    };
+  },
+  async mounted() {
+    try {
+      let res = await axios.get("api/v1/company");
+      this.info = res.data.bpi;
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  computed: {
+    welcome() {
+      // return this.$store.getters.welcome;
+      return 'Bienvenido'
     }
   }
+};
 </script>

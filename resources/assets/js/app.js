@@ -1,7 +1,6 @@
 require('./bootstrap')
 
 import Vue from 'vue'
-import Resource from 'vue-resource'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 import VeeValidate, { Validator } from 'vee-validate'
@@ -13,11 +12,6 @@ import es from 'vee-validate/dist/locale/es'
 import toastr from 'toastr'
 import 'toastr/build/toastr.min.css'
 Vue.prototype.toastr = toastr
-
-import fontawesome from '@fortawesome/fontawesome';
-import fas from '@fortawesome/fontawesome-free-solid';
-import fab from '@fortawesome/fontawesome-free-brands';
-fontawesome.library.add(fas, fab);
 
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import ess from './es.js'
@@ -34,7 +28,6 @@ Vue.component('my-transition', myTransition)
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
-Vue.use(Resource)
 Vue.use(Vuex)
 Vue.use(require('vue-moment'));
 
@@ -52,6 +45,12 @@ const router = new VueRouter({
   // hashbang: false,
   mode: 'history',
 })
+
+axios.defaults.headers.common['Accept'] = 'application/json'
+axios.defaults.headers.common['Content-Type'] = 'application/json'
+if (localStorage.getItem('token_type') && localStorage.getItem('token')) {
+  axios.defaults.headers.common['Authorization'] = `${localStorage.getItem('token_type')} ${localStorage.getItem('token')}`
+}
 
 axios.interceptors.response.use(response => {
   return response;

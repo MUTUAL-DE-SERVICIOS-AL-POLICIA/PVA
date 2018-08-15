@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler {
@@ -53,7 +52,7 @@ class Handler extends ExceptionHandler {
 				'data' => null,
 				'message' => 'Data not found',
 			], 404);
-		} elseif ($exception instanceof QueryException or $exception instanceof HttpException) {
+		} elseif ($exception instanceof QueryException) {
 			return response()->json([
 				'status' => 'failed',
 				'data' => null,

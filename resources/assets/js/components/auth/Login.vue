@@ -34,6 +34,7 @@
             prepend-icon="lock"
             label="Contraseña"
             type="password"
+            autocomplete="on"
             ref="password"
             name="contraseña"
             :error-messages="errors.collect('contraseña')"
@@ -80,7 +81,6 @@
           this.$router.go({
             name: 'home'
           })
-          this.$store.dispatch('login')
         } catch(e) {
           auth.password = ''
           this.focusPassword()
