@@ -60,7 +60,7 @@ axios.interceptors.response.use(response => {
     store.dispatch('logout')
     router.push('login')
   }
-  return error
+  return Promise.reject(error.response)
 });
 
 router.beforeEach((to, from, next) => {
