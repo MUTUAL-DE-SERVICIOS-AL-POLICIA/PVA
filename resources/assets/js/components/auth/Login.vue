@@ -74,22 +74,18 @@
         try {
           await this.$validator.validateAll()
           let res = await axios.post('/api/v1/auth', auth)
-          if (res.status == 200 && res.data.token && res.data.token_type && res.data.user) {
-            localStorage.setItem('token', res.data.token)
-            localStorage.setItem('token_type', res.data.token_type)
-            localStorage.setItem('user', JSON.stringify(res.data.user))
-            this.$router.go({
-              name: 'home'
-            })
-            this.$store.dispatch('login')
-          } else {
-            throw res
-          }
+          localStorage.setItem('token', res.data.token)
+          localStorage.setItem('token_type', res.data.token_type)
+          localStorage.setItem('user', JSON.stringify(res.data.user))
+          this.$router.go({
+            name: 'home'
+          })
+          this.$store.dispatch('login')
         } catch(e) {
           auth.password = ''
           this.focusPassword()
-          for (let key in e.response.data.errors) {
-            e.response.data.errors[key].forEach(error => {
+          for (let key in e.data.errors) {
+            e.data.errors[key].forEach(error => {
               this.toastr.error(error)
             });
           }
