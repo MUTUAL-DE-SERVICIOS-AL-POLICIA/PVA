@@ -5,7 +5,7 @@ export const guest = [
 ]
 
 export const admin = [
-  { 'header': 'Admin' },
-  { 'href': 'home', 'title': 'Inicio', 'icon': 'fa fa-home' },
-  { 'href': 'employeeIndex', 'title': 'Empleados', 'icon': 'fa fa-users' },
+  { 'href': 'home', 'title': 'Inicio', 'icon': 'work' },
+  { 'href': 'employeeIndex', 'title': 'Empleados', 'icon': 'assignment_ind' },
+  { 'href': 'companyIndex', 'title': 'Compañia', 'icon': 'account_balance' },
 ]
