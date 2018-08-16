@@ -26,6 +26,7 @@ Route::macro('common_routes', function () {
     Route::resource('contract', 'Api\V1\ContractController')->except(['create', 'edit']);
     Route::resource('jobs_chedule', 'Api\V1\JobScheduleController')->except(['create', 'edit']);
     Route::resource('document', 'Api\V1\DocumentController')->except(['create', 'edit']);
+    Route::resource('document_type', 'Api\V1\DocumentTypeController')->except(['create', 'edit']);
     Route::resource('procedure', 'Api\V1\ProcedureController')->except(['create', 'edit']);
     Route::group([
         'prefix' => 'employee/{employee_id}/contract',
