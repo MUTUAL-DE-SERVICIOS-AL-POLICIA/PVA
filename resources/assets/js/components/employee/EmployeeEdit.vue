@@ -54,6 +54,32 @@
                 :error-messages="errors.collect('Apellido Materno')"
                 data-vv-name="Apellido Materno"
               ></v-text-field>
+              <v-menu
+                ref="menu"
+                :close-on-content-click="false"
+                v-model="menu"
+                :nudge-right="40"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <v-text-field
+                  slot="activator"
+                  v-model="edit.birth_date"
+                  label="Birthday date"
+                  prepend-icon="event"
+                  readonly
+                ></v-text-field>
+                <v-date-picker
+                  ref="picker"
+                  v-model="edit.birth_date"
+                  :max="new Date().toISOString().substr(0, 10)"
+                  min="1950-01-01"
+                  @change="save"
+                ></v-date-picker>
+              </v-menu>
             </v-flex>
           </v-layout>
         </form>
@@ -61,7 +87,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click="close"><v-icon>close</v-icon> Cancelar</v-btn>
-        <v-btn color="success" :disabled="errors.any()" @click="save"><v-icon>check</v-icon> Guardar</v-btn>
+        <v-btn color="success" :disabled="errors.any()" @click="saveEmployee"><v-icon>check</v-icon> Guardar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -75,7 +101,9 @@ export default {
     return {
       edit: {},
       cities: [],
-      dialog: false
+      dialog: false,
+      date: null,
+      menu: false
     };
   },
   methods: {
@@ -93,8 +121,11 @@ export default {
         console.log(e);
       }
     },
-    save() {
+    saveEmployee() {
       console.log(this.edit);
+    },
+    save (date) {
+      this.$refs.menu.save(date)
     }
   },
   mounted() {
@@ -103,6 +134,11 @@ export default {
       this.dialog = true;
     });
     this.getCities();
-  }
+  },
+  watch: {
+    menu (val) {
+      val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+    }
+  },
 };
 </script>
