@@ -28,5 +28,10 @@ export const admin = [
     params: {},
     title: 'Compañia',
     icon: 'account_balance'
-  },
+  }, {
+    href: 'contractIndex',
+    params: {},
+    title: 'Contratos',
+    icon: 'work'
+  }
 ]

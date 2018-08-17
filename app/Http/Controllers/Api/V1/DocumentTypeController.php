@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Document;
+use App\DocumentType;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DocumentForm;
 use Illuminate\Http\Request;
 
-/** @resource Document
+/** @resource DocumentType
  *
- * Resource to retrieve, store and update documents data
+ * Resource to retrieve, store and update document types data
  */
-class DocumentController extends Controller {
+class DocumentTypeController extends Controller {
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return Document::with('document_type')->get();
+		return DocumentType::get();
 	}
 
 	/**
@@ -27,9 +26,8 @@ class DocumentController extends Controller {
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(DocumentForm $request) {
-		$document = Document::create($request->all());
-		return $document;
+	public function store(Request $request) {
+
 	}
 
 	/**
@@ -39,7 +37,7 @@ class DocumentController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id) {
-		return Document::findOrFail($id);
+		return DocumentType::findOrFail($id);
 	}
 
 	/**
@@ -49,11 +47,8 @@ class DocumentController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(DocumentForm $request, $id) {
-		$document = Document::findOrFail($id);
-		$document->fill($request->all());
-		$document->save();
-		return $document;
+	public function update(Request $request, $id) {
+
 	}
 
 	/**
@@ -63,8 +58,6 @@ class DocumentController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
-		$document = Document::findOrFail($id);
-		$document->delete();
-		return $document;
+		
 	}
 }

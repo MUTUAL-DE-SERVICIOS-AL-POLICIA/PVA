@@ -20,7 +20,8 @@ class CompanyController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return Company::get();
+		return Company::with('document','document.document_type')
+						->get();
 	}
 
 	/**
