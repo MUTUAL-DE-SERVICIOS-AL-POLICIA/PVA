@@ -1,3 +1,4 @@
+const LiveReloadPlugin = require('webpack-livereload-plugin')
 let mix = require('laravel-mix')
 
 /*
@@ -16,4 +17,8 @@ mix.js('resources/assets/js/app.js', 'public/js')
        'resources/assets/css/vuetify.min.css'
     ], 'public/css/all.css')
   .copy('resources/assets/img', 'public/img', false)
-   //.sass('resources/assets/sass/app.scss', 'public/css')
+  .webpackConfig({
+    plugins: [
+      new LiveReloadPlugin()
+    ]
+  })

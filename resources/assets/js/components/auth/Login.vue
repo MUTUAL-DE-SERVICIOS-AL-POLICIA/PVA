@@ -69,7 +69,7 @@
     },
     methods: {
       focusPassword() {
-        this.$refs.password.focus();
+        this.$refs.password.focus()
       },
       async authenticate(auth) {
         try {
@@ -87,7 +87,7 @@
           for (let key in e.data.errors) {
             e.data.errors[key].forEach(error => {
               this.toastr.error(error)
-            });
+            })
           }
         }
       }

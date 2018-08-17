@@ -11,7 +11,7 @@
       v-if="this.$store.getters.currentUser"
     >
       <v-list dense>
-        <v-list-tile v-for="item in menu_left" :key="item.title" :to="{name: item.href}">
+        <v-list-tile v-for="item in menu_left" :key="item.title" :to="{name: item.href, params: item.params}">
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>

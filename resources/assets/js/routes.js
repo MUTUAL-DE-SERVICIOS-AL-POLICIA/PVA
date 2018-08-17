@@ -20,7 +20,7 @@ export const routes = [{
     name: 'home'
   }
 }, {
-  path: '/employee',
+  path: '/employee/:active',
   component: Employee,
   name: 'employeeIndex',
   meta: {

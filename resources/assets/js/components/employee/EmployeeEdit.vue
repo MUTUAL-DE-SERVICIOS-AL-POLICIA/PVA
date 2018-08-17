@@ -1,0 +1,108 @@
+<template>
+  <v-dialog persistent v-model="dialog" max-width="900px">
+    <v-tooltip slot="activator" top>
+      <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
+      <span>Nuevo Empleado</span>
+    </v-tooltip>
+      <v-card>
+      <v-card-title>
+        <span class="headline">Datos del Empleado</span>
+      </v-card-title>
+      <v-card-text>
+        <form ref="form">
+          <v-layout wrap>
+            <v-flex xs12 sm6 md6>
+              <v-layout wrap>
+                <v-flex>
+                  <v-text-field
+                    v-validate="'required'"
+                    v-model="edit.identity_card"
+                    label="C.I."
+                    :error-messages="errors.collect('Carnet de Identidad')"
+                    data-vv-name="Carnet de Identidad"
+                  ></v-text-field>
+                </v-flex>
+                <v-flex>
+                  <v-select
+                    :items="cities"
+                    item-text="shortened"
+                    item-value="id"
+                    label="Ciudad"
+                    v-model="edit.city_identity_card_id"
+                    single-line
+                  ></v-select>
+                </v-flex>
+              </v-layout>
+              <v-text-field
+                v-validate="'required|alpha_spaces'"
+                v-model="edit.first_name"
+                label="Nombres"
+                :error-messages="errors.collect('Nombre')"
+                data-vv-name="Nombre"
+              ></v-text-field>
+              <v-text-field
+                v-validate="'required|alpha_spaces'"
+                v-model="edit.last_name"
+                label="Apellido Paterno"
+                :error-messages="errors.collect('Apellido Paterno')"
+                data-vv-name="Apellido Paterno"
+              ></v-text-field>
+              <v-text-field
+                v-validate="'required|alpha_spaces'"
+                v-model="edit.mothers_last_name"
+                label="Apellido Materno"
+                :error-messages="errors.collect('Apellido Materno')"
+                data-vv-name="Apellido Materno"
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+        </form>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="error" @click="close"><v-icon>close</v-icon> Cancelar</v-btn>
+        <v-btn color="success" :disabled="errors.any()" @click="save"><v-icon>check</v-icon> Guardar</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script>
+export default {
+  name: "EmployeeEdit",
+  props: ["employee", "bus"],
+  data() {
+    return {
+      edit: {},
+      cities: [],
+      dialog: false
+    };
+  },
+  methods: {
+    close() {
+      this.dialog = false;
+      this.edit = {};
+      this.bus.$emit("closeDialog");
+    },
+    async getCities() {
+      try {
+        let res = await axios.get(`/api/v1/city`);
+        this.cities = res.data;
+      } catch (e) {
+        this.dialog = false;
+        console.log(e);
+      }
+    },
+    save() {
+      console.log(this.edit);
+    }
+  },
+  mounted() {
+    this.bus.$on("openDialog", employee => {
+      this.edit = employee;
+      this.dialog = true;
+    });
+    this.getCities();
+  }
+};
+</script>

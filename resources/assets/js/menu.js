@@ -1,11 +1,32 @@
 
 export const guest = [
-  { 'header': 'Admin' },
-  { 'href': 'home', 'title': 'Inicio', 'icon': 'fa fa-home' },
+  {
+    header: 'Admin' 
+  }, {
+    href: 'home',
+    params: {},
+    title: 'Inicio',
+    icon: 'fa fa-home'
+  },
 ]
 
 export const admin = [
-  { 'href': 'home', 'title': 'Inicio', 'icon': 'work' },
-  { 'href': 'employeeIndex', 'title': 'Empleados', 'icon': 'assignment_ind' },
-  { 'href': 'companyIndex', 'title': 'Compañia', 'icon': 'account_balance' },
+  {
+    href: 'home',
+    params: {},
+    title: 'Inicio',
+    icon: 'work'
+  }, {
+    href: 'employeeIndex',
+    params: {
+      active: true
+    },
+    title: 'Empleados',
+    icon: 'assignment_ind'
+  }, {
+    href: 'companyIndex',
+    params: {},
+    title: 'Compañia',
+    icon: 'account_balance'
+  },
 ]

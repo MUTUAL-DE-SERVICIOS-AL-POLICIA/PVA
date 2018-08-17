@@ -23,6 +23,7 @@ class EmployeeController extends Controller {
 			->with('insurance_company')
 			->with('management_entity')
 			->with('city_birth')
+			->orderBy('last_name')
 			->get();
 	}
 

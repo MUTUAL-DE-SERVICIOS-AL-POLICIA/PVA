@@ -20,6 +20,9 @@
     <div id="app">
       <app-main/>
     </div>
+    @if(config('app.debug'))
+      <script src="http://localhost:35729/livereload.js"></script>
+    @endif
     <script src="{{ asset('js/app.js') }}"></script>
   </body>
 </html>

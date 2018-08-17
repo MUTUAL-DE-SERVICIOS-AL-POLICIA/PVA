@@ -2,48 +2,49 @@
 
 Route::macro('common_routes', function () {
 
-    Route::resource('company', 'Api\V1\CompanyController')->except(['create', 'edit', 'destroy']);
-    Route::resource('employee', 'Api\V1\EmployeeController')->except(['create', 'edit']);
-    Route::resource('city', 'Api\V1\CityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
-    Route::resource('management_entity', 'Api\V1\ManagementEntityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
-    Route::resource('insurance_company', 'Api\V1\InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
-    Route::resource('charge', 'Api\V1\ChargeController')->except(['create', 'edit']);
-    Route::resource('position', 'Api\V1\PositionController')->except(['create', 'edit']);
-    Route::resource('payroll', 'Api\V1\PayrollController')->except(['create', 'edit']);
-    Route::group([
-        'prefix' => 'position/{superior_id}',
-    ], function () {
-        Route::get('/dependency', 'Api\V1\DependencyPositionController@get_dependency');
-        Route::get('/dependents', 'Api\V1\DependencyPositionController@get_dependents');
-        Route::group([
-            'prefix' => '/dependents/{dependent_id}',
-        ], function () {
-            Route::get('', 'Api\V1\DependencyPositionController@get_dependent');
-            Route::patch('', 'Api\V1\DependencyPositionController@set_dependent');
-            Route::delete('', 'Api\V1\DependencyPositionController@unset_dependent');
-        });
-    });
-    Route::resource('contract', 'Api\V1\ContractController')->except(['create', 'edit']);
-    Route::resource('jobs_chedule', 'Api\V1\JobScheduleController')->except(['create', 'edit']);
-    Route::resource('document', 'Api\V1\DocumentController')->except(['create', 'edit']);
-    Route::resource('procedure', 'Api\V1\ProcedureController')->except(['create', 'edit']);
-    Route::group([
-        'prefix' => 'employee/{employee_id}/contract',
-    ], function () {
-        Route::get('', 'Api\V1\EmployeeContractController@get_contracts');
-        Route::group([
-            'prefix' => '/{contract_id}',
-        ], function () {
-            Route::get('', 'Api\V1\EmployeeContractController@get_contract');
-        });
-    });
-    Route::resource('employer_number', 'Api\V1\EmployerNumberController')->except(['create', 'edit']);
-    Route::group([
-        'prefix' => 'employer_number/{employer_number_id}/insurance_company/{insurance_company_id}',
-    ], function () {
-        Route::get('', 'Api\V1\EmployerNumberInsuranceCompanyController@get_insurance_company');
-        Route::patch('', 'Api\V1\EmployerNumberInsuranceCompanyController@set_insurance_company');
-    });
+	Route::resource('company', 'Api\V1\CompanyController')->except(['create', 'edit', 'destroy']);
+	Route::resource('employee', 'Api\V1\EmployeeController')->except(['create', 'edit']);
+	Route::get('employee/active/{active}', 'Api\V1\EmployeeController@filter_employees');
+	Route::resource('city', 'Api\V1\CityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::resource('management_entity', 'Api\V1\ManagementEntityController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::resource('insurance_company', 'Api\V1\InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
+	Route::resource('charge', 'Api\V1\ChargeController')->except(['create', 'edit']);
+	Route::resource('position', 'Api\V1\PositionController')->except(['create', 'edit']);
+	Route::resource('payroll', 'Api\V1\PayrollController')->except(['create', 'edit']);
+	Route::group([
+		'prefix' => 'position/{superior_id}',
+	], function () {
+		Route::get('/dependency', 'Api\V1\DependencyPositionController@get_dependency');
+		Route::get('/dependents', 'Api\V1\DependencyPositionController@get_dependents');
+		Route::group([
+			'prefix' => '/dependents/{dependent_id}',
+		], function () {
+			Route::get('', 'Api\V1\DependencyPositionController@get_dependent');
+			Route::patch('', 'Api\V1\DependencyPositionController@set_dependent');
+			Route::delete('', 'Api\V1\DependencyPositionController@unset_dependent');
+		});
+	});
+	Route::resource('contract', 'Api\V1\ContractController')->except(['create', 'edit']);
+	Route::resource('jobs_chedule', 'Api\V1\JobScheduleController')->except(['create', 'edit']);
+	Route::resource('document', 'Api\V1\DocumentController')->except(['create', 'edit']);
+	Route::resource('procedure', 'Api\V1\ProcedureController')->except(['create', 'edit']);
+	Route::group([
+		'prefix' => 'employee/{employee_id}/contract',
+	], function () {
+		Route::get('', 'Api\V1\EmployeeContractController@get_contracts');
+		Route::group([
+			'prefix' => '/{contract_id}',
+		], function () {
+			Route::get('', 'Api\V1\EmployeeContractController@get_contract');
+		});
+	});
+	Route::resource('employer_number', 'Api\V1\EmployerNumberController')->except(['create', 'edit']);
+	Route::group([
+		'prefix' => 'employer_number/{employer_number_id}/insurance_company/{insurance_company_id}',
+	], function () {
+		Route::get('', 'Api\V1\EmployerNumberInsuranceCompanyController@get_insurance_company');
+		Route::patch('', 'Api\V1\EmployerNumberInsuranceCompanyController@set_insurance_company');
+	});
 
 });
 
