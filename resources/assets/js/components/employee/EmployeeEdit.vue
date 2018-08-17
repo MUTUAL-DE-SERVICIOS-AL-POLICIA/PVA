@@ -16,10 +16,10 @@
                 <v-flex>
                   <v-text-field
                     v-validate="'required'"
-                    v-model="edit.identity_card"
-                    label="C.I."
                     :error-messages="errors.collect('Carnet de Identidad')"
                     data-vv-name="Carnet de Identidad"
+                    v-model="edit.identity_card"
+                    label="C.I."
                   ></v-text-field>
                 </v-flex>
                 <v-flex>
@@ -35,24 +35,24 @@
               </v-layout>
               <v-text-field
                 v-validate="'required|alpha_spaces'"
-                v-model="edit.first_name"
-                label="Nombres"
                 :error-messages="errors.collect('Nombre')"
                 data-vv-name="Nombre"
+                v-model="edit.first_name"
+                label="Nombres"
               ></v-text-field>
               <v-text-field
                 v-validate="'required|alpha_spaces'"
-                v-model="edit.last_name"
-                label="Apellido Paterno"
                 :error-messages="errors.collect('Apellido Paterno')"
                 data-vv-name="Apellido Paterno"
+                v-model="edit.last_name"
+                label="Apellido Paterno"
               ></v-text-field>
               <v-text-field
                 v-validate="'required|alpha_spaces'"
-                v-model="edit.mothers_last_name"
-                label="Apellido Materno"
                 :error-messages="errors.collect('Apellido Materno')"
                 data-vv-name="Apellido Materno"
+                v-model="edit.mothers_last_name"
+                label="Apellido Materno"
               ></v-text-field>
               <v-menu
                 ref="menu"
@@ -67,7 +67,7 @@
               >
                 <v-text-field
                   slot="activator"
-                  v-model="edit.birth_date"
+                  v-model="this.$moment(edit.birth_date).format('DD/MM/YYYY') || '1980-01-01'"
                   label="Birthday date"
                   prepend-icon="event"
                   readonly
@@ -77,7 +77,7 @@
                   v-model="edit.birth_date"
                   :max="new Date().toISOString().substr(0, 10)"
                   min="1950-01-01"
-                  @change="save"
+                  @change="saveDate"
                 ></v-date-picker>
               </v-menu>
             </v-flex>
@@ -87,7 +87,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click="close"><v-icon>close</v-icon> Cancelar</v-btn>
-        <v-btn color="success" :disabled="errors.any()" @click="saveEmployee"><v-icon>check</v-icon> Guardar</v-btn>
+        <v-btn color="success" :disabled="this.errors.any()" @click="saveEmployee"><v-icon>check</v-icon> Guardar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -124,8 +124,8 @@ export default {
     saveEmployee() {
       console.log(this.edit);
     },
-    save (date) {
-      this.$refs.menu.save(date)
+    saveDate(date) {
+      this.$refs.menu.save(date);
     }
   },
   mounted() {
@@ -136,9 +136,9 @@ export default {
     this.getCities();
   },
   watch: {
-    menu (val) {
-      val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+    menu(val) {
+      val && this.$nextTick(() => (this.$refs.picker.activePicker = "YEAR"));
     }
-  },
+  }
 };
 </script>
