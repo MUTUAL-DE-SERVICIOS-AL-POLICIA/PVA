@@ -9,7 +9,7 @@ class ContractType extends Model {
 	public $guarded = ['id'];
 	protected $fillable = ['ovt_id', 'name'];
 
-	public function contracts() {
+	public function contract() {
 		return $this->hasMany(Contract::class);
 	}
 }

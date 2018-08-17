@@ -20,11 +20,11 @@ class Contract extends Model {
 		return $this->belongsTo(Position::class);
 	}
 
-	public function type() {
+	public function contract_type() {
 		return $this->belongsTo(ContractType::class);
 	}
 
-	public function mode() {
+	public function contract_mode() {
 		return $this->belongsTo(ContractMode::class);
 	}
 
