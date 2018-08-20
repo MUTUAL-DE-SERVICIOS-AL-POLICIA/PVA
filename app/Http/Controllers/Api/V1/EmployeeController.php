@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Employee;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\EmployeeForm;
+use App\Http\Requests\EmployeeEditForm;
+use App\Http\Requests\EmployeeStoreForm;
 use Illuminate\Http\Request;
 
 /** @resource Employee
@@ -20,7 +21,6 @@ class EmployeeController extends Controller {
 	 */
 	public function index() {
 		return Employee::with('city_identity_card')
-			->with('insurance_company')
 			->with('management_entity')
 			->with('city_birth')
 			->orderBy('last_name')
@@ -33,7 +33,7 @@ class EmployeeController extends Controller {
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(EmployeeForm $request) {
+	public function store(EmployeeStoreForm $request) {
 		$employee = Employee::create($request->all());
 		return $employee;
 	}
@@ -55,7 +55,7 @@ class EmployeeController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(EmployeeForm $request, $id) {
+	public function update(EmployeeEditForm $request, $id) {
 		$employee = Employee::findOrFail($id);
 		$employee->fill($request->all());
 		$employee->save();

@@ -13,11 +13,9 @@ class CreateEmployeesTable extends Migration {
 	public function up() {
 		Schema::create('employees', function (Blueprint $table) {
 			$table->bigIncrements('id');
-			$table->integer('insurance_company_id')->unsigned();
-			$table->foreign('insurance_company_id')->references('id')->on('insurance_companies');
 			$table->tinyInteger('city_identity_card_id')->unsigned();
 			$table->foreign('city_identity_card_id')->references('id')->on('cities');
-			$table->integer('management_entity_id')->unsigned();
+			$table->integer('management_entity_id')->unsigned()->nullable();
 			$table->foreign('management_entity_id')->references('id')->on('management_entities');
 			$table->string('identity_card');
 			$table->string('first_name');

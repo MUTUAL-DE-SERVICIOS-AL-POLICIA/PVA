@@ -13,7 +13,7 @@ class InsuranceCompany extends Model {
 		return $this->hasOne(EmployerNumber::class);
 	}
 
-	public function employees() {
-		return $this->hasMany(Employee::class);
+	public function contracts() {
+		return $this->hasMany(Contract::class);
 	}
 }

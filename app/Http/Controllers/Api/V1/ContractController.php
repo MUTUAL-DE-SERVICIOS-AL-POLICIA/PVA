@@ -18,7 +18,7 @@ class ContractController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return Contract::with('employee', 'employee.city_identity_card','position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')->get();
+		return Contract::with('employee', 'insurance_company', 'employee.city_identity_card', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')->get();
 	}
 
 	/**

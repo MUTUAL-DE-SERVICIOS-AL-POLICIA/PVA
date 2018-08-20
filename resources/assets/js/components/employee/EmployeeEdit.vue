@@ -1,10 +1,10 @@
 <template>
-  <v-dialog persistent v-model="dialog" max-width="900px">
+  <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
     <v-tooltip slot="activator" top>
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Empleado</span>
     </v-tooltip>
-      <v-card>
+    <v-card>
       <v-card-title>
         <span class="headline">Datos del Empleado</span>
       </v-card-title>
@@ -13,7 +13,7 @@
           <v-layout wrap>
             <v-flex xs12 sm6 md6>
               <v-layout wrap>
-                <v-flex>
+                <v-flex xs8 sm8 md8>
                   <v-text-field
                     v-validate="'required'"
                     :error-messages="errors.collect('Carnet de Identidad')"
@@ -22,8 +22,12 @@
                     label="C.I."
                   ></v-text-field>
                 </v-flex>
-                <v-flex>
+                <v-spacer></v-spacer>
+                <v-flex xs3 sm3 md3>
                   <v-select
+                    v-validate="'required'"
+                    :error-messages="errors.collect('Ciudad de Expedición')"
+                    data-vv-name="Ciudad de Expedición"
                     :items="cities"
                     item-text="shortened"
                     item-value="id"
@@ -33,6 +37,17 @@
                   ></v-select>
                 </v-flex>
               </v-layout>
+              <v-select
+                v-validate="'required'"
+                :error-messages="errors.collect('Género')"
+                data-vv-name="Género"
+                :items="genders"
+                item-text="name"
+                item-value="value"
+                label="Género"
+                v-model="edit.gender"
+                single-line
+              ></v-select>
               <v-text-field
                 v-validate="'required|alpha_spaces'"
                 :error-messages="errors.collect('Nombre')"
@@ -54,32 +69,113 @@
                 v-model="edit.mothers_last_name"
                 label="Apellido Materno"
               ></v-text-field>
-              <v-menu
-                ref="menu"
-                :close-on-content-click="false"
-                v-model="menu"
-                :nudge-right="40"
-                lazy
-                transition="scale-transition"
-                offset-y
-                full-width
-                min-width="290px"
-              >
+              <v-layout wrap>
+                <v-flex xs6 sm6 md6>
+                  <v-menu
+                    ref="menu"
+                    :close-on-content-click="false"
+                    v-model="menu"
+                    :nudge-right="40"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    min-width="290px"
+                  >
+                    <v-text-field
+                      v-validate="'required'"
+                      :error-messages="errors.collect('Fecha de Nacimiento')"
+                      data-vv-name="Fecha de Nacimiento"
+                      slot="activator"
+                      v-model="birth_date_formatted"
+                      label="Fecha de Nacimiento"
+                      prepend-icon="event"
+                      readonly
+                    ></v-text-field>
+                    <v-date-picker
+                      ref="picker"
+                      v-model="birth_date"
+                      :max="this.$moment().subtract(18, 'years').format('YYYY-MM-DD')"
+                      :min="this.$moment().subtract(80, 'years').format('YYYY-MM-DD')"
+                      @change="saveDate"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-flex>
+                <v-spacer></v-spacer>
+                <v-flex xs5 sm5 md5>
+                  <v-select
+                    v-validate="'required'"
+                    :error-messages="errors.collect('Lugar de Nacimiento')"
+                    data-vv-name="Lugar de Nacimiento"
+                    :items="cities"
+                    item-text="name"
+                    item-value="id"
+                    label="Lugar de Nacimiento"
+                    v-model="edit.city_birth_id"
+                    single-line
+                  ></v-select>
+                </v-flex>
                 <v-text-field
-                  slot="activator"
-                  v-model="this.$moment(edit.birth_date).format('DD/MM/YYYY') || '1980-01-01'"
-                  label="Birthday date"
-                  prepend-icon="event"
-                  readonly
+                  v-validate="'numeric'"
+                  :error-messages="errors.collect('Cuenta bancaria')"
+                  data-vv-name="Cuenta bancaria"
+                  v-model="edit.account_number"
+                  label="Cuenta bancaria"
                 ></v-text-field>
-                <v-date-picker
-                  ref="picker"
-                  v-model="edit.birth_date"
-                  :max="new Date().toISOString().substr(0, 10)"
-                  min="1950-01-01"
-                  @change="saveDate"
-                ></v-date-picker>
-              </v-menu>
+              </v-layout>
+            </v-flex>
+            <v-spacer></v-spacer>
+            <v-flex xs12 sm5 md5>
+              <v-text-field
+                v-validate="'numeric'"
+                :error-messages="errors.collect('NUA/CUA')"
+                data-vv-name="NUA/CUA"
+                v-model="edit.nua_cua"
+                label="NUA/CUA"
+              ></v-text-field>
+              <v-select
+                :items="managementEntities"
+                item-text="name"
+                item-value="id"
+                label="AFP"
+                v-model="edit.management_entity_id"
+                single-line
+              ></v-select>
+              <v-text-field
+                v-validate="'required|alpha_spaces'"
+                :error-messages="errors.collect('Ciudad')"
+                data-vv-name="Ciudad"
+                v-model="edit.location"
+                label="Ciudad"
+              ></v-text-field>
+              <v-text-field
+                v-validate="'required|alpha_spaces'"
+                :error-messages="errors.collect('Zona')"
+                data-vv-name="Zona"
+                v-model="edit.zone"
+                label="Zona"
+              ></v-text-field>
+              <v-text-field
+                v-validate="'required|alpha_spaces'"
+                :error-messages="errors.collect('Calle')"
+                data-vv-name="Calle"
+                v-model="edit.street"
+                label="Calle"
+              ></v-text-field>
+              <v-text-field
+                v-validate="'required'"
+                :error-messages="errors.collect('Número de puerta')"
+                data-vv-name="Número de puerta"
+                v-model="edit.address_number"
+                label="Número de puerta"
+              ></v-text-field>
+              <v-text-field
+                v-validate="'numeric'"
+                :error-messages="errors.collect('Teléfono')"
+                data-vv-name="Teléfono"
+                v-model="edit.phone_number"
+                label="Teléfono"
+              ></v-text-field>
             </v-flex>
           </v-layout>
         </form>
@@ -99,17 +195,38 @@ export default {
   props: ["employee", "bus"],
   data() {
     return {
+      genders: [
+        {
+          name: "Femenino",
+          value: "F"
+        },
+        {
+          name: "Masculino",
+          value: "M"
+        }
+      ],
+      birth_date: null,
+      birth_date_formatted: null,
       edit: {},
       cities: [],
+      managementEntities: [],
       dialog: false,
+      newEmployee: true,
       date: null,
       menu: false
     };
   },
   methods: {
-    close() {
-      this.dialog = false;
+    resetVariables() {
+      this.newEmployee = false;
       this.edit = {};
+      this.birth_date = null;
+      this.birth_date_formatted = null;
+    },
+    close() {
+      this.resetVariables();
+      this.dialog = false;
+      this.$validator.reset();
       this.bus.$emit("closeDialog");
     },
     async getCities() {
@@ -121,23 +238,59 @@ export default {
         console.log(e);
       }
     },
-    saveEmployee() {
-      console.log(this.edit);
+    async getManagementEntities() {
+      try {
+        let res = await axios.get(`/api/v1/management_entity`);
+        this.managementEntities = res.data;
+      } catch (e) {
+        this.dialog = false;
+        console.log(e);
+      }
     },
-    saveDate(date) {
+    async saveEmployee() {
+      try {
+        let valid = await this.$validator.validateAll();
+        let res;
+        if (valid) {
+          if (this.newEmployee) {
+            res = await axios.post(`/api/v1/employee`, this.edit);
+            this.toastr.success('Insertado correctamente')
+          } else {
+            res = await axios.put(`/api/v1/employee/${this.edit.id}`, this.edit);
+            this.toastr.success('Actualizado correctamente')
+          }
+          this.close();
+        }
+      } catch (e) {
+        console.log(e);
+        for (let key in e.data.errors) {
+          e.data.errors[key].forEach(error => {
+            this.toastr.error(error);
+          });
+        }
+      }
+    },
+    async saveDate(date) {
       this.$refs.menu.save(date);
     }
   },
   mounted() {
     this.bus.$on("openDialog", employee => {
       this.edit = employee;
+      this.birth_date = this.edit.birth_date;
       this.dialog = true;
+      this.newEmployee = false;
     });
     this.getCities();
+    this.getManagementEntities();
   },
   watch: {
     menu(val) {
       val && this.$nextTick(() => (this.$refs.picker.activePicker = "YEAR"));
+    },
+    birth_date(val) {
+      this.birth_date_formatted = this.$moment(val).format("DD/MM/YYYY") || this.$moment().format("DD/MM/YYYY");
+      this.edit.birth_date = this.$moment(val).format("YYYY-MM-DD");
     }
   }
 };

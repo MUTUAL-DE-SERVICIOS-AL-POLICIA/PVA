@@ -31,6 +31,8 @@ class CreateContractsTable extends Migration {
 			$table->date('rrhh_cite_date')->nullable();
 			$table->string('performance_cite')->nullable();
 			$table->string('insurance_number')->nullable();
+			$table->integer('insurance_company_id')->unsigned();
+			$table->foreign('insurance_company_id')->references('id')->on('insurance_companies');
 			$table->string('contract_number')->nullable();
 			$table->string('hiring_reference_number')->nullable();
 			$table->text('description')->nullable();
