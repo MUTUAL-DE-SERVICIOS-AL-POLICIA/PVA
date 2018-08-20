@@ -49,7 +49,7 @@ class ContractController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(ContractForm $request, $id) {
+	public function update(Request $request, $id) {
 		$contract = Contract::findOrFail($id);
 		$contract->fill($request->all());
 		$contract->save();

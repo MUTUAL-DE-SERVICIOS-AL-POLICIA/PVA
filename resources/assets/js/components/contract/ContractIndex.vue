@@ -4,41 +4,44 @@
         <v-toolbar-title>Contratos</v-toolbar-title>        
         <v-spacer></v-spacer>
         <v-toolbar-title>
-          <v-switch :label="`Contratos ${abc}`" v-model="switch1" @click.native="contractStatus()" class="mt-3">ghghhg</v-switch>
+          <v-switch :label="`Contratos ${contracState}`" v-model="switch1" @click.native="contractStatus()" class="mt-3"></v-switch>
         </v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>        
         <v-dialog persistent v-model="dialog" max-width="900px">            
             <v-btn slot="activator" color="primary" dark class="mb-2">Nuevo contrato</v-btn>
             <v-card>
-            <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
-            </v-card-title>  
+            <v-toolbar dark color="primary" dense flat>
+              <v-toolbar-title class="white--text">{{ formTitle }}</v-toolbar-title>
+            </v-toolbar>
             <v-card-text>
               <v-container grid-list-md layout>
                 <v-flex xs6>
                   <v-form ref="form">
                     <v-autocomplete
-                      v-model="editedItem.employee_id"
+                      v-model="selectedItem.employee_id"
                       :items="employees"
                       item-text="identity_card"
                       item-value="id"
                       label="Empleado"
+                      v-on:change="onSelect"
                       v-validate="'required'"
                       name="Empleado"
-                      :error-messages="errors.collect('Empleado')">
+                      :error-messages="errors.collect('Empleado')"
+                      :disabled="recontract==true">
                     </v-autocomplete>
                     <v-autocomplete
-                      v-model="editedItem.position_id"
+                      v-model="selectedItem.position_id"
                       :items="positions"
                       item-text="name" 
                       item-value="id"
                       label="Puesto"
                       v-validate="'required'"
                       name="Puesto"
-                      :error-messages="errors.collect('Puesto')">
+                      :error-messages="errors.collect('Puesto')"
+                      :disabled="recontract==true">
                     </v-autocomplete>
                     <v-select
-                      v-model="editedItem.contract_type_id"
+                      v-model="selectedItem.contract_type_id"
                       :items="contract_types"
                       item-text="name" 
                       item-value="id"                    
@@ -48,7 +51,7 @@
                       :error-messages="errors.collect('Tipo de contratacion')"
                     ></v-select>
                     <v-select
-                      v-model="editedItem.contract_mode_id"
+                      v-model="selectedItem.contract_mode_id"
                       :items="contract_modes"
                       item-text="name" 
                       item-value="id"                    
@@ -70,7 +73,7 @@
                     >
                       <v-text-field
                         slot="activator"
-                        v-model="this.$moment(editedItem.start_date).format('DD-MM-YYYY')"
+                        v-model="this.$moment(selectedItem.start_date).format('DD-MM-YYYY')"
                         label="Fecha de inicio"
                         v-validate="'required'"
                         name="Fecha de inicio"
@@ -92,13 +95,13 @@
                     >
                       <v-text-field
                         slot="activator"
-                        v-model="this.$moment(editedItem.end_date).format('DD-MM-YYYY')"
+                        v-model="this.$moment(selectedItem.end_date).format('DD-MM-YYYY')"
                         label="Fecha de conslusión"
                         readonly
                       ></v-text-field>
                       <v-date-picker v-model="date2" no-title @input="menuDate2 = false"></v-date-picker>
                     </v-menu>
-                    <v-menu v-if="editedIndex!=-1"
+                    <v-menu v-if="selectedIndex!=-1"
                       :close-on-content-click="true"
                       v-model="menuDate3"
                       :nudge-right="40"
@@ -111,21 +114,21 @@
                     >
                       <v-text-field
                         slot="activator"
-                        v-model="this.$moment(editedItem.retirement_date).format('DD-MM-YYYY')"
+                        v-model="this.$moment(selectedItem.retirement_date).format('DD-MM-YYYY')"
                         label="Fecha de retiro"
                         readonly
                       ></v-text-field>
                       <v-date-picker v-model="date3" no-title @input="menuDate3 = false"></v-date-picker>
                     </v-menu>
-                    <v-select v-if="editedIndex!=-1"
-                      v-model="editedItem.retirement_reason_id"
+                    <v-select v-if="selectedIndex!=-1"
+                      v-model="selectedItem.retirement_reason_id"
                       :items="retirement_reasons"
                       item-text="name" 
                       item-value="id"                    
                       label="Razón del retiro"
                     ></v-select>
                     <v-text-field
-                      v-model="editedItem.rrhh_cite"
+                      v-model="selectedItem.rrhh_cite"
                       label="Cite de Recursos Humanos"
                     ></v-text-field>
                     <v-menu
@@ -141,31 +144,33 @@
                     >
                       <v-text-field
                         slot="activator"
-                        v-model="this.$moment(editedItem.rrhh_cite_date).format('DD-MM-YYYY')"
+                        v-model="this.$moment(selectedItem.rrhh_cite_date).format('DD-MM-YYYY')"
                         label="Fecha de cite de Recursos Humanos"
                         readonly
                       ></v-text-field>
                       <v-date-picker v-model="date4" no-title @input="menuDate4 = false"></v-date-picker>
                     </v-menu>
                     <v-text-field
-                      v-model="editedItem.performance_cite"
+                      v-model="selectedItem.performance_cite"
                       label="Cite de evaluacion"
                     ></v-text-field>
                     <v-text-field
-                      v-model="editedItem.insurance_number"
+                      v-model="selectedItem.insurance_number"
                       label="Numero de asegurado"
                     ></v-text-field>
                     <v-text-field
-                      v-model="editedItem.hiring_reference_number"
+                      v-model="selectedItem.hiring_reference_number"
                       label="Referencia de contratación"
                     ></v-text-field>
                     <v-textarea
-                      v-model="editedItem.description"
+                      v-model="selectedItem.description"
                       label="Descripción/Observaciones"
                     ></v-textarea>
                     <v-checkbox                    
-                      v-model="editedItem.active"
+                      v-model="selectedItem.active"
                       label="Vigente"
+                      input-value="true" 
+                      value                
                     ></v-checkbox>
                   </v-form>
                 </v-flex>
@@ -180,11 +185,25 @@
             </v-card-text>  
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="danger" block @click="close">Cancelar</v-btn>
-              <v-btn color="success" block :disabled="!valid" @click="save()">Guardar</v-btn>
+              <v-btn color="danger" block @click.native="close">Cancelar</v-btn>
+              <v-btn color="success" block :disabled="!valid" @click="save()" v-if="recontract==false">Guardar</v-btn>
+              <v-btn color="success" block :disabled="!valid" @click="saveRecontract()" v-if="recontract==true">Recontratar</v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>  
+        </v-dialog>
+        <v-dialog persistent v-model="dialogDelete" max-width="250px">
+          <v-card>
+            <v-toolbar dark color="primary" dense flat>
+              <v-toolbar-title class="white--text">Eliminar</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>Esta seguro de eliminar este contrato?</v-card-text>
+            <v-card-actions class="pt-0">
+              <v-spacer></v-spacer>
+              <v-btn color="primary darken-1" flat="flat" @click="del()">Si</v-btn>
+              <v-btn color="grey" flat="flat" @click.native="close">Cancelar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <v-toolbar-title slot="extension" class="white--text">
           <v-text-field
             v-model="search"
@@ -220,18 +239,38 @@
               </v-icon>
             </td>
             <td class="justify-center layout">
-                <v-btn flat icon color="indigo">
-                  <v-icon>print</v-icon>
+              <v-menu offset-y>
+                <v-btn slot="activator" flat icon color="indigo">
+                  <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
                 </v-btn>
-                <v-btn flat icon color="indigo">
-                  <v-icon>refresh</v-icon>
-                </v-btn>
-                <v-btn flat icon color="indigo" @click="editItem(props.item)">
-                  <v-icon>edit</v-icon>
-                </v-btn>
-                <v-btn flat icon color="indigo">
-                  <v-icon>close</v-icon>
-                </v-btn>
+                <v-list>
+                  <v-list-tile
+                    v-for="(item, index) in [{ title: 'Contrato' },{ title: 'Afiliación al seguro' },{ title: 'Baja del seguro' }]"
+                    :key="index"
+                    @click=""                  >
+                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
+
+                <v-tooltip top>
+                  <v-btn slot="activator" flat icon color="indigo" @click="selectItem(props.item, 'reedit')">
+                    <v-icon>refresh</v-icon>
+                  </v-btn>
+                  <span>Recontratar</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <v-btn slot="activator" flat icon color="indigo" @click="selectItem(props.item, 'edit')">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                  <span>Editar</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <v-btn slot="activator" flat icon color="indigo" @click="selectItem(props.item, 'del')">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                  <span>Eliminar</span>
+                </v-tooltip>
             </td>
           </tr>
           <tr class="expand" v-show="expanded[props.item.id]">
@@ -315,7 +354,7 @@ export default {
         sortable: false 
       }
     ],    
-    editedItem:   {
+    selectedItem:   {
                     employee_id: '',
                     position_id: '',
                     contract_type_id: '',
@@ -357,12 +396,13 @@ export default {
     contract_types:    [],
     contract_modes:    [],
     retirement_reasons:    [],
-    editedIndex:  -1,
+    selectedIndex:  -1,
     document_types: [],
     expanded: {},
     valid:        true,
     menu:         false,
     dialog:       false,
+    dialogDelete: false,
     search:       '',
     date:         null,
     date2:        null,
@@ -373,30 +413,34 @@ export default {
     menuDate3:    false,
     menuDate4:    false,
     switch1:      true,
-    abc:'vigentes',
+    contracState:'vigentes',
+    recontract: false,
   }),
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Nuevo contrato' : 'Editar contrato'
+      return this.selectedIndex === -1 ? 'Nuevo contrato' : 'Editar contrato'
     }
   },
   watch: {
     date (val) {
-      this.editedItem.start_date = this.date
+      this.selectedItem.start_date = this.date
     },
     date2 (val) {
-      this.editedItem.end_date = this.date2
+      this.selectedItem.end_date = this.date2
     },
     date3 (val) {
-      this.editedItem.retirement_date = this.date3
+      this.selectedItem.retirement_date = this.date3
     },
     date4 (val) {
-      this.editedItem.rrhh_cite_date = this.date4
+      this.selectedItem.rrhh_cite_date = this.date4
     }
   },
   created() {
     this.initialize()
 
+  },
+  mounted () {
+    this.$validator.validateAll()
   },
   methods: {    
     async initialize() {
@@ -420,29 +464,42 @@ export default {
         console.log(e)
       }
     },
-    editItem(item) {
-      this.editedIndex = this.contracts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
+    selectItem(item, mode) {
+      this.selectedIndex = this.contracts.indexOf(item)
+      this.selectedItem = Object.assign({}, item)
+      if (mode == 'edit') {        
+        this.dialog = true
+      }
+      if (mode == 'reedit') {
+        this.recontract = true        
+        this.dialog = true
+      }
+      if (mode == 'del') {
+        this.dialogDelete = true
+      }      
     },
-
     close() {
       this.dialog = false
-      this.editedItem = Object.assign({}, this.defaultItem)
-      this.editedIndex = -1
-      this.errors.clear();
+      this.dialogDelete = false
+      this.selectedItem = Object.assign({}, this.defaultItem)
+      this.selectedIndex = -1
+      this.recontract = false
+      this.$validator.reset()
+
     },
     async save() {
         try {
           await this.$validator.validateAll()
-          if (this.editedIndex > -1) {
-            let res = await axios.put('/api/v1/contract/' + this.editedItem.id, this.editedItem)
-            Object.assign(this.contracts[this.editedIndex], res.data)
+          if (this.selectedIndex > -1) {
+            let res = await axios.put('/api/v1/contract/' + this.selectedItem.id, this.selectedItem)
+            this.initialize()
+            //Object.assign(this.contracts[this.selectedIndex], res.data)
             this.close()
             this.toastr.success('Editado correctamente')
           } else {
-            let res = await axios.post('/api/v1/contract', this.editedItem)
-            this.contracts.push(res.data)
+            let res = await axios.post('/api/v1/contract', this.selectedItem)
+            this.initialize()
+            //this.contracts.push(this.selectedItem)
             this.close()
             this.toastr.success('Registrado correctamente')
           }
@@ -455,15 +512,46 @@ export default {
             }
         }
     },
+    async saveRecontract() {
+        try {
+          await this.$validator.validateAll()            
+            let newres = await axios.post('/api/v1/contract', this.selectedItem)
+            let editres = await axios.put('/api/v1/contract/' + this.selectedItem.id, {"active":false})
+            this.initialize()
+            //Object.assign(this.contracts[this.selectedIndex], editres.data)
+            this.close()
+            this.toastr.success('Recontratado correctamente')
+        } catch(e) {
+          console.log(e)
+            for (let key in e.data.errors) {
+              e.data.errors[key].forEach(error => {
+                this.toastr.error(error)
+              });
+            }
+        }
+    },
+    async del() {
+        try {           
+          let res = await axios.delete('/api/v1/contract/' + this.selectedItem.id)
+          this.initialize()
+          // this.contracts.splice(res.data, 1)
+          this.close()
+        } catch(e) {
+          console.log(e)
+            for (let key in e.data.errors) {
+              e.data.errors[key].forEach(error => {
+                this.toastr.error(error)
+              });
+            }
+        }
+    },
     contractStatus() {
       if(this.switch1 == true) {
-        this.abc = "vigentes"
+        this.contracState = "vigentes"
         this.switch1 = true
         
       } else {
-        this.abc = "vigentes"
-        this.switch1 = true
-        this.abc = "concluidos"
+        this.contracState = "concluidos"
         this.switch1 = false
         
       }      
@@ -472,6 +560,9 @@ export default {
           let names = `${employee.last_name || ''} ${employee.mothers_last_name || ''} ${employee.surname_husband || ''} ${employee.first_name || ''} ${employee.second_name || ''} `
           names = names.replace(/\s+/gi, ' ').trim().toUpperCase();
           return names;
+    },
+    onSelect(v) {
+      // console.log(v)
     }
   }
 }
