@@ -28,33 +28,33 @@
         :search="search"
         disable-initial-sort
       >
-        <template slot="items" slot-scope="employees">
+        <template slot="items" slot-scope="props">
           <tr>
-            <td class="text-md-center">{{ ++employees.index }}</td>
-            <td class="text-md-center">{{ `${employees.item.identity_card} ${employees.item.city_identity_card.shortened}` }}</td>
-            <td>{{ `${employees.item.last_name} ${employees.item.mothers_last_name} ${employees.item.first_name} ` }}</td>
-            <td class="text-md-center">{{ employees.item.birth_date | moment("DD/MM/YYYY") }} </td>
-            <td>{{ employees.item.account_number || '' }} </td>
-            <td>{{ (employees.item.management_entity_id) ? employees.item.management_entity.name : '' }} </td>
-            <td>{{ employees.item.nua_cua || '' }} </td>
+            <td class="text-md-center">{{ employees.indexOf(props.item)+1 }}</td>
+            <td class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
+            <td>{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
+            <td class="text-md-center">{{ props.item.birth_date | moment("DD/MM/YYYY") }} </td>
+            <td>{{ props.item.account_number || '' }} </td>
+            <td>{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
+            <td>{{ props.item.nua_cua || '' }} </td>
             <td class="text-md-center">
               <v-switch
-                v-model="employees.item.active"
-                @click="switchActive(employees.item)"
+                v-model="props.item.active"
+                @click="switchActive(props.item)"
               ></v-switch>
             </td>
             <td class="text-md-center">
               <v-layout wrap>
                 <v-flex xs3 sm3 md3>
                   <v-tooltip btn top>
-                    <v-icon medium slot="activator" color="primary" @click="editItem(employees.item)">edit</v-icon>
+                    <v-icon medium slot="activator" color="primary" @click="editItem(props.item)">edit</v-icon>
                     <span>Editar</span>
                   </v-tooltip>
                 </v-flex>
                 <v-spacer></v-spacer>
                 <v-flex xs3 sm3 md3>
                   <v-tooltip btn top>
-                    <v-icon medium slot="activator" color="error" @click="removeItem(employees.item)">close</v-icon>
+                    <v-icon medium slot="activator" color="error" @click="removeItem(props.item)">close</v-icon>
                     <span>Eliminar</span>
                   </v-tooltip>
                 </v-flex>
