@@ -27,9 +27,10 @@
         :items="employees"
         :search="search"
         disable-initial-sort
+        expand
       >
         <template slot="items" slot-scope="props">
-          <tr>
+          <tr @click="props.expanded = !props.expanded">
             <td class="text-md-center">{{ employees.indexOf(props.item)+1 }}</td>
             <td class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
             <td>{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
@@ -61,6 +62,54 @@
               </v-layout>
             </td>
           </tr>
+        </template>
+        <template slot="expand" scope="props">
+          <v-card>
+            <v-card-text>
+              <table>
+                <tr>
+                  <td>
+                    <v-list-tile-content class="font-weight-bold">Ciudad:</v-list-tile-content>
+                  </td>
+                  <td>
+                    <v-list-tile-content>{{ props.item.location}}</v-list-tile-content>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <v-list-tile-content class="font-weight-bold">Zona:</v-list-tile-content>
+                  </td>
+                  <td>
+                    <v-list-tile-content>{{ props.item.zone}}</v-list-tile-content>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <v-list-tile-content class="font-weight-bold">Calle:</v-list-tile-content>
+                  </td>
+                  <td>
+                    <v-list-tile-content>{{ props.item.street}}</v-list-tile-content>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <v-list-tile-content class="font-weight-bold">Número:</v-list-tile-content>
+                  </td>
+                  <td>
+                    <v-list-tile-content>{{ props.item.address_number}}</v-list-tile-content>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <v-list-tile-content class="font-weight-bold">Teléfono:</v-list-tile-content>
+                  </td>
+                  <td>
+                    <v-list-tile-content>{{ props.item.phone_number}}</v-list-tile-content>
+                  </td>
+                </tr>
+              </table>
+            </v-card-text>
+          </v-card>
         </template>
         <v-alert slot="no-results" :value="true" color="error">
           La búsqueda de "{{ search }}" no encontró resultados.
@@ -98,6 +147,12 @@ export default {
         { text: "CUA/NUA", value: "nua_cua" },
         { align: "center", text: "Activo", value: "active", sortable: false },
         { align: "center", text: "Acciones", sortable: false },
+      ],
+      subHeaders: [
+        { align: "center", value: 'name', text: "Name", sortable: false },
+      ],
+      subItems: [
+        { name: 'asdfasdf' }
       ]
     };
   },
