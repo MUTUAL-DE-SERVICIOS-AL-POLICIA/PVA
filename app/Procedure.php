@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Procedure extends Model {
 	use SoftDeletes;
-    protected $dates    = ['deleted_at'];
-    public $timestamps  = false;
-    public $guarded     = ['id'];
-    protected $fillable = ['year', 'month_id', 'employee_discount_id', 'employer_contribution_id', 'active'];
+	protected $dates = ['deleted_at'];
+	public $timestamps = true;
+	public $guarded = ['id'];
+	protected $fillable = ['year', 'month_id', 'employee_discount_id', 'employer_contribution_id', 'active'];
 
 	public function month() {
 		return $this->belongsTo(Month::class);

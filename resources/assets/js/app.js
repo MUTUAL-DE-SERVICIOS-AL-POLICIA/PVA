@@ -6,7 +6,7 @@ import Vuex from 'vuex'
 import VeeValidate, { Validator } from 'vee-validate'
 import {routes} from './routes'
 import StoreData from './store'
-import AppMain from './components/AppMain.vue'
+import AppMain from './components/AppMain'
 import es from 'vee-validate/dist/locale/es'
 
 import toastr from 'toastr'

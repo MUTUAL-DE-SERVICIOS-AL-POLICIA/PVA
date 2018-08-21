@@ -32,7 +32,6 @@
       >
         <template slot="items" slot-scope="props">
           <tr>
-            <td @click="props.expanded = !props.expanded" class="text-md-center">{{ employees.indexOf(props.item)+1 }}</td>
             <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
             <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
             <td @click="props.expanded = !props.expanded" class="text-md-center">{{ props.item.birth_date | moment("DD/MM/YYYY") }} </td>
@@ -64,7 +63,7 @@
             </td>
           </tr>
         </template>
-        <template slot="expand" scope="props">
+        <template slot="expand" scope="{ item }">
           <v-card>
             <v-card-text>
               <table>
@@ -73,7 +72,7 @@
                     <v-list-tile-content class="font-weight-bold">Ciudad:</v-list-tile-content>
                   </td>
                   <td>
-                    <v-list-tile-content>{{ props.item.location}}</v-list-tile-content>
+                    <v-list-tile-content>{{ item.location }}</v-list-tile-content>
                   </td>
                 </tr>
                 <tr>
@@ -81,7 +80,7 @@
                     <v-list-tile-content class="font-weight-bold">Zona:</v-list-tile-content>
                   </td>
                   <td>
-                    <v-list-tile-content>{{ props.item.zone}}</v-list-tile-content>
+                    <v-list-tile-content>{{ item.zone }}</v-list-tile-content>
                   </td>
                 </tr>
                 <tr>
@@ -89,7 +88,7 @@
                     <v-list-tile-content class="font-weight-bold">Calle:</v-list-tile-content>
                   </td>
                   <td>
-                    <v-list-tile-content>{{ props.item.street}}</v-list-tile-content>
+                    <v-list-tile-content>{{ item.street }}</v-list-tile-content>
                   </td>
                 </tr>
                 <tr>
@@ -97,7 +96,7 @@
                     <v-list-tile-content class="font-weight-bold">Número:</v-list-tile-content>
                   </td>
                   <td>
-                    <v-list-tile-content>{{ props.item.address_number}}</v-list-tile-content>
+                    <v-list-tile-content>{{ item.address_number }}</v-list-tile-content>
                   </td>
                 </tr>
                 <tr>
@@ -105,7 +104,7 @@
                     <v-list-tile-content class="font-weight-bold">Teléfono:</v-list-tile-content>
                   </td>
                   <td>
-                    <v-list-tile-content>{{ props.item.phone_number}}</v-list-tile-content>
+                    <v-list-tile-content>{{ item.phone_number }}</v-list-tile-content>
                   </td>
                 </tr>
               </table>
@@ -133,13 +132,13 @@ export default {
   data() {
     return {
       bus: new Vue(),
+      startIndex: 0,
       dialog: false,
       active: JSON.parse(this.$route.params.active),
       toggle_one: 0,
       employees: [],
       search: "",
       headers: [
-        { align: "center", text: "#", sortable: false },
         { align: "center", text: "C.I.", value: "identity_card" },
         { text: "Funcionario", value: "last_name" },
         { align: "center", text: "Fecha de Nacimiento", value: "birth_date" },

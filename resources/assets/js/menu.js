@@ -33,5 +33,12 @@ export const admin = [
     params: {},
     title: 'Contratos',
     icon: 'work'
-  }
+  }, {
+    href: 'procedureIndex',
+    params: {
+      active: true
+    },
+    title: 'Planillas',
+    icon: 'attach_file'
+  },
 ]
