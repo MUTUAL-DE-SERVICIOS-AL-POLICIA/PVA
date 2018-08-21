@@ -26,18 +26,19 @@
         :headers="headers"
         :items="employees"
         :search="search"
+        :custom-filter="filteredItems"
         disable-initial-sort
         expand
       >
         <template slot="items" slot-scope="props">
-          <tr @click="props.expanded = !props.expanded">
-            <td class="text-md-center">{{ employees.indexOf(props.item)+1 }}</td>
-            <td class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
-            <td>{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
-            <td class="text-md-center">{{ props.item.birth_date | moment("DD/MM/YYYY") }} </td>
-            <td>{{ props.item.account_number || '' }} </td>
-            <td>{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
-            <td>{{ props.item.nua_cua || '' }} </td>
+          <tr>
+            <td @click="props.expanded = !props.expanded" class="text-md-center">{{ employees.indexOf(props.item)+1 }}</td>
+            <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
+            <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
+            <td @click="props.expanded = !props.expanded" class="text-md-center">{{ props.item.birth_date | moment("DD/MM/YYYY") }} </td>
+            <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
+            <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
+            <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
             <td class="text-md-center">
               <v-switch
                 v-model="props.item.active"
@@ -119,7 +120,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
+import Vue from "vue";
 import EmployeeEdit from "./EmployeeEdit";
 import RemoveItem from "../RemoveItem";
 
@@ -146,34 +147,42 @@ export default {
         { text: "AFP", value: "name" },
         { text: "CUA/NUA", value: "nua_cua" },
         { align: "center", text: "Activo", value: "active", sortable: false },
-        { align: "center", text: "Acciones", sortable: false },
+        { align: "center", text: "Acciones", sortable: false }
       ],
       subHeaders: [
-        { align: "center", value: 'name', text: "Name", sortable: false },
+        { align: "center", value: "name", text: "Name", sortable: false }
       ],
-      subItems: [
-        { name: 'asdfasdf' }
-      ]
+      subItems: [{ name: "asdfasdf" }]
     };
   },
   watch: {
-    "$route.params.active": function(active) {
-      this.getEmployees(active);
+    "$route.params.active": val => {
+      location.reload();
     }
   },
   async mounted() {
-    this.getEmployees(this.active)
-    this.bus.$on('closeDialog', () => {
-      this.getEmployees(this.active)
-    })
+    this.getEmployees(this.active);
+    this.bus.$on("closeDialog", () => {
+      this.getEmployees(this.active);
+    });
   },
   methods: {
+    reset: function() {
+      var vm = this;
+      vm.drawComponent = false;
+      Vue.nextTick(function() {
+        vm.drawComponent = true;
+      });
+    },
+    filteredItems(items, search, filter) {
+      return items.filter(obj => {
+        return obj.active == this.active;
+      });
+    },
     async getEmployees(active = true) {
       try {
         let res = await axios.get(`/api/v1/employee`);
-        this.employees = res.data.filter(obj => {
-          return obj.active == active;
-        });
+        this.employees = res.data;
       } catch (e) {
         console.log(e);
       }
@@ -184,16 +193,19 @@ export default {
           active: !employee.active
         });
         this.getEmployees(this.active);
-        this.$router.push({ name: 'employeeIndex', params: { active: this.active }})
+        this.$router.push({
+          name: "employeeIndex",
+          params: { active: this.active }
+        });
       } catch (e) {
         console.log(e);
       }
     },
     editItem(employee) {
-      this.bus.$emit('openDialog', employee)
+      this.bus.$emit("openDialog", employee);
     },
     removeItem(employee) {
-      this.bus.$emit('openDialogRemove', `/api/v1/employee/${employee.id}`)
+      this.bus.$emit("openDialogRemove", `/api/v1/employee/${employee.id}`);
     }
   }
 };
