@@ -62,7 +62,7 @@
             <div class="camp" style="width: 13cm;height: 0.5cm;"> {{ $employer_number->company->name }} </div>
             <div class="camp" style="width: 9cm;height: 0.5cm;"> {{ $employer_number->number }} </div>
         </div>
-        <div class="five">
+        <div>
             <div class="camp" style="width: 16cm;height: 1cm;"> La Paz, {{ Carbon::now()->day }} de {{ Carbon::now()->format('F') }} del {{ Carbon::now()->year }} </div>
         </div>
     </div>
