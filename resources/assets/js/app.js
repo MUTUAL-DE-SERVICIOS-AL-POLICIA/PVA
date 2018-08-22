@@ -29,7 +29,11 @@ Vue.component('my-transition', myTransition)
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Vuex)
-Vue.use(require('vue-moment'));
+const moment = require('moment')
+require('moment/locale/es')
+Vue.use(require('vue-moment'), {
+    moment
+});
 
 Validator.localize({
   es: es
