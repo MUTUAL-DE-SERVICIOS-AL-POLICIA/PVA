@@ -172,6 +172,9 @@ return [
 
 		// CORS
 		Barryvdh\Cors\ServiceProvider::class,
+
+		// Snappy
+		Barryvdh\Snappy\ServiceProvider::class,
 	],
 
 	/*
@@ -227,6 +230,10 @@ return [
 
 		// ACL Entrust
 		'Laratrust' => Laratrust\LaratrustFacade::class,
+
+		// Snappy
+		'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
+        'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
 	],
 
 ];
