@@ -4,20 +4,30 @@
         <v-toolbar-title>Contratos</v-toolbar-title>        
         <v-spacer></v-spacer>
         <v-toolbar-title>
-          <v-switch :label="`Contratos ${contracState}`" v-model="switch1" @click.native="contractStatus()" class="mt-3"></v-switch>
+          <v-switch :label="`Contratos ${contracState}`" v-model="switch1" @click.native="contractStatus()" color="primary" class="mt-4"></v-switch>
         </v-toolbar-title>
-        <v-spacer></v-spacer>        
-        <ContractForm :contract="{}" :bus="bus"/>
-        <RemoveItem :bus="bus"/>
-        <v-toolbar-title slot="extension" class="white--text">
+        <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+        <v-toolbar-title>
           <v-text-field
-            v-model="search"
-            append-icon="fa fa-search"
-            label="Buscar"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-toolbar-title>        
+              v-model="search"
+              append-icon="search"
+              label="Buscar"
+              single-line
+              hide-details
+              width="20px"
+            ></v-text-field>
+        </v-toolbar-title>
+        <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+        <ContractForm :contract="{}" :bus="bus"/>
+        <RemoveItem :bus="bus"/>        
     </v-toolbar>      
     <v-data-table
         :headers="headers"
@@ -27,7 +37,6 @@
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr v-if="props.item.active==switch1">
-            <td @click="expanded[props.item.id] = !expanded[props.item.id]"> {{ contracts.indexOf(props.item) +1 }} </td>
             <td class="text-xs-left" @click="expanded[props.item.id] = !expanded[props.item.id]"> {{ props.item.employee.identity_card }} {{ props.item.employee.city_identity_card.shortened }} </td>
             <td class="text-xs-left" @click="expanded[props.item.id] = !expanded[props.item.id]"> {{ fullName(props.item.employee) }} </td>
             <td class="text-xs-left" @click="expanded[props.item.id] = !expanded[props.item.id]"> {{ props.item.position.name }}</td>
@@ -46,12 +55,9 @@
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
                 </v-btn>
                 <v-list>
-                  <v-list-tile
-                    v-for="(item, index) in [{ title: 'Contrato' },{ title: 'Afiliación al seguro' },{ title: 'Baja del seguro' }]"
-                    :key="index"
-                    @click=""                  >
-                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                  </v-list-tile>
+                  <v-list-tile @click="print(props.item)"> Contract</v-list-tile>
+                  <v-list-tile @click="printUp(props.item)"> Alta del seguro</v-list-tile>
+                  <v-list-tile @click="printLow(props.item)"> Baja del seguro</v-list-tile>
                 </v-list>
               </v-menu>
 
@@ -125,10 +131,6 @@ export default {
   data: () => ({ 
     bus: new Vue(),   
     headers: [
-      {
-        text:     '#',
-        sortable: false
-      },
       {
         text:     'C.I.',
         value:    'employee.identity_card',
@@ -216,7 +218,16 @@ export default {
           let names = `${employee.last_name || ''} ${employee.mothers_last_name || ''} ${employee.surname_husband || ''} ${employee.first_name || ''} ${employee.second_name || ''} `
           names = names.replace(/\s+/gi, ' ').trim().toUpperCase();
           return names;
-    } 
+    },
+    print (item) {
+      printJS({printable:"api/v1/contract/print/" + item.id + "/printEventual", type:"pdf", showModal:true, modalMessage: "Generando documento por favor espere un momento."})
+    },
+    printUp (item) {
+      printJS({printable:"api/v1/contract/print/" + item.id + "/printUp", type:"pdf", showModal:true, modalMessage: "Generando documento por favor espere un momento."})
+    },
+    printLow (item) {
+      printJS({printable:"api/v1/contract/print/" + item.id + "/printLow", type:"pdf", showModal:true, modalMessage: "Generando documento por favor espere un momento."})
+    }
   }
 }
 </script>

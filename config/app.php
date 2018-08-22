@@ -65,7 +65,7 @@ return [
 	*/
 
 	// 'timezone' => 'UTC',
-	'timezone' => env('APP_TIMEZONE', 'UTC'),
+	'timezone' => 'America/La_Paz',
 
 	/*
 		  |--------------------------------------------------------------------------
@@ -79,7 +79,7 @@ return [
 	*/
 
 	// 'locale' => 'en',
-	'locale' => env('APP_LOCALE', 'en'),
+	'locale' => 'es',
 
 	/*
 		  |--------------------------------------------------------------------------
@@ -234,6 +234,12 @@ return [
 		// Snappy
 		'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
+
+        // Util
+        'Util' => App\Helpers\Util::class,
+
+        // Carbon
+        'Carbon' => \Carbon\Carbon::class,
 	],
 
 ];
