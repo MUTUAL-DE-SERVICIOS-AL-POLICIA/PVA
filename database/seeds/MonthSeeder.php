@@ -10,18 +10,18 @@ class MonthSeeder extends Seeder {
 	 */
 	public function run() {
 		$months = [
-			['order' => 1, 'name' => 'Enero', 'shortened' => 'ENE'],
-			['order' => 2, 'name' => 'Febrero', 'shortened' => 'FEB'],
-			['order' => 3, 'name' => 'Marzo', 'shortened' => 'MAR'],
-			['order' => 4, 'name' => 'Abril', 'shortened' => 'ABR'],
-			['order' => 5, 'name' => 'Mayo', 'shortened' => 'MAY'],
-			['order' => 6, 'name' => 'Junio', 'shortened' => 'JUN'],
-			['order' => 7, 'name' => 'Julio', 'shortened' => 'JUL'],
-			['order' => 8, 'name' => 'Agosto', 'shortened' => 'AGO'],
-			['order' => 9, 'name' => 'Septiembre', 'shortened' => 'SEP'],
-			['order' => 10, 'name' => 'Octubre', 'shortened' => 'OCT'],
-			['order' => 11, 'name' => 'Noviembre', 'shortened' => 'NOV'],
-			['order' => 12, 'name' => 'Diciembre', 'shortened' => 'DIC'],
+			['order' => 1, 'name' => 'ENERO', 'shortened' => 'ENE'],
+			['order' => 2, 'name' => 'FEBRERO', 'shortened' => 'FEB'],
+			['order' => 3, 'name' => 'MARZO', 'shortened' => 'MAR'],
+			['order' => 4, 'name' => 'ABRIL', 'shortened' => 'ABR'],
+			['order' => 5, 'name' => 'MAYO', 'shortened' => 'MAY'],
+			['order' => 6, 'name' => 'JUNIO', 'shortened' => 'JUN'],
+			['order' => 7, 'name' => 'JULIO', 'shortened' => 'JUL'],
+			['order' => 8, 'name' => 'AGOSTO', 'shortened' => 'AGO'],
+			['order' => 9, 'name' => 'SEPTIEMBRE', 'shortened' => 'SEP'],
+			['order' => 10, 'name' => 'OCTUBRE', 'shortened' => 'OCT'],
+			['order' => 11, 'name' => 'NOVIEMBRE', 'shortened' => 'NOV'],
+			['order' => 12, 'name' => 'DICIEMBRE', 'shortened' => 'DIC'],
 		];
 
 		foreach ($months as $month) {

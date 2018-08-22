@@ -21,7 +21,7 @@ class CreateProceduresTable extends Migration {
 			$table->foreign('employee_discount_id')->references('id')->on('employee_discounts');
 			$table->integer('employer_contribution_id');
 			$table->foreign('employer_contribution_id')->references('id')->on('employer_contributions');
-			$table->boolean('active');
+			$table->boolean('active')->default(true);
 			$table->timestamps();
 			$table->softDeletes();
 		});

@@ -45,7 +45,6 @@ Route::macro('common_routes', function () {
 		Route::get('', 'Api\V1\EmployerNumberInsuranceCompanyController@get_insurance_company');
 		Route::patch('', 'Api\V1\EmployerNumberInsuranceCompanyController@set_insurance_company');
 	});
-
 });
 
 Route::macro('general_routes', function () {
@@ -103,6 +102,12 @@ Route::macro('general_routes', function () {
 	});
 	Route::resource('employer_contribution', 'Api\V1\EmployerContributionController')->except(['create', 'edit']);
 	Route::resource('employee_discount', 'Api\V1\EmployeeDiscountController')->except(['create', 'edit']);
+	Route::group([
+		'prefix' => 'procedure/year',
+	], function () {
+		Route::get('/list', 'Api\V1\ProcedureYearController@years');
+		Route::get('/{year}', 'Api\V1\ProcedureYearController@with_year');
+	});
 });
 
 Route::macro('admin_routes', function () {

@@ -23,98 +23,98 @@
       <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
-        :headers="headers"
-        :items="employees"
-        :search="search"
-        :custom-filter="filteredItems"
-        disable-initial-sort
-        expand
-      >
-        <template slot="items" slot-scope="props">
-          <tr>
-            <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
-            <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
-            <td @click="props.expanded = !props.expanded" class="text-md-center">{{ props.item.birth_date | moment("DD/MM/YYYY") }} </td>
-            <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
-            <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
-            <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-            <td class="text-md-center">
-              <v-switch
-                v-model="props.item.active"
-                @click="switchActive(props.item)"
-              ></v-switch>
-            </td>
-            <td class="text-md-center">
-              <v-layout wrap>
-                <v-flex xs3 sm3 md3>
-                  <v-tooltip btn top>
-                    <v-icon medium slot="activator" color="primary" @click="editItem(props.item)">edit</v-icon>
-                    <span>Editar</span>
-                  </v-tooltip>
-                </v-flex>
-                <v-spacer></v-spacer>
-                <v-flex xs3 sm3 md3>
-                  <v-tooltip btn top>
-                    <v-icon medium slot="activator" color="error" @click="removeItem(props.item)">close</v-icon>
-                    <span>Eliminar</span>
-                  </v-tooltip>
-                </v-flex>
-              </v-layout>
-            </td>
-          </tr>
-        </template>
-        <template slot="expand" scope="{ item }">
-          <v-card>
-            <v-card-text>
-              <table>
-                <tr>
-                  <td>
-                    <v-list-tile-content class="font-weight-bold">Ciudad:</v-list-tile-content>
-                  </td>
-                  <td>
-                    <v-list-tile-content>{{ item.location }}</v-list-tile-content>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <v-list-tile-content class="font-weight-bold">Zona:</v-list-tile-content>
-                  </td>
-                  <td>
-                    <v-list-tile-content>{{ item.zone }}</v-list-tile-content>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <v-list-tile-content class="font-weight-bold">Calle:</v-list-tile-content>
-                  </td>
-                  <td>
-                    <v-list-tile-content>{{ item.street }}</v-list-tile-content>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <v-list-tile-content class="font-weight-bold">Número:</v-list-tile-content>
-                  </td>
-                  <td>
-                    <v-list-tile-content>{{ item.address_number }}</v-list-tile-content>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <v-list-tile-content class="font-weight-bold">Teléfono:</v-list-tile-content>
-                  </td>
-                  <td>
-                    <v-list-tile-content>{{ item.phone_number }}</v-list-tile-content>
-                  </td>
-                </tr>
-              </table>
-            </v-card-text>
-          </v-card>
-        </template>
-        <v-alert slot="no-results" :value="true" color="error">
-          La búsqueda de "{{ search }}" no encontró resultados.
-        </v-alert>
-      </v-data-table>
+      :headers="headers"
+      :items="employees"
+      :search="search"
+      :custom-filter="filteredItems"
+      disable-initial-sort
+      expand
+    >
+      <template slot="items" slot-scope="props">
+        <tr>
+          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
+          <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
+          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ props.item.birth_date | moment("DD/MM/YYYY") }} </td>
+          <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
+          <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
+          <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
+          <td class="text-md-center">
+            <v-switch
+              v-model="props.item.active"
+              @click="switchActive(props.item)"
+            ></v-switch>
+          </td>
+          <td class="text-md-center">
+            <v-layout wrap>
+              <v-flex xs3 sm3 md3>
+                <v-tooltip btn top>
+                  <v-icon medium slot="activator" color="primary" @click="editItem(props.item)">edit</v-icon>
+                  <span>Editar</span>
+                </v-tooltip>
+              </v-flex>
+              <v-spacer></v-spacer>
+              <v-flex xs3 sm3 md3>
+                <v-tooltip btn top>
+                  <v-icon medium slot="activator" color="error" @click="removeItem(props.item)">close</v-icon>
+                  <span>Eliminar</span>
+                </v-tooltip>
+              </v-flex>
+            </v-layout>
+          </td>
+        </tr>
+      </template>
+      <template slot="expand" scope="{ item }">
+        <v-card>
+          <v-card-text>
+            <table>
+              <tr>
+                <td>
+                  <v-list-tile-content class="font-weight-bold">Ciudad:</v-list-tile-content>
+                </td>
+                <td>
+                  <v-list-tile-content>{{ item.location }}</v-list-tile-content>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <v-list-tile-content class="font-weight-bold">Zona:</v-list-tile-content>
+                </td>
+                <td>
+                  <v-list-tile-content>{{ item.zone }}</v-list-tile-content>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <v-list-tile-content class="font-weight-bold">Calle:</v-list-tile-content>
+                </td>
+                <td>
+                  <v-list-tile-content>{{ item.street }}</v-list-tile-content>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <v-list-tile-content class="font-weight-bold">Número:</v-list-tile-content>
+                </td>
+                <td>
+                  <v-list-tile-content>{{ item.address_number }}</v-list-tile-content>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <v-list-tile-content class="font-weight-bold">Teléfono:</v-list-tile-content>
+                </td>
+                <td>
+                  <v-list-tile-content>{{ item.phone_number }}</v-list-tile-content>
+                </td>
+              </tr>
+            </table>
+          </v-card-text>
+        </v-card>
+      </template>
+      <v-alert slot="no-results" :value="true" color="error">
+        La búsqueda de "{{ search }}" no encontró resultados.
+      </v-alert>
+    </v-data-table>
   </v-container>
 </template>
 
