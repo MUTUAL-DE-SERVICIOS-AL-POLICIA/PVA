@@ -1,6 +1,9 @@
 <template>
-  <v-dialog persistent v-model="dialog" max-width="900px">            
-    <v-btn slot="activator" color="primary" dark class="mb-2">Nuevo contrato</v-btn>
+  <v-dialog persistent v-model="dialog" max-width="900px">
+    <v-tooltip slot="activator" top>
+      <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
+      <span>Nuevo Contrato</span>
+    </v-tooltip>
     <v-card>
       <v-toolbar dark color="primary" dense flat>
         <v-toolbar-title class="white--text">{{ formTitle }}</v-toolbar-title>
