@@ -4,11 +4,14 @@
         <v-toolbar-title>Compañia</v-toolbar-title>        
         <v-spacer></v-spacer>        
         <v-dialog persistent v-model="dialog" max-width="900px">
-            <v-btn slot="activator" color="primary" dark class="mb-2">Nueva Compañia</v-btn>
+            <v-tooltip slot="activator" top>
+              <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
+              <span>Nuevo Contrato</span>
+            </v-tooltip>
             <v-card>
-            <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
-            </v-card-title>  
+            <v-toolbar dark color="primary" dense flat>
+              <v-toolbar-title class="white--text">{{ formTitle }}</v-toolbar-title>
+            </v-toolbar> 
             <v-card-text>
               <v-container grid-list-md>
                 <v-form ref="form">
@@ -65,20 +68,11 @@
             </v-card-text>  
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="danger" block @click="close">Cancelar</v-btn>
-              <v-btn color="success" block :disabled="!valid" @click="save()">Guardar</v-btn>
+              <v-btn color="error" block @click="close"><v-icon>close</v-icon> Cancelar</v-btn>
+              <v-btn color="success" block :disabled="!valid" @click="save()"><v-icon>check</v-icon> Guardar</v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>  
-        <v-toolbar-title slot="extension" class="white--text">
-          <v-text-field
-            v-model="search"
-            append-icon="fa fa-search"
-            label="Buscar"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-toolbar-title>        
+        </v-dialog>
     </v-toolbar>      
     <v-data-table
         :headers="headers"
@@ -87,24 +81,18 @@
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr>
-            <td>
-              <v-icon 
-                small 
-                color="success"
-                v-html="expanded[props.item] ? 'remove_circle_outline' : 'add_circle_outline'" 
-                @click="expanded[props.item] = !expanded[props.item]">
-                  
-              </v-icon> {{ props.index + 1 }} 
-            </td>
-            <td class="text-xs-center"> {{ props.item.name }} </td>
-            <td class="text-xs-center">{{ props.item.shortened }}</td>
-            <td class="text-xs-center">{{ props.item.tax_number }} </td>
-            <td class="text-xs-center"> {{ props.item.document.document_type.name }} </td>
-            <td class="text-xs-center"> {{ props.item.document.name }} </td>
-            <td class="justify-center layout px-0">
-              <v-btn color="primary" dark @click="editItem(props.item)">
-                <v-icon dark>edit</v-icon>
-              </v-btn>
+            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.name }} </td>
+            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.shortened }}</td>
+            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.tax_number }} </td>
+            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.document.document_type.name }} </td>
+            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.document.name }} </td>
+            <td class="justify-center layout px-0">              
+              <v-tooltip top>
+                <v-btn slot="activator" flat icon color="primary" @click="editItem(props.item)">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+                <span>Editar</span>
+              </v-tooltip>
             </td>
           </tr>
           <tr class="expand" v-show="expanded[props.item]">
@@ -132,10 +120,6 @@
 export default {
   data: () => ({    
     headers: [
-      {
-        text:     '#',
-        sortable: false
-      },
       {
         text:     'Nombre',
         value:    'name',
@@ -251,14 +235,14 @@ export default {
           if (this.editedIndex > -1) {
             let resDoc = await axios.put('/api/v1/document/' + this.editedItemDoc.id, this.editedItemDoc)
             let res = await axios.put('/api/v1/company/' + this.editedItem.id, this.editedItem)
-            Object.assign(this.companies[this.editedIndex], res.data)
+            this.initialize()
             this.close()
             this.toastr.success('Editado correctamente')
           } else {
             let resDoc = await axios.post('/api/v1/document', this.editedItemDoc)
             this.editedItem.document_id = resDoc.data.id
             let res = await axios.post('/api/v1/company', this.editedItem)
-            this.companies.push(res.data)
+            this.initialize()
             this.close()
             this.toastr.success('Registrado correctamente')
           }
