@@ -233,13 +233,12 @@ return [
 
 		// Snappy
 		'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
-        'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
+		'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
 
-        // Util
-        'Util' => App\Helpers\Util::class,
+		// Util
+		'Util' => App\Helpers\Util::class,
 
-        // Carbon
-        'Carbon' => \Carbon\Carbon::class,
+		// Carbon
+		'Carbon' => \Carbon\Carbon::class,
 	],
-
 ];

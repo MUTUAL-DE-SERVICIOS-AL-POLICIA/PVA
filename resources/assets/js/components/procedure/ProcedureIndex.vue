@@ -57,6 +57,7 @@
                   <v-spacer></v-spacer>
                   <v-select
                     label="Planillas"
+                    :items="payrolls"
                   ></v-select>
                 </v-card-actions>
               </v-card>

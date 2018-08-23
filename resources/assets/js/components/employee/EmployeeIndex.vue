@@ -63,7 +63,7 @@
           </td>
         </tr>
       </template>
-      <template slot="expand" scope="{ item }">
+      <template slot="expand" slot-scope="{ item }">
         <v-card>
           <v-card-text>
             <table>

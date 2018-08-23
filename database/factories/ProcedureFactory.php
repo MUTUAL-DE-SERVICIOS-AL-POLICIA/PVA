@@ -1,6 +1,5 @@
 <?php
 
-use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 $factory->define(App\Procedure::class, function (Faker $faker) {
