@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -42,5 +43,37 @@ class Contract extends Model {
 
 	public function insurance_company() {
 		return $this->belongsTo(InsuranceCompany::class);
+	}
+
+	public function valid_date($year, $month) {
+		$last_day_of_month = Carbon::create($year, $month, 1)->endOfMonth()->format('Y-m-d');
+
+		return Contract::where('active', true)->where(function ($query) use ($year, $month, $last_day_of_month) {
+			$query
+				->orWhere(function ($q) use ($last_day_of_month) {
+					$q
+						->whereNull('retirement_date')
+						->whereNull('end_date')
+						->whereDate('start_date', '<=', $last_day_of_month);
+				})
+				->orWhere(function ($q) use ($year, $month) {
+					$q
+						->whereNotNull('retirement_date')
+						->whereYear('retirement_date', $year)
+						->whereMonth('retirement_date', $month);
+				})
+				->orWhere(function ($q) use ($last_day_of_month) {
+					$q
+						->whereNull('retirement_date')
+						->whereDate('end_date', '>=', $last_day_of_month)
+						->whereDate('start_date', '<', $last_day_of_month);
+				})
+				->orWhere(function ($q) use ($year, $month) {
+					$q
+						->whereNull('retirement_date')
+						->whereYear('start_date', $year)
+						->whereMonth('start_date', $month);
+				});
+		})->get();
 	}
 }

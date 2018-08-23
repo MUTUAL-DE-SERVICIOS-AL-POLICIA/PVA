@@ -24,15 +24,17 @@
               :key="procedure.id"
               xs12 sm4
             >
-              <v-card :color="procedure.active ? 'lime lighten-4' : 'green lighten-5'">
+              <v-card :color="procedure.active ? 'lime lighten-4' : 'green lighten-5'" height="100%">
                 <v-card-title>
-                  <h3>{{ procedure.month_name }}</h3>
+                  <h3>{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</h3>
                 </v-card-title>
-                <v-card-actions>
+                <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon>
+                  <v-btn icon v-if="procedure.active">
                     <v-tooltip top>
-                      <v-icon slot="activator" color="primary">edit</v-icon>
+                      <router-link slot="activator" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
+                        <v-icon color="primary">edit</v-icon>
+                      </router-link>
                       <span>Editar</span>
                     </v-tooltip>
                   </v-btn>
@@ -60,6 +62,12 @@
                     :items="payrolls"
                   ></v-select>
                 </v-card-actions>
+                <v-card-actions v-else>
+                  <v-spacer></v-spacer>
+                  <v-btn color="primary" @click="storeProcedure()">
+                    Registrar
+                  </v-btn>
+                </v-card-actions>
               </v-card>
             </v-flex>
           </v-layout>
@@ -75,6 +83,12 @@ export default {
     return {
       years: [],
       procedures: [],
+      newProcedure: {
+        new: true,
+        year: this.$moment().year(),
+        month_id: this.$moment().month() + 1,
+        active: true
+      },
       yearSelected: null,
       payrolls: [
         'B-1 (H)'
@@ -103,12 +117,27 @@ export default {
       try {
         let res = await axios.get(`/api/v1/procedure/year/${year}`);
         this.procedures = res.data;
+        if (year == this.newProcedure.year) {
+          if(this.procedures.filter(obj => {
+            return this.newProcedure.month_id == obj.month_order
+          }).length == 0) {
+            this.procedures.unshift(this.newProcedure)
+          }
+        }
       } catch (e) {
         console.log(e);
       }
     },
     changeYear() {
       this.getProcedures(this.yearSelected);
+    },
+    async storeProcedure() {
+      try {
+        let res = await axios.post(`/api/v1/procedure`, this.newProcedure);
+        this.getProcedures(this.newProcedure.year)
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 };

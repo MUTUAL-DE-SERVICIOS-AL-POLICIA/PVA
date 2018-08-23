@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Payroll;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PayrollForm;
+use App\Payroll;
+use App\Procedure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /** @resource Payroll
  *
@@ -28,8 +30,23 @@ class PayrollController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(PayrollForm $request) {
-		$payroll = Payroll::create($request->all());
-		return $payroll;
+		$procedure = Procedure::findOrFail($request['procedure_id']);
+		$year_shortened = substr(strval($procedure->year), -2);
+		if (Payroll::where('code', 'LIKE', "%-$year_shortened")->count() == 0) {
+			$code = implode([str_pad(1, 3, '0', STR_PAD_LEFT), $year_shortened], '-');
+		} else {
+			$payroll = Payroll::where('procedure_id', $request['procedure_id'])->where('charge_id', $request['charge_id'])->where('position_group_id', $request['position_group_id'])->where('position_id', $request['position_id'])->first();
+			if ($payroll) {
+				$code = $payroll->code;
+			} else {
+
+				$last_code = intval(substr(Payroll::where('procedure_id', $procedure->id)->orderBy('code', 'DESC')->select('code')->first()->code, 0, 3));
+				$code = implode([str_pad($last_code + 1, 3, '0', STR_PAD_LEFT), $year_shortened], '-');
+
+				LOG::debug($code);
+			}
+		}
+		return Payroll::create($request->all() + ['code' => $code]);
 	}
 
 	/**

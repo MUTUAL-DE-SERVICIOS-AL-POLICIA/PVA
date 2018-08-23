@@ -109,6 +109,12 @@ Route::macro('general_routes', function () {
 		Route::get('/list', 'Api\V1\ProcedureYearController@years');
 		Route::get('/{year}', 'Api\V1\ProcedureYearController@with_year');
 	});
+	Route::group([
+		'prefix' => 'procedure/{id}/payroll',
+	], function () {
+		Route::post('', 'Api\V1\ProcedurePayrollController@generate_payrolls');
+		Route::get('', 'Api\V1\ProcedurePayrollController@get_payrolls');
+	});
 });
 
 Route::macro('admin_routes', function () {

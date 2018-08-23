@@ -7,7 +7,6 @@ use App\EmployerContribution;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProcedureForm;
 use App\Procedure;
-use Carbon;
 use Illuminate\Http\Request;
 
 /** @resource Procedure
@@ -68,13 +67,6 @@ class ProcedureController extends Controller {
 		$procedure = Procedure::findOrFail($id);
 		$procedure->fill($request->all());
 		$procedure->save();
-		if ($procedure->active == false) {
-			$newDate = Carbon::create($procedure->year, $procedure->month_id, 1)->addMonth(1);
-			$this->store(new ProcedureForm([
-				'year' => $newDate->year,
-				'month_id' => $newDate->month,
-			]));
-		}
 		return $procedure;
 	}
 

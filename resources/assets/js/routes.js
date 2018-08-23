@@ -4,6 +4,7 @@ import Employee from './components/employee/EmployeeIndex'
 import Company from './components/company/CompanyIndex'
 import Contract from './components/contract/ContractIndex'
 import Procedure from './components/procedure/ProcedureIndex'
+import ProcedureEdit from './components/procedure/ProcedureEdit'
 
 export const routes = [
   {
@@ -47,6 +48,13 @@ export const routes = [
     path: '/procedure',
     component: Procedure,
     name: 'procedureIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/procedure/:id',
+    component: ProcedureEdit,
+    name: 'procedureEdit',
     meta: {
       requiresAuth: true
     }

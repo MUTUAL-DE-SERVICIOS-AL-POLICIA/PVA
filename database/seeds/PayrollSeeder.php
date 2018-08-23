@@ -17,7 +17,7 @@ class PayrollSeeder extends Seeder {
 
 		foreach ($contracts as $i => $contract) {
 			App\Payroll::create([
-				'code' => implode([str_pad(++$i, 3, '0', STR_PAD_LEFT), $month_shortened, $year_shortened], '-'),
+				'code' => implode([str_pad(++$i, 3, '0', STR_PAD_LEFT), $year_shortened], '-'),
 				'unworked_days' => rand(0, 3),
 				'procedure_id' => $procedure->id,
 				'contract_id' => $contract->id,

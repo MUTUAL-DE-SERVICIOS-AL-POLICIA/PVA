@@ -46,18 +46,21 @@
           </td>
           <td class="text-md-center">
             <v-layout wrap>
-              <v-flex xs3 sm3 md3>
-                <v-tooltip btn top>
-                  <v-icon medium slot="activator" color="primary" @click="editItem(props.item)">edit</v-icon>
-                  <span>Editar</span>
-                </v-tooltip>
+              <v-flex xs6 sm6 md6>
+                <v-btn icon>
+                  <v-tooltip top>
+                    <v-icon medium slot="activator" color="primary" @click="editItem(props.item)">edit</v-icon>
+                    <span>Editar</span>
+                  </v-tooltip>
+                </v-btn>
               </v-flex>
-              <v-spacer></v-spacer>
-              <v-flex xs3 sm3 md3>
-                <v-tooltip btn top>
-                  <v-icon medium slot="activator" color="error" @click="removeItem(props.item)">close</v-icon>
-                  <span>Eliminar</span>
-                </v-tooltip>
+              <v-flex xs6 sm6 md6>
+                <v-btn icon>
+                  <v-tooltip top>
+                    <v-icon medium slot="activator" color="error" @click="removeItem(props.item)">close</v-icon>
+                    <span>Eliminar</span>
+                  </v-tooltip>
+                </v-btn>
               </v-flex>
             </v-layout>
           </td>
