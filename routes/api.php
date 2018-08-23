@@ -23,6 +23,7 @@ Route::macro('common_routes', function () {
 			Route::delete('', 'Api\V1\DependencyPositionController@unset_dependent');
 		});
 	});
+	Route::get('contract/print/{id}/{type}', 'Api\V1\ContractController@print');
 	Route::resource('contract', 'Api\V1\ContractController')->except(['create', 'edit']);
 	Route::resource('jobs_chedule', 'Api\V1\JobScheduleController')->except(['create', 'edit']);
 	Route::resource('document', 'Api\V1\DocumentController')->except(['create', 'edit']);

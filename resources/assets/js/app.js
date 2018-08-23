@@ -13,6 +13,7 @@ import toastr from 'toastr'
 import 'toastr/build/toastr.min.css'
 Vue.prototype.toastr = toastr
 
+import print from 'print-js'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import ess from './es.js'
 import Vuetify from 'vuetify'
@@ -29,7 +30,11 @@ Vue.component('my-transition', myTransition)
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Vuex)
-Vue.use(require('vue-moment'));
+const moment = require('moment')
+require('moment/locale/es')
+Vue.use(require('vue-moment'), {
+    moment
+});
 
 Validator.localize({
   es: es
