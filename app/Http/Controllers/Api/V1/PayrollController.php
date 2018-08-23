@@ -7,7 +7,6 @@ use App\Http\Requests\PayrollForm;
 use App\Payroll;
 use App\Procedure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 /** @resource Payroll
  *
@@ -39,11 +38,14 @@ class PayrollController extends Controller {
 			if ($payroll) {
 				$code = $payroll->code;
 			} else {
-
-				$last_code = intval(substr(Payroll::where('procedure_id', $procedure->id)->orderBy('code', 'DESC')->select('code')->first()->code, 0, 3));
+				$last_code = Payroll::where('procedure_id', $procedure->id)->orderBy('code', 'DESC')->select('code')->first();
+				if ($last_code) {
+					$last_code = intval(substr($last_code->code, 0, 3));
+				} else {
+					$last_code = Payroll::orderBy('code', 'DESC')->select('code')->first();
+					$last_code = intval(substr($last_code->code, 0, 3));
+				}
 				$code = implode([str_pad($last_code + 1, 3, '0', STR_PAD_LEFT), $year_shortened], '-');
-
-				LOG::debug($code);
 			}
 		}
 		return Payroll::create($request->all() + ['code' => $code]);

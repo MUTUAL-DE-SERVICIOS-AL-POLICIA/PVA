@@ -133,8 +133,13 @@ export default {
     },
     async storeProcedure() {
       try {
-        let res = await axios.post(`/api/v1/procedure`, this.newProcedure);
+        
+        let procedure = await axios.post(`/api/v1/procedure`, this.newProcedure);
+        procedure = procedure.data;
+        let payrolls = await axios.post(`/api/v1/procedure/${procedure.id}/payroll`);
+        payrolls = payrolls.data;
         this.getProcedures(this.newProcedure.year)
+        this.toastr.success(`Generados ${payrolls.generated} registros para el mes de ${this.$moment().month(procedure.month_id-1).format('MMMM').toUpperCase()}`)
       } catch (e) {
         console.log(e);
       }
