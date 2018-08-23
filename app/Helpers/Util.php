@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Carbon;
+
 class Util {
 
 	public static function formatMoney($value) {
