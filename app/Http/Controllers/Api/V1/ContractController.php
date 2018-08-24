@@ -98,7 +98,7 @@ class ContractController extends Controller
             $headerHtml = '';
             $pageWidth  = '202';
             $pageHeight = '130';
-            $pageMargins = [10, 14, 12, 12];
+            $pageMargins = [10, 11, 12, 11];
             $pageName = 'seguro.pdf';
         }
         return \PDF::loadView('contract.' . $type, $data)

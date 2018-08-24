@@ -24,15 +24,8 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar app :clipped-left="clipped" v-if="this.$store.getters.currentUser">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"><v-icon> fa fa-bars</v-icon> </v-toolbar-side-icon>
       <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon v-html="miniVariant ? 'fa fa-list' : 'fa fa-bars'"></v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>_</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>o</v-icon>
+        <v-icon v-html="miniVariant ? 'more_vert' : 'menu'"></v-icon>
       </v-btn>
       <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer></v-spacer>  
@@ -47,7 +40,7 @@
             dark
           >
           <template v-if="this.$store.getters.currentUser.username">
-            <label>Username</label>
+            <label></label>
             {{ this.$store.getters.currentUser.username }} [ {{ this.$store.getters.currentUser.roles[0].name }} ]
           </template>
           </v-btn>
@@ -78,9 +71,9 @@ import { guest, admin } from "../menu.js";
 export default {
   data() {
     return {
-      clipped: false,
+      clipped: true,
       drawer: true,
-      fixed: false,
+      fixed: true,
       menu_left: null,
       role: null,
       menu_user: [
@@ -89,7 +82,7 @@ export default {
           title: "Salir"
         }
       ],
-      miniVariant: false,
+      miniVariant: true,
       right: true,
       rightDrawer: false,
       title: "RRHH"
