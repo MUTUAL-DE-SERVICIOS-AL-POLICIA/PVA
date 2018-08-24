@@ -18,6 +18,7 @@ class CreateCompanyAccountsTable extends Migration {
 			$table->text('description')->nullable();
 			$table->integer('company_id')->unsigned();
 			$table->foreign('company_id')->references('id')->on('companies');
+			$table->boolean('active')->default(false);
 			$table->timestamps();
 			$table->softDeletes();
 		});

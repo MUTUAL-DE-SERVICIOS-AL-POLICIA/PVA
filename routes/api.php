@@ -117,6 +117,9 @@ Route::macro('general_routes', function () {
 		Route::get('', 'Api\V1\ProcedurePayrollController@get_payrolls');
 	});
 	Route::get('procedure/{id}/discounts', 'Api\V1\ProcedureController@discounts');
+	Route::get('payroll/print/pdf/{year}/{month}', 'Api\V1\PayrollPrintController@print_pdf')->name('print_pdf_payroll');
+	Route::get('payroll/print/txt/{year}/{month}', 'Api\V1\PayrollPrintController@print_txt')->name('print_txt_payroll');
+	Route::get('payroll/print/ovt/{year}/{month}', 'Api\V1\PayrollPrintController@print_ovt')->name('print_ovt_payroll');
 });
 
 Route::macro('admin_routes', function () {
