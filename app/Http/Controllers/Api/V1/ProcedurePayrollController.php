@@ -22,7 +22,7 @@ class ProcedurePayrollController extends Controller {
 	 */
 	public function get_payrolls($procedure_id) {
 		$procedure = Procedure::findOrFail($procedure_id);
-		return Payroll::where('procedure_id', $procedure->id)->get();
+		return Payroll::where('procedure_id', $procedure->id)->with('contract.position', 'contract.position.charge', 'contract.position.position_group', 'contract.employee', 'contract.employee.city_identity_card')->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->select('payrolls.*')->get();
 	}
 
 	/**

@@ -28,6 +28,7 @@ class CreatePayrollsTable extends Migration {
 			$table->decimal('faults', 7, 2)->default(0);
 			$table->decimal('next_month_balance', 7, 2)->default(0);
 			$table->decimal('previous_month_balance', 7, 2)->default(0);
+			$table->decimal('rc_iva', 7, 2)->default(0);
 			$table->timestamps();
 			$table->softDeletes();
 		});

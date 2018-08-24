@@ -81,4 +81,14 @@ class ProcedureController extends Controller {
 		$procedure->delete();
 		return $procedure;
 	}
+
+	/**
+	 * Display the specified procedure's discounts.
+	 *
+	 * @param  int  $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function discounts($id) {
+		return Procedure::where('id', $id)->with('month')->with('employee_discount')->with('employer_contribution')->first();
+	}
 }

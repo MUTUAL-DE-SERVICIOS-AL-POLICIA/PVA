@@ -10,7 +10,7 @@ class Payroll extends Model {
 	protected $dates = ['deleted_at'];
 	public $timestamps = true;
 	public $guarded = ['id'];
-	protected $fillable = ['code', 'unworked_days', 'procedure_id', 'contract_id', 'charge_id', 'position_group_id', 'position_id', 'faults', 'next_month_balance', 'previous_month_balance'];
+	protected $fillable = ['code', 'unworked_days', 'procedure_id', 'contract_id', 'charge_id', 'position_group_id', 'position_id', 'faults', 'next_month_balance', 'previous_month_balance', 'rc_iva'];
 
 	public function procedure() {
 		return $this->belongsTo(Procedure::class);

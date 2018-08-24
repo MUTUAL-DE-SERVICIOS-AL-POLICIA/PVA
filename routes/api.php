@@ -115,6 +115,7 @@ Route::macro('general_routes', function () {
 		Route::post('', 'Api\V1\ProcedurePayrollController@generate_payrolls');
 		Route::get('', 'Api\V1\ProcedurePayrollController@get_payrolls');
 	});
+	Route::get('procedure/{id}/discounts', 'Api\V1\ProcedureController@discounts');
 });
 
 Route::macro('admin_routes', function () {

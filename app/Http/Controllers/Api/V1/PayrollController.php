@@ -68,7 +68,7 @@ class PayrollController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(PayrollForm $request, $id) {
+	public function update(Request $request, $id) {
 		$payroll = Payroll::findOrFail($id);
 		$payroll->fill($request->all());
 		$payroll->save();

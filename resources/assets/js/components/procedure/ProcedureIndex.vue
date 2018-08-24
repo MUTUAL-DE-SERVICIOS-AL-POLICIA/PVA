@@ -14,65 +14,65 @@
       </v-flex>
     </v-toolbar>
     <v-card>
-        <v-container
-          fluid
-          grid-list-md
-        >
-          <v-layout row wrap>
-            <v-flex
-              v-for="procedure in procedures"
-              :key="procedure.id"
-              xs12 sm4
-            >
-              <v-card :color="procedure.active ? 'lime lighten-4' : 'green lighten-5'" height="100%">
-                <v-card-title>
-                  <h3>{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</h3>
-                </v-card-title>
-                <v-card-actions v-if="!procedure.new">
-                  <v-spacer></v-spacer>
-                  <v-btn icon v-if="procedure.active">
-                    <v-tooltip top>
-                      <router-link slot="activator" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
-                        <v-icon color="primary">edit</v-icon>
-                      </router-link>
-                      <span>Editar</span>
-                    </v-tooltip>
-                  </v-btn>
-                  <v-btn icon>
-                    <v-tooltip top>
-                      <v-icon slot="activator" color="primary">print</v-icon>
-                      <span>Imprimir boletas</span>
-                    </v-tooltip>
-                  </v-btn>
-                  <v-btn icon>
-                    <v-tooltip top>
-                      <v-icon slot="activator" color="primary">account_balance</v-icon>
-                      <span>TXT Banco</span>
-                    </v-tooltip>
-                  </v-btn>
-                  <v-btn icon>
-                    <v-tooltip top>
-                      <v-icon slot="activator" color="primary">work</v-icon>
-                      <span>CSV OVT</span>
-                    </v-tooltip>
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-select
-                    label="Planillas"
-                    :items="payrolls"
-                  ></v-select>
-                </v-card-actions>
-                <v-card-actions v-else>
-                  <v-spacer></v-spacer>
-                  <v-btn color="primary" @click="storeProcedure()">
-                    Registrar
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-card>
+      <v-container
+        fluid
+        grid-list-md
+      >
+        <v-layout row wrap>
+          <v-flex
+            v-for="procedure in procedures"
+            :key="procedure.id"
+            xs12 sm4
+          >
+            <v-card :color="procedure.active ? 'lime lighten-4' : 'green lighten-5'" height="100%">
+              <v-card-title>
+                <h3>{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</h3>
+              </v-card-title>
+              <v-card-actions v-if="!procedure.new">
+                <v-spacer></v-spacer>
+                <v-btn icon v-if="procedure.active">
+                  <v-tooltip top>
+                    <router-link slot="activator" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
+                      <v-icon color="primary">edit</v-icon>
+                    </router-link>
+                    <span>Editar</span>
+                  </v-tooltip>
+                </v-btn>
+                <v-btn icon>
+                  <v-tooltip top>
+                    <v-icon slot="activator" color="primary">print</v-icon>
+                    <span>Imprimir boletas</span>
+                  </v-tooltip>
+                </v-btn>
+                <v-btn icon>
+                  <v-tooltip top>
+                    <v-icon slot="activator" color="primary">account_balance</v-icon>
+                    <span>TXT Banco</span>
+                  </v-tooltip>
+                </v-btn>
+                <v-btn icon>
+                  <v-tooltip top>
+                    <v-icon slot="activator" color="primary">work</v-icon>
+                    <span>CSV OVT</span>
+                  </v-tooltip>
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-select
+                  label="Planillas"
+                  :items="payrolls"
+                ></v-select>
+              </v-card-actions>
+              <v-card-actions v-else>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="storeProcedure()">
+                  Registrar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-card>
   </v-container>
 </template>
 
