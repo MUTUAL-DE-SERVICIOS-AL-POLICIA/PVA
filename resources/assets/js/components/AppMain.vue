@@ -27,12 +27,10 @@
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon v-html="miniVariant ? 'more_vert' : 'menu'"></v-icon>
       </v-btn>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
+      <v-toolbar-title v-text="titles"></v-toolbar-title>
       <v-spacer></v-spacer>  
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat>Notificaciones</v-btn>
-        <v-btn flat>Mensajes</v-btn>
         <v-menu offset-y>
           <v-btn
             slot="activator"
@@ -45,11 +43,8 @@
           </template>
           </v-btn>
           <v-list>
-            <v-list-tile
-              v-for="item in menu_user"
-              :key="item.title"
-            >
-              <v-list-tile-title @click="logout">{{ item.title }}</v-list-tile-title>
+            <v-list-tile @click="logout">
+              <v-icon>lock</v-icon> Cerrar Sesión
             </v-list-tile>
           </v-list>
         </v-menu>
@@ -61,7 +56,7 @@
       </v-scale-transition>
      </v-content>
      <v-footer :fixed="fixed" app v-if="this.$store.getters.currentUser">
-      <span>&copy; 2017</span>
+      <span>MUSERPOL &copy; 2018</span>
     </v-footer>
     </v-app>
 </template>
@@ -76,16 +71,11 @@ export default {
       fixed: true,
       menu_left: null,
       role: null,
-      menu_user: [
-        {
-          icon: "",
-          title: "Salir"
-        }
-      ],
+      
       miniVariant: true,
       right: true,
       rightDrawer: false,
-      title: "RRHH"
+      titles: "SISTEMA DE RECURSOS HUMANOS"
     };
   },
   name: "app-header",

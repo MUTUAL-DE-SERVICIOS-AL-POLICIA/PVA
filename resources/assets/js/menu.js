@@ -15,7 +15,7 @@ export const admin = [
     href: 'home',
     params: {},
     title: 'Inicio',
-    icon: 'work'
+    icon: 'dashboard'
   }, {
     href: 'employeeIndex',
     params: {
