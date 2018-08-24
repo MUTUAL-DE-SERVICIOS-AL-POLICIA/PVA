@@ -1,6 +1,7 @@
 <?php
 
 Route::macro('common_routes', function () {
+	Route::get('ticket/print/{year}/{month}', 'Api\V1\TicketController@print')->name('print_ticket');
 	Route::resource('company', 'Api\V1\CompanyController')->except(['create', 'edit', 'destroy']);
 	Route::resource('employee', 'Api\V1\EmployeeController')->except(['create', 'edit']);
 	Route::get('employee/active/{active}', 'Api\V1\EmployeeController@filter_employees');
