@@ -81,11 +81,11 @@
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr>
-            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.name }} </td>
-            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.shortened }}</td>
-            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.tax_number }} </td>
-            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.document.document_type.name }} </td>
-            <td class="text-xs-center" @click="expanded[props.item] = !expanded[props.item]"> {{ props.item.document.name }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.name }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.shortened }}</td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.tax_number }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.document.document_type.name }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.document.name }} </td>
             <td class="justify-center layout px-0">              
               <v-tooltip top>
                 <v-btn slot="activator" flat icon color="primary" @click="editItem(props.item)">
@@ -95,17 +95,15 @@
               </v-tooltip>
             </td>
           </tr>
-          <tr class="expand" v-show="expanded[props.item]">
-            <td colspan="100%">
-              <v-expansion-panel>
-                <v-expansion-panel-content v-model="expanded[props.item]">
-                  <v-card>
-                    <v-card-text> Desctipción: {{ props.item.document.description }} </v-card-text>
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </td>
-          </tr>
+        </template>
+        <template slot="expand" slot-scope="props">
+          <v-card flat>
+            <v-card-text>
+              <v-list>
+                <v-list-tile-content><p><strong>Descripción: </strong>{{ props.item.document.description }}</p></v-list-tile-content>
+              </v-list>
+            </v-card-text>
+          </v-card>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="fa fa-times">
           Tu Busqueda de "{{ search }}" no encontró resultados.
@@ -198,9 +196,6 @@ export default {
         .get('api/v1/company')
         .then(response => {
           this.companies = response.data
-          this.companies.forEach(i => {
-            this.$set(this.expanded, i, false) 
-          })
         })
         .catch(error => {
           console.log(error)
