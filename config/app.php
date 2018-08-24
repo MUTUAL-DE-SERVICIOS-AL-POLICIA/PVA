@@ -175,6 +175,9 @@ return [
 
 		// Snappy
 		Barryvdh\Snappy\ServiceProvider::class,
+
+		// Barcode
+		Milon\Barcode\BarcodeServiceProvider::class,
 	],
 
 	/*
@@ -240,5 +243,9 @@ return [
 
 		// Carbon
 		'Carbon' => \Carbon\Carbon::class,
+
+		// Barcode
+		'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
+        'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
 	],
 ];

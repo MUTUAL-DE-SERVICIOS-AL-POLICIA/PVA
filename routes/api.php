@@ -1,7 +1,7 @@
 <?php
 
 Route::macro('common_routes', function () {
-	Route::get('ticket/print/{year}/{month}', 'Api\V1\TicketController@print')->name('print_ticket');
+	Route::get('ticket/print/{id}', 'Api\V1\TicketController@print');
 	Route::resource('company', 'Api\V1\CompanyController')->except(['create', 'edit', 'destroy']);
 	Route::resource('employee', 'Api\V1\EmployeeController')->except(['create', 'edit']);
 	Route::get('employee/active/{active}', 'Api\V1\EmployeeController@filter_employees');
@@ -10,6 +10,7 @@ Route::macro('common_routes', function () {
 	Route::resource('insurance_company', 'Api\V1\InsuranceCompanyController')->except(['store', 'create', 'edit', 'update', 'destroy']);
 	Route::resource('charge', 'Api\V1\ChargeController')->except(['create', 'edit']);
 	Route::resource('position', 'Api\V1\PositionController')->except(['create', 'edit']);
+	Route::get('payroll/getpayrollcontract/{contract_id}', 'Api\V1\PayrollController@getPayrollContract');
 	Route::resource('payroll', 'Api\V1\PayrollController')->except(['create', 'edit']);
 	Route::group([
 		'prefix' => 'position/{superior_id}',
