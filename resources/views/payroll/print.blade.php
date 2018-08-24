@@ -11,13 +11,10 @@
         <meta name="viewport" content="initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>{{ $title->name }} {{ $title->year }}</title>
-        @if (Config::get('app.debug'))
-            <style>
-                <?php include public_path('css/all.css') ?>
-            </style>
-        @else
-            <link rel="stylesheet" type="text/css" href="{{ asset('css/all.css') }}"></link>
-        @endif
+        <style>
+            <?php include public_path('css/all.css') ?>
+            <?php include public_path('css/payroll-print.css') ?>
+        </style>
     </head>
 
     <body>

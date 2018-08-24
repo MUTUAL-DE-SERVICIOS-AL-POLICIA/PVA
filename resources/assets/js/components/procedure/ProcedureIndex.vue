@@ -64,6 +64,7 @@
                   </v-btn>
                   <v-list>
                     <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=H&report_name=B-1&valid_contracts=1&with_account=1`)">B-1 (H)</v-list-tile>
+                    <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=P&report_name=B-2&valid_contracts=1&with_account=1`)">B-2 (P)</v-list-tile>
                   </v-list>
                 </v-menu>
               </v-card-actions>
