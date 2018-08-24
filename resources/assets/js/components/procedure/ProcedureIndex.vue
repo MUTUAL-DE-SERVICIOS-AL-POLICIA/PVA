@@ -153,8 +153,9 @@ export default {
         console.log(e);
       }
     },
-    print (item) {
-      printJS({printable:"api/v1/ticket/print/" + item, type:"pdf", showModal:true, modalMessage: "Generando documento por favor espere un momento."})    },
+    print (url) {
+      printJS({printable: url, type:"pdf", showModal:true, modalMessage: "Generando documento por favor espere un momento."})
+    },
   }
 };
 </script>

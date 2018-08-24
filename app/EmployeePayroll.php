@@ -19,7 +19,7 @@ class EmployeePayroll {
 		$this->ci = $employee->identity_card;
 		$this->id_ext = $employee->city_identity_card->shortened;
 		$this->insurance_company_id = $contract->insurance_company_id;
-		$this->ci_ext = $employee->city_birth->shortened;
+		$this->ci_ext = $this->ci . ' ' . $this->id_ext;
 		$this->first_name = $employee->first_name;
 		$this->last_name = $employee->last_name;
 		$this->mothers_last_name = $employee->mothers_last_name;

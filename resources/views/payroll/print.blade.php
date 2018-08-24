@@ -122,14 +122,14 @@
                         <th width="2%">TOTAL GANADO</th>
                         <th width="1%">AFP</th>
                     @if ($title->report_type == 'H')
-                        <th width="1%">Renta vejez {{ $procedure->discount_old }}%</th>
-                        <th width="1%">Riesgo común {{ $procedure->discount_common_risk }}%</th>
-                        <th width="1%">Comisión {{ $procedure->discount_commission }}%</th>
-                        <th width="1%">Aporte solidario del asegurado {{ $procedure->discount_solidary }}%</th>
+                        <th width="1%">Renta vejez {{ $procedure->employee_discount->elderly }}%</th>
+                        <th width="1%">Riesgo común {{ $procedure->employee_discount->common_risk }}%</th>
+                        <th width="1%">Comisión {{ $procedure->employee_discount->comission }}%</th>
+                        <th width="1%">Aporte solidario del asegurado {{ $procedure->employee_discount->solidary }}%</th>
                         <th width="1%">Aporte Nacional solidario 1%, 5%, 10%</th>
                         <th width="1%">TOTAL DESCUENTOS DE LEY</th>
                         <th width="3%">SUELDO NETO</th>
-                        <th width="3%">RC IVA {{ $procedure->discount_rc_iva }}%</th>
+                        <th width="3%">RC IVA {{ $procedure->employee_discount->rc_iva }}%</th>
                         <th width="3%">Desc Atrasos, Faltas y Licencia S/G Haberes</th>
                         <th width="1%">TOTAL DESCUENTOS</th>
                         <th width="3%">LIQUIDO PAGABLE</th>
