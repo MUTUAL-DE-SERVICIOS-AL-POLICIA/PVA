@@ -14,7 +14,8 @@ let mix = require('laravel-mix')
 
 mix.js('resources/assets/js/app.js', 'public/js')
 	.styles([
-       'resources/assets/css/vuetify.min.css'
+       'resources/assets/css/vuetify.min.css',
+       'resources/assets/css/payroll-print.css'
     ], 'public/css/all.css')
   .copy('resources/assets/img', 'public/img', false)
   .webpackConfig({

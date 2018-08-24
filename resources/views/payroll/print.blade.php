@@ -45,7 +45,7 @@
         </div>
 
         <div class="header-left">
-            <img id="header-image" src="{{ public_path().'/images/logo.png'}}">
+            <img id="header-image" src="{{ public_path().'/img/logo.png'}}">
         </div>
 
         <table align="center">
@@ -235,7 +235,7 @@
                         <td>{{ Util::format_number($employee->total_amount_discount_law) }}</td>
                         <td>{{ Util::format_number($employee->net_salary) }}</td>
                         <td>{{ Util::format_number($employee->discount_rc_iva) }}</td>
-                        <td>{{ Util::format_number($employee->total_amount_discount_institution) }}</td>
+                        <td>{{ Util::format_number($employee->discount_faults) }}</td>
                         <td>{{ Util::format_number($employee->total_discounts) }}</td>
                         <td>{{ Util::format_number($employee->payable_liquid) }}</td>
                     @endif
@@ -288,7 +288,7 @@
                     <td class="footer">{{ Util::format_number($total_discounts->total_amount_discount_law) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->net_salary) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->discount_rc_iva) }}</td>
-                    <td class="footer">{{ Util::format_number($total_discounts->total_amount_discount_institution) }}</td>
+                    <td class="footer">{{ Util::format_number($total_discounts->total_faults) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->total_discounts) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->payable_liquid) }}</td>
                 @endif
