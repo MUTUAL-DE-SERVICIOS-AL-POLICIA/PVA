@@ -176,6 +176,7 @@ export default {
           align: "center",
           sortable: false
         },
+        { text: `Acciones`, align: "center", value: "", sortable: false },
         {
           text: `Líquido pagable`,
           align: "center",
@@ -201,8 +202,7 @@ export default {
           align: "center",
           value: "contract.start_date"
         },
-        { text: `Fin contrato`, align: "center", value: "contract.end_date" },
-        { text: `Acciones`, align: "center", value: "", sortable: false }
+        { text: `Fin contrato`, align: "center", value: "contract.end_date" }
       ];
     }
   },
