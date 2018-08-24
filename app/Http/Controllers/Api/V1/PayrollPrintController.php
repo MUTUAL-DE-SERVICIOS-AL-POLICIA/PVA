@@ -45,7 +45,7 @@ class PayrollPrintController extends Controller {
 				if (count($employee_contracts) > 1) {
 					foreach ($employee_contracts as $key => $employee_contract) {
 						if ($key > 0) {
-							$current_contract_date = Carbon::parse($employee_contract->date_start);
+							$current_contract_date = Carbon::parse($employee_contract->start_date);
 							$last_contract_date = Carbon::parse($employee_contracts[$key - 1]->date_end);
 							if ($last_contract_date->year == $current_contract_date->year && $last_contract_date->month == $current_contract_date->month) {
 								$rehired = true;
@@ -82,6 +82,7 @@ class PayrollPrintController extends Controller {
 				$total_discounts->add_total_amount_discount_law($e->total_amount_discount_law);
 				$total_discounts->add_net_salary($e->net_salary);
 				$total_discounts->add_discount_rc_iva($e->discount_rc_iva);
+				$total_discounts->add_total_faults($e->discount_faults);
 				$total_discounts->add_total_discounts($e->total_discounts);
 				$total_discounts->add_payable_liquid($e->payable_liquid);
 
@@ -279,7 +280,7 @@ class PayrollPrintController extends Controller {
 		$content .= implode(',', ["Nro", "Tipo de documento de identidad", "Número de documento de identidad", "Lugar de expedición", "Fecha de nacimiento", "Apellido Paterno", "Apellido Materno", "Nombres", "País de nacionalidad", "Sexo", "Jubilado", "¿Aporta a la AFP?", "¿Persona con discapacidad?", "Tutor de persona con discapacidad", "Fecha de ingreso", "Fecha de retiro", "Motivo retiro", "Caja de salud", "AFP a la que aporta", "NUA/CUA", "Sucursal o ubicación adicional", "Clasificación laboral", "Cargo", "Modalidad de contrato", "Tipo contrato", "Días pagados", "Horas pagadas", "Haber Básico", "Bono de antigüedad", "Horas extra", "Monto horas extra", "Horas recargo nocturno", "Monto horas extra nocturnas", "Horas extra dominicales", "Monto horas extra dominicales", "Domingos trabajados", "Monto domingo trabajado", "Nro. dominicales", "Salario dominical", "Bono producción", "Subsidio frontera", "Otros bonos y pagos", "RC-IVA", "Aporte Caja Salud", "Aporte AFP", "Otros descuentos", "\r\n"]);
 
 		foreach ($employees as $i => $e) {
-			$content .= implode(',', [++$i, "CI", $e->ci, $e->id_ext, $e->birth_date, $e->last_name, $e->mothers_last_name, $e->name, "BOLIVIA", $e->gender, "0", "1", "0", "0", $e->date_start, "", "", $e->ovt->insurance_company_id, $e->ovt->management_entity_id, $e->nua_cua, "1", "", mb_strtoupper(str_replace(",", " ", $e->position)), $e->ovt->contract_mode, $e->ovt->contract_type, $e->worked_days, "8", round($e->quotable, 2), "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "", round($e->discount_old, 2), round($e->total_amount_discount_law, 2), round($e->discount_faults, 2)]);
+			$content .= implode(',', [++$i, "CI", $e->ci, $e->id_ext, $e->birth_date, $e->last_name, $e->mothers_last_name, $e->first_name, "BOLIVIA", $e->gender, "0", "1", "0", "0", $e->start_date, "", "", $e->ovt->insurance_company_id, $e->ovt->management_entity_id, $e->nua_cua, "1", "", mb_strtoupper(str_replace(",", " ", $e->position)), $e->ovt->contract_mode, $e->ovt->contract_type, $e->worked_days, "8", round($e->quotable, 2), "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "", round($e->discount_old, 2), round($e->total_amount_discount_law, 2), round($e->discount_faults, 2)]);
 
 			if ($i < ($total_employees)) {
 				$content .= "\r\n";

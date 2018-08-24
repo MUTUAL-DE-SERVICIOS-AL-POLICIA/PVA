@@ -44,13 +44,13 @@
                     <span>Imprimir boletas</span>
                   </v-tooltip>
                 </v-btn>
-                <v-btn icon>
+                <v-btn icon :href="`/api/v1/payroll/print/txt/${procedure.year}/${procedure.month_order}`">
                   <v-tooltip top>
                     <v-icon slot="activator" color="primary">account_balance</v-icon>
                     <span>TXT Banco</span>
                   </v-tooltip>
                 </v-btn>
-                <v-btn icon>
+                <v-btn icon :href="`/api/v1/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`">
                   <v-tooltip top>
                     <v-icon slot="activator" color="primary">work</v-icon>
                     <span>CSV OVT</span>
@@ -62,13 +62,8 @@
                     <span>Planillas</span>
                     <v-icon small>arrow_drop_down</v-icon>
                   </v-btn>
-                  <v-list
-                    v-for="(template, index) in templates"
-                    v-bind:item="template"
-                    v-bind:index="index"
-                    v-bind:key="template.id"
-                  >
-                    <v-list-tile>{{ template.text }}</v-list-tile>
+                  <v-list>
+                    <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=H&report_name=B-1&valid_contracts=1&with_account=1`)">B-1 (H)</v-list-tile>
                   </v-list>
                 </v-menu>
               </v-card-actions>
@@ -100,9 +95,6 @@ export default {
         active: true
       },
       yearSelected: null,
-      templates: [
-        { text: 'B-1 (H)', url: '/api/v1/payroll/print/pdf/2018/8?report_type=H&report_name=B-1' }
-      ]
     };
   },
   async mounted() {
@@ -113,9 +105,9 @@ export default {
     }
   },
   methods: {
-    print (resource) {
+    print (url) {
       printJS({
-        printable: resource.url,
+        printable: url,
         type: "pdf",
         showModal: true,
         modalMessage: "Generando documento por favor espere un momento."
@@ -151,7 +143,6 @@ export default {
     },
     async storeProcedure() {
       try {
-        
         let procedure = await axios.post(`/api/v1/procedure`, this.newProcedure);
         procedure = procedure.data;
         let payrolls = await axios.post(`/api/v1/procedure/${procedure.id}/payroll`);
