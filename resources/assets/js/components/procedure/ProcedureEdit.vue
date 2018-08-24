@@ -88,6 +88,11 @@
             ></v-text-field>
           </td>
           <td class="text-md-center">
+            <v-btn class="primary" @click="savePayroll(props.item)">
+              Guardar
+            </v-btn>
+          </td>
+          <td class="text-md-center">
             {{ total(props.item) }}
           </td>
           <td class="text-md-center">
@@ -98,11 +103,6 @@
           </td>
           <td class="text-md-center">
             {{ $moment(props.item.contract.end_date).format('DD/MM/YYYY') }}
-          </td>
-          <td class="text-md-center">
-            <v-btn class="primary" @click="savePayroll(props.item)">
-              Guardar
-            </v-btn>
           </td>
         </tr>
       </template>

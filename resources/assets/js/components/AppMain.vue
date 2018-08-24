@@ -13,7 +13,11 @@
       <v-list dense>
         <v-list-tile v-for="item in menu_left" :key="item.title" :to="{name: item.href, params: item.params}">
           <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-tooltip right>
+              <v-icon slot="activator">{{ item.icon }}</v-icon>
+              <span>{{ item.title }}</span>
+            </v-tooltip>
+            
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>
@@ -38,8 +42,8 @@
             dark
           >
           <template v-if="this.$store.getters.currentUser.username">
-            <label></label>
-            {{ this.$store.getters.currentUser.username }} [ {{ this.$store.getters.currentUser.roles[0].name }} ]
+            <v-icon>person </v-icon>
+            <div>{{ this.$store.getters.currentUser.username }}</div>
           </template>
           </v-btn>
           <v-list>

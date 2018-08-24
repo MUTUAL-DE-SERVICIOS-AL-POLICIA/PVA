@@ -11,17 +11,23 @@ export const routes = [
     name: 'login',
     path: '/login',
     component: Login
-  }, {
-    name: 'home',
-    path: '/home',
-    component: Home,
-    meta: {
-      requiresAuth: true
-    }
+  // }, {
+  //   name: 'home',
+  //   path: '/home',
+  //   component: Home,
+  //   meta: {
+  //     requiresAuth: true
+  //   }
   }, {
     path: '*',
     redirect: {
-      name: 'home'
+      name: 'employeeIndex',
+      params: {
+        active: true
+      },
+    },
+    meta: {
+      requiresAuth: true
     }
   }, {
     path: '/employee/:active',

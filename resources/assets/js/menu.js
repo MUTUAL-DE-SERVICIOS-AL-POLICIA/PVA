@@ -11,23 +11,24 @@ export const guest = [
 ]
 
 export const admin = [
+  // {
+  //   href: 'home',
+  //   params: {},
+  //   title: 'Inicio',
+  //   icon: 'dashboard'
+  // }, {
   {
-    href: 'home',
-    params: {},
-    title: 'Inicio',
-    icon: 'dashboard'
-  }, {
     href: 'employeeIndex',
     params: {
       active: true
     },
     title: 'Empleados',
     icon: 'assignment_ind'
-  }, {
-    href: 'companyIndex',
-    params: {},
-    title: 'Compañia',
-    icon: 'account_balance'
+  // }, {
+  //   href: 'companyIndex',
+  //   params: {},
+  //   title: 'Compañia',
+  //   icon: 'account_balance'
   }, {
     href: 'contractIndex',
     params: {},
