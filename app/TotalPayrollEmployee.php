@@ -16,6 +16,7 @@ class TotalPayrollEmployee {
 		$this->discount_rc_iva = 0;
 		$this->total_discounts = 0;
 		$this->payable_liquid = 0;
+		$this->total_faults = 0;
 	}
 
 	public function add_base_wage($value) {
@@ -48,6 +49,10 @@ class TotalPayrollEmployee {
 	public function add_discount_rc_iva($value) {
 		$this->discount_rc_iva += $value;
 	}
+	public function add_total_faults($value)
+    {
+        $this->total_faults += $value;
+    }
 	public function add_total_discounts($value) {
 		$this->total_discounts += $value;
 	}
@@ -85,6 +90,10 @@ class TotalPayrollEmployee {
 	public function subtract_discount_rc_iva($value) {
 		$this->discount_rc_iva -= $value;
 	}
+	public function subtract_total_faults($value)
+    {
+        $this->total_faults -= $value;
+    }
 	public function subtract_total_discounts($value) {
 		$this->total_discounts -= $value;
 	}
