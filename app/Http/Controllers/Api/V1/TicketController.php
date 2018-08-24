@@ -36,8 +36,8 @@ class TicketController extends Controller
     }
 
     private function generateTicket($payroll)
-    {
-        $contract                    = $payroll->contract;
+    { 
+        $contract                    = $payroll->contract; 
         $position                    = $contract->position;
         $charge                      = $position->charge;
         $employee                    = $contract->employee;
@@ -53,48 +53,38 @@ class TicketController extends Controller
         $payroll->position           = $position->name;
         $payroll->base_wage          = $charge->base_wage;
         $payroll->management_entity  = $employee->management_entity->name;
-        $payroll->code_image         = \DNS2D::getBarcodePNG(($payroll->id . ' ' . $contract->id . ' ' . $position->id . ' ' . $charge->id . ' ' . $employee->id), "PDF417", 3, 33, array(1, 1, 1));
+        $payroll->code_image         = DNS2D::getBarcodePNG(($payroll->id . ' ' . $contract->id . ' ' . $position->id . ' ' . $charge->id . ' ' . $employee->id), "PDF417", 3, 33, array(1, 1, 1));
 
         return $payroll;
     }
 
-    function print($year, $month) {
+    function print($id) {
         $procedure = Procedure::select('procedures.id', 'procedures.month_id', 'procedures.year')
             ->leftJoin("months", 'months.id', '=', 'procedures.month_id')
-            ->whereRaw("lower(months.name) like '" . strtolower($month) . "'")
-            ->where('year', '=', $year)
+            ->where('procedures.id', '=', 1)
             ->first();
         if (!$procedure) {
             return "procedure not found";
         }
-
         $grouped_payrolls = Payroll::where('procedure_id', $procedure->id)->get()->groupBy('code')->all();
-        // if (config('app.debug')) {
-        //     $grouped_payrolls = Payroll::where('procedure_id', $procedure->id)->skip(5)->take(10)->get()->groupBy('code')->all();
-        // }
-
-        // $payrolls = array();
-
-        // foreach ($grouped_payrolls as $key => $payroll_group) {
-        //     $payrolls[] = $this->mergeTickets($payroll_group);
-        // }
-        // $file_name = "Boletas de Pago de " . $procedure->month->name . " de " . $procedure->year . ".pdf";
-        // $data      = [
-        //     'payrolls'  => $payrolls,
-        //     'procedure' => $procedure,
-        // ];
-        // // return view('print.temp');
-        // // return view('tickets.print',$data);
-        // return \PDF::loadView('tickets.print', $data)
-        //     ->setOption('page-width', '216')
-        //     ->setOption('page-height', '356')
-        // // ->setPaper('letter')
-        //     ->setOption('margin-top', 0)
-        //     ->setOption('margin-bottom', 0)
-        //     ->setOption('margin-left', 4)
-        //     ->setOption('margin-right', 4)
-        //     ->setOption('encoding', 'utf-8')
-        //     ->stream($file_name);
-        return $procedure;
+        $payrolls = array();
+        $i = 0;
+        foreach ($grouped_payrolls as $payroll_group) {            
+            $payrolls[] = $this->mergeTickets($payroll_group);
+        }
+        $file_name = "Boletas de Pago de " . $procedure->month->name . " de " . $procedure->year . ".pdf";
+        $data      = [
+            'payrolls'  => $payrolls,
+            'procedure' => $procedure,
+        ];
+        return \PDF::loadView('tickets.print', $data)
+            ->setOption('page-width', '216')
+            ->setOption('page-height', '356')
+            ->setOption('margin-top', 0)
+            ->setOption('margin-bottom', 0)
+            ->setOption('margin-left', 4)
+            ->setOption('margin-right', 4)
+            ->setOption('encoding', 'utf-8')
+            ->stream($file_name);
     }
 }
