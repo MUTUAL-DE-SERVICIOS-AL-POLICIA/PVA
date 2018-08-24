@@ -62,9 +62,13 @@
                     <span>Planillas</span>
                     <v-icon small>arrow_drop_down</v-icon>
                   </v-btn>
-                  <v-list>
-                    <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=H&report_name=B-1&valid_contracts=1&with_account=1`)">B-1 (H)</v-list-tile>
-                    <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=P&report_name=B-2&valid_contracts=1&with_account=1`)">B-2 (P)</v-list-tile>
+                  <v-list
+                    v-for="(item, index) in templateTypes"
+                    v-bind:item="item"
+                    v-bind:index="index"
+                    v-bind:key="item.id"
+                  >
+                    <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${item}&report_name=B-${index}&valid_contracts=1&with_account=1`)">B-{{ ++index }} ({{ item }})</v-list-tile>
                   </v-list>
                 </v-menu>
               </v-card-actions>
@@ -96,6 +100,7 @@ export default {
         active: true
       },
       yearSelected: null,
+      templateTypes: ['H', 'P'],
     };
   },
   async mounted() {
