@@ -57,10 +57,20 @@
                   </v-tooltip>
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-select
-                  label="Planillas"
-                  :items="payrolls"
-                ></v-select>
+                <v-menu offset-y>
+                  <v-btn slot="activator" color="primary">
+                    <span>Planillas</span>
+                    <v-icon small>arrow_drop_down</v-icon>
+                  </v-btn>
+                  <v-list
+                    v-for="(template, index) in templates"
+                    v-bind:item="template"
+                    v-bind:index="index"
+                    v-bind:key="template.id"
+                  >
+                    <v-list-tile>{{ template.text }}</v-list-tile>
+                  </v-list>
+                </v-menu>
               </v-card-actions>
               <v-card-actions v-else>
                 <v-spacer></v-spacer>
@@ -90,8 +100,8 @@ export default {
         active: true
       },
       yearSelected: null,
-      payrolls: [
-        'B-1 (H)'
+      templates: [
+        { text: 'B-1 (H)', url: '/api/v1/payroll/print/pdf/2018/8?report_type=H&report_name=B-1' }
       ]
     };
   },
@@ -103,6 +113,14 @@ export default {
     }
   },
   methods: {
+    print (resource) {
+      printJS({
+        printable: resource.url,
+        type: "pdf",
+        showModal: true,
+        modalMessage: "Generando documento por favor espere un momento."
+      })
+    },
     async getYears() {
       try {
         let res = await axios.get(`/api/v1/procedure/year/list`);

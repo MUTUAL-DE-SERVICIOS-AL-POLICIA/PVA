@@ -56,7 +56,7 @@
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
                 </v-btn>
                 <v-list>
-                  <v-list-tile @click="print(props.item)"> Contract</v-list-tile>
+                  <v-list-tile @click="print(props.item)"> Contrato</v-list-tile>
                   <v-list-tile @click="printUp(props.item)"> Alta del seguro</v-list-tile>
                   <v-list-tile @click="printLow(props.item)"> Baja del seguro</v-list-tile>
                 </v-list>
