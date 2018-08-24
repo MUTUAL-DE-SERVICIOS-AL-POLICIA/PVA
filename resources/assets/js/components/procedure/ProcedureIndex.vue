@@ -40,7 +40,7 @@
                 </v-btn>
                 <v-btn icon>
                   <v-tooltip top>
-                    <v-icon slot="activator" color="primary">print</v-icon>
+                    <v-icon slot="activator" color="primary" @click="print(procedure.id)">print</v-icon>
                     <span>Imprimir boletas</span>
                   </v-tooltip>
                 </v-btn>
@@ -161,7 +161,9 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    }
+    },
+    print (item) {
+      printJS({printable:"api/v1/ticket/print/" + item, type:"pdf", showModal:true, modalMessage: "Generando documento por favor espere un momento."})    },
   }
 };
 </script>

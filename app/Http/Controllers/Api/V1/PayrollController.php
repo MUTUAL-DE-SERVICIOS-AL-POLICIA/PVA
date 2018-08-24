@@ -86,4 +86,15 @@ class PayrollController extends Controller {
 		$payroll->delete();
 		return $payroll;
 	}
+
+	/**
+	 * get payroll especific contract
+	 *
+	 * @param  int  $contract_id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getPayrollContract($contract_id)
+	{
+		return Payroll::where('contract_id', $contract_id)->first();
+	}
 }
