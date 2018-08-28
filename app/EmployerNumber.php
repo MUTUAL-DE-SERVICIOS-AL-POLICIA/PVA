@@ -22,7 +22,7 @@ class EmployerNumber extends Model {
 		return $this->belongsTo(Company::class);
 	}
 
-	public function city() {
-		return $this->hasOne(Company::class);
+	public function cities() {
+		return $this->hasMany(City::class);
 	}
 }

@@ -1,6 +1,6 @@
 <?php
-  use \App\Helpers\Util;
-  use \App\Http\Controllers\PayrollController as Payroll;
+    use \App\Helpers\Util;
+    use \App\Http\Controllers\PayrollController as Payroll;
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +20,7 @@
     <body>
         <div class="header-left">
             <p>{{ $company->name }}</p>
-            <p>NIT {{ $company->tax_id_number }}</p>
+            <p>NIT {{ $company->tax_number }}</p>
             <p>{{ $company->address }}</p>
         </div>
 
@@ -33,10 +33,10 @@
         </div>
 
         <div class="header-center">
-          <h2>
-              {{ implode(' - ', array_filter([$title->name, $title->subtitle, $title->management_entity, $title->position_group, $title->employer_number])) }}
-          </h2>
-          <h3>PERSONAL EVENTUAL -
+            <h2>
+                {{ implode(' - ', array_filter([$title->name, $title->subtitle, $title->management_entity, $title->position_group, $title->employer_number])) }}
+            </h2>
+            <h3>PERSONAL EVENTUAL -
             MES {{ $title->month }} DE {{ $title->year }}</h3>
             <h3>(EXPRESADO EN BOLIVIANOS)</h3>
         </div>
@@ -66,7 +66,7 @@
                         @php ($table_header_space6 = 3)
                         @break
                 @endswitch
-                    <th colspan="{{ $table_header_space1 }}" style="border-left: 1px solid white; border-top: 1px solid white; background-color: white;"></th>                    
+                    <th colspan="{{ $table_header_space1 }}" style="border-left: 1px solid white; border-top: 1px solid white; background-color: white;"></th>
                     <th colspan="{{ $table_header_space2 }}">{{ $title->table_header }}</th>
                     @if ($title->report_type == 'T')
                         <th colspan="{{ $table_header_space3 }}">{{ $title->table_header2 }}</th>
@@ -119,26 +119,26 @@
                         <th width="2%">TOTAL GANADO</th>
                         <th width="1%">AFP</th>
                     @if ($title->report_type == 'H')
-                        <th width="1%">Renta vejez {{ $procedure->employee_discount->elderly }}%</th>
-                        <th width="1%">Riesgo común {{ $procedure->employee_discount->common_risk }}%</th>
-                        <th width="1%">Comisión {{ $procedure->employee_discount->comission }}%</th>
-                        <th width="1%">Aporte solidario del asegurado {{ $procedure->employee_discount->solidary }}%</th>
+                        <th width="1%">Renta vejez {{ $procedure->employee_discount->elderly * 100 }}%</th>
+                        <th width="1%">Riesgo común {{ $procedure->employee_discount->common_risk * 100 }}%</th>
+                        <th width="1%">Comisión {{ $procedure->employee_discount->comission * 100 }}%</th>
+                        <th width="1%">Aporte solidario del asegurado {{ $procedure->employee_discount->solidary * 100 }}%</th>
                         <th width="1%">Aporte Nacional solidario 1%, 5%, 10%</th>
                         <th width="1%">TOTAL DESCUENTOS DE LEY</th>
                         <th width="3%">SUELDO NETO</th>
-                        <th width="3%">RC IVA {{ $procedure->employee_discount->rc_iva }}%</th>
+                        <th width="3%">RC IVA {{ $procedure->employee_discount->rc_iva * 100 }}%</th>
                         <th width="3%">Desc Atrasos, Faltas y Licencia S/G Haberes</th>
                         <th width="1%">TOTAL DESCUENTOS</th>
                         <th width="3%">LIQUIDO PAGABLE</th>
                     @endif
                     @if ($title->report_type =='P')
-                        <th width="1%">CNS {{ $procedure->contribution_insurance_company }}%</th>
-                        <th width="1%">Riesgo Profesional {{ $procedure->contribution_professional_risk }}%</th>
-                        <th width="1%">Aporte Patronal Solidario {{ $procedure->contribution_employer_solidary }}%</th>
-                        <th width="1%">Aporte Patronal para Vivienda {{ $procedure->contribution_employer_housing }}%</th>
+                        <th width="1%">CNS {{ $procedure->employer_contribution->insurance_company * 100 }}%</th>
+                        <th width="1%">Riesgo Profesional {{ $procedure->employer_contribution->professional_risk * 100 }}%</th>
+                        <th width="1%">Aporte Patronal Solidario {{ $procedure->employer_contribution->solidary * 100 }}%</th>
+                        <th width="1%">Aporte Patronal para Vivienda {{ $procedure->employer_contribution->housing * 100 }}%</th>
                         <th width="3%">TOTAL A PAGAR</th>
                     @endif
-                @endif                
+                @endif
                 </tr>
             </thead>
             <tbody>
@@ -316,7 +316,6 @@
                     <td class="footer"> {{ Util::format_number($total_saldo_mes_siguiente) }} </td>
                 @endif
                 </tr>
-            
             </tbody>
         </table>
     </body>

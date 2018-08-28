@@ -98,11 +98,11 @@ class EmployeePayroll {
 
 	private function employeeDiscounts($payroll) {
 		$this->quotable = $this->base_wage * $this->worked_days / 30;
-		$this->discount_old = $this->quotable * $payroll->procedure->employee_discount->elderly / 100;
-		$this->discount_common_risk = $this->quotable * $payroll->procedure->employee_discount->common_risk / 100;
-		$this->discount_commission = $this->quotable * $payroll->procedure->employee_discount->comission / 100;
-		$this->discount_solidary = $this->quotable * $payroll->procedure->employee_discount->solidary / 100;
-		$this->discount_national = $this->quotable * $payroll->procedure->employee_discount->national / 100;
+		$this->discount_old = $this->quotable * $payroll->procedure->employee_discount->elderly;
+		$this->discount_common_risk = $this->quotable * $payroll->procedure->employee_discount->common_risk;
+		$this->discount_commission = $this->quotable * $payroll->procedure->employee_discount->comission;
+		$this->discount_solidary = $this->quotable * $payroll->procedure->employee_discount->solidary;
+		$this->discount_national = $this->quotable * $payroll->procedure->employee_discount->national;
 		$this->total_amount_discount_law = $this->discount_old + $this->discount_common_risk + $this->discount_commission + $this->discount_solidary + $this->discount_national;
 		$this->net_salary = $this->quotable - $this->total_amount_discount_law;
 		$this->discount_rc_iva = $payroll->rc_iva;
@@ -112,10 +112,12 @@ class EmployeePayroll {
 	}
 
 	private function employerContribution($payroll) {
-		$this->contribution_insurance_company = $this->quotable * $payroll->procedure->employer_contribution->insurance_company / 100;
-		$this->contribution_professional_risk = $this->quotable * $payroll->procedure->employer_contribution->professional_risk / 100;
-		$this->contribution_employer_solidary = $this->quotable * $payroll->procedure->employer_contribution->solidary / 100;
-		$this->contribution_employer_housing = $this->quotable * $payroll->procedure->employer_contribution->housing / 100;
+		if ($payroll->contract->insurance_company->active) {
+			$this->contribution_insurance_company = $this->quotable * $payroll->procedure->employer_contribution->insurance_company;
+		}
+		$this->contribution_professional_risk = $this->quotable * $payroll->procedure->employer_contribution->professional_risk;
+		$this->contribution_employer_solidary = $this->quotable * $payroll->procedure->employer_contribution->solidary;
+		$this->contribution_employer_housing = $this->quotable * $payroll->procedure->employer_contribution->housing;
 		$this->total_contributions = round(($this->contribution_insurance_company + $this->contribution_professional_risk + $this->contribution_employer_solidary + $this->contribution_employer_housing), 2);
 	}
 

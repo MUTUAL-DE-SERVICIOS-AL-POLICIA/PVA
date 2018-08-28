@@ -25,7 +25,7 @@ class EmployerNumberController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return EmployerNumber::get();
+		return EmployerNumber::with('cities')->get();
 	}
 
 	/**
