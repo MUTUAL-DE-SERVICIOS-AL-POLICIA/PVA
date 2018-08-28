@@ -26,7 +26,7 @@
       :headers="headers"
       :items="employees"
       :search="search"
-      
+      :rows-per-page-items="[10,20]"
       disable-initial-sort
       expand
     >
