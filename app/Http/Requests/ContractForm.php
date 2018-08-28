@@ -26,7 +26,6 @@ class ContractForm extends FormRequest {
 			'contract_type_id' => 'required',
 			'contract_mode_id' => 'required',
 			'start_date' => 'required',
-			'active' => 'required',
 			'insurance_company_id' => 'required',
 		];
 	}

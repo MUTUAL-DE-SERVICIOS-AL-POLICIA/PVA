@@ -21,7 +21,7 @@ class ContractController extends Controller
      */
     public function index()
     {
-        return Contract::with('employee', 'insurance_company', 'employee.city_identity_card', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')
+        return Contract::with('job_schedules','employee', 'insurance_company', 'employee.city_identity_card', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')
             ->orderBy('start_date', 'DESC')
             ->get();
     }
@@ -32,10 +32,14 @@ class ContractController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ContractForm $request)
+    public function store(Request $request)
     {
         $contract = Contract::create($request->all());
-        return $contract;
+        // $contract->schedules()->attach($request->schedule->id);
+        // if ($request->schedule->id==1) {
+        //     $contract->schedules()->attach(2);
+        // }
+        return $request;
     }
 
     /**
@@ -61,6 +65,11 @@ class ContractController extends Controller
         $contract = Contract::findOrFail($id);
         $contract->fill($request->all());
         $contract->save();
+        // $contract->schedules()->detach();
+        // $contract->schedules()->attach($request->schedule->id);
+        // if ($request->schedule->id==1) {
+        //     $contract->schedules()->attach(2);
+        // }
         return $contract;
     }
 
@@ -91,7 +100,7 @@ class ContractController extends Controller
         $pageName = 'contrato.pdf';
         $data       = [
             'contract'        => Contract::findOrFail($id),
-            'mae'             => Contract::where([['position_id', '2'], ['active', 'true']])->first(),
+            'mae'             => Contract::where([['position_id', '1'], ['active', 'true']])->first(),
             'employer_number' => EmployerNumber::where('insurance_company_id', '1')->first(),
         ];
         if ($type != 'printEventual') {
