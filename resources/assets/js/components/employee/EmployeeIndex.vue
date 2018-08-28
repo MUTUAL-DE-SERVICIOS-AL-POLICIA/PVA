@@ -26,7 +26,7 @@
       :headers="headers"
       :items="employees"
       :search="search"
-      :custom-filter="filteredItems"
+      
       disable-initial-sort
       expand
     >
@@ -176,11 +176,11 @@ export default {
         vm.drawComponent = true;
       });
     },
-    filteredItems(items, search, filter) {
-      return items.filter(obj => {
-        return obj.active == this.active;
-      });
-    },
+    // filteredItems(items, search, filter) {
+    //   return items.filter(obj => {
+    //     return obj.active == this.active;
+    //   });
+    // },
     async getEmployees(active = true) {
       try {
         let res = await axios.get(`/api/v1/employee`);

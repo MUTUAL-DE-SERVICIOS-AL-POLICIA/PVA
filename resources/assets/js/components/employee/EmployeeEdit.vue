@@ -142,21 +142,21 @@
                 single-line
               ></v-select>
               <v-text-field
-                v-validate="'required|alpha_spaces'"
+                v-validate="'required'"
                 :error-messages="errors.collect('Ciudad')"
                 data-vv-name="Ciudad"
                 v-model="edit.location"
                 label="Ciudad"
               ></v-text-field>
               <v-text-field
-                v-validate="'required|alpha_spaces'"
+                v-validate="'required'"
                 :error-messages="errors.collect('Zona')"
                 data-vv-name="Zona"
                 v-model="edit.zone"
                 label="Zona"
               ></v-text-field>
               <v-text-field
-                v-validate="'required|alpha_spaces'"
+                v-validate="'required'"
                 :error-messages="errors.collect('Calle')"
                 data-vv-name="Calle"
                 v-model="edit.street"
