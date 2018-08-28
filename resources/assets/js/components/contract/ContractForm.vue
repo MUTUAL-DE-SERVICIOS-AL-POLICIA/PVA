@@ -185,6 +185,7 @@
                   <v-radio
                     v-for="n in jobSchedules"
                     label="Horario  (08:00-12:00 | 14:30-18:30)"
+                    :key="n.id"
                     :value="n.id"
                     color="primary"
                     v-if="n.id==1"
@@ -192,6 +193,7 @@
                   <v-radio 
                     v-for="n in jobSchedules"
                     :label="`Horario (${n.start_hour}:${n.start_minutes}0 - ${n.end_hour}:${n.end_minutes}0)`"
+                    :key="n.id"
                     :value="n.id"
                     color="primary"
                     v-if="n.id!=1 && n.id!=2"
@@ -360,20 +362,23 @@ export default {
                     end_date: '',
                     retirement_date: '',
                     rrhh_cite_date: '',}
+      this.selectedSchedule = {},
+      this.tableEmployee= '',
+      this.tablePosition= '',
+      this.tableSalary= '',
+      this.tableSalaryTotal= 0,
+      this.tableData= [],
       this.recontract = false
     },
     async save() {
         try {
           await this.$validator.validateAll()
           if (this.selectedIndex != -1) {
-            console.log("edit",this.selectedIndex)
-            let res = await axios.put('/api/v1/contract/' + this.selectedItem.id, this.selectedItem)
+            let res = await axios.put('/api/v1/contract/' + this.selectedItem.id, $.extend({}, this.selectedItem, {'schedule': this.selectedSchedule}))
             this.close()
             this.toastr.success('Editado correctamente')
-          } else { 
-            console.log("new",this.selectedItem)
-            let res = await axios.post('/api/v1/contract', this.selectedItem)
-            
+          } else {             
+            let res = await axios.post('/api/v1/contract', $.extend({}, this.selectedItem, {'schedule': this.selectedSchedule}))
             this.close()
             this.toastr.success('Registrado correctamente')
 
@@ -390,7 +395,7 @@ export default {
     async saveRecontract() {
         try {
           await this.$validator.validateAll()
-            let newres = await axios.post('/api/v1/contract', this.selectedItem)
+            let newres = await axios.post('/api/v1/contract', $.extend({}, this.selectedItem, {'schedule': this.selectedSchedule}))
             let editres = await axios.put('/api/v1/contract/' + this.selectedItem.id, {"active":false})
             this.close()
             this.toastr.success('Recontratado correctamente')
@@ -483,8 +488,9 @@ export default {
       if (item.mode == 'recontract') {
         this.recontract = true
       }
-      this.selectedSchedule = item.job_schedules[0]
-      console.log(this.selectedSchedule)
+      if (item.job_schedules[0]) {
+        this.selectedSchedule = item.job_schedules[0]
+      }
     });
     this.initialize()
   },
