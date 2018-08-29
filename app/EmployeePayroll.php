@@ -172,6 +172,8 @@ class EmployeePayroll {
 			$worked_days = $date_end->day;
 		} elseif (($date_start->year <= $payroll_date->year && $date_start->month < $payroll_date->month) || ($date_end->year >= $payroll_date->year && $date_end->month > $payroll_date->month)) {
 			$worked_days = 30;
+		} else if ($date_start->year < $payroll_date->year && $date_start->year > $payroll_date->year) {
+			$workedDays = 30;
 		} else {
 			$worked_days = 0;
 		}

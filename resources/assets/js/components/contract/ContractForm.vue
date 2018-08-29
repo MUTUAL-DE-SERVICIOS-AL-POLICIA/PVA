@@ -304,18 +304,18 @@ export default {
       }
     },
     formatDateEnd() {
-      if (this.$moment(this.selectedItem.start_date).isValid()) {
+      if (this.$moment(this.selectedItem.end_date).isValid()) {
         return this.$moment(this.selectedItem.end_date).format('DD/MM/YYYY')
       }
     },
     formatDateRetirement() {
       if (this.$moment(this.selectedItem.retirement_date).isValid()) {
-        return this.$moment(this.selectedItem.start_date).format('DD/MM/YYYY')
+        return this.$moment(this.selectedItem.retirement_date).format('DD/MM/YYYY')
       }
     },
     formatDateCite() {
       if (this.$moment(this.selectedItem.rrhh_cite_date).isValid()) {
-        return this.$moment(this.selectedItem.start_date).format('DD/MM/YYYY')
+        return this.$moment(this.selectedItem.rrhh_cite_date).format('DD/MM/YYYY')
       }
     }
   },

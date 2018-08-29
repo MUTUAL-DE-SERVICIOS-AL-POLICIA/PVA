@@ -184,7 +184,6 @@ export default {
   },
   methods: {
     commaDivider(index, cities) {
-      console.log(index, cities)
       if (index + 1 < cities.length) {
         return ",";
       }
