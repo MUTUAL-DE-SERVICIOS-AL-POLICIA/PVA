@@ -157,7 +157,7 @@ export default {
           value: "contract.employee.first_name"
         },
         {
-          text: `RC-IVA ${this.procedure.employee_discount.rc_iva}%`,
+          text: `RC-IVA ${this.procedure.employee_discount.rc_iva * 100}%`,
           align: "center",
           sortable: false,
           value: "contract.employee.identity_card"

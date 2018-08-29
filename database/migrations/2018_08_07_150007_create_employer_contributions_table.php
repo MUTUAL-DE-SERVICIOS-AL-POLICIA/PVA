@@ -13,10 +13,10 @@ class CreateEmployerContributionsTable extends Migration {
 	public function up() {
 		Schema::create('employer_contributions', function (Blueprint $table) {
 			$table->increments('id');
-			$table->decimal('insurance_company', 5, 2)->default(0);
-			$table->decimal('professional_risk', 5, 2)->default(0);
-			$table->decimal('solidary', 5, 2)->default(0);
-			$table->decimal('housing', 5, 2)->default(0);
+			$table->decimal('insurance_company', 7, 5)->default(0);
+			$table->decimal('professional_risk', 7, 5)->default(0);
+			$table->decimal('solidary', 7, 5)->default(0);
+			$table->decimal('housing', 7, 5)->default(0);
 			$table->boolean('active');
 			$table->timestamps();
 			$table->softDeletes();
