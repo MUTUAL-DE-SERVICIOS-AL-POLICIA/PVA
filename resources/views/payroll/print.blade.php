@@ -1,6 +1,6 @@
 <?php
     use \App\Helpers\Util;
-    use \App\Http\Controllers\PayrollController as Payroll;
+    use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
 ?>
 
 <!DOCTYPE html>
