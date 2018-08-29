@@ -129,7 +129,7 @@
                           v-if="e.cities.length > 0"
                           @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${t}&report_name=${t}-${indexT+indexE+4}&valid_contracts=0&with_account=0&management_entity=0&position_group=0&employer_number=${e.id}`)"
                         >
-                          <span class="caption">{{ t }}-{{ e.id }} ({{ t }}.</span>
+                          <span class="caption">{{ t }}-{{ e.id }} ({{ t }}</span>
                           <span
                             v-for="(c, indexC) in e.cities"
                             v-bind:item="c"
@@ -195,7 +195,6 @@ export default {
       try {
         let res = await axios.get(`/api/v1/employer_number`);
         this.employerNumbers = res.data;
-        console.log(this.employerNumbers);
       } catch (e) {
         console.log(e);
       }
