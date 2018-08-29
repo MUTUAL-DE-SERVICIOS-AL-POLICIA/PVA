@@ -39,6 +39,7 @@ class ProcedureController extends Controller {
 			$procedure->month_id = $request['month_id'];
 			$procedure->employee_discount_id = $discount->id;
 			$procedure->employer_contribution_id = $contribution->id;
+			$procedure->active = true;
 			$procedure->save();
 			return $procedure;
 		} else {
