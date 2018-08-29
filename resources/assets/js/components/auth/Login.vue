@@ -4,7 +4,7 @@
       <v-card flat id="login-card">
         <div id="top-card">
           <v-card-media
-            src="img/logo.png"
+            src="/img/logo.png"
             height="130px"
           ></v-card-media>
           <v-card-title primary-title class="justify-center">

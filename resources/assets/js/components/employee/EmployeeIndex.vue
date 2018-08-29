@@ -44,25 +44,19 @@
               @click="switchActive(props.item)"
             ></v-switch>
           </td>
-          <td class="text-md-center">
-            <v-layout wrap>
-              <v-flex xs6 sm6 md6>
-                <v-btn icon>
-                  <v-tooltip top>
-                    <v-icon medium slot="activator" color="primary" @click="editItem(props.item)">edit</v-icon>
-                    <span>Editar</span>
-                  </v-tooltip>
-                </v-btn>
-              </v-flex>
-              <v-flex xs6 sm6 md6>
-                <v-btn icon>
-                  <v-tooltip top>
-                    <v-icon medium slot="activator" color="error" @click="removeItem(props.item)">close</v-icon>
-                    <span>Eliminar</span>
-                  </v-tooltip>
-                </v-btn>
-              </v-flex>
-            </v-layout>
+          <td class="justify-center layout">
+            <v-tooltip top>
+              <v-btn medium slot="activator" flat icon color="primary" @click="editItem(props.item)">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>Editar</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+              <span>Eliminar</span>
+            </v-tooltip>
           </td>
         </tr>
       </template>

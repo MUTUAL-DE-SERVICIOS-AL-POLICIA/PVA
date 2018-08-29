@@ -234,7 +234,12 @@ export default {
       }
     },
     changeYear() {
-      this.getProcedures(this.yearSelected);
+      if (this.years.length > 0) {
+        this.getProcedures(this.yearSelected);
+      } else {
+        this.years.unshift(this.newProcedure.year);
+        this.yearSelected = this.newProcedure.year;
+      }
     },
     async storeProcedure() {
       try {
