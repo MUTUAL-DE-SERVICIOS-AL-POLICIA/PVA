@@ -285,65 +285,53 @@ export default {
       return (this.quotable(payroll) - this.totalDiscounts(payroll)).toFixed(2);
     },
     workedDays(payroll) {
-      let payrollDate = {
-        year: this.procedure.year,
-        month: this.procedure.month.order
-      };
+      let payrollDate = this.$moment(
+        `${this.procedure.year}0${this.procedure.month.order}01`
+      );
 
-      let lastDayOfMonth = new Date(
-        payrollDate.year,
-        payrollDate.month,
-        0
-      ).getDate();
+      let lastDayOfMonth = payrollDate.endOf("month").date();
 
-      let dateStart = {
-        day: new Date(payroll.contract.start_date).getDate() + 1,
-        year: new Date(payroll.contract.start_date).getFullYear(),
-        month: new Date(payroll.contract.start_date).getMonth() + 1
-      };
+      let dateStart = this.$moment(payroll.contract.start_date);
 
-      let dateEnd = {
-        day: new Date(payroll.contract.end_date).getDate() + 1,
-        year: new Date(payroll.contract.end_date).getFullYear(),
-        month: new Date(payroll.contract.end_date).getMonth() + 1
-      };
+      let dateEnd = this.$moment(payroll.contract.end_date);
 
       let workedDays = 0;
 
       if (payroll.contract.end_date == null) {
         workedDays = 30;
       } else if (
-        dateStart.year == dateEnd.year &&
-        dateStart.month == dateEnd.month
+        dateStart.year() == dateEnd.year() &&
+        dateStart.month() == dateEnd.month()
       ) {
         if (
-          dateEnd.day == lastDayOfMonth &&
+          dateEnd.date() == lastDayOfMonth &&
           (lastDayOfMonth < 30 || lastDayOfMonth > 30)
         ) {
-          workedDays = 30 - dateStart.day;
+          workedDays = 30 - dateStart.date();
         } else {
-          workedDays = dateEnd.day - dateStart.day;
+          workedDays = dateEnd.date() - dateStart.date();
         }
         workedDays += 1;
       } else if (
-        dateStart.year <= payrollDate.year &&
-        dateStart.month == payrollDate.month
+        dateStart.year() <= payrollDate.year() &&
+        dateStart.month() == payrollDate.month()
       ) {
-        workedDays = 30 + 1 - dateStart.day;
+        workedDays = 30 + 1 - dateStart.date();
       } else if (
-        dateEnd.year >= payrollDate.year &&
-        dateEnd.month == payrollDate.month
+        dateEnd.year() >= payrollDate.year() &&
+        dateEnd.month() == payrollDate.month()
       ) {
-        workedDays = dateEnd.day;
+        workedDays = dateEnd.date();
       } else if (
-        (dateStart.year <= payrollDate.year &&
-          dateStart.month < payrollDate.month) ||
-        (dateEnd.year >= payrollDate.year && dateEnd.month > payrollDate.month)
+        (dateStart.year() <= payrollDate.year() &&
+          dateStart.month() < payrollDate.month()) ||
+        (dateEnd.year() >= payrollDate.year() &&
+          dateEnd.month() > payrollDate.month())
       ) {
         workedDays = 30;
       } else if (
-        dateStart.year < payrollDate.year &&
-        dateEnd.year > payrollDate.year
+        dateStart.year() < payrollDate.year() &&
+        dateEnd.year() > payrollDate.year()
       ) {
         workedDays = 30;
       } else {
