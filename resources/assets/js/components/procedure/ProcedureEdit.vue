@@ -249,7 +249,7 @@ export default {
       );
     },
     calculateDiscount(payroll, discount) {
-      return this.quotable(payroll) * Number(discount) / 100;
+      return this.quotable(payroll) * Number(discount);
     },
     calculateTotalDiscountLaw(payroll) {
       return (
