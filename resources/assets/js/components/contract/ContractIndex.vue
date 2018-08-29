@@ -192,7 +192,7 @@ export default {
     },
     async removeItem(item) {
       let payroll = await axios.get('/api/v1/payroll/getpayrollcontract/' + item.id)
-      if (payroll) {
+      if (payroll.data) {
         alert("No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS")
       } else {
         this.bus.$emit('openDialogRemove', `/api/v1/contract/${item.id}`)

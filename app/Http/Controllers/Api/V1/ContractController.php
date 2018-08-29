@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Contract;
 use App\EmployerNumber;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ContractForm;
 use Illuminate\Http\Request;
 
 /** @resource Contract
@@ -21,7 +20,7 @@ class ContractController extends Controller
      */
     public function index()
     {
-        return Contract::with('employee', 'insurance_company', 'employee.city_identity_card', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')
+        return Contract::with('job_schedules', 'employee', 'insurance_company', 'employee.city_identity_card', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')
             ->orderBy('start_date', 'DESC')
             ->get();
     }
@@ -32,9 +31,13 @@ class ContractController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ContractForm $request)
+    public function store(Request $request)
     {
         $contract = Contract::create($request->all());
+        $contract->job_schedules()->attach($request->schedule['id']);
+        if ($request->schedule['id'] == 1) {
+            $contract->job_schedules()->attach(2);
+        }
         return $contract;
     }
 
@@ -61,6 +64,13 @@ class ContractController extends Controller
         $contract = Contract::findOrFail($id);
         $contract->fill($request->all());
         $contract->save();
+        if ($request->schedule['id']) {
+            $contract->job_schedules()->detach();
+            $contract->job_schedules()->attach($request->schedule['id']);
+            if ($request->schedule['id'] == 1) {
+                $contract->job_schedules()->attach(2);
+            }
+        }
         return $contract;
     }
 
@@ -84,22 +94,22 @@ class ContractController extends Controller
      * @return pdf
      */
     function print($id, $type) {
-        $headerHtml = view()->make('partials.head')->render();
-        $pageWidth  = '216';
-        $pageHeight = '330';
+        $headerHtml  = view()->make('partials.head')->render();
+        $pageWidth   = '216';
+        $pageHeight  = '330';
         $pageMargins = [30, 25, 40, 30];
-        $pageName = 'contrato.pdf';
-        $data       = [
+        $pageName    = 'contrato.pdf';
+        $data        = [
             'contract'        => Contract::findOrFail($id),
-            'mae'             => Contract::where([['position_id', '2'], ['active', 'true']])->first(),
+            'mae'             => Contract::where([['position_id', '1'], ['active', 'true']])->first(),
             'employer_number' => EmployerNumber::where('insurance_company_id', '1')->first(),
         ];
         if ($type != 'printEventual') {
-            $headerHtml = '';
-            $pageWidth  = '202';
-            $pageHeight = '130';
+            $headerHtml  = '';
+            $pageWidth   = '202';
+            $pageHeight  = '130';
             $pageMargins = [10, 11, 12, 11];
-            $pageName = 'seguro.pdf';
+            $pageName    = 'seguro.pdf';
         }
         return \PDF::loadView('contract.' . $type, $data)
             ->setOption('header-html', $headerHtml)

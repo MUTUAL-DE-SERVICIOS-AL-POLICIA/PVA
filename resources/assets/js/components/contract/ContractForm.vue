@@ -177,6 +177,28 @@
                   v-model="selectedItem.description"
                   label="Descripción/Observaciones"
                 ></v-textarea>
+                <v-radio-group 
+                  v-model="selectedSchedule.id"
+                  v-validate="'required'"
+                  name="Horario"
+                  :error-messages="errors.collect('Horario')">
+                  <v-radio
+                    v-for="n in jobSchedules"
+                    label="Horario  (08:00-12:00 | 14:30-18:30)"
+                    :key="n.id"
+                    :value="n.id"
+                    color="primary"
+                    v-if="n.id==1"
+                  ></v-radio>
+                  <v-radio 
+                    v-for="n in jobSchedules"
+                    :label="`Horario (${n.start_hour}:${n.start_minutes}0 - ${n.end_hour}:${n.end_minutes}0)`"
+                    :key="n.id"
+                    :value="n.id"
+                    color="primary"
+                    v-if="n.id!=1 && n.id!=2"
+                  ></v-radio>
+                </v-radio-group>
                 <v-checkbox                    
                   v-model="selectedItem.active"
                   label="Vigente"
@@ -244,6 +266,7 @@ export default {
       contractModes:    [],
       retirementReasons:    [],
       insuranceCompanies:    [],
+      jobSchedules: [],
       valid:        true,
       menu:         false,
       date:         null,
@@ -263,23 +286,12 @@ export default {
       tableSalaryTotal: 0,
       tableData: [],
       selectedItem:   {
-                    employee_id: '',
-                    position_id: '',
-                    contract_type_id: '',
-                    contract_mode_id: '',
                     start_date: '',
                     end_date: '',
                     retirement_date: '',
-                    retirement_reason_id: '',
-                    active: '',
-                    rrhh_cite: '',
                     rrhh_cite_date: '',
-                    performance_cite: '',
-                    insurance_number: '',
-                    contract_number: '',
-                    hiring_reference_number: '',
-                    description: '',
                   },
+      selectedSchedule: {}
     };
   },
   computed: {
@@ -333,9 +345,11 @@ export default {
         let contractModes = await axios.get('/api/v1/contract_mode')
         this.contractModes = contractModes.data
         let retirementReasons = await axios.get('/api/v1/retirement_reason')
-        this.retirementReasons = retirementReasons.data        
+        this.retirementReasons = retirementReasons.data
         let insuranceCompanies = await axios.get('/api/v1/insurance_company')
-        this.insuranceCompanies = insuranceCompanies.data        
+        this.insuranceCompanies = insuranceCompanies.data
+        let jobSchedules = await axios.get('/api/v1/jobs_chedule')
+        this.jobSchedules = jobSchedules.data
       } catch(e) {
         console.log(e)
       }
@@ -344,20 +358,27 @@ export default {
       this.dialog = false;
       this.$validator.reset();
       this.bus.$emit("closeDialog");
-      this.selectedItem = {}
+      this.selectedItem = {start_date: '',
+                    end_date: '',
+                    retirement_date: '',
+                    rrhh_cite_date: '',}
+      this.selectedSchedule = {},
+      this.tableEmployee= '',
+      this.tablePosition= '',
+      this.tableSalary= '',
+      this.tableSalaryTotal= 0,
+      this.tableData= [],
       this.recontract = false
     },
     async save() {
         try {
           await this.$validator.validateAll()
           if (this.selectedIndex != -1) {
-            console.log("edit",this.selectedIndex)
-            let res = await axios.put('/api/v1/contract/' + this.selectedItem.id, this.selectedItem)
+            let res = await axios.put('/api/v1/contract/' + this.selectedItem.id, $.extend({}, this.selectedItem, {'schedule': this.selectedSchedule}))
             this.close()
             this.toastr.success('Editado correctamente')
-          } else { 
-            console.log("new",this.selectedIndex)
-            let res = await axios.post('/api/v1/contract', this.selectedItem)
+          } else {             
+            let res = await axios.post('/api/v1/contract', $.extend({}, this.selectedItem, {'schedule': this.selectedSchedule}))
             this.close()
             this.toastr.success('Registrado correctamente')
 
@@ -374,7 +395,7 @@ export default {
     async saveRecontract() {
         try {
           await this.$validator.validateAll()
-            let newres = await axios.post('/api/v1/contract', this.selectedItem)
+            let newres = await axios.post('/api/v1/contract', $.extend({}, this.selectedItem, {'schedule': this.selectedSchedule}))
             let editres = await axios.put('/api/v1/contract/' + this.selectedItem.id, {"active":false})
             this.close()
             this.toastr.success('Recontratado correctamente')
@@ -411,7 +432,11 @@ export default {
       let total = 0
       var d1=this.$moment(this.date);
       var d2=this.$moment(this.date2);
-      for (var i = 0; i <= d2.diff(d1,"month"); i++) {
+      var diff = d2.diff(d1,"month");
+      if (d2.date() < d1.date()) {
+        diff++
+      }
+      for (var i = 0; i <= diff; i++) {
         let day = 30
         let salary = this.tableSalary
         let salary_day = this.tableSalary / 30
@@ -432,7 +457,7 @@ export default {
             
         }
         if(d2.diff(d1,"month") == 0){
-            if((d2.date() - d1.date()) < 30) {
+            if((d2.date() - d1.date()) < 27) {
               obs = 'Debe ser mayor a un mes'
             }
         }
@@ -462,7 +487,10 @@ export default {
       this.selectedIndex = item
       if (item.mode == 'recontract') {
         this.recontract = true
-      }      
+      }
+      if (item.job_schedules[0]) {
+        this.selectedSchedule = item.job_schedules[0]
+      }
     });
     this.initialize()
   },

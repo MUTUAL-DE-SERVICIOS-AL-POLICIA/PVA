@@ -55,9 +55,9 @@
       </v-toolbar-items>      
      </v-toolbar>
      <v-content>
-      <v-scale-transition>
+      <v-slide-x-transition>
       <router-view></router-view>
-      </v-scale-transition>
+      </v-slide-x-transition>
      </v-content>
      <v-footer :fixed="fixed" app v-if="this.$store.getters.currentUser">
       <span>MUSERPOL &copy; 2018</span>

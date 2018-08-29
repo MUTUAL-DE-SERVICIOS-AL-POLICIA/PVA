@@ -42,7 +42,7 @@
     <div class="head center"> CONTRATO EVENTUAL DE PRESTACIÓN DE SERVICIOS Nº {{ $contract->contract_numer }} </div>
     <div class="content">
         <p class="text" style="text-indent: 5em">
-            Conste por el presente “Contrato Eventual de Prestación de Servicios” que suscriben por una parte la <span class="title-text">MUTUAL DE SERVICIOS AL POLICIA - MUSERPOL</span>, representado legalmente por el <span class="title-text">Sr. Cnl. DESP. {{ Util::fullName($mae->employee) }} con C.I. No. {{ Util::ciExt($mae->employee) }} , en su calidad de {{ $mae->position->name }} de la MUSERPOL</span>, designado mediante Resolución Suprema Nº 16382 de fecha 31 de agosto de 2015, y por otra parte <span class="title-text up">{{ Util::fullName($contract->employee) }} con C.I. N° {{ Util::ciExt($contract->employee) }} </span>, mayor de edad y hábil por derecho, con domicilio en la ciudad de {{ $mae->employee->location }}, que en lo sucesivo se denominará el <span class="title-text">“CONTRATADO”</span> quienes celebran el presente contrato eventual, de acuerdo a los términos y condiciones siguientes:
+            Conste por el presente “Contrato Eventual de Prestación de Servicios” que suscriben por una parte la <span class="title-text">MUTUAL DE SERVICIOS AL POLICIA - MUSERPOL</span>, representado legalmente por el <span class="title-text">Sr. Cnl. DESP. {{ Util::fullName($mae->employee) }} con C.I. No. {{ Util::ciExt($mae->employee) }} , en su calidad de {{ $mae->position->name }} de la MUSERPOL</span>, designado mediante Resolución Suprema Nº 16382 de fecha 31 de agosto de 2015, y por otra parte <span class="title-text up">{{ Util::fullName($contract->employee) }} con C.I. N° {{ Util::ciExt($contract->employee) }} </span>, mayor de edad y hábil por derecho, con domicilio en la ciudad de {{ $contract->employee->location }}, que en lo sucesivo se denominará el <span class="title-text">“CONTRATADO”</span> quienes celebran el presente contrato eventual, de acuerdo a los términos y condiciones siguientes:
         </p>
         <p>
             <span class="title-text">CLÁUSULA PRIMERA (ANTECEDENTES). -</span> En estricta aplicación del Decreto Supremo N° 1446 de fecha 19 de diciembre de 2012, se creó la Mutual de Servicios al Policía – MUSERPOL como una Institución Pública Descentralizada de duración indefinida y patrimonio propio, con autonomía de gestión administrativa, financiera, legal y técnica, bajo tuición del Ministerio de Gobierno. Mediante Decretos Supremos 2829 de 6 de julio de 2016 y 3231 de 28 de junio de 2017 se modifica el D.S. 1446 de creación de la MUSERPOL. Para la realización de los fines y alcanzar los objetivos institucionales, se requiere la contratación de personal eventual con el fin de realizar la actividades administrativas, técnicas y legales propias de la Institución.
@@ -70,8 +70,16 @@
         <p>
             <span class="title-text">CLÁUSULA TERCERA (PLAZO).</span> El plazo del presente contrato será a partir del {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->format('F') }} del {{ Carbon::parse($contract->start_date)->year }} hasta el {{ Carbon::parse($contract->end_date)->day }} de {{ Carbon::parse($contract->end_date)->format('F') }} del {{ Carbon::parse($contract->end_date)->year }}, por tratarse de un contrato eventual, queda sobreentendido que el mismo quedará fenecido en la fecha señalada en la presente cláusula, salvando la previsión contenida en la Cláusula Décima del presente contrato.
         </p>
+        @php($schedule = $contract->job_schedules[0])
+        @php($turno1 = str_pad($schedule->start_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->start_minutes,2,0,STR_PAD_LEFT).' a '.str_pad($schedule->end_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->end_minutes,2,0,STR_PAD_LEFT))
+        @if(isset($contract->job_schedules[1]))
+        @php($schedule2 = $contract->job_schedules[1])
+        @php($turno2 = ' y de '.str_pad($schedule2->start_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule2->start_minutes,2,0,STR_PAD_LEFT).' a '.str_pad($schedule2->end_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule2->end_minutes,2,0,STR_PAD_LEFT))
+        @else
+        @php($turno2 = '')
+        @endif
         <p>
-            <span class="title-text">CLÁUSULA CUARTA (JORNADA LABORAL). -</span> El horario de cumplimiento de funciones por parte del <span class="title-text">CONTRATADO</span> es de 08:00 a.m. a 12:00 p.m. y de 14:30 p.m. a 18:30 p.m.; asimismo la Entidad en caso de necesidad, establecerá horarios específicos diferentes para fines institucionales.
+            <span class="title-text">CLÁUSULA CUARTA (JORNADA LABORAL). -</span> El horario de cumplimiento de funciones por parte del <span class="title-text">CONTRATADO</span> es de {{ $turno1 }}{{ $turno2 }}; asimismo la Entidad en caso de necesidad, establecerá horarios específicos diferentes para fines institucionales.
         </p>
         <p>
             <span class="title-text">CLÁUSULA QUINTA (VACACIÓN). -</span> Por tratarse de un contrato eventual, el <span class="title-text">CONTRATADO</span> no tiene derecho a vacación.
