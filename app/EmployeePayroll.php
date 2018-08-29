@@ -30,7 +30,7 @@ class EmployeePayroll {
 		$this->charge = $contract->position->charge->name;
 		$this->position = $contract->position->name;
 		$this->start_date = Carbon::parse($contract->start_date)->format('d/m/Y');
-		$this->end_date = is_null($contract->date_end) ? 'Indefinido' : Carbon::parse($contract->end_date)->format('d/m/Y');
+		$this->end_date = is_null($contract->end_date) ? 'Indefinido' : Carbon::parse($contract->end_date)->format('d/m/Y');
 		$this->retirement_date = is_null($contract->retirement_date) ? null : Carbon::parse($contract->retirement_date)->format('d/m/Y');
 		$this->base_wage = floatval($payroll->position->charge->base_wage);
 		$this->management_entity = $employee->management_entity->name;
@@ -71,7 +71,7 @@ class EmployeePayroll {
 		$this->position_group_id = $contract->position->position_group->id;
 		$this->employer_number = $contract->insurance_company->employer_number->number;
 		$this->employer_number_id = $contract->insurance_company->employer_number->id;
-		$this->valid_contract = (is_null($contract->date_end) || $contract->status) ? true : (Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30)) || $contract->status);
+		$this->valid_contract = (is_null($contract->end_date) || $contract->status) ? true : (Carbon::parse($contract->end_date)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->end_date)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30)) || $contract->status);
 	}
 
 	public function setZeroAccounts() {
@@ -157,7 +157,7 @@ class EmployeePayroll {
 		$last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month)->endOfMonth()->day;
 		$worked_days = 0;
 
-		if ($contract->date_end == null) {
+		if ($contract->end_date == null) {
 			$worked_days = 30;
 		} else if ($date_start->year == $date_end->year && $date_start->month == $date_end->month) {
 			if ($date_end->day == $last_day_of_month && ($last_day_of_month < 30 || $last_day_of_month > 30)) {
