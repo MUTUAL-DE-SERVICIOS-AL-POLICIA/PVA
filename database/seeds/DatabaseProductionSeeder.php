@@ -31,6 +31,8 @@ class DatabaseProductionSeeder extends Seeder {
 		$this->call(ManagementEntitySeeder::class);
 		$this->call(RetirementReasonSeeder::class);
 		$this->call(ContractTypeSeeder::class);
+		$this->call(ContractModeSeeder::class);
+		$this->call(DocumentTypeSeeder::class);
 		$this->call(MonthSeeder::class);
 	}
 }

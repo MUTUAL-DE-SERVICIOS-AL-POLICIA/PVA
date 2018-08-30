@@ -12,6 +12,13 @@ npm run dev
 php artisan vendor:publish
 php artisan key:generate
 php artisan jwt:secret
+php artisan migrate:fresh
+php artisan db:seed --class=DatabaseProductionSeeder
+```
+
+* To continue the development
+
+```sh
 php artisan migrate:fresh --seed
 php artisan api:generate --output="public/docs" --routePrefix="api/*" --actAsUserId=1
 ```

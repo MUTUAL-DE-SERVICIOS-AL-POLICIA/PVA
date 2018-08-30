@@ -27,6 +27,7 @@ class PayrollSeeder extends Seeder {
 				'faults' => rand(0, 99999) / 100,
 				'next_month_balance' => rand(0, 50),
 				'previous_month_balance' => rand(0, 100),
+				'rc_iva' => rand(0, 100),
 			]);
 		}
 	}
