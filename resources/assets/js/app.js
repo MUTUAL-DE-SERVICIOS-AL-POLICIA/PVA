@@ -13,6 +13,7 @@ import toastr from 'toastr'
 import 'toastr/build/toastr.min.css'
 Vue.prototype.toastr = toastr
 
+import print from 'print-js'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import ess from './es.js'

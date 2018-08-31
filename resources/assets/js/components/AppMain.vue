@@ -34,7 +34,7 @@
       <v-toolbar-title v-text="titles"></v-toolbar-title>
       <v-spacer></v-spacer>  
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-sm-and-down">
+      <v-toolbar-items class="">
         <v-menu offset-y>
           <v-btn
             slot="activator"

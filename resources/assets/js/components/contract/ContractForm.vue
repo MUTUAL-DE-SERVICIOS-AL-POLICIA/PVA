@@ -95,8 +95,7 @@
                     slot="activator"
                     v-model="formatDateEnd"
                     label="Fecha de conslusión"
-                    prepend-icon="event"
-                    readonly
+                    prepend-icon="event"                    
                   ></v-text-field>
                   <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc"></v-date-picker>
                 </v-menu>
@@ -115,8 +114,7 @@
                     slot="activator"
                     v-model="formatDateRetirement"
                     prepend-icon="event"
-                    label="Fecha de retiro"
-                    readonly
+                    label="Fecha de retiro"                    
                   ></v-text-field>
                   <v-date-picker v-model="date3" no-title @input="menuDate3 = false"></v-date-picker>
                 </v-menu>
