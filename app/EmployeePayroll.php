@@ -136,47 +136,46 @@ class EmployeePayroll {
 	}
 
 	private function worked_days($payroll) {
-		$payroll_date = (object) array(
-			'year' => $payroll->procedure->year,
-			'month' => $payroll->procedure->month->order,
-		);
+		$contract = $payroll->contract;
 
-		$last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month, 1)->endOfMonth()->day;
+		$payroll_date = Carbon::create($payroll->procedure->year, $payroll->procedure->month_id);
 
-		$date_start = Carbon::parse($payroll->contract->start_date);
+		$start_date = Carbon::parse($contract->start_date);
 
-		$date_end = Carbon::parse($payroll->contract->end_date);
+		$end_date = Carbon::parse($contract->end_date);
 
+		if ($this->retirement_date != null) {
+			$retirement_date = Carbon::parse($contract->retirement_date);
+			if ($retirement_date->year == $payroll_date->year && $retirement_date->month == $payroll_date->month) {
+				$end_date = $retirement_date;
+			}
+		}
+
+		$last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month)->endOfMonth()->day;
 		$worked_days = 0;
 
-		if ($payroll->contract->end_date == null) {
+		if ($contract->end_date == null) {
 			$worked_days = 30;
-		} else if ($date_start->year == $date_end->year && $date_start->month == $date_end->month) {
-			if ($date_end->day == $last_day_of_month && ($last_day_of_month < 30 || $last_day_of_month > 30)) {
-				$worked_days = 30 - $date_start->day;
+		} else if ($start_date->year == $end_date->year && $start_date->month == $end_date->month) {
+			if ($end_date->day == $last_day_of_month && ($last_day_of_month < 30 || $last_day_of_month > 30)) {
+				$worked_days = 30 - $start_date->day + 1;
 			} else {
-				$worked_days = $date_end->day - $date_start->day;
+				$worked_days = $end_date->day - $start_date->day;
 			}
 			$worked_days += 1;
-		} else if ($date_start->year <= $payroll_date->year && $date_start->month == $payroll_date->month) {
-			$worked_days = 30 + 1 - $date_start->day;
-		} else if ($date_end->year >= $payroll_date->year && $date_end->month == $payroll_date->month
-		) {
-			$worked_days = $date_end->day;
-		} else if (($date_start->year <= $payroll_date->year && $date_start->month < $payroll_date->month) ||
-			($date_end->year >= $payroll_date->year && $date_end->month > $payroll_date->month)
-		) {
-			$worked_days = 30;
-		} else if ($date_start->year < $payroll_date->year && $date_end->year > $payroll_date->year) {
+		} elseif ($start_date->year <= $payroll_date->year && $start_date->month == $payroll_date->month) {
+			$worked_days = 30 - $start_date->day + 1;
+		} elseif ($end_date->year >= $payroll_date->year && $end_date->month == $payroll_date->month) {
+			$worked_days = $end_date->day;
+		} elseif (($start_date->year <= $payroll_date->year && $start_date->month < $payroll_date->month) || ($end_date->year >= $payroll_date->year && $end_date->month > $payroll_date->month)) {
 			$worked_days = 30;
 		} else {
 			$worked_days = 0;
 		}
-
 		if ($payroll->unworked_days > $worked_days) {
 			return 0;
 		} else {
-			return $worked_days - $payroll->unworked_days;
+			return ($worked_days - $payroll->unworked_days);
 		}
 	}
 }
