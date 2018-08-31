@@ -1,5 +1,5 @@
 <template>
-  <v-dialog persistent v-model="dialog" max-width="900px">
+  <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
     <v-tooltip slot="activator" top>
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Contrato</span>
