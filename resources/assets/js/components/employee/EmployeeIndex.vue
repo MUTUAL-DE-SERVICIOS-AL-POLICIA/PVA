@@ -5,12 +5,11 @@
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn-toggle mandatory v-model="toggle_one" id="btn-toogle">
-          <!-- <v-btn class="btn-toggle" flat @click="getEmployees(false)">Activos</v-btn> -->
-          <a @click="getEmployees(false)">
-            <v-btn class="btn-toggle" flat>Activos</v-btn>
+          <a @click="getEmployees(false)" :class="!active ? 'selected' : 'non-selected'" class="pa-4">
+            <span class="subheading">ACTIVOS</span>
           </a>
-          <a @click="getEmployees(true)">
-            <v-btn class="btn-toggle" flat>Inactivos</v-btn>
+          <a @click="getEmployees(true)" :class="active ? 'selected' : 'non-selected'" class="pa-4">
+            <span class="subheading">INACTIVOS</span>
           </a>
         </v-btn-toggle>
       </v-toolbar-items>
@@ -206,10 +205,12 @@ export default {
 
 <style>
 a {
-  padding-top: 20px;
   background-color: #f5f5f5;
 }
 a:hover {
+  background-color: silver;
+}
+.selected {
   background-color: lightgray;
 }
 </style>
