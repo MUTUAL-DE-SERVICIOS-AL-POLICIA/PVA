@@ -71,7 +71,21 @@ class EmployeePayroll {
 		$this->position_group_id = $contract->position->position_group->id;
 		$this->employer_number = $contract->insurance_company->employer_number->number;
 		$this->employer_number_id = $contract->insurance_company->employer_number->id;
-		$this->valid_contract = (is_null($contract->end_date) || $contract->status) ? true : (Carbon::parse($contract->end_date)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->end_date)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30)) || $contract->status);
+		$this->valid_contract = $this->verifyActive($payroll);
+	}
+
+	public function verifyActive($payroll) {
+		$contract = $payroll->contract;
+		$employee = $contract->employee;
+
+		if (is_null($contract->date_end) && is_null($contract->date_retirement)) {
+			return true;
+		} elseif (!is_null($contract->date_retirement)) {
+			return (Carbon::parse($contract->date_retirement)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_retirement)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30, 0, 0, 0)));
+		} else {
+			return (Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30, 0, 0, 0)));
+		}
+		return false;
 	}
 
 	public function setZeroAccounts() {
