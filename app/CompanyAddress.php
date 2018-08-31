@@ -20,7 +20,7 @@ class CompanyAddress extends Model {
 		return $this->belongsToMany(PositionGroup::class);
 	}
 
-	public active function() {
+	public function active() {
 		return CompanyAddress::where('active', true)->first();
 	}
 }
