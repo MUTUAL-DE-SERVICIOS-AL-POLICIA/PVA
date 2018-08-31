@@ -62,6 +62,11 @@
                 data-vv-name='Días NO Trab.'
                 v-model="props.item.unworked_days"
                 class="body-1"
+                type="number"
+                step="1"
+                min="0"
+                :max="Number(props.item.unworked_days) + Number(workedDays(props.item))"
+                @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
             </td>
             <td>
@@ -71,6 +76,7 @@
                 data-vv-name="RC-IVA"
                 v-model="props.item.rc_iva"
                 class="body-1"
+                @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
             </td>
             <td>
@@ -80,6 +86,7 @@
                 data-vv-name="Descuentos"
                 v-model="props.item.faults"
                 class="body-1"
+                @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
             </td>
             <td>
@@ -89,6 +96,7 @@
                 data-vv-name="Descuentos"
                 v-model="props.item.previous_month_balance"
                 class="body-1"
+                @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
             </td>
             <td class="text-md-center">
