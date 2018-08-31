@@ -142,11 +142,13 @@ export default {
       },
       {
         text:     'Fecha de Inicio',
+        value:    'employee.mothers_last_name',
         align:    'center',
         sortable: false 
       },
       {
         text:     'Fecha de Conclusión',
+        value:    'employee.first_name',
         align:    'center',
         sortable: false 
       },
