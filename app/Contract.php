@@ -49,7 +49,7 @@ class Contract extends Model {
 		$first_day_of_month = Carbon::create($year, $month, 1)->format('Y-m-d');
 		$last_day_of_month = Carbon::create($year, $month, 1)->endOfMonth()->format('Y-m-d');
 
-		return Contract::where('active', true)->where(function ($query) use ($year, $month, $last_day_of_month) {
+		return Contract::where('active', true)->where(function ($query) use ($year, $month, $last_day_of_month, $first_day_of_month) {
 			$query
 				->orWhere(function ($q) use ($last_day_of_month) {
 					$q
@@ -63,7 +63,7 @@ class Contract extends Model {
 						->whereYear('retirement_date', $year)
 						->whereMonth('retirement_date', $month);
 				})
-				->orWhere(function ($q) use ($last_day_of_month) {
+				->orWhere(function ($q) use ($last_day_of_month, $first_day_of_month) {
 					$q
 						->whereNull('retirement_date')
 						->whereDate('end_date', '>=', $first_day_of_month)
