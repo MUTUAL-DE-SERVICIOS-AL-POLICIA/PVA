@@ -23,7 +23,7 @@ class EmployeePayroll {
 		$this->first_name = $employee->first_name;
 		$this->last_name = $employee->last_name;
 		$this->mothers_last_name = $employee->mothers_last_name;
-		$this->full_name = implode(" ", [$this->first_name, $this->last_name, $this->mothers_last_name]);
+		$this->full_name = implode(" ", [$this->last_name, $this->mothers_last_name, $this->first_name]);
 		$this->account_number = $employee->account_number;
 		$this->birth_date = Carbon::parse($employee->birth_date)->format('d/m/Y');
 		$this->gender = $employee->gender;
