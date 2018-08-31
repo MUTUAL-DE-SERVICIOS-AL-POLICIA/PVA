@@ -9,7 +9,7 @@
             contain
           ></v-img>
           <v-card-title primary-title class="justify-center">
-            <div class="headline font-weight-thin">MÓDULO RR.HH.</div>
+            <div class="display-1 font-weight-thin">MÓDULO RR.HH.</div>
           </v-card-title>
           <v-form>
             <v-text-field
