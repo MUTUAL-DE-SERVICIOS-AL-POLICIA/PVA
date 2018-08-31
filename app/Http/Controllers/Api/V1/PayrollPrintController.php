@@ -208,6 +208,8 @@ class PayrollPrintController extends Controller {
 
 		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]) . ".pdf";
 
+		// return view('payroll.print', $response->data);
+
 		return \PDF::loadView('payroll.print', $response->data)
 			->setOption('page-width', '216')
 			->setOption('page-height', '330')

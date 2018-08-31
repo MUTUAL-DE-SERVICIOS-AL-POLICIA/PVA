@@ -19,4 +19,8 @@ class CompanyAddress extends Model {
 	public function position_groups() {
 		return $this->belongsToMany(PositionGroup::class);
 	}
+
+	public active function() {
+		return CompanyAddress::where('active', true)->first();
+	}
 }

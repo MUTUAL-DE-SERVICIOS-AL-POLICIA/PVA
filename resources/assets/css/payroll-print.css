@@ -21,6 +21,7 @@ table, th, td {
 
 .header-left {
     float: left;
+    width: 20em;
 }
 
 .header-right {
