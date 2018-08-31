@@ -4,9 +4,14 @@
       <v-toolbar-title>Empleados</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn-toggle mandatory v-model="toggle_one">
-          <v-btn class="btn-toggle" flat :to="{name: 'employeeIndex', params: {active: true}}">Activos</v-btn>
-          <v-btn class="btn-toggle" flat :to="{name: 'employeeIndex', params: {active: false}}">Inactivos</v-btn>
+        <v-btn-toggle mandatory v-model="toggle_one" id="btn-toogle">
+          <!-- <v-btn class="btn-toggle" flat @click="getEmployees(false)">Activos</v-btn> -->
+          <a @click="getEmployees(false)">
+            <v-btn class="btn-toggle" flat>Activos</v-btn>
+          </a>
+          <a @click="getEmployees(true)">
+            <v-btn class="btn-toggle" flat>Inactivos</v-btn>
+          </a>
         </v-btn-toggle>
       </v-toolbar-items>
       <v-flex xs2>
@@ -34,14 +39,14 @@
         <tr>
           <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
           <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
-          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ props.item.birth_date | moment("DD/MM/YYYY") }} </td>
+          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ props.item.birth_date | moment('DD/MM/YYYY') }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
           <td class="text-md-center">
             <v-switch
               v-model="props.item.active"
-              @click="switchActive(props.item)"
+              @click.native="switchActive(props.item)"
             ></v-switch>
           </td>
           <td class="justify-center layout">
@@ -131,8 +136,10 @@ export default {
       bus: new Vue(),
       startIndex: 0,
       dialog: false,
-      active: JSON.parse(this.$route.params.active),
+      active: false,
       toggle_one: 0,
+      employeesActive: [],
+      employeesInactive: [],
       employees: [],
       search: "",
       headers: [
@@ -147,14 +154,8 @@ export default {
       ],
       subHeaders: [
         { align: "center", value: "name", text: "Name", sortable: false }
-      ],
-      subItems: [{ name: "asdfasdf" }]
+      ]
     };
-  },
-  watch: {
-    "$route.params.active": val => {
-      location.reload();
-    }
   },
   async mounted() {
     this.getEmployees(this.active);
@@ -163,22 +164,22 @@ export default {
     });
   },
   methods: {
-    reset: function() {
-      var vm = this;
-      vm.drawComponent = false;
-      Vue.nextTick(function() {
-        vm.drawComponent = true;
-      });
-    },
-    // filteredItems(items, search, filter) {
-    //   return items.filter(obj => {
-    //     return obj.active == this.active;
-    //   });
-    // },
-    async getEmployees(active = true) {
+    async getEmployees(active = this.active) {
       try {
         let res = await axios.get(`/api/v1/employee`);
-        this.employees = res.data;
+        this.employeesActive = res.data.filter(obj => {
+          return obj.active === true;
+        });
+        this.active = active;
+        this.toggle_one = this.active ? 1 : 0;
+        this.employeesInactive = res.data.filter(obj => {
+          return obj.active === false;
+        });
+        if (active) {
+          this.employees = this.employeesInactive;
+        } else {
+          this.employees = this.employeesActive;
+        }
       } catch (e) {
         console.log(e);
       }
@@ -186,13 +187,9 @@ export default {
     async switchActive(employee) {
       try {
         let res = await axios.put(`/api/v1/employee/${employee.id}`, {
-          active: !employee.active
+          active: employee.active
         });
-        this.getEmployees(this.active);
-        this.$router.push({
-          name: "employeeIndex",
-          params: { active: this.active }
-        });
+        this.getEmployees(employee.active);
       } catch (e) {
         console.log(e);
       }
@@ -208,7 +205,11 @@ export default {
 </script>
 
 <style>
-.btn-toggle {
-  background-color: #e4e4e4;
+a {
+  padding-top: 20px;
+  background-color: #f5f5f5;
+}
+a:hover {
+  background-color: lightgray;
 }
 </style>

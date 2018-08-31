@@ -30,7 +30,7 @@ export const routes = [
       requiresAuth: true
     }
   }, {
-    path: '/employee/:active',
+    path: '/employee',
     component: Employee,
     name: 'employeeIndex',
     meta: {

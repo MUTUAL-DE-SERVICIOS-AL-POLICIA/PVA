@@ -19,9 +19,6 @@ export const admin = [
   // }, {
   {
     href: 'employeeIndex',
-    params: {
-      active: true
-    },
     title: 'Empleados',
     icon: 'assignment_ind'
   // }, {
