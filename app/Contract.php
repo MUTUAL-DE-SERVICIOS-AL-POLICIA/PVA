@@ -46,6 +46,7 @@ class Contract extends Model {
 	}
 
 	public function valid_date($year, $month) {
+		$first_day_of_month = Carbon::create($year, $month, 1)->format('Y-m-d');
 		$last_day_of_month = Carbon::create($year, $month, 1)->endOfMonth()->format('Y-m-d');
 
 		return Contract::where('active', true)->where(function ($query) use ($year, $month, $last_day_of_month) {
@@ -65,7 +66,7 @@ class Contract extends Model {
 				->orWhere(function ($q) use ($last_day_of_month) {
 					$q
 						->whereNull('retirement_date')
-						->whereDate('end_date', '>=', $last_day_of_month)
+						->whereDate('end_date', '>=', $first_day_of_month)
 						->whereDate('start_date', '<', $last_day_of_month);
 				})
 				->orWhere(function ($q) use ($year, $month) {

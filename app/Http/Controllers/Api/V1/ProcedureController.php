@@ -21,7 +21,7 @@ class ProcedureController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return Procedure::get();
+		return Procedure::with('month')->get();
 	}
 
 	/**
@@ -54,7 +54,7 @@ class ProcedureController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id) {
-		return Procedure::findOrFail($id);
+		return Procedure::with('month')->findOrFail($id);
 	}
 
 	/**
