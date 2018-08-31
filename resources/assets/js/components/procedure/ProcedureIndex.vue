@@ -87,7 +87,7 @@
                       v-bind:index="index"
                       v-bind:key="item.id"
                     >
-                      <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${item}&report_name=A-${++index}&valid_contracts=0&with_account=0`)">
+                      <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${item}&report_name=A-${index}&valid_contracts=0&with_account=0`)">
                         <span class="caption">A-{{ ++index }} ({{ item }}.)</span>
                       </v-list-tile>
                     </v-list>
