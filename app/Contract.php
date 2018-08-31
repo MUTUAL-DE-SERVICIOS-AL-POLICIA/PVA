@@ -75,6 +75,6 @@ class Contract extends Model {
 						->whereYear('start_date', $year)
 						->whereMonth('start_date', $month);
 				});
-		})->get();
+		})->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->get();
 	}
 }
