@@ -61,14 +61,13 @@ class TicketController extends Controller
     function print($id) {
         $procedure = Procedure::select('procedures.id', 'procedures.month_id', 'procedures.year')
             ->leftJoin("months", 'months.id', '=', 'procedures.month_id')
-            ->where('procedures.id', '=', 1)
+            ->where('procedures.id', '=', $id)
             ->first();
         if (!$procedure) {
             return "procedure not found";
         }
         $grouped_payrolls = Payroll::where('procedure_id', $procedure->id)->get()->groupBy('code')->all();
-        $payrolls = array();
-        $i = 0;
+        $payrolls = [];
         foreach ($grouped_payrolls as $payroll_group) {            
             $payrolls[] = $this->mergeTickets($payroll_group);
         }
