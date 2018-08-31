@@ -1,56 +1,51 @@
 <template>
   <v-container fluid fill-height id="background-page">
-    <v-layout flex align-center justify-center>
-      <v-card flat id="login-card">
-        <div id="top-card">
-          <v-card-media
+    <v-layout row align-center justify-center>
+      <v-flex d-flex xs12 sm6 md4>
+        <v-card class="pa-5 ma-5">
+          <v-img
             src="/img/logo.png"
-            height="130px"
-          ></v-card-media>
+          ></v-img>
           <v-card-title primary-title class="justify-center">
             <h2 id="subtitle">MÓDULO RR.HH.</h2>
           </v-card-title>
-          <v-divider
-            horizontal
-            id="top-divider"
-          ></v-divider>
-        </div>
-        <v-form>
-          <v-text-field
-            v-validate="'required|min:5|max:255'"
-            @keyup.enter="focusPassword()"
-            v-model="auth.username"
-            prepend-icon="person"
-            label="Usuario"
-            name="usuario"
-            :error-messages="errors.collect('usuario')"
-            autofocus
-            required
-          ></v-text-field>
-          <v-text-field
-            v-validate="'required|min:5|max:255'"
-            @keyup.enter="authenticate(auth)"
-            v-model="auth.password"
-            prepend-icon="lock"
-            label="Contraseña"
-            type="password"
-            autocomplete="on"
-            ref="password"
-            name="contraseña"
-            :error-messages="errors.collect('contraseña')"
-            required
-          ></v-text-field>
-          <v-card-actions>
-            <v-btn
-              @click="authenticate(auth)"
-              primary
-              large
-              block
-              color="success"
-            > Ingresar </v-btn>
-          </v-card-actions>
-        </v-form>
-      </v-card>
+          <v-form>
+            <v-text-field
+              v-validate="'required|min:5|max:255'"
+              @keyup.enter="focusPassword()"
+              v-model="auth.username"
+              prepend-icon="person"
+              label="Usuario"
+              name="usuario"
+              :error-messages="errors.collect('usuario')"
+              autofocus
+              required
+            ></v-text-field>
+            <v-text-field
+              v-validate="'required|min:5|max:255'"
+              @keyup.enter="authenticate(auth)"
+              v-model="auth.password"
+              prepend-icon="lock"
+              label="Contraseña"
+              type="password"
+              autocomplete="on"
+              ref="password"
+              name="contraseña"
+              :error-messages="errors.collect('contraseña')"
+              required
+            ></v-text-field>
+            <v-card-actions>
+              <v-btn
+                @click="authenticate(auth)"
+                primary
+                large
+                block
+                color="success"
+              > Ingresar </v-btn>
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -96,21 +91,6 @@
 </script>
 
 <style>
-  #login-card {
-    width: 30em;
-    padding: 2.5em;
-  }
-
-  #top-divider {
-    margin-top: 0;
-    margin-bottom: 3em;
-  }
-
-  #subtitle {
-    color: slategray;
-    margin-top: 0;
-  }
-
   #background-page {
     background: rgba(107,168,114,1);
     background: -moz-linear-gradient(top, rgba(107,168,114,1) 0%, rgba(55,124,62,1) 47%, rgba(7,84,15,1) 90%);

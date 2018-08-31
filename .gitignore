@@ -36,3 +36,4 @@ yarn.lock
 # Webpack generated files
 public/css/app.css
 public/js/app.js
+public/mix-manifest.json

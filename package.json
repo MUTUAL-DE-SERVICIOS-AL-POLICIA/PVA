@@ -11,19 +11,18 @@
   },
   "devDependencies": {
     "cross-env": "^5.1",
-    "material-design-icons-iconfont": "^3.0.3",
-    "webpack-livereload-plugin": "1"
+    "material-design-icons-iconfont": "^3.0.3"
   },
   "dependencies": {
     "axios": "^0.18",
     "jquery": "^3.3.1",
-    "laravel-mix": "^2.0",
+    "laravel-mix": "^2.1.14",
     "lodash": "^4.17.10",
-    "popper.js": "^1.12",
-    "print-js": "^1.0.47",
-    "toastr": "^2.1.4",
-    "vee-validate": "^2.1.0-beta.6",
-    "vue": "^2.5.7",
+    "popper.js": "^1.14.4",
+    "print-js": "^1.0.50",
+    "toastr": "^2.0",
+    "vee-validate": "^2.1.0-beta.8",
+    "vue": "^2.5.17",
     "vue-moment": "^4.0.0",
     "vue-router": "^3.0.1",
     "vuetify": "^1.2.1",
