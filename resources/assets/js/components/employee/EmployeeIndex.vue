@@ -4,14 +4,12 @@
       <v-toolbar-title>Empleados</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn-toggle mandatory v-model="toggle_one" id="btn-toogle">
-          <a @click="getEmployees(false)" :class="!active ? 'selected' : 'non-selected'" class="pa-4">
-            <span class="subheading">ACTIVOS</span>
-          </a>
-          <a @click="getEmployees(true)" :class="active ? 'selected' : 'non-selected'" class="pa-4">
-            <span class="subheading">INACTIVOS</span>
-          </a>
-        </v-btn-toggle>
+        <a @click="getEmployees(false)" :class="!active ? 'selected' : 'non-selected'" class="pa-4">
+          <span class="subheading">ACTIVOS</span>
+        </a>
+        <a @click="getEmployees(true)" :class="active ? 'selected' : 'non-selected'" class="pa-4">
+          <span class="subheading">INACTIVOS</span>
+        </a>
       </v-toolbar-items>
       <v-flex xs2>
         <v-text-field
@@ -35,10 +33,10 @@
       expand
     >
       <template slot="items" slot-scope="props">
-        <tr>
+        <tr :class="(props.item.birth_date == null || props.item.nua_cua == null || props.item.account_number == null) ? 'deep-orange lighten-3' : '' ">
           <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
           <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
-          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ props.item.birth_date | moment('DD/MM/YYYY') }} </td>
+          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>

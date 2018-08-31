@@ -5,9 +5,11 @@
         <v-card class="pa-5 ma-5">
           <v-img
             src="/img/logo.png"
+            aspect-ratio="3"
+            contain
           ></v-img>
           <v-card-title primary-title class="justify-center">
-            <h2 id="subtitle">MÓDULO RR.HH.</h2>
+            <div class="headline font-weight-thin">MÓDULO RR.HH.</div>
           </v-card-title>
           <v-form>
             <v-text-field

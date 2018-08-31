@@ -35,76 +35,94 @@
         </span>
       </template>
       <template slot="items" slot-scope="props">
-        <tr>
-          <td>
-            <v-tooltip right>
-              <span slot="activator">
-                {{ `${props.item.contract.employee.last_name} ${props.item.contract.employee.mothers_last_name} ${props.item.contract.employee.first_name}` }}
-              </span>
-              <span>
-                <div>{{ `C.I: ${props.item.contract.employee.identity_card} ${props.item.contract.employee.city_identity_card.shortened}` }}</div>
-                <div>{{ `Cargo: ${props.item.contract.position.name}` }}</div>
-                <div>{{ `Haber: ${props.item.contract.position.charge.base_wage}` }}</div>
-              </span>
-            </v-tooltip>
-          </td>
-          <td class="text-md-center">
-            {{ workedDays(props.item) }}
-          </td>
-          <td>
-            <v-text-field
-              v-validate="'required'"
-              :error-messages="errors.collect('Días NO Trab.')"
-              data-vv-name='Días NO Trab.'
-              v-model="props.item.unworked_days"
-              class="body-1"
-            ></v-text-field>
-          </td>
-          <td>
-            <v-text-field
-              v-validate="'required'"
-              :error-messages="errors.collect('RC-IVA')"
-              data-vv-name="RC-IVA"
-              v-model="props.item.rc_iva"
-              class="body-1"
-            ></v-text-field>
-          </td>
-          <td>
-            <v-text-field
-              v-validate="'required'"
-              :error-messages="errors.collect('Descuentos')"
-              data-vv-name="Descuentos"
-              v-model="props.item.faults"
-              class="body-1"
-            ></v-text-field>
-          </td>
-          <td>
-            <v-text-field
-              v-validate="'required'"
-              :error-messages="errors.collect('Descuentos')"
-              data-vv-name="Descuentos"
-              v-model="props.item.previous_month_balance"
-              class="body-1"
-            ></v-text-field>
-          </td>
-          <td class="text-md-center">
-            <v-btn class="primary" @click="savePayroll(props.item)">
-              Guardar
-            </v-btn>
-          </td>
-          <td class="text-md-center">
-            {{ total(props.item) }}
-          </td>
-          <td class="text-md-center">
-            {{ totalDiscounts(props.item).toFixed(2) }}
-          </td>
-          <td class="text-md-center">
-            {{ $moment(props.item.contract.start_date).format('DD/MM/YYYY') }}
-          </td>
-          <td class="text-md-center">
-            {{ $moment(props.item.contract.end_date).format('DD/MM/YYYY') }}
-          </td>
-        </tr>
+        <v-hover>
+          <tr
+            slot-scope="{ hover }"
+            :class="(props.item.contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`"
+          >
+            <td>
+              <v-tooltip right>
+                <span slot="activator">
+                  {{ `${props.item.contract.employee.last_name} ${props.item.contract.employee.mothers_last_name} ${props.item.contract.employee.first_name}` }}
+                </span>
+                <span>
+                  <div>{{ `C.I: ${props.item.contract.employee.identity_card} ${props.item.contract.employee.city_identity_card.shortened}` }}</div>
+                  <div>{{ `Cargo: ${props.item.contract.position.name}` }}</div>
+                  <div>{{ `Haber: ${props.item.contract.position.charge.base_wage}` }}</div>
+                </span>
+              </v-tooltip>
+            </td>
+            <td class="text-md-center">
+              {{ workedDays(props.item) }}
+            </td>
+            <td>
+              <v-text-field
+                v-validate="'required'"
+                :error-messages="errors.collect('Días NO Trab.')"
+                data-vv-name='Días NO Trab.'
+                v-model="props.item.unworked_days"
+                class="body-1"
+              ></v-text-field>
+            </td>
+            <td>
+              <v-text-field
+                v-validate="'required'"
+                :error-messages="errors.collect('RC-IVA')"
+                data-vv-name="RC-IVA"
+                v-model="props.item.rc_iva"
+                class="body-1"
+              ></v-text-field>
+            </td>
+            <td>
+              <v-text-field
+                v-validate="'required'"
+                :error-messages="errors.collect('Descuentos')"
+                data-vv-name="Descuentos"
+                v-model="props.item.faults"
+                class="body-1"
+              ></v-text-field>
+            </td>
+            <td>
+              <v-text-field
+                v-validate="'required'"
+                :error-messages="errors.collect('Descuentos')"
+                data-vv-name="Descuentos"
+                v-model="props.item.previous_month_balance"
+                class="body-1"
+              ></v-text-field>
+            </td>
+            <td class="text-md-center">
+              <v-btn class="primary" @click="savePayroll(props.item)">
+                Guardar
+              </v-btn>
+            </td>
+            <td class="text-md-center">
+              {{ total(props.item) }}
+            </td>
+            <td class="text-md-center">
+              {{ totalDiscounts(props.item).toFixed(2) }}
+            </td>
+            <td class="text-md-center">
+              {{ $moment(props.item.contract.start_date).format('DD/MM/YYYY') }}
+            </td>
+            <td class="text-md-center" v-if="props.item.contract.end_date == null">
+              Indefinido
+            </td>
+            <td class="text-md-center" v-else-if="props.item.contract.retirement_date == null">
+              {{ $moment(props.item.contract.end_date).format('DD/MM/YYYY') }}
+            </td>
+            <td class="text-md-center" v-else>
+              <v-tooltip top>
+                <span slot="activator">
+                  {{ $moment(props.item.contract.retirement_date).format('DD/MM/YYYY') }}
+                </span>
+                <span>
+                  Fecha Conclusión: {{ $moment(props.item.contract.end_date).format('DD/MM/YYYY') }}
+                </span>
+              </v-tooltip>
+            </td>
+          </tr>
+        </v-hover>
       </template>
       <v-alert slot="no-results" :value="true" color="error">
         La búsqueda de "{{ search }}" no encontró resultados.

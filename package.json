@@ -20,6 +20,7 @@
     "lodash": "^4.17.10",
     "popper.js": "^1.14.4",
     "print-js": "^1.0.50",
+    "roboto-fontface": "^0.10.0",
     "toastr": "^2.0",
     "vee-validate": "^2.1.0-beta.8",
     "vue": "^2.5.17",
