@@ -17,6 +17,8 @@ class CreatePositionGroupsTable extends Migration {
 			$table->string('shortened');
 			$table->integer('document_id')->nullable();
 			$table->foreign('document_id')->references('id')->on('documents');
+			$table->integer('company_address_id')->unsigned();
+			$table->foreign('company_address_id')->references('id')->on('company_addresses');
 			$table->boolean('active')->default(true);
 			$table->timestamps();
 			$table->softDeletes();

@@ -70,8 +70,8 @@ class EmployeePayroll {
 		// Extra data
 		$this->position_group = $contract->position->position_group->name;
 		$this->position_group_id = $contract->position->position_group->id;
-		$this->employer_number = $contract->insurance_company->employer_number->number;
-		$this->employer_number_id = $contract->insurance_company->employer_number->id;
+		$this->employer_number = $payroll->position_group->company_address->city->employer_number->number;
+		$this->employer_number_id = $payroll->position_group->company_address->city->employer_number->id;
 		$this->valid_contract = Util::valid_contract($payroll, null);
 	}
 

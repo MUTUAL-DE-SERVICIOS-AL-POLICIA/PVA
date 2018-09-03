@@ -17,7 +17,7 @@ class CompanyAddress extends Model {
 	}
 
 	public function position_groups() {
-		return $this->belongsToMany(PositionGroup::class);
+		return $this->hasMany(PositionGroup::class);
 	}
 
 	public function active() {
