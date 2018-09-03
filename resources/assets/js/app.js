@@ -22,6 +22,15 @@ Vue.use(Vuetify, {
   lang: {
     locales: { ess },
     current: 'ess'
+  },
+  theme: {
+    primary: "#43A047",
+    secondary: "#C8E6C9",
+    accent: "#00796B",
+    error: "#f44336",
+    warning: "#ffeb3b",
+    info: "#2196f3",
+    success: "#33691E"
   }
 })
 import { createSimpleTransition } from 'vuetify/es5/util/helpers'

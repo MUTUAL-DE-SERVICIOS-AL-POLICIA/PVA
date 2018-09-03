@@ -86,7 +86,7 @@
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.tax_number }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.document.document_type.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.document.name }} </td>
-            <td class="justify-center layout px-0">              
+            <td class="justify-center layout px-0">
               <v-tooltip top>
                 <v-btn slot="activator" flat icon color="primary" @click="editItem(props.item)">
                   <v-icon>edit</v-icon>
