@@ -33,7 +33,11 @@ class Employee extends Model {
 		return $this->hasMany(Contract::class);
 	}
 
-	public function lastContract() {
+	public function last_contract() {
 		return $this->contracts()->orderBy('start_date', 'DESC')->first();
+	}
+
+	public function before_last_contract() {
+		return $this->contracts()->orderBy('start_date', 'DESC')->skip(1)->first();
 	}
 }
