@@ -11,6 +11,7 @@ Route::macro('common_routes', function () {
 	Route::resource('charge', 'Api\V1\ChargeController')->except(['create', 'edit']);
 	Route::resource('position', 'Api\V1\PositionController')->except(['create', 'edit']);
 	Route::get('payroll/getpayrollcontract/{contract_id}', 'Api\V1\PayrollController@getPayrollContract');
+	Route::get('payroll/tributecalculation', 'Api\V1\PayrollController@tribute_calculation');
 	Route::resource('payroll', 'Api\V1\PayrollController')->except(['create', 'edit']);
 	Route::group([
 		'prefix' => 'position/{superior_id}',
