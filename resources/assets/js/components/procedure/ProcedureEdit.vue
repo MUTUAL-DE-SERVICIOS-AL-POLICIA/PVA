@@ -49,6 +49,7 @@
                   <div>{{ `C.I: ${props.item.contract.employee.identity_card} ${props.item.contract.employee.city_identity_card.shortened}` }}</div>
                   <div>{{ `Cargo: ${props.item.contract.position.name}` }}</div>
                   <div>{{ `Haber: ${props.item.contract.position.charge.base_wage}` }}</div>
+                  <div v-if="props.item.contract.contract_number">{{ `Contrato: ${props.item.contract.contract_number}` }}</div>
                 </span>
               </v-tooltip>
             </td>

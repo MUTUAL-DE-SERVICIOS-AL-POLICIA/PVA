@@ -78,12 +78,12 @@ class EmployeePayroll {
 		$contract = $payroll->contract;
 		$employee = $contract->employee;
 
-		if (is_null($contract->date_end) && is_null($contract->date_retirement)) {
+		if (is_null($contract->end_date) && is_null($contract->retirement_date)) {
 			return true;
-		} elseif (!is_null($contract->date_retirement)) {
-			return (Carbon::parse($contract->date_retirement)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_retirement)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30, 0, 0, 0)));
+		} elseif (!is_null($contract->retirement_date)) {
+			return (Carbon::parse($contract->retirement_date . 'T23:59:59.999999')->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()) || Carbon::parse($contract->retirement_date . 'T23:59:59.999999')->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order, 30, 0, 0, 0)));
 		} else {
-			return (Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30, 0, 0, 0)));
+			return (Carbon::parse($contract->end_date . 'T23:59:59.999999')->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()) || Carbon::parse($contract->end_date . 'T23:59:59.999999')->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order, 30, 0, 0, 0)));
 		}
 		return false;
 	}
@@ -154,12 +154,12 @@ class EmployeePayroll {
 
 		$payroll_date = Carbon::create($payroll->procedure->year, $payroll->procedure->month_id);
 
-		$start_date = Carbon::parse($contract->start_date);
+		$start_date = Carbon::parse($contract->start_date . 'T0:0:0');
 
-		$end_date = Carbon::parse($contract->end_date);
+		$end_date = Carbon::parse($contract->end_date . 'T23:59:59.999999');
 
 		if ($this->retirement_date != null) {
-			$retirement_date = Carbon::parse($contract->retirement_date);
+			$retirement_date = Carbon::parse($contract->retirement_date . 'T23:59:59.999999');
 			if ($retirement_date->year == $payroll_date->year && $retirement_date->month == $payroll_date->month) {
 				$end_date = $retirement_date;
 			}

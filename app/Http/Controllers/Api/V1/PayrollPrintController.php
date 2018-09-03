@@ -56,8 +56,12 @@ class PayrollPrintController extends Controller {
 					}
 				}
 
+				$contract_payrolls = Payroll::where('code', $payroll->code)->get();
+
 				if (Payroll::where('code', $payroll->code)->count() > 1) {
-					$rehired = true;
+					foreach ($contract_payrolls as $key => $c) {
+						$rehired = $rehired && is_null($c->contract->retirement_date);
+					}
 				}
 
 				$e = new EmployeePayroll($payroll);
