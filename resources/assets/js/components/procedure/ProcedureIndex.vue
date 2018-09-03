@@ -72,14 +72,16 @@
                       v-bind:index="index"
                       v-bind:key="item.id"
                     >
-                      <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${item}&report_name=B-${++index}&valid_contracts=1&with_account=1`)">
-                        <span class="caption">B-{{ ++index }} ({{ item }}.)</span>
-                      </v-list-tile>
-                    </v-list>
-                    <v-list>
-                      <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=P&report_name=B-2&valid_contracts=0&with_account=0&management_entity=0&position_group=0&employer_number=1`)">
-                        <span class="caption">B-2 (REPRESENTACIÓN GENERAL)</span>
-                      </v-list-tile>
+                      <div v-if="item == 'H'">
+                        <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${item}&report_name=B-${++index}&valid_contracts=1&with_account=1`)">
+                          <span class="caption">B-{{ ++index }} ({{ item }}.)</span>
+                        </v-list-tile>
+                      </div>
+                      <div v-else-if="item == 'P'">
+                        <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=P&report_name=B-2&valid_contracts=0&with_account=0&management_entity=0&position_group=0&employer_number=1`)">
+                          <span class="caption">B-{{ ++index }} ({{ item }}.)</span>
+                        </v-list-tile>
+                      </div>
                     </v-list>
                     <v-list
                       v-for="(item, index) in templateTypes"
@@ -108,8 +110,8 @@
                         v-bind:index="indexM"
                         v-bind:key="m.id"
                       >
-                        <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${t}&report_name=A-${indexT+indexM+4}&valid_contracts=0&with_account=0&management_entity=${m.id}`)">
-                          <span class="caption">A-{{ indexT+indexM+4 }} ({{ t }}. AFP {{ m.name }})</span>
+                        <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${t}&report_name=A-${parseInt(`${indexT}${indexM}`, 2) + 4}&valid_contracts=0&with_account=0&management_entity=${m.id}`)">
+                          <span class="caption">A-{{ parseInt(`${indexT}${indexM}`, 2) + 4 }} ({{ t }}. AFP {{ m.name }})</span>
                         </v-list-tile>
                       </div>
                     </v-list>
@@ -125,20 +127,24 @@
                         v-bind:index="indexE"
                         v-bind:key="e.id"
                       >
-                        <v-list-tile
-                          v-if="e.cities.length > 0"
-                          @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${t}&report_name=${t}-${indexT+indexE+4}&valid_contracts=0&with_account=0&management_entity=0&position_group=0&employer_number=${e.id}`)"
-                        >
-                          <span class="caption">{{ t }}-{{ e.id }} ({{ t }}.</span>
-                          <span
-                            v-for="(c, indexC) in e.cities"
-                            v-bind:item="c"
-                            v-bind:index="indexC"
-                            v-bind:key="c.id"
-                            class="caption"
-                          >&nbsp;{{ c.name }}{{ commaDivider(indexC, e.cities) }}</span>
-                          <span class="caption">)</span>
-                        </v-list-tile>
+                        <v-tooltip left>
+                          <v-list-tile
+                            slot="activator"
+                            v-if="e.cities.length > 0"
+                            @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${t}&report_name=${t}-${indexT+indexE+4}&valid_contracts=0&with_account=0&management_entity=0&position_group=0&employer_number=${e.id}`)"
+                          >
+                            <span class="caption">{{ t }}-{{ e.id }} ({{ t }}.</span>
+                            <span
+                              v-for="(c, indexC) in e.cities"
+                              v-bind:item="c"
+                              v-bind:index="indexC"
+                              v-bind:key="c.id"
+                              class="caption"
+                            >&nbsp;{{ c.name }}{{ commaDivider(indexC, e.cities) }}</span>
+                            <span class="caption">)</span>
+                          </v-list-tile>
+                          <span>#Empleador: {{ e.number }}</span>
+                        </v-tooltip>
                       </div>
                     </v-list>
                   </v-card>
