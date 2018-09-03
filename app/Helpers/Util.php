@@ -87,47 +87,6 @@ class Util {
 		}
 	}
 
-	public static function geMonth($value) {
-		switch ($value) {
-		case 'Enero':
-			return Carbon::parse('1 January');
-			break;
-		case 'Febrero':
-			return Carbon::parse('1 February');
-			break;
-		case 'Marzo':
-			return Carbon::parse('1 March');
-			break;
-		case 'Abril':
-			return Carbon::parse('1 April');
-			break;
-		case 'Mayo':
-			return Carbon::parse('1 May');
-			break;
-		case 'Junio':
-			return Carbon::parse('1 June');
-			break;
-		case 'Julio':
-			return Carbon::parse('1 July');
-			break;
-		case 'Agosto':
-			return Carbon::parse('1 August');
-			break;
-		case 'Septiembre':
-			return Carbon::parse('1 September');
-			break;
-		case 'Octubre':
-			return Carbon::parse('1 October');
-			break;
-		case 'Noviembre':
-			return Carbon::parse('1 November');
-			break;
-		case 'Diciembre':
-			return Carbon::parse('1 December');
-			break;
-		}
-	}
-
 	public static function getMonthEs($value) {
 		$meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 		return $meses[(int) $value];
@@ -298,5 +257,38 @@ class Util {
 			// $valor_convertido = $converted . strtoupper($moneda) . ' CON ' . $decimales . ' ' . strtoupper($centimos);
 		}
 		return $valor_convertido;
+	}
+
+	public static function end_of_month($year, $month) {
+		return Carbon::create($year, $month)->endOfMonth()->setTime(0, 0, 0);
+	}
+
+	public static function compare_dates($contract_date, $payroll) {
+		$end_of_month = self::end_of_month($payroll->procedure->year, $payroll->procedure->month->order);
+
+		if ($end_of_month->day < 30) {
+			return Carbon::parse($contract_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()->setTime(0, 0, 0));
+		} else {
+			return Carbon::parse($contract_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order, 30)->setTime(0, 0, 0));
+		}
+	}
+
+	public static function valid_contract($payroll, $contract) {
+		if (!$contract) {
+			$contract = $payroll->contract;
+		}
+		$end_of_month = self::end_of_month($payroll->procedure->year, $payroll->procedure->month->order);
+
+		if (Carbon::parse($contract->start_date)->setTime(0, 0, 0)->lte($end_of_month)) {
+			if (is_null($contract->end_date) && is_null($contract->retirement_date)) {
+				return true;
+			} elseif (!is_null($contract->retirement_date)) {
+				return self::compare_dates($contract->retirement_date, $payroll);
+			} else {
+				return self::compare_dates($contract->end_date, $payroll);
+			}
+		} else {
+			return false;
+		}
 	}
 }

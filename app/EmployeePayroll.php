@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Util;
 use Carbon;
 
 class EmployeePayroll {
@@ -71,20 +72,7 @@ class EmployeePayroll {
 		$this->position_group_id = $contract->position->position_group->id;
 		$this->employer_number = $contract->insurance_company->employer_number->number;
 		$this->employer_number_id = $contract->insurance_company->employer_number->id;
-		$this->valid_contract = $this->verifyActive($payroll);
-	}
-
-	public function verifyActive($payroll) {
-		$contract = $payroll->contract;
-
-		if (is_null($contract->end_date) && is_null($contract->retirement_date)) {
-			return true;
-		} elseif (!is_null($contract->retirement_date)) {
-			return (Carbon::parse($contract->retirement_date . 'T23:59:59.999999')->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()) || Carbon::parse($contract->retirement_date . 'T23:59:59.999999')->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order, 30, 0, 0, 0)));
-		} else {
-			return (Carbon::parse($contract->end_date . 'T23:59:59.999999')->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()) || Carbon::parse($contract->end_date . 'T23:59:59.999999')->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order, 30, 0, 0, 0)));
-		}
-		return false;
+		$this->valid_contract = Util::valid_contract($payroll, null);
 	}
 
 	public function setZeroAccounts() {

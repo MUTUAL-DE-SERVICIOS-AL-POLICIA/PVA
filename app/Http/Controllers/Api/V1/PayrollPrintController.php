@@ -39,38 +39,17 @@ class PayrollPrintController extends Controller {
 				$contract = $payroll->contract;
 				$employee = $contract->employee;
 
-				$rehired = false;
+				$rehired = true;
 				$employee_contracts = $payroll->contract->employee->contracts;
-
-				if (count($employee_contracts) > 1) {
-					$last_contract = $payroll->contract->employee->last_contract();
-					$end_of_month = Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()->setTime(0, 0, 0);
-
-					if (is_null($last_contract->end_date) && is_null($last_contract->retirement_date)) {
-						$rehired = true;
-					} elseif (!is_null($last_contract->retirement_date)) {
-						if ($end_of_month->day < 30) {
-							$rehired = Carbon::parse($last_contract->retirement_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()->setTime(0, 0, 0));
-						} elseif ($end_of_month->day == 30) {
-							$rehired = Carbon::parse($last_contract->retirement_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order, 30)->setTime(0, 0, 0));
-						} else {
-							$rehired = Carbon::parse($last_contract->retirement_date)->setTime(0, 0, 0)->gte($end_of_month);
-						}
-					} else {
-						if ($end_of_month->day < 30) {
-							$rehired = Carbon::parse($last_contract->end_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()->setTime(0, 0, 0));
-						} elseif ($end_of_month->day == 30) {
-							$rehired = Carbon::parse($last_contract->end_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order, 30)->setTime(0, 0, 0));
-						} else {
-							$rehired = Carbon::parse($last_contract->end_date)->setTime(0, 0, 0)->gte($end_of_month->setTime(0, 0, 0));
-						}
-					}
-				}
 
 				$e = new EmployeePayroll($payroll);
 
-				if ($rehired) {
-					$e->setValidContact(true);
+				if (count($employee_contracts) > 1) {
+					$rehired = Util::valid_contract($payroll, $employee->last_contract());
+
+					if ($rehired) {
+						$e->setValidContact(true);
+					}
 				}
 
 				if (($valid_contracts && !$e->valid_contract) || (($management_entity != 0) && ($e->management_entity_id != $management_entity)) || (($position_group != 0) && ($e->position_group_id != $position_group)) || ($employer_number && ($e->employer_number_id != $employer_number)) || ($with_account && !$employee->account_number)) {
