@@ -40,27 +40,30 @@ class PayrollPrintController extends Controller {
 				$employee = $contract->employee;
 
 				$rehired = false;
-				$employee_contracts = $payroll->contract->employee->contracts()->get()->all();
+				$employee_contracts = $payroll->contract->employee->contracts;
 
 				if (count($employee_contracts) > 1) {
-					foreach ($employee_contracts as $key => $employee_contract) {
-						if ($key > 0) {
-							$current_contract_date = Carbon::parse($employee_contract->start_date);
-							$last_contract_date = Carbon::parse($employee_contracts[$key - 1]->date_end);
-							if ($last_contract_date->year == $current_contract_date->year && $last_contract_date->month == $current_contract_date->month) {
-								$rehired = true;
-							}
+					$last_contract = $payroll->contract->employee->last_contract();
+					$end_of_month = Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()->setTime(0, 0, 0);
+
+					if (is_null($last_contract->end_date) && is_null($last_contract->retirement_date)) {
+						$rehired = true;
+					} elseif (!is_null($last_contract->retirement_date)) {
+						if ($end_of_month->day < 30) {
+							$rehired = Carbon::parse($last_contract->retirement_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()->setTime(0, 0, 0));
+						} elseif ($end_of_month->day == 30) {
+							$rehired = Carbon::parse($last_contract->retirement_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order, 30)->setTime(0, 0, 0));
 						} else {
-
+							$rehired = Carbon::parse($last_contract->retirement_date)->setTime(0, 0, 0)->gte($end_of_month);
 						}
-					}
-				}
-
-				$contract_payrolls = Payroll::where('code', $payroll->code)->get();
-
-				if (Payroll::where('code', $payroll->code)->count() > 1) {
-					foreach ($contract_payrolls as $key => $c) {
-						$rehired = $rehired && is_null($c->contract->retirement_date);
+					} else {
+						if ($end_of_month->day < 30) {
+							$rehired = Carbon::parse($last_contract->end_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order)->endOfMonth()->setTime(0, 0, 0));
+						} elseif ($end_of_month->day == 30) {
+							$rehired = Carbon::parse($last_contract->end_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->order, 30)->setTime(0, 0, 0));
+						} else {
+							$rehired = Carbon::parse($last_contract->end_date)->setTime(0, 0, 0)->gte($end_of_month->setTime(0, 0, 0));
+						}
 					}
 				}
 

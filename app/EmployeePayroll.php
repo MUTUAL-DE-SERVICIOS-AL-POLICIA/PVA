@@ -40,8 +40,8 @@ class EmployeePayroll {
 		$this->ovt = (object) [
 			'insurance_company_id' => $contract->insurance_company->ovt_id,
 			'management_entity_id' => $employee->management_entity->ovt_id,
-			'contract_mode' => $employee->lastContract()->contract_mode->ovt_id,
-			'contract_type' => $employee->lastContract()->contract_type->ovt_id,
+			'contract_mode' => $employee->last_contract()->contract_mode->ovt_id,
+			'contract_type' => $employee->last_contract()->contract_type->ovt_id,
 		];
 
 		// Payable template
@@ -76,7 +76,6 @@ class EmployeePayroll {
 
 	public function verifyActive($payroll) {
 		$contract = $payroll->contract;
-		$employee = $contract->employee;
 
 		if (is_null($contract->end_date) && is_null($contract->retirement_date)) {
 			return true;
@@ -152,7 +151,7 @@ class EmployeePayroll {
 	private function worked_days($payroll) {
 		$contract = $payroll->contract;
 
-		$payroll_date = Carbon::create($payroll->procedure->year, $payroll->procedure->month_id);
+		$payroll_date = Carbon::create($payroll->procedure->year, $payroll->procedure->month->order);
 
 		$start_date = Carbon::parse($contract->start_date . 'T0:0:0');
 
