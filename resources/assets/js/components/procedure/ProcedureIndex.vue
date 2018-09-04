@@ -30,11 +30,9 @@
               </v-card-title>
               <v-card-actions v-if="!procedure.new">
                 <v-spacer></v-spacer>
-                <v-btn icon v-if="procedure.active">
+                <v-btn icon v-if="procedure.active" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
                   <v-tooltip top>
-                    <router-link slot="activator" color="primary" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
-                      <v-icon>edit</v-icon>
-                    </router-link>
+                    <v-icon slot="activator" color="primary">edit</v-icon>
                     <span>Editar</span>
                   </v-tooltip>
                 </v-btn>
