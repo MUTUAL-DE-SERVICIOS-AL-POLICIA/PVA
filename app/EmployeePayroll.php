@@ -10,6 +10,8 @@ class EmployeePayroll {
 		$contract = $payroll->contract;
 		$employee = $contract->employee;
 
+		$this->code_image = null;
+
 		// Common data
 		$this->employee_id = $employee->id;
 		$this->month_id = $payroll->procedure->month->order;
@@ -117,23 +119,41 @@ class EmployeePayroll {
 	}
 
 	private function employerContribution($payroll) {
-		if ($payroll->contract->insurance_company->active) {
-			$this->contribution_insurance_company = $this->quotable * $payroll->procedure->employer_contribution->insurance_company;
-		}
+		$this->contribution_insurance_company = $this->quotable * $payroll->procedure->employer_contribution->insurance_company;
 		$this->contribution_professional_risk = $this->quotable * $payroll->procedure->employer_contribution->professional_risk;
 		$this->contribution_employer_solidary = $this->quotable * $payroll->procedure->employer_contribution->solidary;
 		$this->contribution_employer_housing = $this->quotable * $payroll->procedure->employer_contribution->housing;
 		$this->total_contributions = round(($this->contribution_insurance_company + $this->contribution_professional_risk + $this->contribution_employer_solidary + $this->contribution_employer_housing), 2);
 	}
 
-	public function setWorked_days($worked_days, $payroll) {
-		$this->worked_days = $worked_days;
-		$this->employeeDiscounts($payroll);
-		$this->employerContribution($payroll);
+	public function mergePayroll($employe_payroll) {
+		$this->worked_days += $employe_payroll->worked_days;
+		$this->quotable += $employe_payroll->quotable;
+		$this->discount_old += $employe_payroll->discount_old;
+		$this->discount_common_risk += $employe_payroll->discount_common_risk;
+		$this->discount_commission += $employe_payroll->discount_commission;
+		$this->discount_solidary += $employe_payroll->discount_solidary;
+		$this->discount_national += $employe_payroll->discount_national;
+		$this->total_amount_discount_law += $employe_payroll->total_amount_discount_law;
+		$this->net_salary += $employe_payroll->net_salary;
+		$this->discount_rc_iva += $employe_payroll->discount_rc_iva;
+		$this->discount_faults += $employe_payroll->discount_faults;
+		$this->total_discounts += $employe_payroll->total_discounts;
+		$this->payable_liquid += $employe_payroll->payable_liquid;
+		return $this;
 	}
 
-	public function getWorked_days() {
+	public function setWorkedDays($worked_days) {
+		$this->worked_days = $worked_days;
+		return $this;
+	}
+
+	public function getWorkedDays() {
 		return $this->worked_days;
+	}
+
+	public function setCodeImage($code_image) {
+		$this->code_image = $code_image;
 	}
 
 	public function setValidContact($valid_contract) {

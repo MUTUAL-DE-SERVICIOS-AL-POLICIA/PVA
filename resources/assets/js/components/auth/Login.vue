@@ -20,6 +20,7 @@
               label="Usuario"
               name="usuario"
               :error-messages="errors.collect('usuario')"
+              autocomplete="on"
               autofocus
               required
             ></v-text-field>
