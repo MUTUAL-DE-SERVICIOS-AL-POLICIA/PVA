@@ -48,7 +48,7 @@
           </td>
           <td class="justify-center layout">
             <v-tooltip top>
-              <v-btn medium slot="activator" flat icon color="primary" @click="editItem(props.item)">
+              <v-btn medium slot="activator" flat icon color="info" @click="editItem(props.item)">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>

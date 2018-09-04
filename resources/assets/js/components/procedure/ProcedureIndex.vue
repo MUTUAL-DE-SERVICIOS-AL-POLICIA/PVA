@@ -24,39 +24,39 @@
             :key="procedure.id"
             xs12 sm4
           >
-            <v-card :color="procedure.active ? 'warning' : 'tertiary'" height="100%">
+            <v-card :color="procedure.active ? 'warning' : 'green lighten-4'" height="100%">
               <v-card-title>
-                <h3>{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</h3>
+                <div class="font-weight-light display-1">{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</div>
               </v-card-title>
               <v-card-actions v-if="!procedure.new">
                 <v-spacer></v-spacer>
                 <v-btn icon v-if="procedure.active" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
                   <v-tooltip top>
-                    <v-icon slot="activator" color="primary">edit</v-icon>
+                    <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                     <span>Editar</span>
                   </v-tooltip>
                 </v-btn>
                 <v-btn icon>
                   <v-tooltip top>
-                    <v-icon slot="activator" color="primary" @click="printTicket(procedure.id)">print</v-icon>
+                    <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'" @click="printTicket(procedure.id)">print</v-icon>
                     <span>Imprimir boletas</span>
                   </v-tooltip>
                 </v-btn>
                 <v-btn icon :href="`/api/v1/payroll/print/txt/${procedure.year}/${procedure.month_order}`">
                   <v-tooltip top>
-                    <v-icon slot="activator" color="primary">account_balance</v-icon>
+                    <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                     <span>TXT Banco</span>
                   </v-tooltip>
                 </v-btn>
                 <v-btn icon :href="`/api/v1/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`">
                   <v-tooltip top>
-                    <v-icon slot="activator" color="primary">work</v-icon>
+                    <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">work</v-icon>
                     <span>CSV OVT</span>
                   </v-tooltip>
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-menu offset-y>
-                  <v-btn slot="activator" color="primary">
+                  <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                     <span>Planillas</span>
                     <v-icon small>arrow_drop_down</v-icon>
                   </v-btn>
@@ -153,9 +153,34 @@
               </v-card-actions>
               <v-card-actions v-else>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="storeProcedure()">
+                <v-btn
+                  :disabled="dialog"
+                  :loading="dialog"
+                  color="info"
+                  @click="storeProcedure"
+                >
                   Registrar
                 </v-btn>
+                <v-dialog
+                  v-model="dialog"
+                  hide-overlay
+                  persistent
+                  width="300"
+                >
+                  <v-card
+                    color="primary"
+                    dark
+                  >
+                    <v-card-text class="title">
+                      Generando planillas...
+                      <v-progress-linear
+                        indeterminate
+                        color="white"
+                        class="mb-0"
+                      ></v-progress-linear>
+                    </v-card-text>
+                  </v-card>
+                </v-dialog>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -170,6 +195,7 @@ export default {
   name: "ProcedureIndex",
   data() {
     return {
+      dialog: false,
       years: [],
       procedures: [],
       newProcedure: {
@@ -256,6 +282,7 @@ export default {
     },
     async storeProcedure() {
       try {
+        this.dialog = true;
         let procedure = await axios.post(
           `/api/v1/procedure`,
           this.newProcedure
@@ -274,6 +301,7 @@ export default {
             .format("MMMM")
             .toUpperCase()}`
         );
+        this.dialog = false;
       } catch (e) {
         console.log(e);
       }

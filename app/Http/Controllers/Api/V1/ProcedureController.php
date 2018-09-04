@@ -70,6 +70,7 @@ class ProcedureController extends Controller {
 		$procedure = Procedure::findOrFail($id);
 		$procedure->fill($request->all());
 		$procedure->save();
+		$procedure->month;
 		return $procedure;
 	}
 

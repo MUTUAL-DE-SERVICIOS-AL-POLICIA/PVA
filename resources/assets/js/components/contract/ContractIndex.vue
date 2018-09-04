@@ -68,7 +68,7 @@
                   <span>Recontratar</span>
                 </v-tooltip>
                 <v-tooltip top>
-                  <v-btn slot="activator" flat icon color="primary" @click="editItem(props.item, 'edit')">
+                  <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
                     <v-icon>edit</v-icon>
                   </v-btn>
                   <span>Editar</span>

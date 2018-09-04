@@ -31,7 +31,7 @@ Vue.use(Vuetify, {
     error: "#BF5100",
     danger: '#953F00',
     warning: "#FFC65E",
-    info: "#1043A0",
+    info: "#0B347F",
     success: "#006157",
     normal: '#F5F5F5'
   }

@@ -88,7 +88,7 @@
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.document.name }} </td>
             <td class="justify-center layout px-0">
               <v-tooltip top>
-                <v-btn slot="activator" flat icon color="primary" @click="editItem(props.item)">
+                <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item)">
                   <v-icon>edit</v-icon>
                 </v-btn>
                 <span>Editar</span>

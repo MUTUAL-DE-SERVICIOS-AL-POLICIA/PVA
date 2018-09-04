@@ -59,9 +59,10 @@
           <router-view></router-view>
         </v-slide-x-transition>
       </v-content>
-      <v-footer :fixed="fixed" app v-if="this.$store.getters.currentUser">
-      <span>MUSERPOL &copy; 2018</span>
-    </v-footer>
+      <v-footer :fixed="fixed" app>
+        <v-spacer></v-spacer>
+        <span class="font-weight-thin caption">MUSERPOL - 2018</span>
+      </v-footer>
     </v-app>
 </template>
 

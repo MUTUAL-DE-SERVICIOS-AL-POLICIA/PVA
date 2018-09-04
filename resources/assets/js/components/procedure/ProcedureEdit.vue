@@ -3,6 +3,35 @@
     <v-toolbar>
       <v-toolbar-title>{{ procedure.month.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <div class="text-xs-center">
+        <v-dialog
+          v-model="dialog"
+          width="500"
+          @keydown.esc="dialog = false"
+        >
+          <v-btn
+            slot="activator"
+            color="error"
+            dark
+          >
+            Cerrar Planilla
+          </v-btn>
+
+          <v-card>
+            <v-card-text class="title">
+              ¿Esta seguro que desea cerrar la planilla?
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="success" small @click="dialog = false"><v-icon small>check</v-icon> Cancelar</v-btn>
+              <v-btn color="error" small @click="closeProcedure"><v-icon small>close</v-icon> Cerrar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
       <v-flex xs2>
         <v-text-field
           v-model="search"
@@ -101,7 +130,7 @@
               ></v-text-field>
             </td>
             <td class="text-md-center">
-              <v-btn class="primary" @click="savePayroll(props.item)">
+              <v-btn class="accent" @click="savePayroll(props.item)">
                 Guardar
               </v-btn>
             </td>
@@ -145,6 +174,7 @@ export default {
   name: "ProcedureEdit",
   data() {
     return {
+      dialog: false,
       procedure: {
         year: null,
         month: {
@@ -372,6 +402,21 @@ export default {
       }
 
       return 30;
+    },
+    async closeProcedure() {
+      try {
+        let res = await axios.put(`/api/v1/procedure/${this.procedure.id}`, {
+          active: false
+        });
+        this.toastr.warning(
+          `Planilla de mes de ${res.data.month.name} cerrada`
+        );
+        this.$router.push({
+          name: "procedureIndex"
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 };
