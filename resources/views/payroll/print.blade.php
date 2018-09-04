@@ -157,12 +157,13 @@
             @php ($total_impuesto_pagar = 0)
             @php ($total_saldo_mes_siguiente = 0)
             @php ($index = 1)
+            @php ($index2 = 0)
 
             @foreach ($employees as $i => $employee)
-                @if ($title->report_name == 'A-8')
+                @if ($title->report_name == 'A-8')                    
                     @if ($title->minimun_salary * 4 <= $employee->net_salary)
                     <tr>
-                        <td>{{ $index++ }}</td>
+                        <td>{{ ++$index2 }}</td>
                         <td>{{ $employee->ci_ext }}</td>
                         <td class="name">{{ $employee->full_name }}</td>
                         @php ($tribute = Payroll::tribute_calculation($employee->net_salary, $employee->discount_rc_iva, $employee->previous_month_balance, $title->minimun_salary, $title->ufv))
@@ -197,8 +198,8 @@
                         @php ($total_impuesto_pagar = $total_impuesto_pagar + $tribute->impuesto_pagar)
                         @php ($total_saldo_mes_siguiente = $total_saldo_mes_siguiente + $tribute->saldo_mes_siguiente)
                     </tr>
+                    @php ($index = $index2)
                     @endif
-
                 @else
                 <tr>
                     @if (($i > 0) && ($employee->employee_id != $employees[$i-1]->employee_id))
