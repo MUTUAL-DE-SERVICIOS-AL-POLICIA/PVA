@@ -24,7 +24,7 @@
             :key="procedure.id"
             xs12 sm4
           >
-            <v-card :color="procedure.active ? 'lime lighten-4' : 'green lighten-5'" height="100%">
+            <v-card :color="procedure.active ? 'warning' : 'tertiary'" height="100%">
               <v-card-title>
                 <h3>{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</h3>
               </v-card-title>
@@ -33,7 +33,7 @@
                 <v-btn icon v-if="procedure.active">
                   <v-tooltip top>
                     <router-link slot="activator" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
-                      <v-icon color="primary">edit</v-icon>
+                      <v-icon>edit</v-icon>
                     </router-link>
                     <span>Editar</span>
                   </v-tooltip>

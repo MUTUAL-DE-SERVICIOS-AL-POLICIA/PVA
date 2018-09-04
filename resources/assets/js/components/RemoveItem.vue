@@ -1,8 +1,8 @@
 <template>
-  <v-dialog persistent v-model="dialog" max-width="410px" @keydown.esc="close">
+  <v-dialog persistent v-model="dialog" max-width="28%" @keydown.esc="close">
     <v-card>
       <v-card-text>
-        <h4>¿Está seguro que desea eliminar el registro?</h4>
+        <div class="headline font-weight-regular">¿Está seguro que desea eliminar el registro?</div>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
