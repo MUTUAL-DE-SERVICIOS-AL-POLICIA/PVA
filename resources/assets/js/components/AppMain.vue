@@ -9,32 +9,32 @@
       fixed
       app
       v-if="this.$store.getters.currentUser"
+      id="navbar"
     >
-      <v-list dense>
+      <v-list>
         <v-list-tile v-for="item in menu_left" :key="item.title" :to="{name: item.href, params: item.params}">
           <v-list-tile-action>
             <v-tooltip right>
               <v-icon slot="activator">{{ item.icon }}</v-icon>
               <span>{{ item.title }}</span>
             </v-tooltip>
-            
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>
               {{ item.title }}
             </v-list-tile-title>
           </v-list-tile-content>
-        </v-list-tile>        
+        </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app :clipped-left="clipped" v-if="this.$store.getters.currentUser">
+    <v-toolbar class="primary white--text" app :clipped-left="clipped" v-if="this.$store.getters.currentUser">
       <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon v-html="miniVariant ? 'more_vert' : 'menu'"></v-icon>
+        <v-icon v-html="miniVariant ? 'more_vert' : 'menu'" class="white--text"></v-icon>
       </v-btn>
       <v-toolbar-title v-text="titles"></v-toolbar-title>
-      <v-spacer></v-spacer>  
       <v-spacer></v-spacer>
-      <v-toolbar-items class="">
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
         <v-menu offset-y>
           <v-btn
             slot="activator"
@@ -52,14 +52,14 @@
             </v-list-tile>
           </v-list>
         </v-menu>
-      </v-toolbar-items>      
-     </v-toolbar>
-     <v-content>
-      <v-slide-x-transition>
-      <router-view></router-view>
-      </v-slide-x-transition>
-     </v-content>
-     <v-footer :fixed="fixed" app v-if="this.$store.getters.currentUser">
+      </v-toolbar-items>
+      </v-toolbar>
+        <v-content>
+          <v-slide-x-transition>
+          <router-view></router-view>
+        </v-slide-x-transition>
+      </v-content>
+      <v-footer :fixed="fixed" app v-if="this.$store.getters.currentUser">
       <span>MUSERPOL &copy; 2018</span>
     </v-footer>
     </v-app>
@@ -97,3 +97,9 @@ export default {
   }
 };
 </script>
+
+<style>
+  #navbar {
+    background-color: #F5F5F5;
+  }
+</style>

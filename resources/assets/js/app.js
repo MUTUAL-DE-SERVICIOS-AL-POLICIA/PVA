@@ -24,13 +24,13 @@ Vue.use(Vuetify, {
     current: 'ess'
   },
   theme: {
-    primary: "#43A047",
-    secondary: "#C8E6C9",
-    accent: "#00796B",
-    error: "#f44336",
-    warning: "#ffeb3b",
-    info: "#2196f3",
-    success: "#33691E"
+    primary: "#005D53",
+    secondary: "#009686",
+    accent: "#1043A0",
+    error: "#F16D0B",
+    warning: "#F19C00",
+    info: "#1043A0",
+    success: "#006157"
   }
 })
 import { createSimpleTransition } from 'vuetify/es5/util/helpers'
