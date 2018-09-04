@@ -15,7 +15,7 @@ class AddEmployerContributionIdToProceduresTable extends Migration
     {
         Schema::table('procedures', function (Blueprint $table) {
             $table->integer('employer_tribute_id')->nullable();
-            $table->foreign('employer_tribute_id')->references('id')->on('employer_tribute');
+            $table->foreign('employer_tribute_id')->references('id')->on('employer_tributes');
         });
     }
 
