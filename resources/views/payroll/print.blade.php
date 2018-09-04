@@ -159,6 +159,47 @@
             @php ($index = 1)
 
             @foreach ($employees as $i => $employee)
+                @if ($title->report_name == 'A-8')
+                    @if ($title->minimun_salary * 4 <= $employee->net_salary)
+                    <tr>
+                        <td>{{ $index++ }}</td>
+                        <td>{{ $employee->ci_ext }}</td>
+                        <td class="name">{{ $employee->full_name }}</td>
+                        @php ($tribute = Payroll::tribute_calculation($employee->net_salary, $employee->discount_rc_iva, $employee->previous_month_balance, $title->minimun_salary, $title->ufv))
+                        <td>{{ Util::format_number($employee->net_salary) }}</td>
+                        <td>{{ Util::format_number($tribute->min_disponible) }}</td>
+                        <td>{{ Util::format_number($tribute->dif_salario_min_disponible) }}</td>
+                        <td>{{ round($tribute->idf) }}</td>
+                        <td>{{ Util::format_number($tribute->iva_110) }}</td>
+                        <td>{{ round($tribute->min_disponible_13) }}</td>
+                        <td>{{ round($tribute->fisco) }}</td>
+                        <td>{{ round($tribute->dependiente) }}</td>
+                        <td>{{ Util::format_number($tribute->saldo_mes_anterior) }}</td>
+                        <td>{{ ($tribute->actualizacion) }}</td>
+                        <td>{{ Util::format_number($tribute->total) }}</td>
+                        <td>{{ Util::format_number($tribute->saldo_favor_dependiente) }}</td>
+                        <td>{{ round($tribute->saldo_utilizado) }}</td>
+                        <td>{{ round($tribute->impuesto_pagar) }}</td>
+                        <td>{{ Util::format_number($tribute->saldo_mes_siguiente) }}</td>
+                        @php ($total_net_salary = $total_net_salary + $employee->net_salary)
+                        @php ($total_min_disponible = $total_min_disponible + $tribute->min_disponible)
+                        @php ($total_dif_salario_min_disponible = $total_dif_salario_min_disponible + $tribute->dif_salario_min_disponible)
+                        @php ($total_idf = $total_idf + $tribute->idf)
+                        @php ($total_iva_110 = $total_iva_110 + $tribute->iva_110)
+                        @php ($total_min_disponible_13 = $total_min_disponible_13 + $tribute->min_disponible_13)
+                        @php ($total_fisco = $total_fisco + $tribute->fisco)
+                        @php ($total_dependiente = $total_dependiente + $tribute->dependiente)
+                        @php ($total_saldo_mes_anterior = $total_saldo_mes_anterior + $tribute->saldo_mes_anterior)
+                        @php ($total_actualizacion = $total_actualizacion + $tribute->actualizacion)
+                        @php ($total_total = $total_total + $tribute->total)
+                        @php ($total_saldo_favor_dependiente = $total_saldo_favor_dependiente + $tribute->saldo_favor_dependiente)
+                        @php ($total_saldo_utilizado = $total_saldo_utilizado + $tribute->saldo_utilizado)
+                        @php ($total_impuesto_pagar = $total_impuesto_pagar + $tribute->impuesto_pagar)
+                        @php ($total_saldo_mes_siguiente = $total_saldo_mes_siguiente + $tribute->saldo_mes_siguiente)
+                    </tr>
+                    @endif
+
+                @else
                 <tr>
                     @if (($i > 0) && ($employee->employee_id != $employees[$i-1]->employee_id))
                         @php (++$index)
@@ -167,8 +208,7 @@
                     <td>{{ $employee->ci_ext }}</td>
                     <td class="name">{{ $employee->full_name }}</td>
                 @if ($title->report_type == 'T')
-                    @php ($tribute = Payroll::tribute_calculation($employee->net_salary, $employee->discount_rc_iva, $employee->previous_month_balance))
-
+                    @php ($tribute = Payroll::tribute_calculation($employee->net_salary, $employee->discount_rc_iva, $employee->previous_month_balance, $title->minimun_salary, $title->ufv))
                     <td>{{ Util::format_number($employee->net_salary) }}</td>
                     <td>{{ Util::format_number($tribute->min_disponible) }}</td>
                     <td>{{ Util::format_number($tribute->dif_salario_min_disponible) }}</td>
@@ -244,6 +284,7 @@
                     @endif
                 @endif
                 </tr>
+                @endif
             @endforeach
                 <tr class="total" style="height: 45px;">
                 @switch ($title->report_type)

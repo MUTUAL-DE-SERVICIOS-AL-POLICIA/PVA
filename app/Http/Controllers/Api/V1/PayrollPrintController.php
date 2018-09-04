@@ -89,6 +89,7 @@ class PayrollPrintController extends Controller {
 				'total_contributions' => $total_contributions,
 				'employees' => $employees,
 				'procedure' => $procedure,
+				'tribute' => $procedure->employer_tribute,
 				'company' => $company,
 				'title' => (object) array(
 					'year' => $year,
@@ -168,9 +169,11 @@ class PayrollPrintController extends Controller {
 		case 'T':
 			$response->data['title']->name = 'PLANILLA TRIBUTARIA';
 			$response->data['title']->table_header = 'S.M.N.';
-			$response->data['title']->table_header2 = 2000;
+			$response->data['title']->table_header2 = $response->data['tribute']->minimun_salary;
 			$response->data['title']->table_header3 = 'Saldo a favor de:';
 			$response->data['title']->table_header4 = 'Saldo anterior a favor del dependiente';
+			$response->data['title']->minimun_salary = $response->data['tribute']->minimun_salary;
+			$response->data['title']->ufv = $response->data['tribute']->ufv;
 			break;
 		default:
 			abort(404);

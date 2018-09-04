@@ -104,43 +104,39 @@ class PayrollController extends Controller
         return Payroll::where('contract_id', $contract_id)->first();
     }
 
-    public function tribute_calculation()
-    {
-       
-        // $fichero  = file_get_contents('https://www.bcb.gob.bo/librerias/indicadores/ufv/ultimo.php');
-        // $aux = explode('</strong>', $fichero);
-        // $aux2 = explode('&nbsp', $aux[1]);
-        // return floatval($aux2[0]);
-        $sal_min_nal = 2060;
+    public static function tribute_calculation ($salary, $rciva, $mes_anterior, $min_salary, $ufv) 
+    { 
 
-        $min_disponible = $sal_min_nal * 2;
+        $min_disponible = $min_salary * 2;        
         $dif_salario_min_disponible = $salary - $min_disponible;
         if ($dif_salario_min_disponible < 0) {
             $dif_salario_min_disponible = 0;
         }
-        $idf = $dif_salario_min_disponible * 13 / 100;
+        
+        $idf = $dif_salario_min_disponible * 13 / 100;        
         if ($idf > 520) {
-            $min_disponible_13 = 520;
+            $min_disponible_13 = ($min_salary * 2) * 13 / 100;
         } else {
             $min_disponible_13 = $idf;
         }
         $saldo_favor = $idf - $rciva - $min_disponible_13;
         $fisco = 0;
         $dependiente = 0;
-        if (($rciva - $min_disponible_13) < $idf) {
-            $fisco = $idf - ($rciva + $min_disponible_13);
+        if (($rciva + $min_disponible_13) < $idf) {
+            $fisco = round($idf - ($rciva + $min_disponible_13));
         }
-        if (($rciva - $min_disponible_13) > $idf) {
-            $dependiente = ($rciva + $min_disponible_13) - $idf;
-        }
-        $saldo_mes_anterior = $mes_anterior;
+        if (($rciva + $min_disponible_13) > $idf) {            
+            $dependiente = round(($rciva + $min_disponible_13) -$idf);
+        }  
+        $saldo_mes_anterior = $mes_anterior;        
         $actualizacion = 0;
-        if ($salary >= 8000) {
-            $actualizacion = 1.002193919;
+
+        if ($salary >= ($min_salary * 4)) {
+            $actualizacion = $ufv;
         }
         $total = $saldo_mes_anterior + $actualizacion;
         $saldo_favor_dependiente = $dependiente + $total;
-        if ($fisco > $saldo_favor_dependiente) {
+        if ( $fisco > $saldo_favor_dependiente) {
             $saldo_utilizado = $saldo_favor_dependiente;
         } else {
             $saldo_utilizado = $fisco;
@@ -148,7 +144,7 @@ class PayrollController extends Controller
         $impuesto_pagar = $fisco - $saldo_utilizado;
 
         $saldo_mes_siguiente = $saldo_favor_dependiente - $saldo_utilizado;
-
+  
         $tribute['min_disponible'] = $min_disponible;
         $tribute['dif_salario_min_disponible'] = $dif_salario_min_disponible;
         $tribute['idf'] = $idf;
@@ -163,6 +159,6 @@ class PayrollController extends Controller
         $tribute['saldo_utilizado'] = $saldo_utilizado;
         $tribute['impuesto_pagar'] = $impuesto_pagar;
         $tribute['saldo_mes_siguiente'] = $saldo_mes_siguiente;
-        return (object) $tribute;
+        return (object)$tribute;
     }
 }
