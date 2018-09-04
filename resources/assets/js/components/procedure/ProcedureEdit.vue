@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-toolbar class="secondary white--text">
+    <v-toolbar>
       <v-toolbar-title>{{ procedure.month.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-flex xs2>

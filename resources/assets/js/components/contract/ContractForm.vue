@@ -5,7 +5,7 @@
       <span>Nuevo Contrato</span>
     </v-tooltip>
     <v-card>
-      <v-toolbar dark color="primary" dense flat>
+      <v-toolbar dark color="secondary">
         <v-toolbar-title class="white--text">{{ formTitle }}</v-toolbar-title>
       </v-toolbar>
       <v-card-text>

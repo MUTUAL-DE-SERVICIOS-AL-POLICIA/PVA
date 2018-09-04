@@ -1,6 +1,6 @@
 <template>
   <v-container >
-    <v-toolbar flat color="white">
+    <v-toolbar>
         <v-toolbar-title>Contratos</v-toolbar-title>        
         <v-spacer></v-spacer>
         <v-toolbar-title>

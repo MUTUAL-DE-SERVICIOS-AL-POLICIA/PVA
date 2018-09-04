@@ -144,10 +144,10 @@ export default {
         { text: "Funcionario", value: "last_name" },
         { align: "center", text: "Fecha de Nacimiento", value: "birth_date" },
         { text: "# Cuenta", value: "account_number" },
-        { text: "AFP", value: "name" },
+        { text: "AFP", value: "account_number" },
         { text: "CUA/NUA", value: "nua_cua" },
-        { align: "center", text: "Activo", value: "active", sortable: false },
-        { align: "center", text: "Acciones", sortable: false }
+        { align: "center", text: "Activo", value: "mothers_last_name", sortable: false },
+        { align: "center", text: "Acciones", sortable: false, value: "first_name" }
       ],
       subHeaders: [
         { align: "center", value: "name", text: "Name", sortable: false }

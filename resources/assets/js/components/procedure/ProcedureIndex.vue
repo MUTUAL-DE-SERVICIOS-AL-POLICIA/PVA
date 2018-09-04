@@ -32,7 +32,7 @@
                 <v-spacer></v-spacer>
                 <v-btn icon v-if="procedure.active">
                   <v-tooltip top>
-                    <router-link slot="activator" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
+                    <router-link slot="activator" color="primary" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
                       <v-icon>edit</v-icon>
                     </router-link>
                     <span>Editar</span>
