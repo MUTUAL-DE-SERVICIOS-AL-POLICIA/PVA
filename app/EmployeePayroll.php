@@ -76,8 +76,10 @@ class EmployeePayroll {
 	}
 
 	public function setZeroAccounts() {
+		$this->id = 0;
 		$this->base_wage = 0;
 		$this->quotable = 0;
+		$this->code = 0;
 		$this->discount_old = 0;
 		$this->discount_common_risk = 0;
 		$this->discount_commission = 0;
@@ -98,7 +100,9 @@ class EmployeePayroll {
 	}
 
 	private function employeeDiscounts($payroll) {
+		$this->id = $payroll->id;
 		$this->quotable = $this->base_wage * $this->worked_days / 30;
+		$this->code = $payroll->code;
 		$this->discount_old = $this->quotable * $payroll->procedure->employee_discount->elderly;
 		$this->discount_common_risk = $this->quotable * $payroll->procedure->employee_discount->common_risk;
 		$this->discount_commission = $this->quotable * $payroll->procedure->employee_discount->comission;
