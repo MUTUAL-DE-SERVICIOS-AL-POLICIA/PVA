@@ -97,6 +97,9 @@
                       <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=T&report_name=A-3&valid_contracts=0&with_account=0`)">
                         <span class="caption">A-3 (T.)</span>
                       </v-list-tile>
+                      <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=T&report_name=A-8&valid_contracts=0&with_account=0`)">
+                        <span class="caption">A-8 (T.)</span>
+                      </v-list-tile>
                     </v-list>
                     <v-list
                       v-for="(t, indexT) in templateTypes"

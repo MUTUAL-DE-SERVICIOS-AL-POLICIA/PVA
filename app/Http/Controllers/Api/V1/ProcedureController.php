@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\EmployeeDiscount;
 use App\EmployerContribution;
+use App\EmployerTribute;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProcedureForm;
 use App\Procedure;
@@ -34,6 +35,7 @@ class ProcedureController extends Controller {
 		if (Procedure::where('active', true)->count() == 0) {
 			$discount = EmployeeDiscount::where('active', true)->first();
 			$contribution = EmployerContribution::where('active', true)->first();
+			$contribution = EmployerTribute::orderBy('id', 'desc')->first();
 			$procedure = new Procedure();
 			$procedure->year = $request['year'];
 			$procedure->month_id = $request['month_id'];
