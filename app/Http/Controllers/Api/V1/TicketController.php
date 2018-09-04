@@ -1,12 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\V1;
 
+use App\EmployeePayroll;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Helpers\Util;
 use App\Payroll;
 use App\Procedure;
-use Carbon\Carbon;
 use \Milon\Barcode\DNS2D;
 
 class TicketController extends Controller
@@ -36,25 +34,13 @@ class TicketController extends Controller
     }
 
     private function generateTicket($payroll)
-    { 
-        $contract                    = $payroll->contract; 
-        $position                    = $contract->position;
-        $charge                      = $position->charge;
-        $employee                    = $contract->employee;
-        $payroll->contract_id        = $contract->id;
-        $payroll->ci_ext             = Util::ciExt($employee);
-        $payroll->employee_id        = $employee->id;
-        $payroll->city_identity_card = $employee->city_identity_card->shortened;
-        $payroll->full_name          = Util::fullName($employee);
-        $payroll->birth_date         = Carbon::parse($employee->birth_date)->format('d/m/Y');
-        $payroll->account_number     = $employee->account_number;
-        $payroll->nua_cua            = $employee->nua_cua;
-        $payroll->charge             = $charge->name;
-        $payroll->position           = $position->name;
-        $payroll->base_wage          = $charge->base_wage;
-        $payroll->management_entity  = $employee->management_entity->name;
-        $payroll->code_image         = DNS2D::getBarcodePNG(($payroll->id . ' ' . $contract->id . ' ' . $position->id . ' ' . $charge->id . ' ' . $employee->id), "PDF417", 3, 33, array(1, 1, 1));
-
+    {
+        $contract            = $payroll->contract;
+        $position            = $contract->position;
+        $charge              = $position->charge;
+        $employee            = $contract->employee;
+        $payroll             = new EmployeePayroll($payroll);
+        $payroll->code_image = DNS2D::getBarcodePNG(($payroll->id . ' ' . $contract->id . ' ' . $position->id . ' ' . $charge->id . ' ' . $employee->id), "PDF417", 3, 33, array(1, 1, 1));
         return $payroll;
     }
 
@@ -67,8 +53,8 @@ class TicketController extends Controller
             return "procedure not found";
         }
         $grouped_payrolls = Payroll::where('procedure_id', $procedure->id)->get()->groupBy('code')->all();
-        $payrolls = [];
-        foreach ($grouped_payrolls as $payroll_group) {            
+        $payrolls         = [];
+        foreach ($grouped_payrolls as $payroll_group) {
             $payrolls[] = $this->mergeTickets($payroll_group);
         }
         $file_name = "Boletas de Pago de " . $procedure->month->name . " de " . $procedure->year . ".pdf";
