@@ -3,14 +3,14 @@
     <v-toolbar>
       <v-toolbar-title>Empleados</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <a @click="getEmployees(false)" :class="!active ? 'selected' : 'non-selected'" class="pa-4">
-          <span class="subheading">ACTIVOS</span>
-        </a>
-        <a @click="getEmployees(true)" :class="active ? 'selected' : 'non-selected'" class="pa-4">
-          <span class="subheading">INACTIVOS</span>
-        </a>
-      </v-toolbar-items>
+      <v-btn-toggle v-model="toggle_one">
+        <v-btn  @click="getEmployees(false)" :class="!this.active ? 'primary white--text' : 'normal'">
+          <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
+        </v-btn>
+        <v-btn  @click="getEmployees(true)" :class="this.active ? 'primary white--text' : 'normal'">
+          <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
+        </v-btn>
+      </v-btn-toggle>
       <v-flex xs2>
         <v-text-field
           v-model="search"
@@ -200,15 +200,3 @@ export default {
   }
 };
 </script>
-
-<style>
-a {
-  background-color: #f5f5f5;
-}
-a:hover {
-  background-color: silver;
-}
-.selected {
-  background-color: lightgray;
-}
-</style>

@@ -32,7 +32,8 @@ Vue.use(Vuetify, {
     danger: '#953F00',
     warning: "#FFC65E",
     info: "#1043A0",
-    success: "#006157"
+    success: "#006157",
+    normal: '#F5F5F5'
   }
 })
 import { createSimpleTransition } from 'vuetify/es5/util/helpers'
