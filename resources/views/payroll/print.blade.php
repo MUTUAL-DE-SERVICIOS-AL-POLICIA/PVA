@@ -170,9 +170,9 @@
                         <td>{{ Util::format_number($employee->net_salary) }}</td>
                         <td>{{ Util::format_number($tribute->min_disponible) }}</td>
                         <td>{{ Util::format_number($tribute->dif_salario_min_disponible) }}</td>
-                        <td>{{ round($tribute->idf) }}</td>
+                        <td>{{ Util::format_number($tribute->idf) }}</td>
                         <td>{{ Util::format_number($tribute->iva_110) }}</td>
-                        <td>{{ round($tribute->min_disponible_13) }}</td>
+                        <td>{{ ($tribute->min_disponible_13) }}</td>
                         <td>{{ round($tribute->fisco) }}</td>
                         <td>{{ round($tribute->dependiente) }}</td>
                         <td>{{ Util::format_number($tribute->saldo_mes_anterior) }}</td>
@@ -213,9 +213,9 @@
                     <td>{{ Util::format_number($employee->net_salary) }}</td>
                     <td>{{ Util::format_number($tribute->min_disponible) }}</td>
                     <td>{{ Util::format_number($tribute->dif_salario_min_disponible) }}</td>
-                    <td>{{ round($tribute->idf) }}</td>
+                    <td>{{ Util::format_number($tribute->idf) }}</td>
                     <td>{{ Util::format_number($tribute->iva_110) }}</td>
-                    <td>{{ round($tribute->min_disponible_13) }}</td>
+                    <td>{{ ($tribute->min_disponible_13) }}</td>
                     <td>{{ round($tribute->fisco) }}</td>
                     <td>{{ round($tribute->dependiente) }}</td>
                     <td>{{ Util::format_number($tribute->saldo_mes_anterior) }}</td>
@@ -352,8 +352,8 @@
                     <td class="footer"> {{ Util::format_number($total_actualizacion) }} </td>
                     <td class="footer"> {{ Util::format_number($total_total) }} </td>
                     <td class="footer"> {{ Util::format_number($total_saldo_favor_dependiente) }} </td>
-                    <td class="footer"> {{ Util::format_number($total_saldo_utilizado) }} </td>
-                    <td class="footer"> {{ Util::format_number($total_impuesto_pagar) }} </td>
+                    <td class="footer"> {{ Util::format_number(round($total_saldo_utilizado)) }} </td>
+                    <td class="footer"> {{ Util::format_number(round($total_impuesto_pagar)) }} </td>
                     <td class="footer"> {{ Util::format_number($total_saldo_mes_siguiente) }} </td>
                 @endif
                 </tr>
