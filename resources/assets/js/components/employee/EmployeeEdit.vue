@@ -5,9 +5,9 @@
       <span>Nuevo Empleado</span>
     </v-tooltip>
     <v-card>
-      <v-card-title>
-        <span class="headline">Datos del Empleado</span>
-      </v-card-title>
+      <v-toolbar dark color="primary" dense flat>
+        <v-toolbar-title class="white--text">Datos del Empleado</v-toolbar-title>
+      </v-toolbar>
       <v-card-text>
         <form ref="form">
           <v-layout wrap>
