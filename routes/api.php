@@ -27,6 +27,7 @@ Route::macro('common_routes', function () {
 		});
 	});
 	Route::get('contract/print/{id}/{type}', 'Api\V1\ContractController@print');
+	Route::get('contract/position_free/{position_id}', 'Api\V1\ContractController@positionFree');
 	Route::resource('contract', 'Api\V1\ContractController')->except(['create', 'edit']);
 	Route::resource('jobs_chedule', 'Api\V1\JobScheduleController')->except(['create', 'edit']);
 	Route::resource('document', 'Api\V1\DocumentController')->except(['create', 'edit']);
