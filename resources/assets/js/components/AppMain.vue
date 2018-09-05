@@ -67,9 +67,6 @@
 </template>
 
 <script>
-// import { admin, rrhh, juridica } from "../menu.js";
-// import menu from "../menu.js";
-
 export default {
   data() {
     return {
