@@ -259,6 +259,25 @@ class PayrollPrintController extends Controller {
 		}
 
 		$employees = $this->getFormattedData($year, $month->id, 0, 0, 0, 0, 0, 0)->data['employees'];
+		$grouped_payrolls = [];
+
+		foreach ($employees as $e) {
+			$grouped_payrolls[$e->code][] = $e;
+		}
+
+		$employees = [];
+		foreach ($grouped_payrolls as $payroll_group) {
+			$p = null;
+			foreach ($payroll_group as $key => $pr) {
+				if ($key == 0) {
+					$p = $pr;
+				} else {
+					$p->mergePayroll($pr);
+				}
+			}
+			$employees[] = $p;
+		}
+
 		$total_employees = count($employees);
 
 		// return response()->json($employees);
