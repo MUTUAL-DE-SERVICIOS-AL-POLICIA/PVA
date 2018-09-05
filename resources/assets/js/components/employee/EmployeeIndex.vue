@@ -21,7 +21,7 @@
           full-width
         ></v-text-field>
       </v-flex>
-      <EmployeeEdit :employee="{}" :bus="bus"/>
+      <EmployeeEdit :employee="{}" :bus="bus" v-if="options.includes('new')"/>
       <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
@@ -44,16 +44,17 @@
             <v-switch
               v-model="props.item.active"
               @click.native="switchActive(props.item)"
+              v-if="options.includes('active')"
             ></v-switch>
           </td>
           <td class="justify-center layout">
-            <v-tooltip top>
+            <v-tooltip top v-if="options.includes('edit')">
               <v-btn medium slot="activator" flat icon color="info" @click="editItem(props.item)">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top>
+            <v-tooltip top v-if="options.includes('delete')">
               <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -159,6 +160,13 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getEmployees(this.active);
     });
+  },
+  created () {
+    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
+      if (this.$store.getters.menuLeft[i].href == 'employeeIndex') {
+        this.options = this.$store.getters.menuLeft[i].options
+      }
+    }
   },
   methods: {
     async getEmployees(active = this.active) {
