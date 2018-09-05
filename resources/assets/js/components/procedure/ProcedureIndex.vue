@@ -263,6 +263,8 @@ export default {
           if (
             this.procedures.filter(obj => {
               return this.newProcedure.month_id == obj.month_order;
+            }).length == 0 && this.procedures.filter(obj => {
+              return obj.active == true;
             }).length == 0
           ) {
             this.procedures.unshift(this.newProcedure);
