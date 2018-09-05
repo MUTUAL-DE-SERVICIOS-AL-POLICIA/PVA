@@ -21,6 +21,7 @@ class PayrollSeeder extends Seeder {
 				'unworked_days' => rand(0, 3),
 				'procedure_id' => $procedure->id,
 				'contract_id' => $contract->id,
+				'employee_id' => $contract->employee->id,
 				'charge_id' => $contract->position->charge_id,
 				'position_group_id' => $contract->position->position_group_id,
 				'position_id' => $contract->position_id,

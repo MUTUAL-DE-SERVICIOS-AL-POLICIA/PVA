@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder {
 			'users',
 			'employee_discounts',
 			'employer_contributions',
+			'employer_tributes',
 			'months',
 			'procedures',
 			'payrolls',
@@ -72,6 +73,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call(ContractSeeder::class);
 		$this->call(EmployeeDiscountSeeder::class);
 		$this->call(EmployerContributionSeeder::class);
+		$this->call(EmployerTributeSeeder::class);
 		$this->call(MonthSeeder::class);
 		$this->call(ProcedureSeeder::class);
 		$this->call(PayrollSeeder::class);

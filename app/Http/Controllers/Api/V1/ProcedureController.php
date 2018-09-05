@@ -35,12 +35,13 @@ class ProcedureController extends Controller {
 		if (Procedure::where('active', true)->count() == 0) {
 			$discount = EmployeeDiscount::where('active', true)->first();
 			$contribution = EmployerContribution::where('active', true)->first();
-			$contribution = EmployerTribute::orderBy('id', 'desc')->first();
+			$tribute = EmployerTribute::orderBy('id', 'desc')->first();
 			$procedure = new Procedure();
 			$procedure->year = $request['year'];
 			$procedure->month_id = $request['month_id'];
 			$procedure->employee_discount_id = $discount->id;
 			$procedure->employer_contribution_id = $contribution->id;
+			$procedure->employer_tribute_id = $tribute->id;
 			$procedure->active = true;
 			$procedure->save();
 			return $procedure;

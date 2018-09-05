@@ -23,9 +23,10 @@ class PayrollForm extends FormRequest {
 		return [
 			'procedure_id' => 'required',
 			'contract_id' => 'required',
+			'employee_id' => 'required',
+			'position_id' => 'required',
 			'charge_id' => 'required',
 			'position_group_id' => 'required',
-			'position_id' => 'required',
 		];
 	}
 	public function messages() {

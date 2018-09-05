@@ -40,6 +40,7 @@ class ProcedurePayrollController extends Controller {
 			foreach ($contracts as $key => $contract) {
 				$payroll['procedure_id'] = $procedure->id;
 				$payroll['contract_id'] = $contract->id;
+				$payroll['employee_id'] = $contract->employee->id;
 				$payroll['position_id'] = $contract->position->id;
 				$payroll['charge_id'] = $contract->position->charge->id;
 				$payroll['position_group_id'] = $contract->position->position_group->id;
