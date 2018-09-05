@@ -219,16 +219,13 @@ class PayrollPrintController extends Controller {
 	 * @return \TXT
 	 */
 	public function print_txt($year, $month) {
-		$month = Month::where('id', $month)->select()->first();
-		if (!$month) {
-			abort(404);
-		}
+		$month = Month::findorFail($month);
 
-		$response = $this->getFormattedData($year, $month->id, 1, 0, 1, 0, 0, 0);
+		$response = $this->getFormattedData($year, $month->order, 1, 1, 0, 0, 0, 0);
 		$total_employees = count($response->data['employees']);
 
 		if ($total_employees == 0) {
-			abort(403);
+			abort(404);
 		}
 
 		$content = "";
