@@ -200,10 +200,8 @@ export default {
       procedures: [],
       newProcedure: {
         new: true,
-        // year: this.$moment().year(),
-        // month_id: this.$moment().month() + 1,
-        year: 2018,
-        month_id: 8,
+        year: this.$moment().year(),
+        month_id: this.$moment().month() + 1,
         active: true
       },
       yearSelected: null,
