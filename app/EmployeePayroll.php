@@ -4,6 +4,7 @@ namespace App;
 
 use App\Helpers\Util;
 use Carbon;
+use \Milon\Barcode\DNS2D;
 
 class EmployeePayroll {
 	function __construct($payroll) {
@@ -14,6 +15,7 @@ class EmployeePayroll {
 
 		// Common data
 		$this->employee_id = $employee->id;
+		$this->year = $payroll->procedure->year;
 		$this->month_id = $payroll->procedure->month->order;
 		$this->payroll_id = $payroll->id;
 		$this->previous_month_balance = $payroll->previous_month_balance;
@@ -140,6 +142,11 @@ class EmployeePayroll {
 		$this->discount_faults += $employe_payroll->discount_faults;
 		$this->total_discounts += $employe_payroll->total_discounts;
 		$this->payable_liquid += $employe_payroll->payable_liquid;
+		return $this;
+	}
+
+	public function generateImage() {
+		$this->code_image = DNS2D::getBarcodePNG(($this->employee_id . ' ' . $this->full_name . ' ' . $this->position . ' ' . $this->month_id . ' ' . $this->year . ' ' . $this->base_wage . ' ' . $this->total_discounts . ' ' . $this->payable_liquid), "PDF417", 3, 33, array(1, 1, 1));
 		return $this;
 	}
 
