@@ -67,7 +67,6 @@
 </template>
 
 <script>
-import { guest, admin } from "../menu.js";
 export default {
   data() {
     return {
@@ -91,10 +90,7 @@ export default {
     }
   },
   created: function() {
-    if (this.$store.getters.currentUser) {
-      var aux = this.$store.getters.currentUser.roles[0].name;
-      this.menu_left = admin;
-    }
+    this.menu_left = this.$store.getters.menuLeft
   }
 };
 </script>

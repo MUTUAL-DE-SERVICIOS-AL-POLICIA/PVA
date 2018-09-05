@@ -30,32 +30,32 @@
               </v-card-title>
               <v-card-actions v-if="!procedure.new">
                 <v-spacer></v-spacer>
-                <v-btn icon v-if="procedure.active" :to="{ name: 'procedureEdit', params: { id: procedure.id }}">
+                <v-btn icon v-if="procedure.active&&options.includes('edit')" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
                   <v-tooltip top>
                     <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                     <span>Editar</span>
                   </v-tooltip>
                 </v-btn>
-                <v-btn icon>
+                <v-btn icon v-if="options.includes('ticket')">
                   <v-tooltip top>
                     <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'" @click="printTicket(procedure.id)">print</v-icon>
                     <span>Imprimir boletas</span>
                   </v-tooltip>
                 </v-btn>
-                <v-btn icon :href="`/api/v1/payroll/print/txt/${procedure.year}/${procedure.month_order}`">
+                <v-btn icon :href="`/api/v1/payroll/print/txt/${procedure.year}/${procedure.month_order}`" v-if="options.includes('bank')">
                   <v-tooltip top>
                     <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                     <span>TXT Banco</span>
                   </v-tooltip>
                 </v-btn>
-                <v-btn icon :href="`/api/v1/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`">
+                <v-btn icon :href="`/api/v1/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`" v-if="options.includes('ovt')">
                   <v-tooltip top>
                     <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">work</v-icon>
                     <span>CSV OVT</span>
                   </v-tooltip>
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-menu offset-y>
+                <v-menu offset-y v-if="options.includes('payroll')">
                   <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                     <span>Planillas</span>
                     <v-icon small>arrow_drop_down</v-icon>
@@ -158,6 +158,7 @@
                   :loading="dialog"
                   color="info"
                   @click="storeProcedure"
+                  v-if="options.includes('new')"
                 >
                   Registrar
                 </v-btn>
@@ -214,6 +215,14 @@ export default {
     this.getYears();
     this.getManagementEntities();
     this.getEmployerNumbers();
+  },
+  created () {
+    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
+      if (this.$store.getters.menuLeft[i].href == 'procedureIndex') {
+        this.options = this.$store.getters.menuLeft[i].options
+      }
+    }
+    console.log(this.options)
   },
   methods: {
     commaDivider(index, cities) {

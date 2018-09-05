@@ -26,7 +26,7 @@
           inset
           vertical
         ></v-divider>
-        <ContractForm :contract="{}" :bus="bus"/>
+        <ContractForm :contract="{}" :bus="bus" v-if="options.includes('new')"/>
         <RemoveItem :bus="bus"/>        
     </v-toolbar>      
     <v-data-table
@@ -51,7 +51,7 @@
               </v-icon>
             </td>
             <td class="justify-center layout">
-              <v-menu offset-y>
+              <v-menu offset-y v-if="options.includes('print')">
                 <v-btn slot="activator" flat icon color="info">
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
                 </v-btn>
@@ -61,24 +61,24 @@
                   <v-list-tile @click="printLow(props.item)"> Baja del seguro</v-list-tile>
                 </v-list>
               </v-menu>
-                <v-tooltip top>
-                  <v-btn slot="activator" flat icon color="info" @click="editItem(props.item, 'recontract')">
-                    <v-icon>autorenew</v-icon>
-                  </v-btn>
-                  <span>Recontratar</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
-                    <v-icon>edit</v-icon>
-                  </v-btn>
-                  <span>Editar</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
-                    <v-icon>delete</v-icon>
-                  </v-btn>
-                  <span>Eliminar</span>
-                </v-tooltip>
+              <v-tooltip top v-if="options.includes('renew')">
+                <v-btn slot="activator" flat icon color="info" @click="editItem(props.item, 'recontract')">
+                  <v-icon>autorenew</v-icon>
+                </v-btn>
+                <span>Recontratar</span>
+              </v-tooltip>
+              <v-tooltip top v-if="options.includes('edit')">
+                <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+                <span>Editar</span>
+              </v-tooltip>
+              <v-tooltip top v-if="options.includes('delete')">
+                <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+                <span>Eliminar</span>
+              </v-tooltip>
             </td>
           </tr>
         </template>
@@ -116,6 +116,7 @@
 import Vue from 'vue'
 import ContractForm from "./ContractForm";
 import RemoveItem from "../RemoveItem";
+import { admin, rrhh, juridica } from "../../menu.js";
 export default {
   name: "ContractIndex",
   components: {
@@ -166,7 +167,8 @@ export default {
     contracts:    [],
     search:       '',    
     switch1:      true,
-    contracState:'vigentes' 
+    contracState:'vigentes',
+    options: ''
   }),
   computed: {
     formTitle() {
@@ -179,6 +181,11 @@ export default {
     this.bus.$on('closeDialog', () => {
       this.initialize()
     })
+    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
+      if (this.$store.getters.menuLeft[i].href == 'contractIndex') {
+        this.options = this.$store.getters.menuLeft[i].options
+      }
+    }
   }, 
   methods: {    
     async initialize() {

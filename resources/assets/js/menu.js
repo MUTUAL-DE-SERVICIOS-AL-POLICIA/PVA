@@ -1,42 +1,54 @@
-
-export const guest = [
-  {
-    header: 'Admin' 
-  }, {
-    href: 'home',
-    params: {},
-    title: 'Inicio',
-    icon: 'fa fa-home'
-  },
-]
-
-export const admin = [
-  // {
-  //   href: 'home',
-  //   params: {},
-  //   title: 'Inicio',
-  //   icon: 'dashboard'
-  // }, {
-  {
-    href: 'employeeIndex',
-    title: 'Empleados',
-    icon: 'assignment_ind'
-  // }, {
-  //   href: 'companyIndex',
-  //   params: {},
-  //   title: 'Compañia',
-  //   icon: 'account_balance'
-  }, {
-    href: 'contractIndex',
-    params: {},
-    title: 'Contratos',
-    icon: 'work'
-  }, {
-    href: 'procedureIndex',
-    params: {
-      active: true
-    },
-    title: 'Planillas',
-    icon: 'attach_file'
-  },
-]
+export default {
+    admin: [{
+        href: 'employeeIndex',
+        title: 'Empleados',
+        icon: 'assignment_ind',
+        options: ['new', 'edit', 'delete', 'active', 'print']
+    }, {
+        href: 'contractIndex',
+        params: {},
+        title: 'Contratos',
+        icon: 'work',
+        options: ['new', 'edit', 'delete', 'renew', 'print']
+    }, {
+        href: 'procedureIndex',
+        params: {
+            active: true
+        },
+        title: 'Planillas',
+        icon: 'attach_file',
+        options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
+    }, ],
+    rrhh: [{
+        href: 'employeeIndex',
+        title: 'Empleados',
+        icon: 'assignment_ind',
+        options: ['new', 'edit', 'delete', 'active', 'print']
+    }, {
+        href: 'contractIndex',
+        params: {},
+        title: 'Contratos',
+        icon: 'work',
+        options: ['new', 'edit', 'delete', 'renew', 'print']
+    }, {
+        href: 'procedureIndex',
+        params: {
+            active: true
+        },
+        title: 'Planillas',
+        icon: 'attach_file',
+        options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
+    }, ],
+    juridica: [{
+        href: 'employeeIndex',
+        title: 'Empleados',
+        icon: 'assignment_ind',
+        options: []
+    }, {
+        href: 'contractIndex',
+        params: {},
+        title: 'Contratos',
+        icon: 'work',
+        options: ['print']
+    }]
+}
