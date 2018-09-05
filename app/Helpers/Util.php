@@ -7,11 +7,8 @@ use Carbon;
 class Util {
 
 	public static function formatMoney($value) {
-		if ($value) {
-			$value = number_format($value, 2, '.', ',');
-			return $value;
-		}
-		return null;
+		$value = number_format(floatval($value), 2, '.', ',');
+		return $value;
 	}
 
 	public static function removeSpaces($text) {

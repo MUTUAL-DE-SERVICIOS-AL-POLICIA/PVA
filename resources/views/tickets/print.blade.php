@@ -390,6 +390,7 @@
 <div class="page">
     <div class="text-center border1 rounded" style="margin-top:50%">
         <h1>PLANILLA DE LA MUSERPOL</h1>
+        <h2>{{ $procedure->month->name }} - {{ $procedure->year }}</h2>
     </div>
 </div>
     @foreach ($payrolls as $index=>$payroll)
