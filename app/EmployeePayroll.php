@@ -80,7 +80,6 @@ class EmployeePayroll {
 	}
 
 	public function setZeroAccounts() {
-		$this->id = 0;
 		$this->base_wage = 0;
 		$this->quotable = 0;
 		$this->code = 0;
