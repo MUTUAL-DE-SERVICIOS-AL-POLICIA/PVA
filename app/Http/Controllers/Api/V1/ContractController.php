@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Contract;
 use App\EmployerNumber;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ContractForm;
 use Illuminate\Http\Request;
 
 /** @resource Contract
@@ -121,5 +122,17 @@ class ContractController extends Controller
             ->setOption('margin-left', $pageMargins[3])
             ->setOption('encoding', 'utf-8')
             ->stream($pageName);
+    }
+
+    /**
+     * Display the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function positionFree($position_id)
+    {
+        $contract = Contract::where([['position_id', $position_id],['active', true]])->first();
+        return $contract;
     }
 }

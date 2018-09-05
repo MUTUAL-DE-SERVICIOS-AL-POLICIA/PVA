@@ -211,7 +211,9 @@
               <v-card>
                 <v-card-text>
                   <p><strong>Empleado: </strong> {{ fullName(tableEmployee) }} </p>
-                  <p><strong>Puesto: </strong> {{ tablePosition }} </p>
+                  <p><strong>Puesto: </strong> {{ tablePosition }} 
+                    <v-chip v-if="tablePositionFree==1" small color="red" text-color="white">Ocupado</v-chip>
+                  </p>
                   <p><strong>Haber Basico: </strong> Bs. {{ tableSalary }} </p>
                   <table class="v-datatable v-table">
                     <thead>
@@ -280,6 +282,7 @@ export default {
       selectedIndex:  -1,
       tableEmployee: '',
       tablePosition: '',
+      tablePositionFree: '',
       tableSalary: '',
       tableSalaryTotal: 0,
       tableData: [],
@@ -363,6 +366,7 @@ export default {
       this.selectedSchedule = {},
       this.tableEmployee= '',
       this.tablePosition= '',
+      this.tablePositionFree = '',
       this.tableSalary= '',
       this.tableSalaryTotal= 0,
       this.tableData= [],
@@ -418,6 +422,12 @@ export default {
     async onSelectPosition(v) {
       if (v) {
         let position = await axios.get('/api/v1/position/' + v)
+        let positionFree = await axios.get('/api/v1/contract/position_free/' + v)
+        if (positionFree.data) {
+          this.tablePositionFree = 1
+        } else {
+          this.tablePositionFree = 0
+        }
         this.tablePosition = position.data.name
         let charge = await axios.get('/api/v1/charge/' + position.data.charge_id)
         this.tableSalary = charge.data.base_wage
