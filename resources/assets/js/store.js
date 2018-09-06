@@ -9,7 +9,10 @@ export default {
       return JSON.parse(state.currentUser)
     },
     menuLeft(state) {
-      return menu[JSON.parse(state.currentUser).roles[0].name]
+      if (state.currentUser) {
+        return menu[JSON.parse(state.currentUser).roles[0].name]  
+      } 
+      return null
     } 
   },
   mutations: {
