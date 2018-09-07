@@ -152,7 +152,7 @@
             <span class="title-text">CLÁUSULA DÉCIMA PRIMERA (CONFORMIDAD). -</span> Las partes manifiestan su conformidad con cada una de las cláusulas estipuladas en el presente contrato y se comprometen a su fiel y estricto cumplimiento, firmando al pie en tres ejemplares con un sólo tenor y un mismo efecto.
         </p>
         <p class="center">
-            La Paz, {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->format('F') }} del {{ Carbon::parse($contract->start_date)->year }}
+            La Paz, {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->formatLocalized('%B') }} del {{ Carbon::parse($contract->start_date)->year }}
         </p>
 
         <p class="firma center title-text">
