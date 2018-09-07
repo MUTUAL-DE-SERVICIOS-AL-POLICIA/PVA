@@ -49,6 +49,6 @@ export default {
         params: {},
         title: 'Contratos',
         icon: 'work',
-        options: ['print']
+        options: ['print', 'edit']
     }]
 }

@@ -39,7 +39,7 @@
 <body>
     <br>
 <div class="doc">
-    <div class="head center"> CONTRATO EVENTUAL DE PRESTACIÓN DE SERVICIOS Nº {{ $contract->contract_numer }} </div>
+    <div class="head center"> CONTRATO EVENTUAL DE PRESTACIÓN DE SERVICIOS Nº {{ $contract->contract_number }} </div>
     <div class="content">
         <p class="text" style="text-indent: 5em">
             Conste por el presente “Contrato Eventual de Prestación de Servicios” que suscriben por una parte la <span class="title-text">MUTUAL DE SERVICIOS AL POLICIA - MUSERPOL</span>, representado legalmente por el <span class="title-text">Sr. Cnl. DESP. {{ Util::fullName($mae->employee) }} con C.I. No. {{ Util::ciExt($mae->employee) }} , en su calidad de {{ $mae->position->name }} de la MUSERPOL</span>, designado mediante Resolución Suprema Nº 16382 de fecha 31 de agosto de 2015, y por otra parte <span class="title-text up">{{ Util::fullName($contract->employee) }} con C.I. N° {{ Util::ciExt($contract->employee) }} </span>, mayor de edad y hábil por derecho, con domicilio en la ciudad de {{ $contract->employee->location }}, que en lo sucesivo se denominará el <span class="title-text">“CONTRATADO”</span> quienes celebran el presente contrato eventual, de acuerdo a los términos y condiciones siguientes:

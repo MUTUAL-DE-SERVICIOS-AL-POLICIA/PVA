@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
-    <v-tooltip slot="activator" top>
+    <v-tooltip slot="activator" top v-if="options.includes('new')">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Contrato</span>
     </v-tooltip>
@@ -23,7 +23,7 @@
                   v-validate="'required'"
                   name="Empleado"
                   :error-messages="errors.collect('Empleado')"
-                  :disabled="recontract==true">
+                  :disabled="recontract==true || juridica==true">
                 </v-autocomplete>
                 <v-autocomplete
                   v-model="selectedItem.position_id"
@@ -35,7 +35,7 @@
                   v-validate="'required'"
                   name="Puesto"
                   :error-messages="errors.collect('Puesto')"
-                  :disabled="recontract==true">
+                  :disabled="recontract==true || juridica==true">
                 </v-autocomplete>
                 <v-select
                   v-model="selectedItem.contract_type_id"
@@ -46,6 +46,7 @@
                   v-validate="'required'"
                   name="Tipo de contratacion"
                   :error-messages="errors.collect('Tipo de contratacion')"
+                  :disabled="juridica==true"
                 ></v-select>
                 <v-select
                   v-model="selectedItem.contract_mode_id"
@@ -56,6 +57,7 @@
                   v-validate="'required'"
                   name="Modalidad de contratacion"
                   :error-messages="errors.collect('Modalidad de contratacion')"
+                  :disabled="juridica==true"
                 ></v-select>
                 <v-menu
                   :close-on-content-click="true"
@@ -67,6 +69,7 @@
                   full-width
                   max-width="290px"
                   min-width="290px"
+                  :disabled="juridica==true"
                 >
                   <v-text-field
                     slot="activator"
@@ -76,7 +79,7 @@
                     v-validate="'required'"
                     name="Fecha de inicio"
                     :error-messages="errors.collect('Fecha de inicio')"
-                    readonly
+                    readonly :disabled="juridica==true"
                   ></v-text-field>
                   <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc"></v-date-picker>
                 </v-menu>
@@ -90,12 +93,13 @@
                   full-width
                   max-width="290px"
                   min-width="290px"
+                  :disabled="juridica==true"
                 >
                   <v-text-field
                     slot="activator"
                     v-model="formatDateEnd"
                     label="Fecha de conslusión"
-                    prepend-icon="event"                    
+                    prepend-icon="event" :disabled="juridica==true"               
                   ></v-text-field>
                   <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc"></v-date-picker>
                 </v-menu>
@@ -109,12 +113,13 @@
                   full-width
                   max-width="290px"
                   min-width="290px"
+                  :disabled="juridica==true"
                 >
                   <v-text-field
                     slot="activator"
                     v-model="formatDateRetirement"
                     prepend-icon="event"
-                    label="Fecha de retiro"                    
+                    label="Fecha de retiro" :disabled="juridica==true"                
                   ></v-text-field>
                   <v-date-picker v-model="date3" no-title @input="menuDate3 = false"></v-date-picker>
                 </v-menu>
@@ -124,10 +129,17 @@
                   item-text="name" 
                   item-value="id"                    
                   label="Razón del retiro"
+                  :disabled="juridica==true"
                 ></v-select>
+                 <v-text-field
+                  v-model="selectedItem.contract_number"
+                  label="Numer de contrato"
+                  :outline="juridica==true"
+                ></v-text-field>
                 <v-text-field
                   v-model="selectedItem.rrhh_cite"
                   label="Cite de Recursos Humanos"
+                  :outline="juridica==true"
                 ></v-text-field>
                 <v-menu
                   :close-on-content-click="true"
@@ -145,13 +157,19 @@
                     v-model="formatDateCite"
                     label="Fecha de cite de Recursos Humanos"
                     prepend-icon="event"
-                    readonly
+                    readonly :outline="juridica==true"
                   ></v-text-field>
                   <v-date-picker v-model="date4" no-title @input="menuDate4 = false"></v-date-picker>
                 </v-menu>
                 <v-text-field
                   v-model="selectedItem.performance_cite"
                   label="Cite de evaluacion"
+                  :outline="juridica==true"
+                ></v-text-field>
+                <v-text-field
+                  v-model="selectedItem.hiring_reference_number"
+                  label="Referencia de contratación"
+                  :outline="juridica==true"
                 ></v-text-field>
                 <v-select
                   v-model="selectedItem.insurance_company_id"
@@ -162,15 +180,13 @@
                   v-validate="'required'"
                   name="Seguro"
                   :error-messages="errors.collect('Seguro')"
+                  :disabled="juridica==true"
                 ></v-select>
                 <v-text-field
                   v-model="selectedItem.insurance_number"
                   label="Numero de asegurado"
-                ></v-text-field>
-                <v-text-field
-                  v-model="selectedItem.hiring_reference_number"
-                  label="Referencia de contratación"
-                ></v-text-field>
+                  :disabled="juridica==true"
+                ></v-text-field>                
                 <v-textarea
                   v-model="selectedItem.description"
                   label="Descripción/Observaciones"
@@ -202,7 +218,7 @@
                   label="Vigente"
                   input-value="true" 
                   color="primary"
-                  value                
+                  value :disabled="juridica==true"           
                 ></v-checkbox>
               </v-form>
             </v-flex>
@@ -292,8 +308,19 @@ export default {
                     retirement_date: '',
                     rrhh_cite_date: '',
                   },
-      selectedSchedule: {}
+      selectedSchedule: {},
+      juridica: 0
     };
+  },
+  created() {    
+    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
+      if (this.$store.getters.menuLeft[i].href == 'contractIndex') {
+        this.options = this.$store.getters.menuLeft[i].options
+      }
+    }
+    if (this.$store.getters.currentUser.roles[0].name == 'juridica') {
+      this.juridica = 1
+    }
   },
   computed: {
     formTitle() {
@@ -424,7 +451,9 @@ export default {
         let position = await axios.get('/api/v1/position/' + v)
         let positionFree = await axios.get('/api/v1/contract/position_free/' + v)
         if (positionFree.data) {
-          this.tablePositionFree = 1
+          if (!this.selectedItem.id) {
+            this.tablePositionFree = 1
+          }          
         } else {
           this.tablePositionFree = 0
         }
