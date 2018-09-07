@@ -26,7 +26,7 @@
           inset
           vertical
         ></v-divider>
-        <ContractForm :contract="{}" :bus="bus" v-if="options.includes('new')"/>
+        <ContractForm :contract="{}" :bus="bus"/>
         <RemoveItem :bus="bus"/>        
     </v-toolbar>      
     <v-data-table
@@ -186,7 +186,7 @@ export default {
         this.options = this.$store.getters.menuLeft[i].options
       }
     }
-  }, 
+  },
   methods: {    
     async initialize() {
       try {

@@ -21,7 +21,7 @@
           full-width
         ></v-text-field>
       </v-flex>
-      <EmployeeEdit :employee="{}" :bus="bus" v-if="options.includes('new')"/>
+      <EmployeeEdit :employee="{}" :bus="bus"/>
       <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
