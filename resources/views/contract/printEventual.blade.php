@@ -50,11 +50,11 @@
 
         @if ($contract->performance_cite)
         <p>
-            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->format('F') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la evaluación efectuada por parte de los Directores de Área, en coordinación con la Jefatura de la Unidad de Recursos Humanos y el Director General Ejecutivo, se solicita la elaboración de Contrato del Personal Eventual de {{ Util::fullName($contract->employee) }}.
+            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la evaluación efectuada por parte de los Directores de Área, en coordinación con la Jefatura de la Unidad de Recursos Humanos y el Director General Ejecutivo, se solicita la elaboración de Contrato del Personal Eventual de {{ Util::fullName($contract->employee) }}.
         </p>
         @else
         <p>
-            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->format('F') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la convocatoria {{ $contract->hiring_reference_number }} dentro del Proceso de Contratación para el cargo de: <span class="title-text">“{{ $contract->position->name }}”</span>, previa selección, evaluación y posterior entrevista, la Unidad de Recursos Humanos solicita se proceda a la elaboración del Contrato de Personal Eventual de {{ Util::fullName($contract->employee) }}.
+            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la convocatoria {{ $contract->hiring_reference_number }} dentro del Proceso de Contratación para el cargo de: <span class="title-text">“{{ $contract->position->name }}”</span>, previa selección, evaluación y posterior entrevista, la Unidad de Recursos Humanos solicita se proceda a la elaboración del Contrato de Personal Eventual de {{ Util::fullName($contract->employee) }}.
         </p>
         @endif
         
@@ -68,7 +68,7 @@
             El <span class="title-text">CONTRATADO</span> podrá ejercer Interinato, sin descuidar las funciones para las que fue contratado, previa instrucción escrita de la Máxima Autoridad Ejecutiva y de acuerdo a las necesidades de <span class="title-text">MUSERPOL</span>.
         </p>
         <p>
-            <span class="title-text">CLÁUSULA TERCERA (PLAZO).</span> El plazo del presente contrato será a partir del {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->format('F') }} del {{ Carbon::parse($contract->start_date)->year }} hasta el {{ Carbon::parse($contract->end_date)->day }} de {{ Carbon::parse($contract->end_date)->format('F') }} del {{ Carbon::parse($contract->end_date)->year }}, por tratarse de un contrato eventual, queda sobreentendido que el mismo quedará fenecido en la fecha señalada en la presente cláusula, salvando la previsión contenida en la Cláusula Décima del presente contrato.
+            <span class="title-text">CLÁUSULA TERCERA (PLAZO).</span> El plazo del presente contrato será a partir del {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->formatLocalized('%B') }} del {{ Carbon::parse($contract->start_date)->year }} hasta el {{ Carbon::parse($contract->end_date)->day }} de {{ Carbon::parse($contract->end_date)->formatLocalized('%B') }} del {{ Carbon::parse($contract->end_date)->year }}, por tratarse de un contrato eventual, queda sobreentendido que el mismo quedará fenecido en la fecha señalada en la presente cláusula, salvando la previsión contenida en la Cláusula Décima del presente contrato.
         </p>
         @php($schedule = $contract->job_schedules[0])
         @php($turno1 = str_pad($schedule->start_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->start_minutes,2,0,STR_PAD_LEFT).' a '.str_pad($schedule->end_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->end_minutes,2,0,STR_PAD_LEFT))
