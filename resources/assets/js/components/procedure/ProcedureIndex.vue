@@ -222,7 +222,6 @@ export default {
         this.options = this.$store.getters.menuLeft[i].options
       }
     }
-    console.log(this.options)
   },
   methods: {
     commaDivider(index, cities) {

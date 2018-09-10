@@ -64,7 +64,7 @@
         </div>
         <div style="height: 0.cm;">&nbsp</div>
         <div>
-            <div class="camp" style="width: 16cm;height: 1cm;"> La Paz, {{ Carbon::now()->day }} de {{ Carbon::now()->format('F') }} del {{ Carbon::now()->year }} </div>
+            <div class="camp" style="width: 16cm;height: 1cm;"> La Paz, {{ Carbon::now()->day }} de {{ Carbon::now()->formatLocalized('%B') }} del {{ Carbon::now()->year }} </div>
         </div>
     </div>
 </div>

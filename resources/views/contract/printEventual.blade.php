@@ -39,7 +39,7 @@
 <body>
     <br>
 <div class="doc">
-    <div class="head center"> CONTRATO EVENTUAL DE PRESTACIÓN DE SERVICIOS Nº {{ $contract->contract_numer }} </div>
+    <div class="head center"> CONTRATO EVENTUAL DE PRESTACIÓN DE SERVICIOS Nº {{ $contract->contract_number }} </div>
     <div class="content">
         <p class="text" style="text-indent: 5em">
             Conste por el presente “Contrato Eventual de Prestación de Servicios” que suscriben por una parte la <span class="title-text">MUTUAL DE SERVICIOS AL POLICIA - MUSERPOL</span>, representado legalmente por el <span class="title-text">Sr. Cnl. DESP. {{ Util::fullName($mae->employee) }} con C.I. No. {{ Util::ciExt($mae->employee) }} , en su calidad de {{ $mae->position->name }} de la MUSERPOL</span>, designado mediante Resolución Suprema Nº 16382 de fecha 31 de agosto de 2015, y por otra parte <span class="title-text up">{{ Util::fullName($contract->employee) }} con C.I. N° {{ Util::ciExt($contract->employee) }} </span>, mayor de edad y hábil por derecho, con domicilio en la ciudad de {{ $contract->employee->location }}, que en lo sucesivo se denominará el <span class="title-text">“CONTRATADO”</span> quienes celebran el presente contrato eventual, de acuerdo a los términos y condiciones siguientes:
@@ -50,11 +50,11 @@
 
         @if ($contract->performance_cite)
         <p>
-            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->format('F') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la evaluación efectuada por parte de los Directores de Área, en coordinación con la Jefatura de la Unidad de Recursos Humanos y el Director General Ejecutivo, se solicita la elaboración de Contrato del Personal Eventual de {{ Util::fullName($contract->employee) }}.
+            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la evaluación efectuada por parte de los Directores de Área, en coordinación con la Jefatura de la Unidad de Recursos Humanos y el Director General Ejecutivo, se solicita la elaboración de Contrato del Personal Eventual de {{ Util::fullName($contract->employee) }}.
         </p>
         @else
         <p>
-            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->format('F') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la convocatoria {{ $contract->hiring_reference_number }} dentro del Proceso de Contratación para el cargo de: <span class="title-text">“{{ $contract->position->name }}”</span>, previa selección, evaluación y posterior entrevista, la Unidad de Recursos Humanos solicita se proceda a la elaboración del Contrato de Personal Eventual de {{ Util::fullName($contract->employee) }}.
+            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la convocatoria {{ $contract->hiring_reference_number }} dentro del Proceso de Contratación para el cargo de: <span class="title-text">“{{ $contract->position->name }}”</span>, previa selección, evaluación y posterior entrevista, la Unidad de Recursos Humanos solicita se proceda a la elaboración del Contrato de Personal Eventual de {{ Util::fullName($contract->employee) }}.
         </p>
         @endif
         
@@ -68,7 +68,7 @@
             El <span class="title-text">CONTRATADO</span> podrá ejercer Interinato, sin descuidar las funciones para las que fue contratado, previa instrucción escrita de la Máxima Autoridad Ejecutiva y de acuerdo a las necesidades de <span class="title-text">MUSERPOL</span>.
         </p>
         <p>
-            <span class="title-text">CLÁUSULA TERCERA (PLAZO).</span> El plazo del presente contrato será a partir del {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->format('F') }} del {{ Carbon::parse($contract->start_date)->year }} hasta el {{ Carbon::parse($contract->end_date)->day }} de {{ Carbon::parse($contract->end_date)->format('F') }} del {{ Carbon::parse($contract->end_date)->year }}, por tratarse de un contrato eventual, queda sobreentendido que el mismo quedará fenecido en la fecha señalada en la presente cláusula, salvando la previsión contenida en la Cláusula Décima del presente contrato.
+            <span class="title-text">CLÁUSULA TERCERA (PLAZO).</span> El plazo del presente contrato será a partir del {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->formatLocalized('%B') }} del {{ Carbon::parse($contract->start_date)->year }} hasta el {{ Carbon::parse($contract->end_date)->day }} de {{ Carbon::parse($contract->end_date)->formatLocalized('%B') }} del {{ Carbon::parse($contract->end_date)->year }}, por tratarse de un contrato eventual, queda sobreentendido que el mismo quedará fenecido en la fecha señalada en la presente cláusula, salvando la previsión contenida en la Cláusula Décima del presente contrato.
         </p>
         @php($schedule = $contract->job_schedules[0])
         @php($turno1 = str_pad($schedule->start_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->start_minutes,2,0,STR_PAD_LEFT).' a '.str_pad($schedule->end_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->end_minutes,2,0,STR_PAD_LEFT))
@@ -152,7 +152,7 @@
             <span class="title-text">CLÁUSULA DÉCIMA PRIMERA (CONFORMIDAD). -</span> Las partes manifiestan su conformidad con cada una de las cláusulas estipuladas en el presente contrato y se comprometen a su fiel y estricto cumplimiento, firmando al pie en tres ejemplares con un sólo tenor y un mismo efecto.
         </p>
         <p class="center">
-            La Paz, {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->format('F') }} del {{ Carbon::parse($contract->start_date)->year }}
+            La Paz, {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->formatLocalized('%B') }} del {{ Carbon::parse($contract->start_date)->year }}
         </p>
 
         <p class="firma center title-text">
