@@ -33,21 +33,21 @@
       expand
     >
       <template slot="items" slot-scope="props">
-        <tr :class="(props.item.birth_date == null || props.item.nua_cua == null || props.item.account_number == null) ? 'deep-orange lighten-3' : '' ">
+        <tr :class="rowColor(props.item)">
           <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
           <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
           <td @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-          <td class="text-md-center">
+          <td class="text-md-center" v-if="options.length > 0">
             <v-switch
               v-model="props.item.active"
               @click.native="switchActive(props.item)"
               v-if="options.includes('active')"
             ></v-switch>
           </td>
-          <td class="justify-center layout">
+          <td class="justify-center layout" v-if="options.length > 0">
             <v-tooltip top v-if="options.includes('edit')">
               <v-btn medium slot="activator" flat icon color="info" @click="editItem(props.item)">
                 <v-icon>edit</v-icon>
@@ -147,8 +147,18 @@ export default {
         { text: "# Cuenta", value: "account_number" },
         { text: "AFP", value: "account_number" },
         { text: "CUA/NUA", value: "nua_cua" },
-        { align: "center", text: "Activo", value: "mothers_last_name", sortable: false },
-        { align: "center", text: "Acciones", sortable: false, value: "first_name" }
+        {
+          align: "center",
+          text: "Activo",
+          value: "mothers_last_name",
+          sortable: false
+        },
+        {
+          align: "center",
+          text: "Acciones",
+          sortable: false,
+          value: "first_name"
+        }
       ],
       subHeaders: [
         { align: "center", value: "name", text: "Name", sortable: false }
@@ -161,11 +171,21 @@ export default {
       this.getEmployees(this.active);
     });
   },
-  created () {
+  created() {
     for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == 'employeeIndex') {
-        this.options = this.$store.getters.menuLeft[i].options
+      if (this.$store.getters.menuLeft[i].href == "employeeIndex") {
+        this.options = this.$store.getters.menuLeft[i].options;
       }
+    }
+    if (this.options.length == 0) {
+      this.headers = this.headers.filter(el => {
+        return el.text != "Activo";
+      });
+    }
+    if (!this.options.includes("edit") && !this.options.includes("delete")) {
+      this.headers = this.headers.filter(el => {
+        return el.text != "Acciones";
+      });
     }
   },
   methods: {
@@ -204,6 +224,24 @@ export default {
     },
     removeItem(employee) {
       this.bus.$emit("openDialogRemove", `/api/v1/employee/${employee.id}`);
+    },
+    rowColor(payroll) {
+      if (
+        payroll.birth_date == null ||
+        payroll.nua_cua == null ||
+        payroll.account_number == null
+      ) {
+        return "error";
+      } else if (
+        payroll.location == null ||
+        payroll.zone == null ||
+        payroll.street == null ||
+        payroll.address_number == null
+      ) {
+        return "warning";
+      } else {
+        return "";
+      }
     }
   }
 };

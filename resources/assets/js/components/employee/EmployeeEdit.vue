@@ -1,5 +1,5 @@
 <template>
-  <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
+  <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close" scrollable>
     <v-tooltip slot="activator" top>
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Empleado</span>
@@ -34,6 +34,7 @@
                     label="Ciudad"
                     v-model="edit.city_identity_card_id"
                     single-line
+                    :menu-props="{ auto: true, overflowY: true }"
                   ></v-select>
                 </v-flex>
               </v-layout>
@@ -47,6 +48,7 @@
                 label="Género"
                 v-model="edit.gender"
                 single-line
+                :menu-props="{ auto: true, overflowY: true }"
               ></v-select>
               <v-text-field
                 v-validate="'required|alpha_spaces'"
@@ -54,6 +56,7 @@
                 data-vv-name="Nombre"
                 v-model="edit.first_name"
                 label="Nombres"
+                autocomplete='given-name'
               ></v-text-field>
               <v-text-field
                 v-validate="'required|alpha_spaces'"
@@ -61,6 +64,7 @@
                 data-vv-name="Apellido Paterno"
                 v-model="edit.last_name"
                 label="Apellido Paterno"
+                autocomplete='last-name'
               ></v-text-field>
               <v-text-field
                 v-validate="'required|alpha_spaces'"
@@ -68,6 +72,7 @@
                 data-vv-name="Apellido Materno"
                 v-model="edit.mothers_last_name"
                 label="Apellido Materno"
+                autocomplete='family-name'
               ></v-text-field>
               <v-layout wrap>
                 <v-flex xs6 sm6 md6>
@@ -113,6 +118,7 @@
                     label="Lugar de Nacimiento"
                     v-model="edit.city_birth_id"
                     single-line
+                    :menu-props="{ auto: true, overflowY: true }"
                   ></v-select>
                 </v-flex>
                 <v-text-field
@@ -140,6 +146,7 @@
                 label="AFP"
                 v-model="edit.management_entity_id"
                 single-line
+                :menu-props="{ auto: true, overflowY: true }"
               ></v-select>
               <v-text-field
                 v-validate="'required'"
@@ -147,6 +154,7 @@
                 data-vv-name="Ciudad"
                 v-model="edit.location"
                 label="Ciudad"
+                autocomplete='address-level1'
               ></v-text-field>
               <v-text-field
                 v-validate="'required'"
@@ -175,6 +183,7 @@
                 data-vv-name="Teléfono"
                 v-model="edit.phone_number"
                 label="Teléfono"
+                autocomplete='tel'
               ></v-text-field>
             </v-flex>
           </v-layout>

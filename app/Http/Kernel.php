@@ -31,9 +31,9 @@ class Kernel extends HttpKernel {
 			\App\Http\Middleware\EncryptCookies::class,
 			\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
 			\Illuminate\Session\Middleware\StartSession::class,
-			\Illuminate\Session\Middleware\AuthenticateSession::class,
+			// \Illuminate\Session\Middleware\AuthenticateSession::class,
 			\Illuminate\View\Middleware\ShareErrorsFromSession::class,
-			\App\Http\Middleware\VerifyCsrfToken::class,
+			// \App\Http\Middleware\VerifyCsrfToken::class,
 			\Illuminate\Routing\Middleware\SubstituteBindings::class,
 		],
 
@@ -66,7 +66,7 @@ class Kernel extends HttpKernel {
 		'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
 		// ACL Entrust
 		'role' => \Laratrust\Middleware\LaratrustRole::class,
-		'permission' => \Laratrust\Middleware\LaratrustPermission::class,
-		'ability' => \Laratrust\Middleware\LaratrustAbility::class,
+		// 'permission' => \Laratrust\Middleware\LaratrustPermission::class,
+		// 'ability' => \Laratrust\Middleware\LaratrustAbility::class,
 	];
 }

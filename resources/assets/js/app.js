@@ -4,7 +4,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 import VeeValidate, { Validator } from 'vee-validate'
-import {routes} from './routes'
+import { routes } from './routes'
 import StoreData from './store'
 import AppMain from './components/AppMain'
 import es from 'vee-validate/dist/locale/es'
@@ -28,16 +28,16 @@ Vue.use(Vuetify, {
     secondary: "#009686",
     tertiary: '#42B2A6',
     accent: "#1043A0",
-    error: "#BF5100",
-    danger: '#953F00',
-    warning: "#FFC65E",
+    error: "#F46F0D",
+    danger: '#FA9347',
+    warning: "#FABB47",
     info: "#0B347F",
     success: "#006157",
     normal: '#F5F5F5'
   }
 })
 import { createSimpleTransition } from 'vuetify/es5/util/helpers'
-const myTransition = createSimpleTransition('my-transition') 
+const myTransition = createSimpleTransition('my-transition')
 Vue.component('my-transition', myTransition)
 
 Vue.config.productionTip = false
@@ -46,7 +46,7 @@ Vue.use(Vuex)
 const moment = require('moment')
 require('moment/locale/es')
 Vue.use(require('vue-moment'), {
-    moment
+  moment
 });
 
 Validator.localize({
@@ -104,5 +104,5 @@ new Vue({
   components: {
     AppMain
   },
-  locale : 'es',
+  locale: 'es',
 })
