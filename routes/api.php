@@ -3,7 +3,7 @@ Route::macro('rrhh_routes', function () {
 	// Ticket
 	Route::get('ticket/print/{id}', 'Api\V1\TicketController@print');
 	// Employee
-	Route::resource('employee', 'Api\V1\EmployeeController')->only(['store', 'update', 'destroy']);
+	Route::resource('employee', 'Api\V1\EmployeeController')->only(['index', 'show', 'store', 'update', 'destroy']);
 	Route::get('employee/active/{active}', 'Api\V1\EmployeeController@filter_employees');
 	Route::group([
 		'prefix' => 'employee/{employee_id}/contract',
@@ -44,7 +44,7 @@ Route::macro('rrhh_routes', function () {
 	});
 	// Contract
 	Route::get('contract/position_free/{position_id}', 'Api\V1\ContractController@positionFree');
-	Route::resource('contract', 'Api\V1\ContractController')->only(['store', 'destroy']);
+	Route::resource('contract', 'Api\V1\ContractController')->only(['index', 'show', 'update', 'store', 'destroy']);
 	// Job Schedule
 	Route::resource('jobs_chedule', 'Api\V1\JobScheduleController')->except(['create', 'edit']);
 	// Procedure
