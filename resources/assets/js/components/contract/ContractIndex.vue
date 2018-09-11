@@ -3,9 +3,14 @@
     <v-toolbar>
         <v-toolbar-title>Contratos</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-toolbar-title>
-          <v-switch :label="`Contratos ${contracState}`" v-model="switch1" @click.native="contractStatus()" color="primary" class="mt-4"></v-switch>
-        </v-toolbar-title>
+        <v-btn-toggle v-model="toggle_one">
+          <v-btn  @click="toogle_one=0" :class="!Boolean(toogle_one) ? 'primary white--text' : 'normal'">
+            <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
+          </v-btn>
+          <v-btn  @click="toogle_one=1" :class="Boolean(toogle_one) ? 'primary white--text' : 'normal'">
+            <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
+          </v-btn>
+        </v-btn-toggle>
         <v-divider
           class="mx-2"
           inset
@@ -37,18 +42,12 @@
         disable-initial-sort
         class="elevation-1">
         <template slot="items" slot-scope="props">
-          <tr v-if="props.item.active==switch1" v-bind:class="[checkEnd(props.item.end_date)? 'red lighten-1' : '']">
-            <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.employee.identity_card }} {{ props.item.employee.city_identity_card.shortened }} </td>
+          <tr v-if="props.item.active!=Boolean(toogle_one)" v-bind:class="[checkEnd(props.item.end_date)? 'red lighten-1' : '']">
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.employee.identity_card }} {{ props.item.employee.city_identity_card.shortened }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ fullName(props.item.employee) }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.position.name }}</td>
-            <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.start_date | moment("DD/MM/YYYY") }} </td>
-            <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.end_date | moment("DD/MM/YYYY") }}</td>
-            <td class="text-xs-center">
-              <v-icon
-                small
-                v-html="(props.item.active==true)? 'check' : 'close'"
-              ></v-icon>
-            </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.start_date | moment("DD/MM/YYYY") }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.end_date | moment("DD/MM/YYYY") }}</td>
             <td class="justify-center layout">
               <v-menu offset-y>
                 <v-btn slot="activator" flat icon color="info">
@@ -123,6 +122,7 @@ export default {
     RemoveItem
   },
   data: () => ({
+    toggle_one: 0,
     bus: new Vue(),
     headers: [
       {
@@ -149,11 +149,6 @@ export default {
       {
         text: "Fecha de Conclusión",
         value: "employee.first_name",
-        align: "center",
-        sortable: false
-      },
-      {
-        text: "Activo",
         align: "center",
         sortable: false
       },

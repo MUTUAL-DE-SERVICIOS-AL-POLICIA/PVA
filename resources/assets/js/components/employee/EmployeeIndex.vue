@@ -11,6 +11,11 @@
           <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
         </v-btn>
       </v-btn-toggle>
+      <v-divider
+        class="mx-2"
+        inset
+        vertical
+      ></v-divider>
       <v-flex xs2>
         <v-text-field
           v-model="search"
