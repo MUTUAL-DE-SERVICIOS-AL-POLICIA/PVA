@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 /** @resource Authenticate
  *
@@ -62,15 +63,17 @@ class AuthController extends Controller {
 
 		$credentials = request(['username', 'password']);
 
-		if ($credentials['username'] == 'admin') {
+		if (!env("ADLDAP_AUTHENTICATION")) {
+			if (config('app.debug')) {
+				LOG::debug($credentials);
+			}
+
 			$token = auth('api')->attempt($credentials);
 
 			if ($token) {
 				return $this->respondWithToken($token);
 			}
-		}
-
-		if (env("ADLDAP_AUTHENTICATION")) {
+		} elseif (env("ADLDAP_AUTHENTICATION")) {
 			$bind = $this->adldap->authenticate($this->config['user_id_key'] . '=' . $credentials['username'] . ',', $credentials['password']);
 
 			if ($bind) {
@@ -94,19 +97,14 @@ class AuthController extends Controller {
 				return $this->respondWithToken($token);
 			}
 		} else {
-			$token = auth('api')->attempt($credentials);
-
-			if ($token) {
-				return $this->respondWithToken($token);
-			}
+			return response()->json([
+				'message' => 'No autorizado',
+				'errors' => [
+					'type' => ['Usuario o contraseña incorrectos'],
+				],
+			], 401);
 		}
 
-		return response()->json([
-			'message' => 'No autorizado',
-			'errors' => [
-				'type' => ['Usuario o contraseña incorrectos'],
-			],
-		], 401);
 	}
 
 	/**
