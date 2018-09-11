@@ -133,7 +133,7 @@
                 ></v-select>
                  <v-text-field
                   v-model="selectedItem.contract_number"
-                  label="Numer de contrato"
+                  label="Número de contrato"
                   :outline="juridica==true"
                 ></v-text-field>
                 <v-text-field
@@ -163,7 +163,7 @@
                 </v-menu>
                 <v-text-field
                   v-model="selectedItem.performance_cite"
-                  label="Cite de evaluacion"
+                  label="Cite de evaluación"
                   :outline="juridica==true"
                 ></v-text-field>
                 <v-text-field
@@ -184,7 +184,7 @@
                 ></v-select>
                 <v-text-field
                   v-model="selectedItem.insurance_number"
-                  label="Numero de asegurado"
+                  label="Número de asegurado"
                   :disabled="juridica==true"
                 ></v-text-field>                
                 <v-textarea

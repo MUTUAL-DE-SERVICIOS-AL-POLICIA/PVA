@@ -44,17 +44,17 @@
             <v-switch
               v-model="props.item.active"
               @click.native="switchActive(props.item)"
-              v-if="options.includes('active')"
+              v-if="options.includes('edit')"
             ></v-switch>
           </td>
-          <td class="justify-center layout" v-if="options.length > 0">
-            <v-tooltip top v-if="options.includes('edit')">
+          <td class="justify-center layout" v-if="options.includes('edit')">
+            <v-tooltip top>
               <v-btn medium slot="activator" flat icon color="info" @click="editItem(props.item)">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top v-if="options.includes('delete')">
+            <v-tooltip top>
               <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -177,15 +177,14 @@ export default {
         this.options = this.$store.getters.menuLeft[i].options;
       }
     }
-    if (this.options.length == 0) {
-      this.headers = this.headers.filter(el => {
-        return el.text != "Activo";
-      });
-    }
-    if (!this.options.includes("edit") && !this.options.includes("delete")) {
-      this.headers = this.headers.filter(el => {
-        return el.text != "Acciones";
-      });
+    if (!this.options.includes("edit")) {
+      this.headers = this.headers
+        .filter(el => {
+          return el.text != "Activo";
+        })
+        .filter(el => {
+          return el.text != "Acciones";
+        });
     }
   },
   methods: {

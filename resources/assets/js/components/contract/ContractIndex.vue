@@ -1,7 +1,7 @@
 <template>
   <v-container >
     <v-toolbar>
-        <v-toolbar-title>Contratos</v-toolbar-title>        
+        <v-toolbar-title>Contratos</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-title>
           <v-switch :label="`Contratos ${contracState}`" v-model="switch1" @click.native="contractStatus()" color="primary" class="mt-4"></v-switch>
@@ -27,8 +27,8 @@
           vertical
         ></v-divider>
         <ContractForm :contract="{}" :bus="bus"/>
-        <RemoveItem :bus="bus"/>        
-    </v-toolbar>      
+        <RemoveItem :bus="bus"/>
+    </v-toolbar>
     <v-data-table
         :headers="headers"
         :items="contracts"
@@ -44,21 +44,20 @@
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.start_date | moment("DD/MM/YYYY") }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.end_date | moment("DD/MM/YYYY") }}</td>
             <td class="text-xs-center">
-              <v-icon 
-                small 
-                v-html="(props.item.active==true)? 'check' : 'close'" 
-                >                  
-              </v-icon>
+              <v-icon
+                small
+                v-html="(props.item.active==true)? 'check' : 'close'"
+              ></v-icon>
             </td>
             <td class="justify-center layout">
-              <v-menu offset-y v-if="options.includes('print')">
+              <v-menu offset-y>
                 <v-btn slot="activator" flat icon color="info">
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
                 </v-btn>
                 <v-list>
-                  <v-list-tile @click="print(props.item)"> Contrato</v-list-tile>
-                  <v-list-tile @click="printUp(props.item)"> Alta del seguro</v-list-tile>
-                  <v-list-tile @click="printLow(props.item)"> Baja del seguro</v-list-tile>
+                  <v-list-tile @click="print(props.item)" v-if="options.includes('printContract')"> Contrato</v-list-tile>
+                  <v-list-tile @click="printUp(props.item)" v-if="options.includes('printInsurance')"> Alta del seguro</v-list-tile>
+                  <v-list-tile @click="printLow(props.item)" v-if="options.includes('printInsurance')"> Baja del seguro</v-list-tile>
                 </v-list>
               </v-menu>
               <v-tooltip top v-if="options.includes('renew')">
@@ -89,13 +88,13 @@
                 <v-list-tile-content><p><strong>Cargo: </strong>{{ props.item.position.charge.name }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Lugar: </strong>{{ props.item.position.position_group.name }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Tipo de contrato: </strong>{{ props.item.contract_type.name }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Modalidad de contratacion: </strong>{{ props.item.contract_mode.name }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Numero de contrato: </strong>{{ props.item.contract_number }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Modalidad de contratación: </strong>{{ props.item.contract_mode.name }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Número de contrato: </strong>{{ props.item.contract_number }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Referencia de contratación: </strong>{{ props.item.hiring_reference_number }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Cite de Recursos Humanos: </strong>{{ props.item.rrh_cite }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Fecha de cite de recursos Humanos: </strong>{{ props.item.rrhh_cite_date }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Cite de evaluacion: </strong>{{ props.item.performance_cite }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Numero de asegurado: </strong>{{ props.item.insurance_number }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Cite de evaluación: </strong>{{ props.item.performance_cite }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Número de asegurado: </strong>{{ props.item.insurance_number }}</p></v-list-tile-content>
                 <v-list-tile-content v-if="props.item.retirement_reason"><p><strong>Motivo de retiro: </strong> {{ props.item.retirement_reason.name }} </p></v-list-tile-content>
                 <v-list-tile-content v-if="props.item.retirement_reason"><p><strong>Fecha de retiro: </strong> {{ props.item.retirement_date }} </p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Descripción: </strong> {{ props.item.description }} </p></v-list-tile-content>
@@ -113,7 +112,7 @@
   </v-container>
 </template>
 <script type="text/javascript">
-import Vue from 'vue'
+import Vue from "vue";
 import ContractForm from "./ContractForm";
 import RemoveItem from "../RemoveItem";
 import { admin, rrhh, juridica } from "../../menu.js";
@@ -123,122 +122,143 @@ export default {
     ContractForm,
     RemoveItem
   },
-  data: () => ({ 
-    bus: new Vue(),   
+  data: () => ({
+    bus: new Vue(),
     headers: [
       {
-        text:     'C.I.',
-        value:    'employee.identity_card',
-        align:    'center'
+        text: "C.I.",
+        value: "employee.identity_card",
+        align: "center"
       },
       {
-        text:     'Nombres',
-        value:    'employee.last_name',
-        align:    'center'
+        text: "Nombres",
+        value: "employee.last_name",
+        align: "center"
       },
       {
-        text:     'Puesto',
-        value:    'position.name',
-        align:    'center'
+        text: "Puesto",
+        value: "position.name",
+        align: "center"
       },
       {
-        text:     'Fecha de Inicio',
-        value:    'employee.mothers_last_name',
-        align:    'center',
-        sortable: false 
+        text: "Fecha de Inicio",
+        value: "employee.mothers_last_name",
+        align: "center",
+        sortable: false
       },
       {
-        text:     'Fecha de Conclusión',
-        value:    'employee.first_name',
-        align:    'center',
-        sortable: false 
+        text: "Fecha de Conclusión",
+        value: "employee.first_name",
+        align: "center",
+        sortable: false
       },
-      { 
-        text:     'Activo',  
-        align:    'center',
-        sortable: false 
+      {
+        text: "Activo",
+        align: "center",
+        sortable: false
       },
-      { 
-        text:     'Opciones',  
-        align:    'center',
-        sortable: false 
+      {
+        text: "Opciones",
+        align: "center",
+        sortable: false
       }
-    ],    
-    contracts:    [],
-    search:       '',    
-    switch1:      true,
-    contracState:'vigentes',
-    options: ''
+    ],
+    contracts: [],
+    search: "",
+    switch1: true,
+    contracState: "vigentes",
+    options: ""
   }),
   computed: {
     formTitle() {
-      return this.selectedIndex === -1 ? 'Nuevo contrato' : 'Editar contrato'
-    },
-    
-  },  
+      return this.selectedIndex === -1 ? "Nuevo contrato" : "Editar contrato";
+    }
+  },
   created() {
-    this.initialize()
-    this.bus.$on('closeDialog', () => {
-      this.initialize()
-    })
+    this.initialize();
+    this.bus.$on("closeDialog", () => {
+      this.initialize();
+    });
     for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == 'contractIndex') {
-        this.options = this.$store.getters.menuLeft[i].options
+      if (this.$store.getters.menuLeft[i].href == "contractIndex") {
+        this.options = this.$store.getters.menuLeft[i].options;
       }
     }
   },
-  methods: {    
+  methods: {
     async initialize() {
       try {
-        let contracts = await axios.get('/api/v1/contract')
-        this.contracts = contracts.data
-      } catch(e) {
-        console.log(e)
+        let contracts = await axios.get("/api/v1/contract");
+        this.contracts = contracts.data;
+      } catch (e) {
+        console.log(e);
       }
     },
     editItem(item, mode) {
-      this.bus.$emit('openDialog', $.extend({}, item, {'mode': mode}))
+      this.bus.$emit("openDialog", $.extend({}, item, { mode: mode }));
     },
     async removeItem(item) {
-      let payroll = await axios.get('/api/v1/payroll/getpayrollcontract/' + item.id)
+      let payroll = await axios.get(
+        "/api/v1/payroll/getpayrollcontract/" + item.id
+      );
       if (payroll.data) {
-        alert("No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS")
+        alert(
+          "No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS"
+        );
       } else {
-        this.bus.$emit('openDialogRemove', `/api/v1/contract/${item.id}`)
-      }      
+        this.bus.$emit("openDialogRemove", `/api/v1/contract/${item.id}`);
+      }
     },
     contractStatus() {
-      if(this.switch1 == true) {
-        this.contracState = "vigentes"
-        this.switch1 = true
-        
+      if (this.switch1 == true) {
+        this.contracState = "vigentes";
+        this.switch1 = true;
       } else {
-        this.contracState = "concluidos"
-        this.switch1 = false
-        
-      }      
+        this.contracState = "concluidos";
+        this.switch1 = false;
+      }
     },
-    fullName(employee){
-          let names = `${employee.last_name || ''} ${employee.mothers_last_name || ''} ${employee.surname_husband || ''} ${employee.first_name || ''} ${employee.second_name || ''} `
-          names = names.replace(/\s+/gi, ' ').trim().toUpperCase();
-          return names;
+    fullName(employee) {
+      let names = `${employee.last_name || ""} ${employee.mothers_last_name ||
+        ""} ${employee.surname_husband || ""} ${employee.first_name ||
+        ""} ${employee.second_name || ""} `;
+      names = names
+        .replace(/\s+/gi, " ")
+        .trim()
+        .toUpperCase();
+      return names;
     },
-    checkEnd(end_date) {      
+    checkEnd(end_date) {
       if (this.$moment().format() > end_date) {
-        return true
+        return true;
       } else {
-        return false
-      }      
+        return false;
+      }
     },
-    print (item) {
-      printJS({printable:"api/v1/contract/print/" + item.id + "/printEventual", type:"pdf", showModal:true, modalMessage: "Generando documento por favor espere un momento."})
+    print(item) {
+      printJS({
+        printable: `api/v1/contract/print/${item.id}/printEventual`,
+        type: "pdf",
+        showModal: true,
+        modalMessage: "Generando documento por favor espere un momento."
+      });
     },
-    printUp (item) {
-      printJS({printable:"api/v1/contract/print/" + item.id + "/printUp", type:"pdf", showModal:true, modalMessage: "Generando documento por favor espere un momento."})
+    printUp(item) {
+      printJS({
+        printable: `api/v1/contract/print/${item.id}/printUp`,
+        type: "pdf",
+        showModal: true,
+        modalMessage: "Generando documento por favor espere un momento."
+      });
     },
-    printLow (item) {
-      printJS({printable:"api/v1/contract/print/" + item.id + "/printLow", type:"pdf", showModal:true, modalMessage: "Generando documento por favor espere un momento."})
+    printLow(item) {
+      printJS({
+        printable: `api/v1/contract/print/${item.id}/printLow`,
+        type: "pdf",
+        showModal: true,
+        modalMessage: "Generando documento por favor espere un momento."
+      });
     }
   }
-}
+};
 </script>
