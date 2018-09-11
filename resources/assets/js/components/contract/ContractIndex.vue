@@ -4,10 +4,10 @@
         <v-toolbar-title>Contratos</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn-toggle v-model="toggle_one">
-          <v-btn  @click="toogle_one=0" :class="!Boolean(toogle_one) ? 'primary white--text' : 'normal'">
+          <v-btn  @click="toggle_one=0" :class="!Boolean(toggle_one) ? 'primary white--text' : 'normal'">
             <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
           </v-btn>
-          <v-btn  @click="toogle_one=1" :class="Boolean(toogle_one) ? 'primary white--text' : 'normal'">
+          <v-btn  @click="toggle_one=1" :class="Boolean(toggle_one) ? 'primary white--text' : 'normal'">
             <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
           </v-btn>
         </v-btn-toggle>
@@ -42,7 +42,7 @@
         disable-initial-sort
         class="elevation-1">
         <template slot="items" slot-scope="props">
-          <tr v-if="props.item.active!=Boolean(toogle_one)" v-bind:class="[checkEnd(props.item.end_date)? 'red lighten-1' : '']">
+          <tr v-if="props.item.active!=Boolean(toggle_one)" v-bind:class="[checkEnd(props.item.end_date)? 'red lighten-1' : '']">
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.employee.identity_card }} {{ props.item.employee.city_identity_card.shortened }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ fullName(props.item.employee) }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.position.name }}</td>
