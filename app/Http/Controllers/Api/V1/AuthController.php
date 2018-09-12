@@ -8,7 +8,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 /** @resource Authenticate
  *
@@ -64,10 +63,6 @@ class AuthController extends Controller {
 		$credentials = request(['username', 'password']);
 
 		if (!env("ADLDAP_AUTHENTICATION")) {
-			if (config('app.debug')) {
-				LOG::debug($credentials);
-			}
-
 			$token = auth('api')->attempt($credentials);
 
 			if ($token) {
@@ -96,14 +91,13 @@ class AuthController extends Controller {
 
 				return $this->respondWithToken($token);
 			}
-		} else {
-			return response()->json([
-				'message' => 'No autorizado',
-				'errors' => [
-					'type' => ['Usuario o contraseña incorrectos'],
-				],
-			], 401);
 		}
+		return response()->json([
+			'message' => 'No autorizado',
+			'errors' => [
+				'type' => ['Usuario o contraseña incorrectos'],
+			],
+		], 401);
 
 	}
 
