@@ -209,7 +209,7 @@ export default {
         if (active) {
           this.contracts = this.contractsActive;
         } else {
-          this.contracts = this.contractsInactive;
+          this.contracts = this.contractsInactive.reverse();;
         }
       } catch (e) {
         console.log(e);
