@@ -80,6 +80,7 @@
                     name="Fecha de inicio"
                     :error-messages="errors.collect('Fecha de inicio')"
                     readonly :disabled="juridica==true"
+                    autocomplete='cc-exp-month'
                   ></v-text-field>
                   <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc"></v-date-picker>
                 </v-menu>
@@ -98,8 +99,9 @@
                   <v-text-field
                     slot="activator"
                     v-model="formatDateEnd"
-                    label="Fecha de conslusión"
-                    prepend-icon="event" :disabled="juridica==true"               
+                    label="Fecha de conclusión"
+                    prepend-icon="event" :disabled="juridica==true"
+                    autocomplete='cc-exp-year'
                   ></v-text-field>
                   <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc"></v-date-picker>
                 </v-menu>
@@ -126,15 +128,16 @@
                 <v-select v-if="selectedIndex!=-1"
                   v-model="selectedItem.retirement_reason_id"
                   :items="retirementReasons"
-                  item-text="name" 
-                  item-value="id"                    
+                  item-text="name"
+                  item-value="id"
                   label="Razón del retiro"
                   :disabled="juridica==true"
                 ></v-select>
-                 <v-text-field
+                <v-text-field
                   v-model="selectedItem.contract_number"
                   label="Número de contrato"
                   :outline="juridica==true"
+                  autocomplete='cc-number'
                 ></v-text-field>
                 <v-text-field
                   v-model="selectedItem.rrhh_cite"
@@ -240,7 +243,11 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="item in tableData">
+                      <tr
+                        v-for="item in tableData"
+                        :key="item.id"
+                        :value="item.id"
+                      >
                         <td> {{ (item.month).toUpperCase() }} </td>
                         <td class="text-xs-center"> {{ item.day }} <p class="red">{{ item.obs }}</p> </td>
                         <td class="text-xs-left"> Bs.{{ item.salary }} </td>
@@ -253,7 +260,6 @@
                         </tr>
                     </tfoot>
                   </table>
-                  </v-data-table>
                 </v-card-text>
               </v-card>
             </v-flex>
