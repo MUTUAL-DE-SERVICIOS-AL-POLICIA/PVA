@@ -4,10 +4,10 @@
         <v-toolbar-title>Contratos</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn-toggle v-model="toggle_one">
-          <v-btn  @click="toggle_one=0" :class="!Boolean(toggle_one) ? 'primary white--text' : 'normal'">
+          <v-btn  @click="getContracts(true)" :class="active ? 'primary white--text' : 'normal'">
             <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
           </v-btn>
-          <v-btn  @click="toggle_one=1" :class="Boolean(toggle_one) ? 'primary white--text' : 'normal'">
+          <v-btn  @click="getContracts(false)" :class="!active ? 'primary white--text' : 'normal'">
             <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
           </v-btn>
         </v-btn-toggle>
@@ -42,12 +42,24 @@
         disable-initial-sort
         class="elevation-1">
         <template slot="items" slot-scope="props">
-          <tr v-if="props.item.active!=Boolean(toggle_one)" v-bind:class="[checkEnd(props.item.end_date)? 'red lighten-1' : '']">
+          <tr :class="checkEnd(props.item)">
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.employee.identity_card }} {{ props.item.employee.city_identity_card.shortened }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ fullName(props.item.employee) }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.position.name }}</td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.start_date | moment("DD/MM/YYYY") }} </td>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.end_date | moment("DD/MM/YYYY") }}</td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded" v-if="props.item.retirement_date == null">
+              {{ (props.item.end_date == null) ? 'Indefinido' : $moment(props.item.end_date).format('DD/MM/YYYY') }}
+            </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded" v-else>
+              <v-tooltip top>
+                <span slot="activator">
+                  {{ $moment(props.item.retirement_date).format('DD/MM/YYYY') }}
+                </span>
+                <span>
+                  Fecha de conclusión: {{ $moment(props.item.end_date).format('DD/MM/YYYY') }}
+                </span>
+              </v-tooltip>
+            </td>
             <td class="justify-center layout">
               <v-menu offset-y>
                 <v-btn slot="activator" flat icon color="info">
@@ -101,12 +113,9 @@
             </v-card-text>
           </v-card>
         </template>
-        <v-alert slot="no-results" :value="true" color="error" icon="fa fa-times">
-          Tu Busqueda de "{{ search }}" no encontró resultados.
+        <v-alert slot="no-results" :value="true" color="error">
+          La búsqueda de "{{ search }}" no encontró resultados.
         </v-alert>
-        <template slot="no-data">
-          <v-btn color="primary" @click="initialize">Recargar</v-btn>
-        </template>
     </v-data-table>
   </v-container>
 </template>
@@ -148,17 +157,20 @@ export default {
       },
       {
         text: "Fecha de Conclusión",
-        value: "employee.first_name",
+        value: 'end_date',
         align: "center",
-        sortable: false
+        sortable: true
       },
       {
         text: "Opciones",
+        value: "employee.first_name",
         align: "center",
         sortable: false
       }
     ],
     contracts: [],
+    contractsActive: [],
+    contractsInactive: [],
     search: "",
     switch1: true,
     contracState: "vigentes",
@@ -167,12 +179,15 @@ export default {
   computed: {
     formTitle() {
       return this.selectedIndex === -1 ? "Nuevo contrato" : "Editar contrato";
+    },
+    active() {
+      return !Boolean(this.toggle_one)
     }
   },
   created() {
-    this.initialize();
+    this.getContracts(this.active);
     this.bus.$on("closeDialog", () => {
-      this.initialize();
+      this.getContracts(this.active);
     });
     for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
       if (this.$store.getters.menuLeft[i].href == "contractIndex") {
@@ -181,10 +196,21 @@ export default {
     }
   },
   methods: {
-    async initialize() {
+    async getContracts(active = this.active) {
       try {
-        let contracts = await axios.get("/api/v1/contract");
-        this.contracts = contracts.data;
+        let res = await axios.get(`/api/v1/contract`);
+        this.contractsActive = res.data.filter(obj => {
+          return obj.active === true;
+        });
+        this.contractsInactive = res.data.filter(obj => {
+          return obj.active === false;
+        });
+        this.toggle_one = this.active ? 0 : 1;
+        if (active) {
+          this.contracts = this.contractsActive;
+        } else {
+          this.contracts = this.contractsInactive;
+        }
       } catch (e) {
         console.log(e);
       }
@@ -204,15 +230,6 @@ export default {
         this.bus.$emit("openDialogRemove", `/api/v1/contract/${item.id}`);
       }
     },
-    contractStatus() {
-      if (this.switch1 == true) {
-        this.contracState = "vigentes";
-        this.switch1 = true;
-      } else {
-        this.contracState = "concluidos";
-        this.switch1 = false;
-      }
-    },
     fullName(employee) {
       let names = `${employee.last_name || ""} ${employee.mothers_last_name ||
         ""} ${employee.surname_husband || ""} ${employee.first_name ||
@@ -223,11 +240,15 @@ export default {
         .toUpperCase();
       return names;
     },
-    checkEnd(end_date) {
-      if (this.$moment().format() > end_date) {
-        return true;
+    checkEnd(contract) {
+      if (contract.retirement_date != null && this.$moment().isSame(contract.retirement_date, 'year') && this.$moment().isSame(contract.retirement_date, 'month') && !this.active) {
+        return 'danger';
+      } else if (contract.end_date != null && this.$moment().isSame(contract.end_date, 'year') && this.$moment().isSame(contract.end_date, 'month') && !this.active) {
+        return 'warning';
+      } else if (this.$moment().format() > contract.end_date && this.active) {
+        return 'error'
       } else {
-        return false;
+        return '';
       }
     },
     print(item) {
