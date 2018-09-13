@@ -1,5 +1,5 @@
-import Home from './components/Home'
 import Login from './components/auth/Login'
+import Profile from './components/auth/Profile'
 import Employee from './components/employee/EmployeeIndex'
 import Company from './components/company/CompanyIndex'
 import Contract from './components/contract/ContractIndex'
@@ -11,13 +11,13 @@ export const routes = [
     name: 'login',
     path: '/login',
     component: Login
-  // }, {
-  //   name: 'home',
-  //   path: '/home',
-  //   component: Home,
-  //   meta: {
-  //     requiresAuth: true
-  //   }
+  }, {
+    name: 'profile',
+    path: '/profile',
+    component: Profile,
+    meta: {
+      requiresAuth: true
+    }
   }, {
     path: '*',
     redirect: {
