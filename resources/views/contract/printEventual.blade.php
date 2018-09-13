@@ -25,6 +25,9 @@
         .up{
             text-transform: uppercase;
         }
+        .cap{
+            text-transform: capitalize;
+        }
         .center{
             text-align: center;
         }
@@ -47,19 +50,24 @@
         <p>
             <span class="title-text">CLÁUSULA PRIMERA (ANTECEDENTES). -</span> En estricta aplicación del Decreto Supremo N° 1446 de fecha 19 de diciembre de 2012, se creó la Mutual de Servicios al Policía – MUSERPOL como una Institución Pública Descentralizada de duración indefinida y patrimonio propio, con autonomía de gestión administrativa, financiera, legal y técnica, bajo tuición del Ministerio de Gobierno. Mediante Decretos Supremos 2829 de 6 de julio de 2016 y 3231 de 28 de junio de 2017 se modifica el D.S. 1446 de creación de la MUSERPOL. Para la realización de los fines y alcanzar los objetivos institucionales, se requiere la contratación de personal eventual con el fin de realizar la actividades administrativas, técnicas y legales propias de la Institución.
         </p>
-
-        @if ($contract->performance_cite)
+        @if ($contract->hiring_reference_number)
         <p>
-            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la evaluación efectuada por parte de los Directores de Área, en coordinación con la Jefatura de la Unidad de Recursos Humanos y el Director General Ejecutivo, se solicita la elaboración de Contrato del Personal Eventual de {{ Util::fullName($contract->employee) }}.
+            Mediante CITE: <span class="">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la Convocatoria: {{ $contract->hiring_reference_number }} dentro del Proceso de Contratación para el cargo de: <span class="title-text">“{{ $contract->position->name }}”</span>, el Director General Ejecutivo y la Jefatura de la Unidad de Recursos Humanos de la MUSERPOL, instruyen la elaboración de Contrato del Personal Eventual de <span class="cap">{{ Util::fullName($contract->employee, 'lowercase') }}</span>.
         </p>
         @else
-        <p>
-            Mediante CITE: <span class="title-text">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la convocatoria {{ $contract->hiring_reference_number }} dentro del Proceso de Contratación para el cargo de: <span class="title-text">“{{ $contract->position->name }}”</span>, previa selección, evaluación y posterior entrevista, la Unidad de Recursos Humanos solicita se proceda a la elaboración del Contrato de Personal Eventual de {{ Util::fullName($contract->employee) }}.
-        </p>
-        @endif
+            @if ($contract->performance_cite)
+            <p>
+                Mediante CITE: <span class="">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la Evaluación de Personal realizado mediante CITE: {{ $contract->performance_cite }}, el Director General Ejecutivo y la Jefatura de la Unidad de Recursos Humanos de la MUSERPOL, instruyen la elaboración de Contrato del Personal Eventual de <span class="cap">{{ Util::fullName($contract->employee, 'lowercase') }}</span>.
+            </p>
+            @else
+            <p>
+                Mediante CITE: <span class="">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la evaluación efectuada por parte del Director de Área, en coordinación con el Director General Ejecutivo y la Jefatura de la Unidad de Recursos Humanos, se instruye la elaboración de Contrato del Personal Eventual de <span class="cap">{{ Util::fullName($contract->employee, 'lowercase') }}</span>.
+            </p>
+            @endif
+        @endif        
         
         <p>
-            <span class="title-text">CLÁUSULA SEGUNDA (OBJETO). -</span> Por los antecedentes expuestos, la MUSERPOL procede a suscribir el presente contrato eventual con el CONTRATADO para que desempeñe funciones como <span class="title-text up"> {{ $contract->position->name }} </span>
+            <span class="title-text">CLÁUSULA SEGUNDA (OBJETO). -</span> Por los antecedentes expuestos, la <span class="title-text">MUSERPOL</span> procede a suscribir el presente contrato eventual con el <span class="title-text">CONTRATADO</span> para que desempeñe funciones como <span class="title-text up"> {{ $contract->position->name }} </span>
         </p>
         <p>
             Asimismo, se aclara que <span class="title-text">“MUSERPOL”</span>, por razones de mejor servicio, podrá destinar al <span class="title-text">CONTRATADO</span> temporal o permanentemente a otra unidad, departamento o jefatura, debiendo previamente elaborarse el contrato modificatorio correspondiente.
