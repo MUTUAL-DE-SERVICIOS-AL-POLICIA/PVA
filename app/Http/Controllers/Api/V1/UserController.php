@@ -6,19 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserForm;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 /** @resource User
  *
  * Resource to retrieve, show, update and destroy User data
  */
 
-class UserController extends Controller {
+class UserController extends Controller
+{
 	/**
 	 * Display User's data.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
+	public function index()
+	{
 		return User::get();
 	}
 
@@ -28,7 +32,8 @@ class UserController extends Controller {
 	 * @param  \App\User  $user
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id) {
+	public function show($id)
+	{
 		return User::findOrFail($id);
 	}
 
@@ -39,12 +44,22 @@ class UserController extends Controller {
 	 * @param  \App\User  $user
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(UserForm $request, $id) {
+	public function update(UserForm $request, $id)
+	{
 		$user = User::findOrFail($id);
-		$user->fill($request->all());
-		$user->password = bcrypt($request->all()['password']);
-		$user->save();
-		return $user;
+		if (!Hash::check(request('oldPassword'), Auth::user()->password) || $user->id != $id) {
+			return response()->json([
+				'message' => 'Contraseña incorrecta',
+				'errors' => [
+					'type' => ['Contraseña anterior incorrecta'],
+				],
+			], 400);
+		} else {
+			$user = User::find(Auth::user()->id);
+			$user->password = Hash::make(request('newPassword'));
+			$user->save();
+			return $user;
+		}
 	}
 
 	/**
@@ -53,7 +68,8 @@ class UserController extends Controller {
 	 * @param  \App\User  $user
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
+	public function destroy($id)
+	{
 		$user = User::findOrFail($id);
 		$user->delete();
 		return $user;

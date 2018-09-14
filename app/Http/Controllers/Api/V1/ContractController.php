@@ -22,7 +22,7 @@ class ContractController extends Controller
     public function index()
     {
         return Contract::with('job_schedules', 'employee', 'insurance_company', 'employee.city_identity_card', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')
-            ->orderBy('start_date', 'DESC')
+            ->orderBy('end_date', 'ASC')
             ->get();
     }
 
@@ -94,23 +94,24 @@ class ContractController extends Controller
      * @param  int  $id
      * @return pdf
      */
-    function print($id, $type) {
-        $headerHtml  = view()->make('partials.head')->render();
-        $pageWidth   = '216';
-        $pageHeight  = '330';
+    function print($id, $type)
+    {
+        $headerHtml = view()->make('partials.head')->render();
+        $pageWidth = '216';
+        $pageHeight = '330';
         $pageMargins = [30, 25, 40, 30];
-        $pageName    = 'contrato.pdf';
-        $data        = [
-            'contract'        => Contract::findOrFail($id),
-            'mae'             => Contract::where([['position_id', '1'], ['active', 'true']])->first(),
+        $pageName = 'contrato.pdf';
+        $data = [
+            'contract' => Contract::findOrFail($id),
+            'mae' => Contract::where([['position_id', '1'], ['active', 'true']])->first(),
             'employer_number' => EmployerNumber::where('insurance_company_id', '1')->first(),
         ];
         if ($type != 'printEventual') {
-            $headerHtml  = '';
-            $pageWidth   = '202';
-            $pageHeight  = '130';
+            $headerHtml = '';
+            $pageWidth = '202';
+            $pageHeight = '130';
             $pageMargins = [10, 11, 12, 11];
-            $pageName    = 'seguro.pdf';
+            $pageName = 'seguro.pdf';
         }
         return \PDF::loadView('contract.' . $type, $data)
             ->setOption('header-html', $headerHtml)
@@ -132,7 +133,7 @@ class ContractController extends Controller
      */
     public function positionFree($position_id)
     {
-        $contract = Contract::where([['position_id', $position_id],['active', true]])->first();
+        $contract = Contract::where([['position_id', $position_id], ['active', true]])->first();
         return $contract;
     }
 }

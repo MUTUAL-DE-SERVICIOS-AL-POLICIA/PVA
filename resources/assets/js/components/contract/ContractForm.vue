@@ -80,6 +80,7 @@
                     name="Fecha de inicio"
                     :error-messages="errors.collect('Fecha de inicio')"
                     readonly :disabled="juridica==true"
+                    autocomplete='cc-exp-month'
                   ></v-text-field>
                   <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc"></v-date-picker>
                 </v-menu>
@@ -98,8 +99,9 @@
                   <v-text-field
                     slot="activator"
                     v-model="formatDateEnd"
-                    label="Fecha de conslusión"
-                    prepend-icon="event" :disabled="juridica==true"               
+                    label="Fecha de conclusión"
+                    prepend-icon="event" :disabled="juridica==true"
+                    autocomplete='cc-exp-year'
                   ></v-text-field>
                   <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc"></v-date-picker>
                 </v-menu>
@@ -126,15 +128,16 @@
                 <v-select v-if="selectedIndex!=-1"
                   v-model="selectedItem.retirement_reason_id"
                   :items="retirementReasons"
-                  item-text="name" 
-                  item-value="id"                    
+                  item-text="name"
+                  item-value="id"
                   label="Razón del retiro"
                   :disabled="juridica==true"
                 ></v-select>
-                 <v-text-field
+                <v-text-field
                   v-model="selectedItem.contract_number"
                   label="Número de contrato"
                   :outline="juridica==true"
+                  autocomplete='cc-number'
                 ></v-text-field>
                 <v-text-field
                   v-model="selectedItem.rrhh_cite"
@@ -218,7 +221,7 @@
                   label="Vigente"
                   input-value="true" 
                   color="primary"
-                  value :disabled="juridica==true"           
+                  value :disabled="juridica==true || selectedItem.retirement_date != null"
                 ></v-checkbox>
               </v-form>
             </v-flex>
@@ -240,7 +243,11 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="item in tableData">
+                      <tr
+                        v-for="item in tableData"
+                        :key="item.id"
+                        :value="item.id"
+                      >
                         <td> {{ (item.month).toUpperCase() }} </td>
                         <td class="text-xs-center"> {{ item.day }} <p class="red">{{ item.obs }}</p> </td>
                         <td class="text-xs-left"> Bs.{{ item.salary }} </td>
@@ -253,7 +260,6 @@
                         </tr>
                     </tfoot>
                   </table>
-                  </v-data-table>
                 </v-card-text>
               </v-card>
             </v-flex>
@@ -276,260 +282,296 @@ export default {
   props: ["item", "bus"],
   data() {
     return {
-      employees:    [],
-      positions:    [],
-      contractTypes:    [],
-      contractModes:    [],
-      retirementReasons:    [],
-      insuranceCompanies:    [],
+      employees: [],
+      positions: [],
+      contractTypes: [],
+      contractModes: [],
+      retirementReasons: [],
+      insuranceCompanies: [],
       jobSchedules: [],
-      valid:        true,
-      menu:         false,
-      date:         null,
-      date2:        null,
-      date3:        null,
-      date4:        null,
-      menuDate:     false,
-      menuDate2:    false,
-      menuDate3:    false,
-      menuDate4:    false,
+      valid: true,
+      menu: false,
+      date: null,
+      date2: null,
+      date3: null,
+      date4: null,
+      menuDate: false,
+      menuDate2: false,
+      menuDate3: false,
+      menuDate4: false,
       recontract: false,
       dialog: false,
-      selectedIndex:  -1,
-      tableEmployee: '',
-      tablePosition: '',
-      tablePositionFree: '',
-      tableSalary: '',
+      selectedIndex: -1,
+      tableEmployee: "",
+      tablePosition: "",
+      tablePositionFree: "",
+      tableSalary: "",
       tableSalaryTotal: 0,
       tableData: [],
-      selectedItem:   {
-                    start_date: '',
-                    end_date: '',
-                    retirement_date: '',
-                    rrhh_cite_date: '',
-                  },
+      selectedItem: {
+        start_date: "",
+        end_date: "",
+        retirement_date: "",
+        rrhh_cite_date: ""
+      },
       selectedSchedule: {},
       juridica: 0
     };
   },
-  created() {    
+  created() {
     for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == 'contractIndex') {
-        this.options = this.$store.getters.menuLeft[i].options
+      if (this.$store.getters.menuLeft[i].href == "contractIndex") {
+        this.options = this.$store.getters.menuLeft[i].options;
       }
     }
-    if (this.$store.getters.currentUser.roles[0].name == 'juridica') {
-      this.juridica = 1
+    if (this.$store.getters.currentUser.roles[0].name == "juridica") {
+      this.juridica = 1;
     }
   },
   computed: {
     formTitle() {
-      return this.selectedIndex === -1 ? 'Nuevo contrato' : this.recontract == true?'Recontratar':'Editar contrato'
+      return this.selectedIndex === -1
+        ? "Nuevo contrato"
+        : this.recontract == true ? "Recontratar" : "Editar contrato";
     },
     formatDateStart() {
       if (this.$moment(this.selectedItem.start_date).isValid()) {
-        return this.$moment(this.selectedItem.start_date).format('DD/MM/YYYY')
+        return this.$moment(this.selectedItem.start_date).format("DD/MM/YYYY");
       }
     },
     formatDateEnd() {
       if (this.$moment(this.selectedItem.end_date).isValid()) {
-        return this.$moment(this.selectedItem.end_date).format('DD/MM/YYYY')
+        return this.$moment(this.selectedItem.end_date).format("DD/MM/YYYY");
       }
     },
     formatDateRetirement() {
       if (this.$moment(this.selectedItem.retirement_date).isValid()) {
-        return this.$moment(this.selectedItem.retirement_date).format('DD/MM/YYYY')
+        return this.$moment(this.selectedItem.retirement_date).format(
+          "DD/MM/YYYY"
+        );
       }
     },
     formatDateCite() {
       if (this.$moment(this.selectedItem.rrhh_cite_date).isValid()) {
-        return this.$moment(this.selectedItem.rrhh_cite_date).format('DD/MM/YYYY')
+        return this.$moment(this.selectedItem.rrhh_cite_date).format(
+          "DD/MM/YYYY"
+        );
       }
     }
   },
   watch: {
-    date (val) {
-      this.selectedItem.start_date = this.date
+    date(val) {
+      this.selectedItem.start_date = this.date;
     },
-    date2 (val) {
-      this.selectedItem.end_date = this.date2
+    date2(val) {
+      this.selectedItem.end_date = this.date2;
     },
-    date3 (val) {
-      this.selectedItem.retirement_date = this.date3
+    date3(val) {
+      this.selectedItem.retirement_date = this.date3;
+      if (this.selectedItem.retirement_date != null) {
+        this.selectedItem.active = false
+      }
     },
-    date4 (val) {
-      this.selectedItem.rrhh_cite_date = this.date4
+    date4(val) {
+      this.selectedItem.rrhh_cite_date = this.date4;
     }
   },
   methods: {
     async initialize() {
-      try {        
-        let employees = await axios.get('/api/v1/employee')
-        this.employees = employees.data
-        let positions = await axios.get('/api/v1/position')
-        this.positions = positions.data
-        let contractTypes = await axios.get('/api/v1/contract_type')
-        this.contractTypes = contractTypes.data
-        let contractModes = await axios.get('/api/v1/contract_mode')
-        this.contractModes = contractModes.data
-        let retirementReasons = await axios.get('/api/v1/retirement_reason')
-        this.retirementReasons = retirementReasons.data
-        let insuranceCompanies = await axios.get('/api/v1/insurance_company')
-        this.insuranceCompanies = insuranceCompanies.data
-        let jobSchedules = await axios.get('/api/v1/jobs_chedule')
-        this.jobSchedules = jobSchedules.data
-      } catch(e) {
-        console.log(e)
+      try {
+        let employees = await axios.get("/api/v1/employee");
+        this.employees = employees.data;
+        let positions = await axios.get("/api/v1/position");
+        this.positions = positions.data;
+        let contractTypes = await axios.get("/api/v1/contract_type");
+        this.contractTypes = contractTypes.data;
+        let contractModes = await axios.get("/api/v1/contract_mode");
+        this.contractModes = contractModes.data;
+        let retirementReasons = await axios.get("/api/v1/retirement_reason");
+        this.retirementReasons = retirementReasons.data;
+        let insuranceCompanies = await axios.get("/api/v1/insurance_company");
+        this.insuranceCompanies = insuranceCompanies.data;
+        let jobSchedules = await axios.get("/api/v1/jobs_chedule");
+        this.jobSchedules = jobSchedules.data;
+      } catch (e) {
+        console.log(e);
       }
     },
     close() {
       this.dialog = false;
       this.$validator.reset();
       this.bus.$emit("closeDialog");
-      this.selectedItem = {start_date: '',
-                    end_date: '',
-                    retirement_date: '',
-                    rrhh_cite_date: '',}
-      this.selectedSchedule = {},
-      this.tableEmployee= '',
-      this.tablePosition= '',
-      this.tablePositionFree = '',
-      this.tableSalary= '',
-      this.tableSalaryTotal= 0,
-      this.tableData= [],
-      this.recontract = false
+      this.selectedItem = {
+        start_date: "",
+        end_date: "",
+        retirement_date: "",
+        rrhh_cite_date: ""
+      };
+      (this.selectedSchedule = {}),
+        (this.tableEmployee = ""),
+        (this.tablePosition = ""),
+        (this.tablePositionFree = ""),
+        (this.tableSalary = ""),
+        (this.tableSalaryTotal = 0),
+        (this.tableData = []),
+        (this.recontract = false);
     },
     async save() {
-        try {
-          await this.$validator.validateAll()
-          if (this.selectedIndex != -1) {
-            let res = await axios.put('/api/v1/contract/' + this.selectedItem.id, $.extend({}, this.selectedItem, {'schedule': this.selectedSchedule}))
-            this.close()
-            this.toastr.success('Editado correctamente')
-          } else {             
-            let res = await axios.post('/api/v1/contract', $.extend({}, this.selectedItem, {'schedule': this.selectedSchedule}))
-            this.close()
-            this.toastr.success('Registrado correctamente')
-
-          }
-        } catch(e) {
-          console.log(e)
-            for (let key in e.data.errors) {
-              e.data.errors[key].forEach(error => {
-                this.toastr.error(error)
-              });
-            }
+      try {
+        await this.$validator.validateAll();
+        if (this.selectedIndex != -1) {
+          let res = await axios.put(
+            "/api/v1/contract/" + this.selectedItem.id,
+            $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+          );
+          this.close();
+          this.toastr.success("Editado correctamente");
+        } else {
+          let res = await axios.post(
+            "/api/v1/contract",
+            $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+          );
+          this.close();
+          this.toastr.success("Registrado correctamente");
         }
+      } catch (e) {
+        console.log(e);
+        for (let key in e.data.errors) {
+          e.data.errors[key].forEach(error => {
+            this.toastr.error(error);
+          });
+        }
+      }
     },
     async saveRecontract() {
-        try {
-          await this.$validator.validateAll()
-            let newres = await axios.post('/api/v1/contract', $.extend({}, this.selectedItem, {'schedule': this.selectedSchedule}))
-            let editres = await axios.put('/api/v1/contract/' + this.selectedItem.id, {"active":false})
-            this.close()
-            this.toastr.success('Recontratado correctamente')
-        } catch(e) {
-          console.log(e)
-            for (let key in e.data.errors) {
-              e.data.errors[key].forEach(error => {
-                this.toastr.error(error)
-              });
-            }
+      try {
+        await this.$validator.validateAll();
+        let newres = await axios.post(
+          "/api/v1/contract",
+          $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+        );
+        let editres = await axios.put(
+          "/api/v1/contract/" + this.selectedItem.id,
+          { active: false }
+        );
+        this.close();
+        this.toastr.success("Recontratado correctamente");
+      } catch (e) {
+        console.log(e);
+        for (let key in e.data.errors) {
+          e.data.errors[key].forEach(error => {
+            this.toastr.error(error);
+          });
         }
+      }
     },
     async saveDate(date) {
       this.$refs.menu.save(date);
     },
     async onSelectEmployee(v) {
       if (v) {
-        let employee = await axios.get('/api/v1/employee/' + v)
-        this.tableEmployee = employee.data
+        let employee = await axios.get("/api/v1/employee/" + v);
+        this.tableEmployee = employee.data;
       }
     },
     async onSelectPosition(v) {
       if (v) {
-        let position = await axios.get('/api/v1/position/' + v)
-        let positionFree = await axios.get('/api/v1/contract/position_free/' + v)
+        let position = await axios.get("/api/v1/position/" + v);
+        let positionFree = await axios.get(
+          "/api/v1/contract/position_free/" + v
+        );
         if (positionFree.data) {
           if (!this.selectedItem.id) {
-            this.tablePositionFree = 1
-          }          
+            this.tablePositionFree = 1;
+          }
         } else {
-          this.tablePositionFree = 0
+          this.tablePositionFree = 0;
         }
-        this.tablePosition = position.data.name
-        let charge = await axios.get('/api/v1/charge/' + position.data.charge_id)
-        this.tableSalary = charge.data.base_wage
+        this.tablePosition = position.data.name;
+        let charge = await axios.get(
+          "/api/v1/charge/" + position.data.charge_id
+        );
+        this.tableSalary = charge.data.base_wage;
       }
     },
-    monthSalaryCalc(){
-      let cont = 0
-      let data = {}
-      let month = ''
-      let total = 0
-      var d1=this.$moment(this.date);
-      var d2=this.$moment(this.date2);
-      var diff = d2.diff(d1,"month");
+    monthSalaryCalc() {
+      let cont = 0;
+      let data = {};
+      let month = "";
+      let total = 0;
+      var d1 = this.$moment(this.date);
+      var d2 = this.$moment(this.date2);
+      var diff = d2.diff(d1, "month");
       if (d2.date() < d1.date()) {
-        diff++
+        diff++;
       }
       for (var i = 0; i <= diff; i++) {
-        let day = 30
-        let salary = this.tableSalary
-        let salary_day = this.tableSalary / 30
-        let obs = ''
-        if(d1.month() + i == d1.month()) {
-            if(d1.date() >= 30) {
-                day = 1
-            } else {
-                day = 30 - d1.date() + 1
-            }
+        let day = 30;
+        let salary = this.tableSalary;
+        let salary_day = this.tableSalary / 30;
+        let obs = "";
+        if (d1.month() + i == d1.month()) {
+          if (d1.date() >= 30) {
+            day = 1;
+          } else {
+            day = 30 - d1.date() + 1;
+          }
         }
-        if(this.$moment().month(d1.month() + i).month() == d2.month()) {
-            if(d2.date() >= 30) {
-                day = 30
-            } else {
-                day = d2.date()
-            }
-            
+        if (
+          this.$moment()
+            .month(d1.month() + i)
+            .month() == d2.month()
+        ) {
+          if (d2.date() >= 30) {
+            day = 30;
+          } else {
+            day = d2.date();
+          }
         }
-        if(d2.diff(d1,"month") == 0){
-            if((d2.date() - d1.date()) < 27) {
-              obs = 'Debe ser mayor a un mes'
-            }
+        if (d2.diff(d1, "month") == 0) {
+          if (d2.date() - d1.date() < 27) {
+            obs = "Debe ser mayor a un mes";
+          }
         }
         salary = salary_day * day;
-        salary = (Math.round( salary * 100 )/100 ).toFixed(2)
-        total = total + parseInt(salary)
-        month = this.$moment().month(d1.month() + i).format('MMMM')
-        data[i] = { month : month, day : day, salary: salary, obs: obs}
+        salary = (Math.round(salary * 100) / 100).toFixed(2);
+        total = total + parseInt(salary);
+        month = this.$moment()
+          .month(d1.month() + i)
+          .format("MMMM");
+        data[i] = { month: month, day: day, salary: salary, obs: obs };
       }
-      this.tableSalaryTotal = (Math.round( total * 100 )/100 ).toFixed(2)      
-      this.tableData = data
+      this.tableSalaryTotal = (Math.round(total * 100) / 100).toFixed(2);
+      this.tableData = data;
     },
-    fullName(employee){
-          let names = `${employee.last_name || ''} ${employee.mothers_last_name || ''} ${employee.surname_husband || ''} ${employee.first_name || ''} ${employee.second_name || ''} `
-          names = names.replace(/\s+/gi, ' ').trim().toUpperCase();
-          return names;
+    fullName(employee) {
+      let names = `${employee.last_name || ""} ${employee.mothers_last_name ||
+        ""} ${employee.surname_husband || ""} ${employee.first_name ||
+        ""} ${employee.second_name || ""} `;
+      names = names
+        .replace(/\s+/gi, " ")
+        .trim()
+        .toUpperCase();
+      return names;
     }
   },
   mounted() {
     this.bus.$on("openDialog", item => {
       this.selectedItem = item;
-      this.date = item.start_date
-      this.date2 = item.end_date
-      this.tableSalary = item.position.charge.base_wage
-      this.monthSalaryCalc()
+      this.date = item.start_date;
+      this.date2 = item.end_date;
+      this.tableSalary = item.position.charge.base_wage;
+      this.monthSalaryCalc();
       this.dialog = true;
-      this.selectedIndex = item
-      if (item.mode == 'recontract') {
-        this.recontract = true
+      this.selectedIndex = item;
+      if (item.mode == "recontract") {
+        this.recontract = true;
       }
       if (item.job_schedules[0]) {
-        this.selectedSchedule = item.job_schedules[0]
+        this.selectedSchedule = item.job_schedules[0];
       }
     });
-    this.initialize()
-  },
+    this.initialize();
+  }
 };
 </script>

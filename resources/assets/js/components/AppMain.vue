@@ -47,6 +47,9 @@
           </template>
           </v-btn>
           <v-list>
+            <v-list-tile :to="{name: 'profile'}">
+              <v-icon>person</v-icon> Perfil
+            </v-list-tile>
             <v-list-tile @click="logout">
               <v-icon>lock</v-icon> Cerrar Sesión
             </v-list-tile>
