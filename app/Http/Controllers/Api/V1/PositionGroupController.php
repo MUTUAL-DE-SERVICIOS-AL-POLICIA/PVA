@@ -18,7 +18,7 @@ class PositionGroupController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return PositionGroup::get();
+		return PositionGroup::with('document', 'company_address')->get();
 	}
 
 	/**
