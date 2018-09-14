@@ -1,7 +1,7 @@
 <template>
   <v-container >
     <v-toolbar>
-        <v-toolbar-title>Compañia</v-toolbar-title>
+        <v-toolbar-title>Cargos</v-toolbar-title>
         <v-spacer></v-spacer>        
         <v-divider
           class="mx-2"
@@ -23,43 +23,38 @@
           inset
           vertical
         ></v-divider>
-        <CompanyForm :contract="{}" :bus="bus"/>
-        <!-- <RemoveItem :bus="bus"/> -->
+        <ChargeForm :contract="{}" :bus="bus"/>
+        <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
         :headers="headers"
-        :items="company"
+        :items="charges"
         :search="search"
         :rows-per-page-items="[10,20]"
         disable-initial-sort
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.name }} </td>
-            <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.shortened }} </td>
-            <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.tax_number }}</td>
+            <td class="text-xs-left"> {{ props.item.name }} </td>
+            <td class="text-xs-left"> {{ props.item.base_wage }} </td>
+            <td class="text-xs-left">
+              <v-icon color="primary" v-html="props.item.active==true ? 'check' : 'close'" class="white--text"></v-icon>
+            </td>
             <td class="justify-center layout">              
               <v-tooltip top v-if="options.includes('edit')">
-                <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, props.item.document)">
+                <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item)">
                   <v-icon>edit</v-icon>
                 </v-btn>
                 <span>Editar</span>
               </v-tooltip>
-              
-              </v-tooltip> 
+              <v-tooltip top v-if="options.includes('delete')">
+                <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+                <span>Eliminar</span>
+              </v-tooltip>
             </td>
           </tr>
-        </template>
-        <template slot="expand" slot-scope="props" v-if="props.item.document_id">
-          <v-card flat>
-            <v-card-text>
-              <v-list>
-                <v-list-tile-content><p><strong>Tipo de documento: </strong>{{ props.item.document.document_type.name }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Documento: </strong>{{ props.item.document.name }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Descripcion de documento: </strong>{{ props.item.document.description }}</p></v-list-tile-content>
-              </v-list>
-            </v-card-text>
-          </v-card>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="fa fa-times">
           Tu Busqueda de "{{ search }}" no encontró resultados.
@@ -72,14 +67,13 @@
 </template>
 <script type="text/javascript">
 import Vue from "vue";
-import CompanyForm from "./CompanyForm";
-// import RemoveItem from "../RemoveItem";
-// import { admin, rrhh, juridica } from "../../menu.js";
+import ChargeForm from "./ChargeForm";
+import RemoveItem from "../RemoveItem";
 export default {
-  name: "ContractIndex",
+  name: "ChargeIndex",
   components: {
-    CompanyForm,
-    // RemoveItem
+    ChargeForm,
+    RemoveItem
   },
   data: () => ({
     toggle_one: 0,
@@ -91,13 +85,13 @@ export default {
         align: "center"
       },
       {
-        text: "Sigla",
-        value: "shortened",
+        text: "Salario Base",
+        value: "base_wage",
         align: "center"
       },
       {
-        text: "NIT",
-        value: "tax_number",
+        text: "Activo",
+        value: "active",
         align: "center"
       },
       
@@ -107,7 +101,7 @@ export default {
         sortable: false
       }
     ],
-    company: [],
+    charges: [],
     search: "",
     options: ""
   }),
@@ -122,7 +116,7 @@ export default {
       this.initialize();
     });
     for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "companyIndex") {
+      if (this.$store.getters.menuLeft[i].href == "chargeIndex") {
         this.options = this.$store.getters.menuLeft[i].options;
       }
     }
@@ -130,14 +124,17 @@ export default {
   methods: {
     async initialize() {
       try {
-        let company = await axios.get("/api/v1/company");
-        this.company = company.data;
+        let charges = await axios.get("/api/v1/charge");
+        this.charges = charges.data;
       } catch (e) {
         console.log(e);
       }
     },
     editItem(item, document) {
-      this.bus.$emit("openDialog", $.extend({}, item, { document: document }));
+      this.bus.$emit("openDialog", item);
+    },
+    async removeItem(item) {
+      this.bus.$emit("openDialogRemove", `/api/v1/charge/${item.id}`);
     },
   }
 };

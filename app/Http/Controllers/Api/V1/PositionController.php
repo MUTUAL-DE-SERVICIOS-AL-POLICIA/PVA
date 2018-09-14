@@ -20,7 +20,7 @@ class PositionController extends Controller
      */
     public function index()
     {
-        return Position::get();
+        return Position::with('charge', 'position_group')->get();
     }
 
     /**
