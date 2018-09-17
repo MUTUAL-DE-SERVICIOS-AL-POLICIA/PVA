@@ -169,10 +169,10 @@ class PayrollPrintController extends Controller {
 		case 'T':
 			$response->data['title']->name = 'PLANILLA TRIBUTARIA';
 			$response->data['title']->table_header = 'S.M.N.';
-			$response->data['title']->table_header2 = $response->data['tribute']->minimun_salary;
+			$response->data['title']->table_header2 = $response->data['tribute']->minimum_salary;
 			$response->data['title']->table_header3 = 'Saldo a favor de:';
 			$response->data['title']->table_header4 = 'Saldo anterior a favor del dependiente';
-			$response->data['title']->minimun_salary = $response->data['tribute']->minimun_salary;
+			$response->data['title']->minimun_salary = $response->data['tribute']->minimum_salary; 
 			$response->data['title']->ufv = $response->data['tribute']->ufv;
 			break;
 		default:
