@@ -64,6 +64,7 @@ Route::group([
 		Route::get('contract', 'Api\V1\ContractController@index')->name('contracts_list');
 		Route::get('contract/{id}', 'Api\V1\ContractController@show')->name('contract_details');
 		Route::get('contract/position_free/{position_id}', 'Api\V1\ContractController@positionFree')->name('contract_position_free');
+		Route::get('contract/print/{id}/{type}', 'Api\V1\ContractController@print')->name('contract_print');
 		// Job Schedule
 		Route::get('jobs_chedule', 'Api\V1\JobScheduleController@index')->name('jobs_chedule_list');
 		Route::get('jobs_chedule/{id}', 'Api\V1\JobScheduleController@show')->name('jobs_chedule_details');
@@ -148,15 +149,6 @@ Route::group([
 		Route::get('document_type', 'Api\V1\DocumentTypeController@index')->name('document_type_list');
 		Route::get('document_type/{id}', 'Api\V1\DocumentTypeController@show')->name('document_type_details');
 
-
-
-
-
-
-
-
-
-
 		// ADMIN routes
 		Route::group([
 			'middleware' => 'role:admin',
@@ -203,9 +195,6 @@ Route::group([
 			Route::post('document_type', 'Api\V1\DocumentTypeController@store')->name('document_type_store');
 			Route::patch('document_type/{id}', 'Api\V1\DocumentTypeController@update')->name('document_type_update');
 			Route::delete('document_type/{id}', 'Api\V1\DocumentTypeController@delete')->name('document_type_delete');
-
-
-
 		});
 
 		// RRHH routes
@@ -312,18 +301,6 @@ Route::group([
 			Route::post('employee_discount', 'Api\V1\EmployeeDiscountController@store')->name('employee_discount_store');
 			Route::patch('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@update')->name('employee_discount_update');
 			Route::delete('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@delete')->name('employee_discount_delete');
-
-
-
-
-
-
-
-
-
-
-
-
 		});
 
 		// JURIDICA-RRHH routes
@@ -331,14 +308,6 @@ Route::group([
 			'middleware' => 'role:admin|rrhh|juridica',
 		], function () {
 			Route::patch('contract/{id}', 'Api\V1\ContractController@update')->name('contract_update');
-		});
-
-		// JURIDICA routes
-		Route::group([
-			'middleware' => 'role:admin|juridica',
-		], function () {
-			// Contract
-			Route::get('contract/print/{id}/{type}', 'Api\V1\ContractController@print')->name('contract_print');
 		});
 	});
 });
