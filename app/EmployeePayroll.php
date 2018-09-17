@@ -6,8 +6,10 @@ use App\Helpers\Util;
 use Carbon;
 use \Milon\Barcode\DNS2D;
 
-class EmployeePayroll {
-	function __construct($payroll) {
+class EmployeePayroll
+{
+	function __construct($payroll)
+	{
 		$contract = $payroll->contract;
 		$employee = $contract->employee;
 
@@ -42,7 +44,7 @@ class EmployeePayroll {
 		$this->management_entity_id = $employee->management_entity->id;
 		$this->unworked_days = $payroll->unworked_days;
 		$this->worked_days = $this->worked_days($payroll);
-		$this->ovt = (object) [
+		$this->ovt = (object)[
 			'insurance_company_id' => $contract->insurance_company->ovt_id,
 			'management_entity_id' => $employee->management_entity->ovt_id,
 			'contract_mode' => $employee->last_contract()->contract_mode->ovt_id,
@@ -79,7 +81,8 @@ class EmployeePayroll {
 		$this->valid_contract = Util::valid_contract($payroll, null);
 	}
 
-	public function setZeroAccounts() {
+	public function setZeroAccounts()
+	{
 		$this->base_wage = 0;
 		$this->quotable = 0;
 		$this->code = 0;
@@ -102,7 +105,8 @@ class EmployeePayroll {
 		$this->total_contributions = 0;
 	}
 
-	private function employeeDiscounts($payroll) {
+	private function employeeDiscounts($payroll)
+	{
 		$this->id = $payroll->id;
 		$this->quotable = $this->base_wage * $this->worked_days / 30;
 		$this->code = $payroll->code;
@@ -119,7 +123,8 @@ class EmployeePayroll {
 		$this->payable_liquid = round(($this->quotable - $this->total_discounts), 2);
 	}
 
-	private function employerContribution($payroll) {
+	private function employerContribution($payroll)
+	{
 		$this->contribution_insurance_company = $this->quotable * $payroll->procedure->employer_contribution->insurance_company;
 		$this->contribution_professional_risk = $this->quotable * $payroll->procedure->employer_contribution->professional_risk;
 		$this->contribution_employer_solidary = $this->quotable * $payroll->procedure->employer_contribution->solidary;
@@ -127,7 +132,8 @@ class EmployeePayroll {
 		$this->total_contributions = round(($this->contribution_insurance_company + $this->contribution_professional_risk + $this->contribution_employer_solidary + $this->contribution_employer_housing), 2);
 	}
 
-	public function mergePayroll($employe_payroll) {
+	public function mergePayroll($employe_payroll)
+	{
 		$this->worked_days += $employe_payroll->worked_days;
 		$this->quotable += $employe_payroll->quotable;
 		$this->discount_old += $employe_payroll->discount_old;
@@ -144,29 +150,35 @@ class EmployeePayroll {
 		return $this;
 	}
 
-	public function generateImage() {
+	public function generateImage()
+	{
 		$this->code_image = DNS2D::getBarcodePNG(($this->employee_id . ' ' . $this->full_name . ' ' . $this->position . ' ' . $this->month_id . ' ' . $this->year . ' ' . $this->base_wage . ' ' . $this->total_discounts . ' ' . $this->payable_liquid), "PDF417", 3, 33, array(1, 1, 1));
 		return $this;
 	}
 
-	public function setWorkedDays($worked_days) {
+	public function setWorkedDays($worked_days)
+	{
 		$this->worked_days = $worked_days;
 		return $this;
 	}
 
-	public function getWorkedDays() {
+	public function getWorkedDays()
+	{
 		return $this->worked_days;
 	}
 
-	public function setCodeImage($code_image) {
+	public function setCodeImage($code_image)
+	{
 		$this->code_image = $code_image;
 	}
 
-	public function setValidContact($valid_contract) {
+	public function setValidContact($valid_contract)
+	{
 		$this->valid_contract = $valid_contract;
 	}
 
-	private function worked_days($payroll) {
+	private function worked_days($payroll)
+	{
 		$contract = $payroll->contract;
 
 		$payroll_date = Carbon::create($payroll->procedure->year, $payroll->procedure->month->order);

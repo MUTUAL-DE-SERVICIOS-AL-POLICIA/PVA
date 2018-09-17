@@ -38,7 +38,7 @@
                 </v-btn>
                 <v-btn icon v-if="options.includes('ticket')">
                   <v-tooltip top>
-                    <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'" @click="printTicket(procedure.id)">print</v-icon>
+                    <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'" @click="print(`/api/v1/ticket/print/${procedure.id}`)">print</v-icon>
                     <span>Imprimir boletas</span>
                   </v-tooltip>
                 </v-btn>
@@ -230,13 +230,20 @@ export default {
       }
       return "";
     },
-    print(url) {
-      printJS({
-        printable: url,
-        type: "pdf",
-        showModal: true,
-        modalMessage: "Generando documento por favor espere un momento."
-      });
+    async print(url) {
+      try {
+        let res = await axios({
+          method: "GET",
+          url: url,
+          responseType: "arraybuffer"
+        });
+        let blob = new Blob([res.data], {
+          type: "application/pdf"
+        });
+        printJS(window.URL.createObjectURL(blob));
+      } catch (e) {
+        console.log(e);
+      }
     },
     async getEmployerNumbers() {
       try {
@@ -315,22 +322,6 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    },
-    print(url) {
-      printJS({
-        printable: url,
-        type: "pdf",
-        showModal: true,
-        modalMessage: "Generando documento por favor espere un momento."
-      });
-    },
-    printTicket(item) {
-      printJS({
-        printable: "api/v1/ticket/print/" + item,
-        type: "pdf",
-        showModal: true,
-        modalMessage: "Generando documento por favor espere un momento."
-      });
     }
   }
 };

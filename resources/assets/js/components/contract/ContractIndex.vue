@@ -66,9 +66,9 @@
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
                 </v-btn>
                 <v-list>
-                  <v-list-tile @click="print(props.item)" v-if="options.includes('printContract')"> Contrato</v-list-tile>
-                  <v-list-tile @click="printUp(props.item)" v-if="options.includes('printInsurance')"> Alta del seguro</v-list-tile>
-                  <v-list-tile @click="printLow(props.item)" v-if="options.includes('printInsurance')"> Baja del seguro</v-list-tile>
+                  <v-list-tile @click="print(props.item, 'printEventual')" v-if="options.includes('printContract')"> Contrato</v-list-tile>
+                  <v-list-tile @click="print(props.item, 'printUp')" v-if="options.includes('printInsurance')"> Alta del seguro</v-list-tile>
+                  <v-list-tile @click="print(props.item, 'printLow')" v-if="options.includes('printInsurance')"> Baja del seguro</v-list-tile>
                 </v-list>
               </v-menu>
               <v-tooltip top v-if="options.includes('renew')">
@@ -157,7 +157,7 @@ export default {
       },
       {
         text: "Fecha de Conclusión",
-        value: 'end_date',
+        value: "end_date",
         align: "center",
         sortable: true
       },
@@ -181,7 +181,7 @@ export default {
       return this.selectedIndex === -1 ? "Nuevo contrato" : "Editar contrato";
     },
     active() {
-      return !Boolean(this.toggle_one)
+      return !Boolean(this.toggle_one);
     }
   },
   created() {
@@ -209,7 +209,7 @@ export default {
         if (active) {
           this.contracts = this.contractsActive;
         } else {
-          this.contracts = this.contractsInactive.reverse();;
+          this.contracts = this.contractsInactive.reverse();
         }
       } catch (e) {
         console.log(e);
@@ -241,39 +241,40 @@ export default {
       return names;
     },
     checkEnd(contract) {
-      if (contract.retirement_date != null && this.$moment().isSame(contract.retirement_date, 'year') && this.$moment().isSame(contract.retirement_date, 'month') && !this.active) {
-        return 'danger';
-      } else if (contract.end_date != null && this.$moment().isSame(contract.end_date, 'year') && this.$moment().isSame(contract.end_date, 'month') && !this.active) {
-        return 'warning';
+      if (
+        contract.retirement_date != null &&
+        this.$moment().isSame(contract.retirement_date, "year") &&
+        this.$moment().isSame(contract.retirement_date, "month") &&
+        !this.active
+      ) {
+        return "danger";
+      } else if (
+        contract.end_date != null &&
+        this.$moment().isSame(contract.end_date, "year") &&
+        this.$moment().isSame(contract.end_date, "month") &&
+        !this.active
+      ) {
+        return "warning";
       } else if (this.$moment().format() > contract.end_date && this.active) {
-        return 'error'
+        return "error";
       } else {
-        return '';
+        return "";
       }
     },
-    print(item) {
-      printJS({
-        printable: `api/v1/contract/print/${item.id}/printEventual`,
-        type: "pdf",
-        showModal: true,
-        modalMessage: "Generando documento por favor espere un momento."
-      });
-    },
-    printUp(item) {
-      printJS({
-        printable: `api/v1/contract/print/${item.id}/printUp`,
-        type: "pdf",
-        showModal: true,
-        modalMessage: "Generando documento por favor espere un momento."
-      });
-    },
-    printLow(item) {
-      printJS({
-        printable: `api/v1/contract/print/${item.id}/printLow`,
-        type: "pdf",
-        showModal: true,
-        modalMessage: "Generando documento por favor espere un momento."
-      });
+    async print(item, type) {
+      try {
+        let res = await axios({
+          method: "GET",
+          url: `api/v1/contract/print/${item.id}/${type}`,
+          responseType: "arraybuffer"
+        });
+        let blob = new Blob([res.data], {
+          type: "application/pdf"
+        });
+        printJS(window.URL.createObjectURL(blob));
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 };
