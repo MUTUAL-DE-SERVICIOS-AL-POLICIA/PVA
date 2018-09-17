@@ -10,14 +10,16 @@ use App\UserAction;
  * Resource to retrieve, show and destroy UserAction data
  */
 
-class UserActionController extends Controller {
+class UserActionController extends Controller
+{
 	/**
 	 * Display a listing of the users actions.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
-		return UserAction::get();
+	public function index()
+	{
+		return UserAction::orderBy('created_at', 'DESC')->get();
 	}
 
 	/**
@@ -26,12 +28,9 @@ class UserActionController extends Controller {
 	 * @param  \App\UserAction  $userAction
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id) {
-		$user = UserAction::findOrFail($id);
-		$user->fill($request->all());
-		$user->password = bcrypt($request->all()['password']);
-		$user->save();
-		return $user;
+	public function show($id)
+	{
+		return UserAction::findOrFail($id);
 	}
 
 	/**
@@ -40,9 +39,10 @@ class UserActionController extends Controller {
 	 * @param  \App\UserAction  $userAction
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
-		$user = UserAction::findOrFail($id);
-		$user->delete();
-		return $user;
+	public function destroy($id)
+	{
+		$user_action = UserAction::findOrFail($id);
+		$user_action->delete();
+		return $user_action;
 	}
 }

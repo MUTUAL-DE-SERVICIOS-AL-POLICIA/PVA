@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserForm;
+use App\Http\Requests\UserEmployeeForm;
 use App\User;
+use App\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +26,33 @@ class UserController extends Controller
 	public function index()
 	{
 		return User::get();
+	}
+
+	/**
+	 * Stores a user.
+	 *
+	 * @param  \App\Employee  $employee
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store(UserEmployeeForm $request)
+	{
+		if (!env("ADLDAP_AUTHENTICATION")) {
+			$employee = Employee::findOrFail(request("employee_id"));
+			$user = new User();
+			$user->username = "";
+			$user->username .= substr($employee->first_name, 0, 1);
+			if ($employee->last_name != null) {
+				$user->username .= explode(" ", $employee->last_name)[0];
+			} else {
+				$user->username .= explode(" ", $employee->mothers_last_name)[0];
+			}
+			$user->username = strtolower($user->username);
+			$user->password = Hash::make($employee->identity_card);
+			$user->save();
+			return $user;
+		} else {
+			abort(400);
+		}
 	}
 
 	/**

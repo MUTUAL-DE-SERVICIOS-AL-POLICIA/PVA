@@ -214,7 +214,7 @@ export default {
     },
     async switchActive(employee) {
       try {
-        let res = await axios.put(`/api/v1/employee/${employee.id}`, {
+        let res = await axios.patch(`/api/v1/employee/${employee.id}`, {
           active: employee.active
         });
         this.getEmployees(employee.active);
