@@ -10,7 +10,7 @@ class PositionGroup extends Model {
 	protected $dates = ['deleted_at'];
 	public $timestamps = true;
 	public $guarded = ['id'];
-	protected $fillable = ['name', 'shortened', 'active', 'document_id'];
+	protected $fillable = ['name', 'shortened', 'active', 'document_id', 'company_address_id'];
 
 	public function depends_from() {
 		return $this->belongsToMany(PositionGroup::class, 'dependency_position_group', 'dependent_id', 'superior_id');
