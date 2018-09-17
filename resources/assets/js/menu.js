@@ -20,36 +20,7 @@ export default {
       icon: 'attach_file',
       options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
     },
-    {
-      href: '',
-      title: 'ORGANIZADOR',
-      icon: '',
-      options: []
-    },
-    {
-      href: 'companyIndex',
-      title: 'Compañia',
-      icon: 'domain',
-      options: ['new', 'edit']
-    },
-    {
-      href: 'chargeIndex',
-      title: 'Cargos',
-      icon: 'group_work',
-      options: ['new', 'edit', 'delete']
-    },
-    {
-      href: 'positiongroupIndex',
-      title: 'Direcciones/Unidades',
-      icon: 'sort',
-      options: ['new', 'edit', 'delete']
-    },
-    {
-      href: 'positionIndex',
-      title: 'Posiciones',
-      icon: 'subject',
-      options: ['new', 'edit', 'delete']
-    }
+    
   ],
   rrhh: [
     {
