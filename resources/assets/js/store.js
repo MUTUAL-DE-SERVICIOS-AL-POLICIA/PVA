@@ -2,18 +2,22 @@ import menu from "./menu.js";
 export default {
   state: {
     currentUser: localStorage.getItem('user') || null,
-    menuLeft: null
+    menuLeft: null,
+    ldapAuth: JSON.parse(process.env.MIX_ADLDAP_AUTHENTICATION)
   },
   getters: {
+    ldapAuth(state) {
+      return state.ldapAuth
+    },
     currentUser(state) {
       return JSON.parse(state.currentUser)
     },
     menuLeft(state) {
       if (state.currentUser) {
-        return menu[JSON.parse(state.currentUser).roles[0].name]  
-      } 
+        return menu[JSON.parse(state.currentUser).roles[0].name]
+      }
       return null
-    } 
+    }
   },
   mutations: {
     logout(state) {

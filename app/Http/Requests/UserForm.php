@@ -4,13 +4,15 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserForm extends FormRequest {
+class UserForm extends FormRequest
+{
 	/**
 	 * Determine if the user is authorized to make this request.
 	 *
 	 * @return bool
 	 */
-	public function authorize() {
+	public function authorize()
+	{
 		return true;
 	}
 
@@ -19,17 +21,20 @@ class UserForm extends FormRequest {
 	 *
 	 * @return array
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
-			'password' => 'required|min:5|max:255',
+			'oldPassword' => 'required|min:5|max:255',
+			'newPassword' => 'required|min:5|max:255',
 		];
 	}
 
-	public function messages() {
+	public function messages()
+	{
 		return [
-			'password.required' => 'La contraseña no puede estar vacía',
-			'password.min' => 'El número mínimo de caracteres es 5',
-			'password.max' => 'El número máximo de caracteres es 255',
+			'required' => 'La contraseña no puede estar vacía',
+			'min' => 'El número mínimo de caracteres es 5',
+			'max' => 'El número máximo de caracteres es 255',
 		];
 	}
 }

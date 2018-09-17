@@ -71,14 +71,15 @@
       },
       async authenticate(auth) {
         try {
-          await this.$validator.validateAll()
-          let res = await axios.post('/api/v1/auth', auth)
-          localStorage.setItem('token', res.data.token)
-          localStorage.setItem('token_type', res.data.token_type)
-          localStorage.setItem('user', JSON.stringify(res.data.user))
-          this.$router.go({
-            name: 'home'
-          })
+          if (await this.$validator.validateAll()) {
+            let res = await axios.post('/api/v1/auth', auth)
+            localStorage.setItem('token', res.data.token)
+            localStorage.setItem('token_type', res.data.token_type)
+            localStorage.setItem('user', JSON.stringify(res.data.user))
+            this.$router.go({
+              name: 'home'
+            })
+          }
         } catch(e) {
           auth.password = ''
           this.focusPassword()

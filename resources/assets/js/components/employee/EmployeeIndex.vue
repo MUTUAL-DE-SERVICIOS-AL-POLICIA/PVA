@@ -149,20 +149,19 @@ export default {
         { align: "center", text: "C.I.", value: "identity_card" },
         { text: "Funcionario", value: "last_name" },
         { align: "center", text: "Fecha de Nacimiento", value: "birth_date" },
-        { text: "# Cuenta", value: "account_number" },
-        { text: "AFP", value: "account_number" },
+        { text: "# Cuenta", value: "mothers_last_name" },
+        { text: "AFP", value: "first_name" },
         { text: "CUA/NUA", value: "nua_cua" },
         {
           align: "center",
           text: "Activo",
-          value: "mothers_last_name",
+          value: "account_number",
           sortable: false
         },
         {
           align: "center",
           text: "Acciones",
-          sortable: false,
-          value: "first_name"
+          sortable: false
         }
       ],
       subHeaders: [
