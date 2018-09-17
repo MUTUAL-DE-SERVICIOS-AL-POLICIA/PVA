@@ -32,7 +32,7 @@
               <div v-else>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="procedure.active&&options.includes('edit')" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="(procedure.active && options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                       <span>Editar</span>
@@ -153,39 +153,39 @@
                     </v-card>
                   </v-menu>
                 </v-card-actions>
-              </div>
-              <v-card-actions v-else>
-                <v-spacer></v-spacer>
-                <v-btn
-                  :disabled="dialog"
-                  :loading="dialog"
-                  color="info"
-                  @click="storeProcedure"
-                  v-if="options.includes('new')"
-                >
-                  Registrar
-                </v-btn>
-                <v-dialog
-                  v-model="dialog"
-                  hide-overlay
-                  persistent
-                  width="300"
-                >
-                  <v-card
-                    color="primary"
-                    dark
+                <v-card-actions v-else>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    :disabled="dialog"
+                    :loading="dialog"
+                    color="info"
+                    @click="storeProcedure"
+                    v-if="options.includes('new')"
                   >
-                    <v-card-text class="title">
-                      Generando planillas...
-                      <v-progress-linear
-                        indeterminate
-                        color="white"
-                        class="mb-0"
-                      ></v-progress-linear>
-                    </v-card-text>
-                  </v-card>
-                </v-dialog>
-              </v-card-actions>
+                    Registrar
+                  </v-btn>
+                  <v-dialog
+                    v-model="dialog"
+                    hide-overlay
+                    persistent
+                    width="300"
+                  >
+                    <v-card
+                      color="primary"
+                      dark
+                    >
+                      <v-card-text class="title">
+                        Generando planillas...
+                        <v-progress-linear
+                          indeterminate
+                          color="white"
+                          class="mb-0"
+                        ></v-progress-linear>
+                      </v-card-text>
+                    </v-card>
+                  </v-dialog>
+                </v-card-actions>
+              </div>
             </v-card>
           </v-flex>
         </v-layout>

@@ -14,12 +14,12 @@
             color="error"
             dark
           >
-            Cerrar Planilla
+            {{ message }} Planilla
           </v-btn>
 
           <v-card>
             <v-card-text class="title">
-              ¿Esta seguro que desea cerrar la planilla?
+              ¿Esta seguro que desea {{ message }} la planilla?
             </v-card-text>
 
             <v-divider></v-divider>
@@ -27,7 +27,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="success" small @click="dialog = false"><v-icon small>check</v-icon> Cancelar</v-btn>
-              <v-btn color="error" small @click="closeProcedure"><v-icon small>close</v-icon> Cerrar</v-btn>
+              <v-btn color="error" small @click="closeProcedure"><v-icon small>close</v-icon> {{ message }}</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -176,6 +176,7 @@ export default {
     return {
       dialog: false,
       procedure: {
+        active: true,
         year: null,
         month: {
           name: null
@@ -193,6 +194,13 @@ export default {
     this.getPayrolls();
   },
   computed: {
+    message() {
+      if (this.procedure.active) {
+        return 'cerrar'
+      } else {
+        return 'reabrir'
+      }
+    },
     headers() {
       return [
         {
@@ -406,7 +414,7 @@ export default {
     async closeProcedure() {
       try {
         let res = await axios.patch(`/api/v1/procedure/${this.procedure.id}`, {
-          active: false
+          active: !this.procedure.active
         });
         this.toastr.warning(
           `Planilla de mes de ${res.data.month.name} cerrada`
