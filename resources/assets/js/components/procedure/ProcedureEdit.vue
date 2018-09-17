@@ -405,7 +405,7 @@ export default {
     },
     async closeProcedure() {
       try {
-        let res = await axios.put(`/api/v1/procedure/${this.procedure.id}`, {
+        let res = await axios.patch(`/api/v1/procedure/${this.procedure.id}`, {
           active: false
         });
         this.toastr.warning(

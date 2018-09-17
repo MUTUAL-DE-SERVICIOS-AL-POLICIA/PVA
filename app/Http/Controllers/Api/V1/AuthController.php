@@ -14,11 +14,13 @@ use Illuminate\Support\Facades\Hash;
  * Resource to authenticate via username/password credentials
  */
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
 	private $config;
 	private $adldap;
 
-	public function __construct() {
+	public function __construct()
+	{
 		if (config('app.debug')) {
 			$this->middleware('auth:api', ['except' => ['store', 'show', 'update', 'destroy']]);
 		} else {
@@ -48,7 +50,8 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function store(AuthForm $request) {
+	public function store(AuthForm $request)
+	{
 		if (config('app.debug')) {
 			$token = auth('api')->attempt([
 				'username' => 'admin',
@@ -108,7 +111,8 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function show() {
+	public function show()
+	{
 		if (config('app.debug')) {
 			$token = auth('api')->attempt([
 				'username' => 'admin',
@@ -127,12 +131,8 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function destroy() {
-		if (config('app.debug')) {
-			return response()->json([
-				'message' => 'Logged out successfully',
-			], 201);
-		}
+	public function destroy()
+	{
 		auth('api')->logout();
 		return response()->json([
 			'message' => 'Logged out successfully',
@@ -144,7 +144,8 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function update() {
+	public function update()
+	{
 		if (config('app.debug')) {
 			$token = auth('api')->attempt([
 				'username' => 'admin',
@@ -165,7 +166,8 @@ class AuthController extends Controller {
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	protected function respondWithToken($token) {
+	protected function respondWithToken($token)
+	{
 		$this->guard()->user()->roles;
 
 		return response()->json([
@@ -177,7 +179,8 @@ class AuthController extends Controller {
 		], 200);
 	}
 
-	public function guard() {
+	public function guard()
+	{
 		return Auth::Guard('api');
 	}
 }

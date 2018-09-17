@@ -420,7 +420,7 @@ export default {
       try {
         await this.$validator.validateAll();
         if (this.selectedIndex != -1) {
-          let res = await axios.put(
+          let res = await axios.patch(
             "/api/v1/contract/" + this.selectedItem.id,
             $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
           );
@@ -450,7 +450,7 @@ export default {
           "/api/v1/contract",
           $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
         );
-        let editres = await axios.put(
+        let editres = await axios.patch(
           "/api/v1/contract/" + this.selectedItem.id,
           { active: false }
         );

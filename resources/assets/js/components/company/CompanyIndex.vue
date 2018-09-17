@@ -228,8 +228,8 @@ export default {
         try {
           await this.$validator.validateAll()
           if (this.editedIndex > -1) {
-            let resDoc = await axios.put('/api/v1/document/' + this.editedItemDoc.id, this.editedItemDoc)
-            let res = await axios.put('/api/v1/company/' + this.editedItem.id, this.editedItem)
+            let resDoc = await axios.patch('/api/v1/document/' + this.editedItemDoc.id, this.editedItemDoc)
+            let res = await axios.patch('/api/v1/company/' + this.editedItem.id, this.editedItem)
             this.initialize()
             this.close()
             this.toastr.success('Editado correctamente')

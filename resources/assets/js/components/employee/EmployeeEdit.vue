@@ -273,7 +273,7 @@ export default {
             res = await axios.post(`/api/v1/employee`, this.edit);
             this.toastr.success('Insertado correctamente')
           } else {
-            res = await axios.put(`/api/v1/employee/${this.edit.id}`, this.edit);
+            res = await axios.patch(`/api/v1/employee/${this.edit.id}`, this.edit);
             this.toastr.success('Actualizado correctamente')
           }
           this.close();
