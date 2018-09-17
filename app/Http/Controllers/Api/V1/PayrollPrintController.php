@@ -172,7 +172,7 @@ class PayrollPrintController extends Controller {
 			$response->data['title']->table_header2 = $response->data['tribute']->minimum_salary;
 			$response->data['title']->table_header3 = 'Saldo a favor de:';
 			$response->data['title']->table_header4 = 'Saldo anterior a favor del dependiente';
-			$response->data['title']->minimun_salary = $response->data['tribute']->minimum_salary;
+			$response->data['title']->minimun_salary = $response->data['tribute']->minimum_salary; 
 			$response->data['title']->ufv = $response->data['tribute']->ufv;
 			break;
 		default:
