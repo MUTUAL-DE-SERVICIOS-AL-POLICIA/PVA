@@ -1,4 +1,4 @@
-# MANUAL DE USUARIO SISTEMA DE RECURSOS HUMANOS - MUSERPO
+# MANUAL DE USUARIO SISTEMA DE RECURSOS HUMANOS - MUSERPOL
 1. INGRESO AL SISTEMA.
 Este sistema es compatible con los navegadores Firefox y Chrome, para acceder al sistema se debe acceder al enlace:
 [http://rrhh.muserpol.gob.bo](http://rrhh.muserpol.gob.bo).
