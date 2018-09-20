@@ -1,6 +1,6 @@
 <template>
   <v-container fluid fill-height id="background-page">
-    <v-layout row align-center justify-center>
+    <v-layout row align-center justify-center v-if="!this.$store.getters.currentUser">
       <v-flex d-flex xs12 sm6 md4>
         <v-card class="pa-5 ma-5">
           <v-img
@@ -54,55 +54,79 @@
 </template>
 
 <script>
-  export default {
-    name: 'login',
-    data() {
-      return {
-        auth: {
-          username: '',
-          password: ''
-        },
-        error: null
-      }
-    },
-    methods: {
-      focusPassword() {
-        this.$refs.password.focus()
+export default {
+  name: "login",
+  data() {
+    return {
+      auth: {
+        username: "",
+        password: ""
       },
-      async authenticate(auth) {
-        try {
-          if (await this.$validator.validateAll()) {
-            let res = await axios.post('/api/v1/auth', auth)
-            localStorage.setItem('token', res.data.token)
-            localStorage.setItem('token_type', res.data.token_type)
-            localStorage.setItem('user', JSON.stringify(res.data.user))
-            this.$router.go({
-              name: 'home'
-            })
-          }
-        } catch(e) {
-          auth.password = ''
-          this.focusPassword()
-          for (let key in e.data.errors) {
-            e.data.errors[key].forEach(error => {
-              this.toastr.error(error)
-            })
-          }
-        }
-      }
+      error: null
+    };
+  },
+  methods: {
+    focusPassword() {
+      this.$refs.password.focus();
     },
+    async authenticate(auth) {
+      try {
+        if (await this.$validator.validateAll()) {
+          let res = await axios.post("/api/v1/auth", auth);
+          this.$store.commit("login", res.data);
+          this.$router.go({
+            name: "employeeIndex"
+          });
+        }
+      } catch (e) {
+        auth.password = "";
+        this.focusPassword();
+      }
+    }
   }
+};
 </script>
 
 <style>
-  #background-page {
-    background: rgba(107,168,114,1);
-    background: -moz-linear-gradient(top, rgba(107,168,114,1) 0%, rgba(55,124,62,1) 47%, rgba(7,84,15,1) 90%);
-    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(107,168,114,1)), color-stop(47%, rgba(55,124,62,1)), color-stop(90%, rgba(7,84,15,1)));
-    background: -webkit-linear-gradient(top, rgba(107,168,114,1) 0%, rgba(55,124,62,1) 47%, rgba(7,84,15,1) 90%);
-    background: -o-linear-gradient(top, rgba(107,168,114,1) 0%, rgba(55,124,62,1) 47%, rgba(7,84,15,1) 90%);
-    background: -ms-linear-gradient(top, rgba(107,168,114,1) 0%, rgba(55,124,62,1) 47%, rgba(7,84,15,1) 90%);
-    background: linear-gradient(to bottom, rgba(107,168,114,1) 0%, rgba(55,124,62,1) 47%, rgba(7,84,15,1) 90%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6ba872', endColorstr='#07540f', GradientType=0 );
-  }
+#background-page {
+  background: rgba(107, 168, 114, 1);
+  background: -moz-linear-gradient(
+    top,
+    rgba(107, 168, 114, 1) 0%,
+    rgba(55, 124, 62, 1) 47%,
+    rgba(7, 84, 15, 1) 90%
+  );
+  background: -webkit-gradient(
+    left top,
+    left bottom,
+    color-stop(0%, rgba(107, 168, 114, 1)),
+    color-stop(47%, rgba(55, 124, 62, 1)),
+    color-stop(90%, rgba(7, 84, 15, 1))
+  );
+  background: -webkit-linear-gradient(
+    top,
+    rgba(107, 168, 114, 1) 0%,
+    rgba(55, 124, 62, 1) 47%,
+    rgba(7, 84, 15, 1) 90%
+  );
+  background: -o-linear-gradient(
+    top,
+    rgba(107, 168, 114, 1) 0%,
+    rgba(55, 124, 62, 1) 47%,
+    rgba(7, 84, 15, 1) 90%
+  );
+  background: -ms-linear-gradient(
+    top,
+    rgba(107, 168, 114, 1) 0%,
+    rgba(55, 124, 62, 1) 47%,
+    rgba(7, 84, 15, 1) 90%
+  );
+  background: linear-gradient(
+    to bottom,
+    rgba(107, 168, 114, 1) 0%,
+    rgba(55, 124, 62, 1) 47%,
+    rgba(7, 84, 15, 1) 90%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6ba872', endColorstr='#07540f', GradientType=0 );
+}
 </style>

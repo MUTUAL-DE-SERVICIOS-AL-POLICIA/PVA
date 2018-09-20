@@ -19,27 +19,24 @@
 </template>
 
 <script>
-  export default {
-    name: 'app-header',
-    methods: {
-      logout() {
-        axios.get('/api/auth/logout').then(res => {
-          this.$store.dispatch('logout')
-          this.$router.push('login')
-        }).catch(error => {
-          for (let key in error.response.data.errors) {
-            error.response.data.errors[key].forEach(error => {
-              this.toastr.error(error)
-            });
-          }
-        })
+export default {
+  name: "app-header",
+  methods: {
+    async logout() {
+      try {
+        await axios.get("/api/auth/logout");
+        this.$store.dispatch("logout");
+        this.$router.push("login");
+      } catch (e) {
+        console.log(e);
       }
-    },
+    }
   }
+};
 </script>
 
 <style>
-  .btn {
-    background-color: transparent;
-  }
+.btn {
+  background-color: transparent;
+}
 </style>

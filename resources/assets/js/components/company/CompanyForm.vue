@@ -143,11 +143,6 @@ export default {
           }
         } catch(e) {
           console.log(e)
-            for (let key in e.data.errors) {
-              e.data.errors[key].forEach(error => {
-                this.toastr.error(error)
-              });
-            }
         }
     }
   },

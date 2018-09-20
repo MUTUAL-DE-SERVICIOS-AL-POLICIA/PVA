@@ -174,10 +174,15 @@ export default {
     search: "",
     switch1: true,
     contracState: "vigentes",
-    options: [],
-    dateNow: null
+    options: []
   }),
   computed: {
+    endDate() {
+      return this.$moment(this.$store.getters.dateNow).endOf('month')
+    },
+    dateNow() {
+      return this.$moment(this.$store.getters.dateNow)
+    },
     formTitle() {
       return this.selectedIndex === -1 ? "Nuevo contrato" : "Editar contrato";
     },
@@ -186,7 +191,6 @@ export default {
     }
   },
   async created() {
-    await this.getDateNow();
     this.getContracts(this.active);
     this.bus.$on("closeDialog", () => {
       this.getContracts(this.active);
@@ -198,18 +202,6 @@ export default {
     }
   },
   methods: {
-    async getDateNow() {
-      try {
-        let res = await axios.get(`/api/v1/procedure/order/last`);
-        res = await axios.get(`/api/v1/procedure/date/${res.data.id}`);
-        this.dateNow = this.$moment(res.data.now);
-        return Promise.resolve();
-      } catch (e) {
-        console.log(e);
-        this.dateNow = this.$moment();
-        return Promise.resolve();
-      }
-    },
     async getContracts(active = this.active) {
       try {
         let res = await axios.get(`/api/v1/contract`);
@@ -257,19 +249,21 @@ export default {
     checkEnd(contract) {
       if (
         contract.retirement_date != null &&
-        this.dateNow.isSame(contract.retirement_date, "year") &&
-        this.dateNow.isSame(contract.retirement_date, "month") &&
+        this.endDate.isSame(this.$moment(contract.retirement_date), 'year') &&
+        this.endDate.isSame(this.$moment(contract.retirement_date), 'month') &&
         !this.active
       ) {
         return "danger";
       } else if (
         contract.end_date != null &&
-        this.dateNow.isSame(contract.end_date, "year") &&
-        this.dateNow.isSame(contract.end_date, "month") &&
+        this.endDate.isSame(this.$moment(contract.end_date), 'year') &&
+        this.endDate.isSame(this.$moment(contract.end_date), 'month') &&
         !this.active
       ) {
         return "warning";
-      } else if (this.dateNow.format() > contract.end_date && this.active) {
+      } else if (
+        this.endDate.isSameOrAfter(this.$moment(contract.end_date)) &&
+        this.active) {
         return "error";
       } else {
         return "";

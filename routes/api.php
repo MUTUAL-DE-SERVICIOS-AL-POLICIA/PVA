@@ -6,6 +6,7 @@ Route::group([
 ], function () {
 	// Login
 	Route::post('auth', 'Api\V1\AuthController@store')->name('login');
+	Route::get('date', 'Api\V1\DateController@show')->name('date_now');
 	Route::group([
 		'middleware' => 'jwt.auth'
 	], function () {

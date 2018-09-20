@@ -436,11 +436,6 @@ export default {
         }
       } catch (e) {
         console.log(e);
-        for (let key in e.data.errors) {
-          e.data.errors[key].forEach(error => {
-            this.toastr.error(error);
-          });
-        }
       }
     },
     async saveRecontract() {
@@ -458,11 +453,6 @@ export default {
         this.toastr.success("Recontratado correctamente");
       } catch (e) {
         console.log(e);
-        for (let key in e.data.errors) {
-          e.data.errors[key].forEach(error => {
-            this.toastr.error(error);
-          });
-        }
       }
     },
     async saveDate(date) {

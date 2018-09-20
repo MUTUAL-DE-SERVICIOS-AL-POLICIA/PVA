@@ -10,14 +10,6 @@ export const routes = [{
     name: 'login',
     path: '/login',
     component: Login
-    // }, {
-    //   name: 'home',
-    //   path: '/home',
-    //   component: Home,
-    //   meta: {
-    //     requiresAuth: true
-    //   }
-//}, {
   }, {
     name: 'profile',
     path: '/profile',

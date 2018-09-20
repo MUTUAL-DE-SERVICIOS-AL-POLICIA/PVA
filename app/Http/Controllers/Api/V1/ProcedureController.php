@@ -115,8 +115,8 @@ class ProcedureController extends Controller
 	{
 		$procedure = Procedure::findOrFail($id);
 		return response()->json([
-			'first_day' => Carbon::create(2018, 8)->startOfMonth()->format('Y-m-d'),
-			'end_day' => Carbon::create(2018, 8)->endOfMonth()->format('Y-m-d'),
+			'first_date' => Carbon::create(2018, 8)->startOfMonth()->format('Y-m-d'),
+			'end_date' => Carbon::create(2018, 8)->endOfMonth()->format('Y-m-d'),
 			'now' => Carbon::now()->format('Y-m-d'),
 		]);
 	}

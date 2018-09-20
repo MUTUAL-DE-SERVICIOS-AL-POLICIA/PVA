@@ -101,8 +101,8 @@
                     <v-date-picker
                       ref="picker"
                       v-model="birth_date"
-                      :max="this.$moment().subtract(18, 'years').format('YYYY-MM-DD')"
-                      :min="this.$moment().subtract(80, 'years').format('YYYY-MM-DD')"
+                      :max="this.maxDate.format('YYYY-MM-DD')"
+                      :min="this.minDate.format('YYYY-MM-DD')"
                       @change="saveDate"
                     ></v-date-picker>
                   </v-menu>
@@ -223,7 +223,9 @@ export default {
       dialog: false,
       newEmployee: true,
       date: null,
-      menu: false
+      menu: false,
+      minDate: this.$moment(this.$store.getters.dateNow).subtract(150, 'years') || this.$moment().subtract(150, 'years'),
+      maxDate: this.$moment(this.$store.getters.dateNow).subtract(18, 'years') || this.$moment().subtract(18, 'years')
     };
   },
   created() {
@@ -280,11 +282,6 @@ export default {
         }
       } catch (e) {
         console.log(e);
-        for (let key in e.data.errors) {
-          e.data.errors[key].forEach(error => {
-            this.toastr.error(error);
-          });
-        }
       }
     },
     async saveDate(date) {
@@ -297,6 +294,8 @@ export default {
       this.birth_date = this.edit.birth_date;
       this.dialog = true;
       this.newEmployee = false;
+      this.maxDate = this.$moment(this.$store.getters.dateNow).subtract(18, 'years')
+      this.minDate = this.$moment(this.$store.getters.dateNow).subtract(150, 'years')
     });
     this.getCities();
     this.getManagementEntities();

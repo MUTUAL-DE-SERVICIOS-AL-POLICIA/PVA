@@ -80,6 +80,11 @@ axios.interceptors.response.use(response => {
       store.dispatch('logout')
       router.push('login')
     }
+    for (let key in error.response.data.errors) {
+      error.response.data.errors[key].forEach(error => {
+        toastr.error(error);
+      });
+    }
   }
   return Promise.reject(error)
 });
