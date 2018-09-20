@@ -40,17 +40,19 @@
                   </v-btn>
                   <v-btn icon v-if="options.includes('ticket')">
                     <v-tooltip top>
-                      <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'" @click="print(`/api/v1/ticket/print/${procedure.id}`)">print</v-icon>
+                      <v-btn slot="activator" icon flat @click.prevent="print(`/api/v1/ticket/print/${procedure.id}`)">
+                        <v-icon :color="procedure.active ? 'info' : 'primary'">print</v-icon>
+                      </v-btn>
                       <span>Imprimir boletas</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon :href="`/api/v1/payroll/print/txt/${procedure.year}/${procedure.month_order}`" v-if="options.includes('bank')">
+                  <v-btn icon @click="download(`/api/v1/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="options.includes('bank')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                       <span>TXT Banco</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon :href="`/api/v1/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`" v-if="options.includes('ovt')">
+                  <v-btn icon @click="download(`/api/v1/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="options.includes('ovt')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">work</v-icon>
                       <span>CSV OVT</span>
@@ -246,6 +248,33 @@ export default {
           type: "application/pdf"
         });
         printJS(window.URL.createObjectURL(blob));
+        this.loading = false;
+      } catch (e) {
+        this.loading = false;
+        console.log(e);
+      }
+    },
+    async download(url) {
+      try {
+        this.loading = true;
+        const res = await axios.get(url);
+        const blob = new Blob([res.data], {
+          type: res.headers["content-type"]
+        });
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        const contentDisposition = res.headers["content-disposition"];
+        let fileName = "unknown";
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+          if (fileNameMatch.length === 2) {
+            fileName = fileNameMatch[1];
+          }
+        }
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
         this.loading = false;
       } catch (e) {
         this.loading = false;

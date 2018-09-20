@@ -21,8 +21,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Response;
 
-class PayrollPrintController extends Controller {
-	private function getFormattedData($year, $month, $valid_contracts, $with_account, $management_entity, $position_group, $employer_number) {
+class PayrollPrintController extends Controller
+{
+	private function getFormattedData($year, $month, $valid_contracts, $with_account, $management_entity, $position_group, $employer_number)
+	{
 		$procedure = Procedure::where('month_id', $month)->where('year', $year)->select()->first();
 
 		if (isset($procedure->id)) {
@@ -32,9 +34,7 @@ class PayrollPrintController extends Controller {
 			$company = Company::select()->first();
 
 			$payrolls = Payroll::where('procedure_id', $procedure->id)->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('c.start_date')->select('payrolls.*')->get();
-			// if (config('app.debug')) {
-			//     $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
-			// }
+
 			foreach ($payrolls as $key => $payroll) {
 				$contract = $payroll->contract;
 				$employee = $contract->employee;
@@ -83,7 +83,7 @@ class PayrollPrintController extends Controller {
 			abort(404);
 		}
 
-		return (object) array(
+		return (object)array(
 			"data" => [
 				'total_discounts' => $total_discounts,
 				'total_contributions' => $total_contributions,
@@ -91,7 +91,7 @@ class PayrollPrintController extends Controller {
 				'procedure' => $procedure,
 				'tribute' => $procedure->employer_tribute,
 				'company' => $company,
-				'title' => (object) array(
+				'title' => (object)array(
 					'year' => $year,
 				),
 			],
@@ -111,7 +111,8 @@ class PayrollPrintController extends Controller {
 	 * @param  integer  $employer_number_id
 	 * @return \PDF
 	 */
-	public function print_pdf(Request $params, $year, $month) {
+	public function print_pdf(Request $params, $year, $month)
+	{
 		$month = Month::where('id', $month)->select()->first();
 		if (!$month) {
 			abort(404);
@@ -128,23 +129,23 @@ class PayrollPrintController extends Controller {
 		$report_type = 'H';
 
 		switch (count($params)) {
-		case 7:
-			$employer_number = request('employer_number');
-		case 6:
-			$position_group = request('position_group');
-		case 5:
-			$management_entity = request('management_entity');
-		case 4:
-			$with_account = request('with_account');
-		case 3:
-			$valid_contracts = request('valid_contracts');
-		case 2:
-			$report_name = request('report_name');
-		case 1:
-			$report_type = strtoupper(request('report_type'));
-			break;
-		default:
-			abort(404);
+			case 7:
+				$employer_number = request('employer_number');
+			case 6:
+				$position_group = request('position_group');
+			case 5:
+				$management_entity = request('management_entity');
+			case 4:
+				$with_account = request('with_account');
+			case 3:
+				$valid_contracts = request('valid_contracts');
+			case 2:
+				$report_name = request('report_name');
+			case 1:
+				$report_type = strtoupper(request('report_type'));
+				break;
+			default:
+				abort(404);
 		}
 
 		$response = $this->getFormattedData($year, $month->id, $valid_contracts, $with_account, $management_entity, $position_group, $employer_number);
@@ -158,25 +159,25 @@ class PayrollPrintController extends Controller {
 		$response->data['title']->month = $month->name;
 
 		switch ($report_type) {
-		case 'H':
-			$response->data['title']->name = 'PLANILLA DE HABERES';
-			$response->data['title']->table_header = 'DESCUENTOS DEL SISTEMA DE PENSIONES';
-			break;
-		case 'P':
-			$response->data['title']->name = 'PLANILLA PATRONAL';
-			$response->data['title']->table_header = 'APORTES PATRONALES';
-			break;
-		case 'T':
-			$response->data['title']->name = 'PLANILLA TRIBUTARIA';
-			$response->data['title']->table_header = 'S.M.N.';
-			$response->data['title']->table_header2 = $response->data['tribute']->minimum_salary;
-			$response->data['title']->table_header3 = 'Saldo a favor de:';
-			$response->data['title']->table_header4 = 'Saldo anterior a favor del dependiente';
-			$response->data['title']->minimun_salary = $response->data['tribute']->minimum_salary; 
-			$response->data['title']->ufv = $response->data['tribute']->ufv;
-			break;
-		default:
-			abort(404);
+			case 'H':
+				$response->data['title']->name = 'PLANILLA DE HABERES';
+				$response->data['title']->table_header = 'DESCUENTOS DEL SISTEMA DE PENSIONES';
+				break;
+			case 'P':
+				$response->data['title']->name = 'PLANILLA PATRONAL';
+				$response->data['title']->table_header = 'APORTES PATRONALES';
+				break;
+			case 'T':
+				$response->data['title']->name = 'PLANILLA TRIBUTARIA';
+				$response->data['title']->table_header = 'S.M.N.';
+				$response->data['title']->table_header2 = $response->data['tribute']->minimum_salary;
+				$response->data['title']->table_header3 = 'Saldo a favor de:';
+				$response->data['title']->table_header4 = 'Saldo anterior a favor del dependiente';
+				$response->data['title']->minimun_salary = $response->data['tribute']->minimum_salary;
+				$response->data['title']->ufv = $response->data['tribute']->ufv;
+				break;
+			default:
+				abort(404);
 		}
 
 		if ($management_entity) {
@@ -193,11 +194,7 @@ class PayrollPrintController extends Controller {
 			$response->data['company']->employer_number = $employer_number->number;
 		}
 
-		// return response()->json($response);
-
 		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]) . ".pdf";
-
-		// return view('payroll.print', $response->data);
 
 		return \PDF::loadView('payroll.print', $response->data)
 			->setOption('page-width', '216')
@@ -208,6 +205,7 @@ class PayrollPrintController extends Controller {
 			->setOption('encoding', 'utf-8')
 			->setOption('footer-font-size', 5)
 			->setOption('footer-center', '[page] de [topage] - Impreso el ' . date('m/d/Y H:i'))
+			->setOption('encoding', 'utf-8')
 			->stream($file_name);
 	}
 
@@ -218,7 +216,8 @@ class PayrollPrintController extends Controller {
 	 * @param  integer  $month
 	 * @return \TXT
 	 */
-	public function print_txt($year, $month) {
+	public function print_txt($year, $month)
+	{
 		$month = Month::findorFail($month);
 
 		$response = $this->getFormattedData($year, $month->order, 1, 1, 0, 0, 0, 0);
@@ -244,15 +243,17 @@ class PayrollPrintController extends Controller {
 
 		$filename = implode('_', ["sueldos", strtolower($month->name), $year]) . ".txt";
 
-		$headers = ['Content-type' => 'text/plain', 'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)];
-
-		// return response()->json($content);
+		$headers = [
+			'Content-type' => 'text/plain',
+			'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)
+		];
 
 		return Response::make($content, 200, $headers);
 
 	}
 
-	public function print_ovt($year, $month) {
+	public function print_ovt($year, $month)
+	{
 		$month = Month::where('id', $month)->select()->first();
 		if (!$month) {
 			abort(404);
@@ -280,8 +281,6 @@ class PayrollPrintController extends Controller {
 
 		$total_employees = count($employees);
 
-		// return response()->json($employees);
-
 		$content = "";
 
 		$content .= implode(',', ["Nro", "Tipo de documento de identidad", "Número de documento de identidad", "Lugar de expedición", "Fecha de nacimiento", "Apellido Paterno", "Apellido Materno", "Nombres", "País de nacionalidad", "Sexo", "Jubilado", "¿Aporta a la AFP?", "¿Persona con discapacidad?", "Tutor de persona con discapacidad", "Fecha de ingreso", "Fecha de retiro", "Motivo retiro", "Caja de salud", "AFP a la que aporta", "NUA/CUA", "Sucursal o ubicación adicional", "Clasificación laboral", "Cargo", "Modalidad de contrato", "Tipo contrato", "Días pagados", "Horas pagadas", "Haber Básico", "Bono de antigüedad", "Horas extra", "Monto horas extra", "Horas recargo nocturno", "Monto horas extra nocturnas", "Horas extra dominicales", "Monto horas extra dominicales", "Domingos trabajados", "Monto domingo trabajado", "Nro. dominicales", "Salario dominical", "Bono producción", "Subsidio frontera", "Otros bonos y pagos", "RC-IVA", "Aporte Caja Salud", "Aporte AFP", "Otros descuentos", "\r\n"]);
@@ -296,9 +295,10 @@ class PayrollPrintController extends Controller {
 
 		$filename = implode('_', ["planilla", "ovt", strtolower($month->name), $year]) . ".csv";
 
-		$headers = ['Content-type' => 'text/plain', 'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)];
-
-		// return response()->json($content);
+		$headers = [
+			'Content-type' => 'text/csv',
+			'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)
+		];
 
 		return Response::make($content, 200, $headers);
 	}

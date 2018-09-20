@@ -10,7 +10,7 @@ import AppMain from './components/AppMain'
 import es from 'vee-validate/dist/locale/es'
 
 import toastr from 'toastr'
-import 'toastr/build/toastr.min.css'
+import 'toastr/toastr.min.css'
 Vue.prototype.toastr = toastr
 
 import print from 'print-js'
@@ -18,6 +18,7 @@ import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import ess from './es.js'
 import Vuetify from 'vuetify'
+
 Vue.use(Vuetify, {
   lang: {
     locales: { ess },
@@ -36,6 +37,7 @@ Vue.use(Vuetify, {
     normal: '#F5F5F5'
   }
 })
+
 import { createSimpleTransition } from 'vuetify/es5/util/helpers'
 const myTransition = createSimpleTransition('my-transition')
 Vue.component('my-transition', myTransition)
@@ -73,11 +75,13 @@ if (localStorage.getItem('token_type') && localStorage.getItem('token')) {
 axios.interceptors.response.use(response => {
   return response;
 }, error => {
-  if (error.response.status == 401) {
-    store.dispatch('logout')
-    router.push('login')
+  if (error.response) {
+    if (error.response.status == 401) {
+      store.dispatch('logout')
+      router.push('login')
+    }
   }
-  return Promise.reject(error.response)
+  return Promise.reject(error)
 });
 
 router.beforeEach((to, from, next) => {

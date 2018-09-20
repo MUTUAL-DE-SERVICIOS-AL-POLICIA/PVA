@@ -174,7 +174,8 @@ export default {
     search: "",
     switch1: true,
     contracState: "vigentes",
-    options: ""
+    options: [],
+    dateNow: null
   }),
   computed: {
     formTitle() {
@@ -184,7 +185,8 @@ export default {
       return !Boolean(this.toggle_one);
     }
   },
-  created() {
+  async created() {
+    await this.getDateNow();
     this.getContracts(this.active);
     this.bus.$on("closeDialog", () => {
       this.getContracts(this.active);
@@ -196,6 +198,18 @@ export default {
     }
   },
   methods: {
+    async getDateNow() {
+      try {
+        let res = await axios.get(`/api/v1/procedure/order/last`);
+        res = await axios.get(`/api/v1/procedure/date/${res.data.id}`);
+        this.dateNow = this.$moment(res.data.now);
+        return Promise.resolve();
+      } catch (e) {
+        console.log(e);
+        this.dateNow = this.$moment();
+        return Promise.resolve();
+      }
+    },
     async getContracts(active = this.active) {
       try {
         let res = await axios.get(`/api/v1/contract`);
@@ -243,19 +257,19 @@ export default {
     checkEnd(contract) {
       if (
         contract.retirement_date != null &&
-        this.$moment().isSame(contract.retirement_date, "year") &&
-        this.$moment().isSame(contract.retirement_date, "month") &&
+        this.dateNow.isSame(contract.retirement_date, "year") &&
+        this.dateNow.isSame(contract.retirement_date, "month") &&
         !this.active
       ) {
         return "danger";
       } else if (
         contract.end_date != null &&
-        this.$moment().isSame(contract.end_date, "year") &&
-        this.$moment().isSame(contract.end_date, "month") &&
+        this.dateNow.isSame(contract.end_date, "year") &&
+        this.dateNow.isSame(contract.end_date, "month") &&
         !this.active
       ) {
         return "warning";
-      } else if (this.$moment().format() > contract.end_date && this.active) {
+      } else if (this.dateNow.format() > contract.end_date && this.active) {
         return "error";
       } else {
         return "";
@@ -265,7 +279,7 @@ export default {
       try {
         let res = await axios({
           method: "GET",
-          url: `api/v1/contract/print/${item.id}/${type}`,
+          url: `/api/v1/contract/print/${item.id}/${type}`,
           responseType: "arraybuffer"
         });
         let blob = new Blob([res.data], {
