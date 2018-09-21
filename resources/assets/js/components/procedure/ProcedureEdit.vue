@@ -5,6 +5,31 @@
       <v-spacer></v-spacer>
       <div class="text-xs-center">
         <v-dialog
+          v-model="dialogDelete"
+          width="500"
+          @keydown.esc="dialogDelete = false"
+        >
+          <v-btn
+            slot="activator"
+            color="error"
+            dark
+            v-if="$store.getters.currentUser.roles[0].name == 'admin'"
+          >
+            Eliminar Planilla
+          </v-btn>
+          <v-card>
+            <v-card-text class="title">
+              ¿Esta seguro que desea eliminar la planilla?
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="success" small @click="dialogDelete = false"><v-icon small>check</v-icon> Cancelar</v-btn>
+              <v-btn color="error" small @click="deleteProcedure"><v-icon small>close</v-icon> Eliminar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog
           v-model="dialog"
           width="500"
           @keydown.esc="dialog = false"
@@ -175,6 +200,7 @@ export default {
   data() {
     return {
       dialog: false,
+      dialogDelete: false,
       procedure: {
         active: true,
         year: null,
@@ -196,9 +222,9 @@ export default {
   computed: {
     message() {
       if (this.procedure.active) {
-        return 'cerrar'
+        return "cerrar";
       } else {
-        return 'reabrir'
+        return "reabrir";
       }
     },
     headers() {
@@ -272,6 +298,25 @@ export default {
     }
   },
   methods: {
+    async deleteProcedure() {
+      try {
+        let res = await axios.delete(
+          `/api/v1/payroll/remove/${this.procedure.id}`
+        );
+        this.toastr.warning(
+          `Eliminados ${res.data.deleted} registros del mes de ${this.$moment()
+            .month(res.data.procedure.month_id - 1)
+            .format("MMMM")
+            .toUpperCase()} de ${res.data.procedure.year}`
+        );
+        this.$router.push({
+          name: "procedureIndex"
+        });
+      } catch (e) {
+        console.log(e);
+        this.toastr.error("Error al eliminar");
+      }
+    },
     async savePayroll(payroll) {
       try {
         await axios.patch(`/api/v1/payroll/${payroll.id}`, {

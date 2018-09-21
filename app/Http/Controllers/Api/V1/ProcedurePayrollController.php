@@ -13,14 +13,16 @@ use App\Procedure;
  * Resource to retrieve and store payrolls with procedure data
  */
 
-class ProcedurePayrollController extends Controller {
+class ProcedurePayrollController extends Controller
+{
 
 	/**
 	 * Display a listing of the payrolls .
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function get_payrolls($procedure_id) {
+	public function get_payrolls($procedure_id)
+	{
 		$procedure = Procedure::findOrFail($procedure_id);
 		return Payroll::where('procedure_id', $procedure->id)->with('contract.position', 'contract.position.charge', 'contract.position.position_group', 'contract.employee', 'contract.employee.city_identity_card')->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->select('payrolls.*')->get();
 	}
@@ -30,7 +32,8 @@ class ProcedurePayrollController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function generate_payrolls($procedure_id) {
+	public function generate_payrolls($procedure_id)
+	{
 		$procedure = Procedure::findOrFail($procedure_id);
 		if (Payroll::where('procedure_id', $procedure->id)->count() == 0) {
 			$contracts = new Contract();
@@ -52,5 +55,17 @@ class ProcedurePayrollController extends Controller {
 		} else {
 			abort(403);
 		}
+	}
+
+	public function delete_payrolls($procedure_id)
+	{
+		$procedure = Procedure::findOrFail($procedure_id);
+		$payrolls = Payroll::where('procedure_id', $procedure->id)->pluck('id')->toArray();
+		$deleted_payrolls = Payroll::destroy($payrolls);
+		$procedure->delete();
+		return response()->json([
+			'procedure' => $procedure,
+			'deleted' => $deleted_payrolls
+		], 200);
 	}
 }

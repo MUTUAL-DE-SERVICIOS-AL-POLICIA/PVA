@@ -1,7 +1,7 @@
 <template>
-  <v-dialog persistent v-model="dialog" max-width="600px" @keydown.esc="close($moment().year())" scrollable>
+  <v-dialog persistent v-model="dialog" max-width="600px" @keydown.esc="close($moment().year())" scrollable class="pl-4">
     <v-tooltip slot="activator" top>
-      <v-icon class="ml-4" large slot="activator" dark color="primary">add_circle</v-icon>
+      <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Empleado</span>
     </v-tooltip>
     <v-card>
