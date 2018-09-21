@@ -5,8 +5,10 @@ import Company from './components/company/CompanyIndex'
 import Contract from './components/contract/ContractIndex'
 import Procedure from './components/procedure/ProcedureIndex'
 import ProcedureEdit from './components/procedure/ProcedureEdit'
+import UserAction from './components/userAction/UserActionIndex'
 
-export const routes = [{
+export const routes = [
+  {
     name: 'login',
     path: '/login',
     component: Login
@@ -21,48 +23,55 @@ export const routes = [{
 
     path: '*',
     redirect: {
-        name: 'employeeIndex',
-        params: {
-            active: true
-        },
+      name: 'employeeIndex',
+      params: {
+        active: true
+      },
     },
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     }
-}, {
+  }, {
     path: '/employee',
     component: Employee,
     name: 'employeeIndex',
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     }
-}, {
+  }, {
     path: '/company',
     component: Company,
     name: 'companyIndex',
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     }
-}, {
+  }, {
     path: '/contract',
     component: Contract,
     name: 'contractIndex',
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     }
-}, {
+  }, {
     path: '/procedure',
     component: Procedure,
     name: 'procedureIndex',
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     }
-}, {
+  }, {
     path: '/procedure/:id',
     component: ProcedureEdit,
     name: 'procedureEdit',
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     }
-}
+  }, {
+    path: '/userAction',
+    component: UserAction,
+    name: 'userActionIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }
 ]

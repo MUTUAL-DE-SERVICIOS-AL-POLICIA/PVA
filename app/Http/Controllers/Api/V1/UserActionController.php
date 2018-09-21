@@ -19,7 +19,7 @@ class UserActionController extends Controller
 	 */
 	public function index()
 	{
-		return UserAction::orderBy('created_at', 'DESC')->get();
+		return UserAction::with('user')->orderBy('created_at', 'DESC')->get();
 	}
 
 	/**

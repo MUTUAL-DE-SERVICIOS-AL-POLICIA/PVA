@@ -4,8 +4,10 @@ namespace App\Http\Middleware;
 
 use App\UserAction;
 use Closure;
+use Illuminate\Support\Facades\Log;
 
-class UserActionMiddleware {
+class UserActionMiddleware
+{
 	/**
 	 * Handle an incoming request.
 	 *
@@ -13,10 +15,11 @@ class UserActionMiddleware {
 	 * @param  \Closure  $next
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next) {
+	public function handle($request, Closure $next)
+	{
 		$method = $request->method();
 
-		if ($request->isMethod('post') || $request->isMethod('put') || $request->isMethod('patch') || $request->isMethod('delete')) {
+		if (($request->isMethod('post') || $request->isMethod('put') || $request->isMethod('patch') || $request->isMethod('delete')) && !strpos($request->path(), 'user_action')) {
 			$action = new UserAction();
 
 			$data = $request->all();

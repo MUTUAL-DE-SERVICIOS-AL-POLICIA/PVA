@@ -19,8 +19,12 @@ export default {
       title: 'Planillas',
       icon: 'attach_file',
       options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
-    },
-    
+    }, {
+      href: 'userActionIndex',
+      title: 'Actividad',
+      icon: 'timeline',
+      options: ['edit']
+    }
   ],
   rrhh: [
     {

@@ -9,6 +9,7 @@
 * Restriction on procedure creation
 * Option to remove procedure
 * Option to create procedure with selected year and month
+* Activity history
 
 ### Changed
 
