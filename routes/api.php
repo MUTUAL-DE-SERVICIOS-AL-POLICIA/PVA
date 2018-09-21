@@ -137,6 +137,7 @@ Route::group([
 		Route::resource('retirement_reason', 'Api\V1\RetirementReasonController')->only(['index', 'show']);
 		// Month
 		Route::resource('month', 'Api\V1\MonthController')->only(['index', 'show']);
+		Route::get('month/order/{order}', 'Api\V1\MonthController@order')->name('month_order');
 		// Employer Contribution
 		Route::get('employer_contribution', 'Api\V1\EmployerContributionController@index')->name('employer_contribution_list');
 		Route::get('employer_contribution/{id}', 'Api\V1\EmployerContributionController@show')->name('employer_contribution_details');

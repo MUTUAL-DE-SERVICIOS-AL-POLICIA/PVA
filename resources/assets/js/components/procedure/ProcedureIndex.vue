@@ -209,6 +209,7 @@ export default {
         new: true,
         year: this.$moment().year(),
         month_id: this.$moment().month() + 1,
+        month: this.$moment().month(),
         active: true
       },
       yearSelected: null,
@@ -230,6 +231,25 @@ export default {
     }
   },
   methods: {
+    async getLastProcedure() {
+      try {
+        let res = await axios.get(`/api/v1/procedure/order/last`);
+        if (res.data.id) {
+          if (!res.data.active) {
+            res = await axios.get(`/api/v1/procedure/date/${res.data.id}`);
+            let newDate = this.$moment(res.data.first_date).add(1, "months");
+            this.newProcedure.year = newDate.year();
+            res = await axios.get(`/api/v1/month/order/${newDate.month() + 1}`);
+            this.newProcedure.month_id = res.data.id;
+            this.newProcedure.month = res.data.order - 1;
+          }
+        }
+        return Promise.resolve()
+      } catch (e) {
+        console.log(e);
+        return Promise.reject()
+      }
+    },
     commaDivider(index, cities) {
       if (index + 1 < cities.length) {
         return ",";
@@ -308,6 +328,7 @@ export default {
     },
     async getProcedures(year) {
       try {
+        await this.getLastProcedure();
         let res = await axios.get(`/api/v1/procedure/year/${year}`);
         this.procedures = res.data;
         if (year == this.newProcedure.year) {

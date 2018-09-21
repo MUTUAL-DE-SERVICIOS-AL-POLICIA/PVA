@@ -10,13 +10,15 @@ use App\Month;
  * Resource to retrieve and show Month data
  */
 
-class MonthController extends Controller {
+class MonthController extends Controller
+{
 	/**
 	 * Display a listing of the months.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
+	public function index()
+	{
 		return Month::get();
 	}
 
@@ -26,7 +28,24 @@ class MonthController extends Controller {
 	 * @param  \App\Month  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id) {
+	public function show($id)
+	{
 		return Month::findOrFail($id);
+	}
+
+	/**
+	 * Display the specified month with order.
+	 *
+	 * @param  \App\Month  $order
+	 * @return \Illuminate\Http\Response
+	 */
+	public function order($order)
+	{
+		$month = Month::where('order', $order)->first();
+		if ($month) {
+			return $month;
+		} else {
+			abort(404);
+		}
 	}
 }
