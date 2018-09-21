@@ -209,7 +209,7 @@ export default {
     this.getManagementEntities();
     this.getEmployerNumbers();
     this.bus.$on("closeDialog", (year) => {
-      this.yearSelected = year;
+      this.getYears(year);
       this.changeYear();
     });
   },
@@ -299,11 +299,11 @@ export default {
         console.log(e);
       }
     },
-    async getYears() {
+    async getYears(year) {
       try {
         let res = await axios.get(`/api/v1/procedure/year/list`);
         this.years = res.data;
-        this.yearSelected = Math.max(...this.years);
+        this.yearSelected = year || Math.max(...this.years);
       } catch (e) {
         console.log(e);
       }

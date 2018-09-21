@@ -19,8 +19,11 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="error" @click.prevent="close($moment().year())"><v-icon>close</v-icon> Cancelar</v-btn>
-        <v-btn color="success" @click.prevent="saveProcedure"><v-icon>check</v-icon> Generar</v-btn>
+        <v-progress-linear :indeterminate="true" v-if="loading"></v-progress-linear>
+        <div v-else>
+          <v-btn color="error" @click.prevent="close($moment().year())"><v-icon>close</v-icon> Cancelar</v-btn>
+          <v-btn color="success" @click.prevent="saveProcedure"><v-icon>check</v-icon> Generar</v-btn>
+        </div>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -32,6 +35,7 @@ export default {
   props: ["bus"],
   data() {
     return {
+      loading: false,
       dialog: false,
       dateSelected: this.$moment().format("YYYY-MM")
     };
@@ -49,6 +53,7 @@ export default {
     },
     async saveProcedure() {
       try {
+        this.loading = true
         let res = await axios.get(
           `/api/v1/month/order/${Number(this.dateSelected.split("-")[1])}`
         );
@@ -75,8 +80,10 @@ export default {
             .format("MMMM")
             .toUpperCase()}`
         );
+        this.loading = false
         this.close(newProcedure.year);
       } catch (e) {
+        this.loading = false
         console.log(e);
       }
     }

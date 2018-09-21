@@ -59,7 +59,12 @@ class ProcedureController extends Controller
 				], 400);
 			}
 		} else {
-			abort(403);
+			return response()->json([
+				'message' => 'No autorizado',
+				'errors' => [
+					'type' => ['Debe cerrar las planillas activas'],
+				],
+			], 403);
 		}
 	}
 
