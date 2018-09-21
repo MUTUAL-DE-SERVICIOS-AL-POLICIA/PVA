@@ -12,6 +12,7 @@
           @change="changeYear"
         ></v-select>
       </v-flex>
+      <ProcedureAdd v-if="$store.getters.currentUser.roles[0].name == 'admin'" :bus="bus"/>
     </v-toolbar>
     <v-card>
       <v-container
@@ -158,34 +159,12 @@
                 <v-card-actions v-else>
                   <v-spacer></v-spacer>
                   <v-btn
-                    :disabled="dialog"
-                    :loading="dialog"
                     color="info"
                     @click="storeProcedure"
                     v-if="options.includes('new')"
                   >
                     Registrar
                   </v-btn>
-                  <v-dialog
-                    v-model="dialog"
-                    hide-overlay
-                    persistent
-                    width="300"
-                  >
-                    <v-card
-                      color="primary"
-                      dark
-                    >
-                      <v-card-text class="title">
-                        Generando planillas...
-                        <v-progress-linear
-                          indeterminate
-                          color="white"
-                          class="mb-0"
-                        ></v-progress-linear>
-                      </v-card-text>
-                    </v-card>
-                  </v-dialog>
                 </v-card-actions>
               </div>
             </v-card>
@@ -197,12 +176,18 @@
 </template>
 
 <script>
+import Vue from "vue";
+import ProcedureAdd from "./ProcedureAdd";
+
 export default {
   name: "ProcedureIndex",
+  components: {
+    ProcedureAdd
+  },
   data() {
     return {
+      bus: new Vue(),
       loading: false,
-      dialog: false,
       years: [],
       procedures: [],
       newProcedure: {
@@ -215,13 +200,18 @@ export default {
       yearSelected: null,
       templateTypes: ["H", "P"],
       managementEntities: [],
-      employerNumbers: []
+      employerNumbers: [],
+      options: []
     };
   },
   mounted() {
     this.getYears();
     this.getManagementEntities();
     this.getEmployerNumbers();
+    this.bus.$on("closeDialog", (year) => {
+      this.yearSelected = year;
+      this.changeYear();
+    });
   },
   created() {
     for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
@@ -244,10 +234,10 @@ export default {
             this.newProcedure.month = res.data.order - 1;
           }
         }
-        return Promise.resolve()
+        return Promise.resolve();
       } catch (e) {
         console.log(e);
-        return Promise.reject()
+        return Promise.reject();
       }
     },
     commaDivider(index, cities) {
@@ -357,7 +347,7 @@ export default {
     },
     async storeProcedure() {
       try {
-        this.dialog = true;
+        this.loading = true;
         let procedure = await axios.post(
           `/api/v1/procedure`,
           this.newProcedure
@@ -376,9 +366,9 @@ export default {
             .format("MMMM")
             .toUpperCase()}`
         );
-        this.dialog = false;
+        this.loading = false;
       } catch (e) {
-        this.dialog = false;
+        this.loading = false;
         console.log(e);
       }
     }

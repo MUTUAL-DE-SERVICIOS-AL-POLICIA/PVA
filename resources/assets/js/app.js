@@ -45,8 +45,9 @@ Vue.component('my-transition', myTransition)
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Vuex)
-const moment = require('moment')
-require('moment/locale/es')
+
+import moment from 'moment'
+moment.updateLocale('es', require('moment/locale/es'))
 Vue.use(require('vue-moment'), {
   moment
 });

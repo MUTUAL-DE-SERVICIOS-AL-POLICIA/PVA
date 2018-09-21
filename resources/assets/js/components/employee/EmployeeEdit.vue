@@ -1,5 +1,4 @@
 <template>
-
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close" scrollable>
     <v-tooltip slot="activator" top v-if="options.includes('new')">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>

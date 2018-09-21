@@ -37,18 +37,27 @@ class ProcedureController extends Controller
 	public function store(ProcedureForm $request)
 	{
 		if (Procedure::where('active', true)->count() == 0) {
-			$discount = EmployeeDiscount::where('active', true)->first();
-			$contribution = EmployerContribution::where('active', true)->first();
-			$tribute = EmployerTribute::orderBy('id', 'desc')->first();
-			$procedure = new Procedure();
-			$procedure->year = $request['year'];
-			$procedure->month_id = $request['month_id'];
-			$procedure->employee_discount_id = $discount->id;
-			$procedure->employer_contribution_id = $contribution->id;
-			$procedure->employer_tribute_id = $tribute->id;
-			$procedure->active = true;
-			$procedure->save();
-			return $procedure;
+			if (Procedure::where('year', $request['year'])->where('month_id', $request['month_id'])->count() == 0) {
+				$discount = EmployeeDiscount::where('active', true)->first();
+				$contribution = EmployerContribution::where('active', true)->first();
+				$tribute = EmployerTribute::orderBy('id', 'desc')->first();
+				$procedure = new Procedure();
+				$procedure->year = $request['year'];
+				$procedure->month_id = $request['month_id'];
+				$procedure->employee_discount_id = $discount->id;
+				$procedure->employer_contribution_id = $contribution->id;
+				$procedure->employer_tribute_id = $tribute->id;
+				$procedure->active = true;
+				$procedure->save();
+				return $procedure;
+			} else {
+				return response()->json([
+					'message' => 'No autorizado',
+					'errors' => [
+						'type' => ['Ya existe el registro de ese mes'],
+					],
+				], 400);
+			}
 		} else {
 			abort(403);
 		}
