@@ -28,7 +28,8 @@
           <td class="text-md-center" @click="props.expanded = !props.expanded">{{ (props.item.user) ? props.item.user.username : '-' }}</td>
           <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.method }}</td>
           <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.path }}</td>
-          <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.created_at }}</td>
+          <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.created_at | moment('LL') }}</td>
+          <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.created_at | moment('hh:mm a') }}</td>
           <td class="text-md-center">
             <v-tooltip top>
               <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item.id)">
@@ -48,7 +49,9 @@
                   <v-list-tile-content class="font-weight-bold">Datos:</v-list-tile-content>
                 </td>
                 <td>
-                  <v-list-tile-content>{{ item.data }}</v-list-tile-content>
+                  <v-list-tile-content>
+                    <pre>{{ JSON.stringify(JSON.parse(item.data.toString()), null, 2) }}</pre>
+                  </v-list-tile-content>
                 </td>
               </tr>
             </table>
@@ -80,6 +83,7 @@ export default {
         { align: "center", text: "Acción", value: "method" },
         { align: "center", text: "Ruta", value: "path" },
         { align: "center", text: "Fecha", value: "created_at" },
+        { align: "center", text: "Hora", value: "data" },
         { align: "center", text: "Acciones", sortable: false }
       ],
       search: ""

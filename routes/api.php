@@ -200,7 +200,7 @@ Route::group([
 			Route::patch('document_type/{id}', 'Api\V1\DocumentTypeController@update')->name('document_type_update');
 			Route::delete('document_type/{id}', 'Api\V1\DocumentTypeController@delete')->name('document_type_delete');
 			// Remove Payrolls
-			Route::delete('payroll/remove/{procedure_id}', 'Api\V1\ProcedurePayrollController@delete_payrolls')->name('payrolls_delete');
+			Route::delete('payroll/drop/{procedure_id}', 'Api\V1\ProcedurePayrollController@delete_payrolls')->name('payrolls_delete');
 		});
 
 		// RRHH routes

@@ -301,7 +301,7 @@ export default {
     async deleteProcedure() {
       try {
         let res = await axios.delete(
-          `/api/v1/payroll/remove/${this.procedure.id}`
+          `/api/v1/payroll/drop/${this.procedure.id}`
         );
         this.toastr.warning(
           `Eliminados ${res.data.deleted} registros del mes de ${this.$moment()
