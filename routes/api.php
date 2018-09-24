@@ -240,6 +240,7 @@ Route::group([
 			// Contract
 			Route::post('contract', 'Api\V1\ContractController@store')->name('contract_store');
 			Route::delete('contract/{id}', 'Api\V1\ContractController@delete')->name('contract_delete');
+			Route::get('contract/valid/{procedure_id}', 'Api\V1\ContractController@valid_date')->name('contract_valid');
 			// Job Schedule
 			Route::post('jobs_chedule', 'Api\V1\JobScheduleController@store')->name('jobs_chedule_store');
 			Route::patch('jobs_chedule/{id}', 'Api\V1\JobScheduleController@update')->name('jobs_chedule_update');
