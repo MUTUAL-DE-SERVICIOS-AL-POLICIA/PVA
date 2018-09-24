@@ -12,7 +12,7 @@
         <form>
           <v-layout>
             <v-flex xs12>
-              <v-date-picker v-model="dateSelected" :landscape="true" type="month"></v-date-picker>
+              <v-date-picker v-model="dateSelected" :landscape="true" type="month" locale="es-bo"></v-date-picker>
             </v-flex>
           </v-layout>
         </form>

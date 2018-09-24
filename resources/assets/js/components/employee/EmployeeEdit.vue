@@ -102,6 +102,7 @@
                       v-model="birth_date"
                       :max="this.maxDate.format('YYYY-MM-DD')"
                       :min="this.minDate.format('YYYY-MM-DD')"
+                      locale="es-bo"
                       @change="saveDate"
                     ></v-date-picker>
                   </v-menu>
