@@ -12,13 +12,15 @@ use Illuminate\Http\Request;
  *
  * Resource to retrieve, store and update Payrolls data
  */
-class PayrollController extends Controller {
+class PayrollController extends Controller
+{
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
+	public function index()
+	{
 		return Payroll::get();
 	}
 
@@ -28,7 +30,8 @@ class PayrollController extends Controller {
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(PayrollForm $request) {
+	public function store(PayrollForm $request)
+	{
 		$procedure = Procedure::findOrFail($request['procedure_id']);
 		$year_shortened = substr(strval($procedure->year), -2);
 		if (Payroll::where('code', 'LIKE', "%-$year_shortened")->count() == 0) {
@@ -57,7 +60,8 @@ class PayrollController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id) {
+	public function show($id)
+	{
 		return Payroll::findOrFail($id);
 	}
 
@@ -68,7 +72,8 @@ class PayrollController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id) {
+	public function update(Request $request, $id)
+	{
 		$payroll = Payroll::findOrFail($id);
 		$payroll->fill($request->all());
 		$payroll->save();
@@ -81,7 +86,8 @@ class PayrollController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
+	public function destroy($id)
+	{
 		$payroll = Payroll::findOrFail($id);
 		$payroll->delete();
 		return $payroll;
@@ -93,11 +99,13 @@ class PayrollController extends Controller {
 	 * @param  int  $contract_id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function getPayrollContract($contract_id) {
+	public function getPayrollContract($contract_id)
+	{
 		return Payroll::where('contract_id', $contract_id)->first();
 	}
 
-	public static function tribute_calculation($salary, $rciva, $mes_anterior, $min_salary, $ufv) {
+	public static function tribute_calculation($salary, $rciva, $mes_anterior, $min_salary, $ufv)
+	{
 
 		$min_disponible = $min_salary * 2;
 		$dif_salario_min_disponible = $salary - $min_disponible;
@@ -151,6 +159,6 @@ class PayrollController extends Controller {
 		$tribute['saldo_utilizado'] = $saldo_utilizado;
 		$tribute['impuesto_pagar'] = $impuesto_pagar;
 		$tribute['saldo_mes_siguiente'] = $saldo_mes_siguiente;
-		return (object) $tribute;
+		return (object)$tribute;
 	}
 }

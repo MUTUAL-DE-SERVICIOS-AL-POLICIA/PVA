@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Contract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PayrollForm;
+use App\Http\Requests\PayrollProcedureForm;
 use App\Payroll;
 use App\Procedure;
 
@@ -67,5 +68,26 @@ class ProcedurePayrollController extends Controller
 			'procedure' => $procedure,
 			'deleted' => $deleted_payrolls
 		], 200);
+	}
+
+	/**
+	 * Get specific payroll if exists in the procedure
+	 *
+	 * @param  int  $procedure_id
+	 * @param  int  $contract_id
+	 * @param  int  $employee_id
+	 * @param  int  $charge_id
+	 * @param  int  $position_group_id
+	 * @param  int  $position_id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getPayrollProcedure($procedure_id, PayrollProcedureForm $request)
+	{
+		$payroll = Payroll::where('procedure_id', $procedure_id)->where('contract_id', $request['contract_id'])->where('employee_id', $request['employee_id'])->where('charge_id', $request['charge_id'])->where('position_group_id', $request['position_group_id'])->where('position_id', $request['position_id'])->first();
+		if ($payroll) {
+			return $payroll;
+		} else {
+			abort(404);
+		}
 	}
 }

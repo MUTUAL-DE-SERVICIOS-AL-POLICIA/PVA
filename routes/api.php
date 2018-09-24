@@ -195,12 +195,12 @@ Route::group([
 			// Document
 			Route::post('document', 'Api\V1\DocumentController@store')->name('document_store');
 			Route::patch('document/{id}', 'Api\V1\DocumentController@update')->name('document_update');
-			Route::delete('document/{id}', 'Api\V1\DocumentController@delete')->name('document_delete');
+			Route::delete('document/{id}', 'Api\V1\DocumentController@destroy')->name('document_delete');
 			Route::post('document_type', 'Api\V1\DocumentTypeController@store')->name('document_type_store');
 			Route::patch('document_type/{id}', 'Api\V1\DocumentTypeController@update')->name('document_type_update');
-			Route::delete('document_type/{id}', 'Api\V1\DocumentTypeController@delete')->name('document_type_delete');
+			Route::delete('document_type/{id}', 'Api\V1\DocumentTypeController@destroy')->name('document_type_delete');
 			// Remove Payrolls
-			Route::delete('payroll/drop/{procedure_id}', 'Api\V1\ProcedurePayrollController@delete_payrolls')->name('payrolls_delete');
+			Route::delete('payroll/drop/{procedure_id}', 'Api\V1\ProcedurePayrollController@destroy_payrolls')->name('payrolls_delete');
 		});
 
 		// RRHH routes
@@ -213,19 +213,19 @@ Route::group([
 			Route::get('employee/active/{active}', 'Api\V1\EmployeeController@filter_employees')->name('employee_active_list');
 			Route::post('employee', 'Api\V1\EmployeeController@store')->name('employee_store');
 			Route::patch('employee/{id}', 'Api\V1\EmployeeController@update')->name('employee_update');
-			Route::delete('employee/{id}', 'Api\V1\EmployeeController@delete')->name('employee_delete');
+			Route::delete('employee/{id}', 'Api\V1\EmployeeController@destroy')->name('employee_delete');
 			// Charge
 			Route::post('charge', 'Api\V1\ChargeController@store')->name('charge_store');
 			Route::patch('charge/{id}', 'Api\V1\ChargeController@update')->name('charge_update');
-			Route::delete('charge/{id}', 'Api\V1\ChargeController@delete')->name('charge_delete');
+			Route::delete('charge/{id}', 'Api\V1\ChargeController@destroy')->name('charge_delete');
 			// Position
 			Route::post('position', 'Api\V1\PositionController@store')->name('position_store');
 			Route::patch('position/{id}', 'Api\V1\PositionController@update')->name('position_update');
-			Route::delete('position/{id}', 'Api\V1\PositionController@delete')->name('position_delete');
+			Route::delete('position/{id}', 'Api\V1\PositionController@destroy')->name('position_delete');
 			// Payroll
 			Route::post('payroll', 'Api\V1\PayrollController@store')->name('payroll_store');
 			Route::patch('payroll/{id}', 'Api\V1\PayrollController@update')->name('payroll_update');
-			Route::delete('payroll/{id}', 'Api\V1\PayrollController@delete')->name('payroll_delete');
+			Route::delete('payroll/{id}', 'Api\V1\PayrollController@destroy')->name('payroll_delete');
 			// Position
 			Route::group([
 				'prefix' => 'position/{superior_id}',
@@ -239,16 +239,17 @@ Route::group([
 			});
 			// Contract
 			Route::post('contract', 'Api\V1\ContractController@store')->name('contract_store');
-			Route::delete('contract/{id}', 'Api\V1\ContractController@delete')->name('contract_delete');
+			Route::delete('contract/{id}', 'Api\V1\ContractController@destroy')->name('contract_delete');
 			Route::get('contract/valid/{procedure_id}', 'Api\V1\ContractController@valid_date')->name('contract_valid');
 			// Job Schedule
 			Route::post('jobs_chedule', 'Api\V1\JobScheduleController@store')->name('jobs_chedule_store');
 			Route::patch('jobs_chedule/{id}', 'Api\V1\JobScheduleController@update')->name('jobs_chedule_update');
-			Route::delete('jobs_chedule/{id}', 'Api\V1\JobScheduleController@delete')->name('jobs_chedule_delete');
+			Route::delete('jobs_chedule/{id}', 'Api\V1\JobScheduleController@destroy')->name('jobs_chedule_delete');
 			// Procedure
 			Route::post('procedure', 'Api\V1\ProcedureController@store')->name('procedure_store');
 			Route::patch('procedure/{id}', 'Api\V1\ProcedureController@update')->name('procedure_update');
-			Route::delete('procedure/{id}', 'Api\V1\ProcedureController@delete')->name('procedure_delete');
+			Route::delete('procedure/{id}', 'Api\V1\ProcedureController@destroy')->name('procedure_delete');
+			Route::get('payroll/procedure/{procedure_id}', 'Api\V1\ProcedurePayrollController@getPayrollProcedure')->name('payroll_exists_procedure');
 			Route::group([
 				'prefix' => 'procedure/{id}/payroll',
 			], function () {
@@ -257,7 +258,7 @@ Route::group([
 			// Employer Number
 			Route::post('employer_number', 'Api\V1\EmployerNumberController@store')->name('employer_number_store');
 			Route::patch('employer_number/{id}', 'Api\V1\EmployerNumberController@update')->name('employer_number_update');
-			Route::delete('employer_number/{id}', 'Api\V1\EmployerNumberController@delete')->name('employer_number_delete');
+			Route::delete('employer_number/{id}', 'Api\V1\EmployerNumberController@destroy')->name('employer_number_delete');
 			Route::group([
 				'prefix' => 'employer_number/{employer_number_id}/insurance_company/{insurance_company_id}',
 			], function () {
@@ -266,11 +267,11 @@ Route::group([
 			// Company Account
 			Route::post('company_account', 'Api\V1\CompanyAccountController@store')->name('company_account_store');
 			Route::patch('company_account/{id}', 'Api\V1\CompanyAccountController@update')->name('company_account_update');
-			Route::delete('company_account/{id}', 'Api\V1\CompanyAccountController@delete')->name('company_account_delete');
+			Route::delete('company_account/{id}', 'Api\V1\CompanyAccountController@destroy')->name('company_account_delete');
 			// Company Address
 			Route::post('company_address', 'Api\V1\CompanyAddressController@store')->name('company_address_store');
 			Route::patch('company_address/{id}', 'Api\V1\CompanyAddressController@update')->name('company_address_update');
-			Route::delete('company_address/{id}', 'Api\V1\CompanyAddressController@delete')->name('company_address_delete');
+			Route::delete('company_address/{id}', 'Api\V1\CompanyAddressController@destroy')->name('company_address_delete');
 			Route::group([
 				'prefix' => 'company_address/{company_address_id}/city/{city_id}',
 			], function () {
@@ -279,7 +280,7 @@ Route::group([
 			// Position Group
 			Route::post('position_group', 'Api\V1\PositionGroupController@store')->name('position_group_store');
 			Route::patch('position_group/{id}', 'Api\V1\PositionGroupController@update')->name('position_group_update');
-			Route::delete('position_group/{id}', 'Api\V1\PositionGroupController@delete')->name('position_group_delete');
+			Route::delete('position_group/{id}', 'Api\V1\PositionGroupController@destroy')->name('position_group_delete');
 			Route::group([
 				'prefix' => 'position_group/{superior_id}',
 			], function () {
@@ -303,11 +304,11 @@ Route::group([
 			// Employer Contribution
 			Route::post('employer_contribution', 'Api\V1\EmployerContributionController@store')->name('employer_contribution_store');
 			Route::patch('employer_contribution/{id}', 'Api\V1\EmployerContributionController@update')->name('employer_contribution_update');
-			Route::delete('employer_contribution/{id}', 'Api\V1\EmployerContributionController@delete')->name('employer_contribution_delete');
+			Route::delete('employer_contribution/{id}', 'Api\V1\EmployerContributionController@destroy')->name('employer_contribution_delete');
 			// Employee Discount
 			Route::post('employee_discount', 'Api\V1\EmployeeDiscountController@store')->name('employee_discount_store');
 			Route::patch('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@update')->name('employee_discount_update');
-			Route::delete('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@delete')->name('employee_discount_delete');
+			Route::delete('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@destroy')->name('employee_discount_delete');
 		});
 
 		// JURIDICA-RRHH routes

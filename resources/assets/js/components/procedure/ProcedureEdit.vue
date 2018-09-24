@@ -41,14 +41,11 @@
           >
             {{ message }} Planilla
           </v-btn>
-
           <v-card>
             <v-card-text class="title">
               ¿Esta seguro que desea {{ message }} la planilla?
             </v-card-text>
-
             <v-divider></v-divider>
-
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="success" small @click="dialog = false"><v-icon small>check</v-icon> Cancelar</v-btn>
@@ -67,6 +64,8 @@
           full-width
         ></v-text-field>
       </v-flex>
+      <PayrollAdd :contracts="contracts" :procedure="procedure" :bus="bus"/>
+      <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
       :headers="headers"
@@ -155,9 +154,18 @@
               ></v-text-field>
             </td>
             <td class="text-md-center">
-              <v-btn class="accent" @click="savePayroll(props.item)">
-                Guardar
-              </v-btn>
+              <v-layout wrap>
+                <v-flex xs6 pr-3>
+                  <v-btn class="accent" @click="savePayroll(props.item)">
+                    Guardar
+                  </v-btn>
+                </v-flex>
+                <v-flex xs6 pl-3 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                  <v-btn class="error" @click="deletePayroll(props.item)">
+                    Eliminar
+                  </v-btn>
+                </v-flex>
+              </v-layout>
             </td>
             <td class="text-md-center">
               {{ total(props.item) }}
@@ -195,10 +203,19 @@
 </template>
 
 <script>
+import Vue from "vue";
+import PayrollAdd from "./PayrollAdd";
+import RemoveItem from "../RemoveItem";
+
 export default {
   name: "ProcedureEdit",
+  components: {
+    PayrollAdd,
+    RemoveItem
+  },
   data() {
     return {
+      bus: new Vue(),
       dialog: false,
       dialogDelete: false,
       procedure: {
@@ -212,12 +229,19 @@ export default {
         }
       },
       payrolls: [],
+      contracts: [],
       search: ""
     };
   },
-  created() {
-    this.getProcedure();
+  async created() {
+    await this.getProcedure();
+    this.getValidContracts()
     this.getPayrolls();
+  },
+  mounted() {
+    this.bus.$on("closeDialog", () => {
+      this.getPayrolls();
+    });
   },
   computed: {
     message() {
@@ -298,6 +322,9 @@ export default {
     }
   },
   methods: {
+    deletePayroll(item) {
+      this.bus.$emit("openDialogRemove", `/api/v1/payroll/${item.id}`);
+    },
     async deleteProcedure() {
       try {
         let res = await axios.delete(
@@ -347,6 +374,16 @@ export default {
           `/api/v1/procedure/${this.$route.params.id}/payroll`
         );
         this.payrolls = res.data;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async getValidContracts() {
+      try {
+        let res = await axios.get(
+          `/api/v1/contract/valid/${this.procedure.id}`
+        );
+        this.contracts = res.data;
       } catch (e) {
         console.log(e);
       }

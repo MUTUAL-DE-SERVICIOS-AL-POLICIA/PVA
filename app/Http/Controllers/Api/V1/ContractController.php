@@ -151,6 +151,7 @@ class ContractController extends Controller
     $contracts = $contracts->valid_date($procedure->year, $procedure->month->order);
     foreach ($contracts as $contract) {
       $contract->employee;
+      $contract->employee->city_identity_card;
       $contract->position->position_group;
       $contract->position->charge;
     }
