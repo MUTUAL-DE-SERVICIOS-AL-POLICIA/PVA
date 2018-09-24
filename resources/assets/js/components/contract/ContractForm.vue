@@ -82,7 +82,7 @@
                     readonly :disabled="juridica==true"
                     autocomplete='cc-exp-month'
                   ></v-text-field>
-                  <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc"></v-date-picker>
+                  <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc" locale="es-bo"></v-date-picker>
                 </v-menu>
                 <v-menu
                   :close-on-content-click="true"
@@ -103,7 +103,7 @@
                     prepend-icon="event" :disabled="juridica==true"
                     autocomplete='cc-exp-year'
                   ></v-text-field>
-                  <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc"></v-date-picker>
+                  <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc" locale="es-bo"></v-date-picker>
                 </v-menu>
                 <v-menu v-if="selectedIndex!=-1"
                   :close-on-content-click="true"
@@ -123,7 +123,7 @@
                     prepend-icon="event"
                     label="Fecha de retiro" :disabled="juridica==true"                
                   ></v-text-field>
-                  <v-date-picker v-model="date3" no-title @input="menuDate3 = false"></v-date-picker>
+                  <v-date-picker v-model="date3" no-title @input="menuDate3 = false" locale="es-bo"></v-date-picker>
                 </v-menu>
                 <v-select v-if="selectedIndex!=-1"
                   v-model="selectedItem.retirement_reason_id"
@@ -162,7 +162,7 @@
                     prepend-icon="event"
                     readonly :outline="juridica==true"
                   ></v-text-field>
-                  <v-date-picker v-model="date4" no-title @input="menuDate4 = false"></v-date-picker>
+                  <v-date-picker v-model="date4" no-title @input="menuDate4 = false" locale="es-bo"></v-date-picker>
                 </v-menu>
                 <v-text-field
                   v-model="selectedItem.performance_cite"
