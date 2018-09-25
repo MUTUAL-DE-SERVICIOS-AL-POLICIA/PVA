@@ -201,7 +201,7 @@ class EmployeePayroll
 			$worked_days = 30;
 		} else if ($start_date->year == $end_date->year && $start_date->month == $end_date->month) {
 			if ($end_date->day == $last_day_of_month && ($last_day_of_month < 30 || $last_day_of_month > 30)) {
-				$worked_days = 30 - $start_date->day + 1;
+				$worked_days = 30 - $start_date->day;
 			} else {
 				$worked_days = $end_date->day - $start_date->day;
 			}
