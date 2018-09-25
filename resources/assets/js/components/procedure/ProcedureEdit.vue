@@ -60,8 +60,8 @@
           append-icon="search"
           label="Buscar"
           single-line
-          hide-details
           full-width
+          clearable
         ></v-text-field>
       </v-flex>
       <PayrollAdd :contracts="contracts" :procedure="procedure" :bus="bus"/>
@@ -73,6 +73,7 @@
       :search="search"
       disable-initial-sort
       expand
+      :loading="loading"
     >
       <template slot="headerCell" slot-scope="props">
         <v-tooltip top v-if="props.header.tooltip">
@@ -198,9 +199,19 @@
       <v-alert slot="no-results" :value="true" color="error">
         La búsqueda de "{{ search }}" no encontró resultados.
       </v-alert>
-      <v-alert slot="no-data" :value="true" color="error" icon="warning">
-        No hay datos para mostrar
-      </v-alert>
+      <template slot="no-data">
+        <v-container fluid fill-height>
+          <v-layout align-center justify-center>
+            <v-progress-circular
+              :width="1"
+              :size="50"
+              color="primary"
+              indeterminate
+              class="pa-5 ma-5"
+            ></v-progress-circular>
+          </v-layout>
+        </v-container>
+      </template>
     </v-data-table>
   </v-container>
 </template>
@@ -219,6 +230,7 @@ export default {
   data() {
     return {
       bus: new Vue(),
+      loading: true,
       dialog: false,
       dialogDelete: false,
       procedure: {
@@ -238,11 +250,11 @@ export default {
   },
   async created() {
     await this.getProcedure();
-    await this.getValidContracts()
+    await this.getValidContracts();
     await this.getPayrolls();
   },
   mounted() {
-    this.bus.$on("closeDialog", async() => {
+    this.bus.$on("closeDialog", async () => {
       await this.getPayrolls();
     });
   },
@@ -377,7 +389,8 @@ export default {
           `/api/v1/procedure/${this.$route.params.id}/payroll`
         );
         this.payrolls = res.data;
-        return Promise.resolve()
+        this.loading = false;
+        return Promise.resolve();
       } catch (e) {
         console.log(e);
       }
