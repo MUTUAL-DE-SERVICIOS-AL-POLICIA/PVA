@@ -17,8 +17,10 @@
             clearable
             label="Buscar empleado"
             :readonly="false"
-            item-text="employee.identity_card"
+            item-text="id"
+            item-value="id"
             @change="employeeChange"
+            single-line
             required
           >
             <template slot="no-data">
@@ -32,18 +34,28 @@
               slot="selection"
               slot-scope="{ item, selected }"
             >
-              {{ `${item.employee.first_name} ${item.employee.last_name} ${item.employee.mothers_last_name}` }}
+              {{ `${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name}` }}
             </template>
             <template
               slot="item"
               slot-scope="{ item, tile }"
             >
               <v-list-tile-content>
-                <v-list-tile-title v-text="`${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name}`"></v-list-tile-title>
-                <v-list-tile-sub-title v-text="`${item.position.name}`"></v-list-tile-sub-title>
+                <v-layout wrap row>
+                  <v-flex>
+                    <v-list-tile-title v-text="`${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name}`"></v-list-tile-title>
+                    <v-list-tile-sub-title v-text="`${item.position.name}`"></v-list-tile-sub-title>
+                  </v-flex>
+                </v-layout>
               </v-list-tile-content>
+              <v-divider
+                class="mx-4"
+                inset
+                vertical
+              ></v-divider>
               <v-list-tile-action>
-                <v-icon>person</v-icon>
+                <v-list-tile-sub-title v-text="`${$moment(item.start_date).format('L')}`"></v-list-tile-sub-title>
+                <v-list-tile-sub-title v-text="`${(item.retirement_date) ? $moment(item.retirement_date).format('L') : ((item.end_date) ? $moment(item.end_date).format('L') : 'indefinido')}`"></v-list-tile-sub-title>
               </v-list-tile-action>
             </template>
           </v-autocomplete>
@@ -66,7 +78,7 @@
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Fecha de conclusión:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ this.contract.end_date | moment('L') }}</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ (this.contract.end_date) ? ($moment(this.contract.end_date).format('L')) : 'Indefinido' }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Fecha de retiro:</v-list-tile-content>
@@ -158,7 +170,7 @@ export default {
           this.codeExists = false;
         } else {
           this.contract = await this.contracts.find(obj => {
-            return obj.employee.identity_card == value;
+            return obj.id == value;
           });
           let res = await axios.get(
             `/api/v1/payroll/procedure/${this.procedure.id}`,
