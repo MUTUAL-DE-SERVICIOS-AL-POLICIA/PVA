@@ -16,7 +16,7 @@
             clearable
             label="Buscar empleado"
             :readonly="false"
-            item-text="id"
+            item-text="employee.last_name"
             item-value="id"
             @change="employeeChange"
             :auto-select-one-item="false"
@@ -165,7 +165,6 @@ export default {
           this.eraseSelected();
           this.codeExists = false;
         } else {
-          console.log(value)
           this.eraseSelected();
           this.contract = await this.contracts.find(obj => {
             return obj.id == value;
@@ -183,6 +182,7 @@ export default {
             }
           );
           this.contract.code = await res.data.code;
+          this.$forceUpdate();
           this.codeExists = true;
         }
       } catch (e) {
