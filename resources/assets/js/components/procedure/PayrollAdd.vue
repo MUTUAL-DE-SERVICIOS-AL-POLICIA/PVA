@@ -2,7 +2,7 @@
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close" scrollable>
     <v-tooltip slot="activator" top>
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
-      <span>Nuevo Empleado</span>
+      <span>Añadir contrato</span>
     </v-tooltip>
     <v-card>
       <v-toolbar dark color="secondary">
@@ -67,7 +67,7 @@
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Fecha de inicio:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ this.contract.start_date | moment('L') }}</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ $moment(this.contract.start_date).format('L') }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Fecha de conclusión:</v-list-tile-content>
@@ -75,7 +75,7 @@
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Fecha de retiro:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ (this.contract.retirement_date) ? (this.contract.retirement_date | moment('L')) : '-' }}</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ (this.contract.retirement_date) ? ($moment(this.contract.retirement_date).format('L')) : '-' }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Puesto:</v-list-tile-content>
@@ -165,6 +165,8 @@ export default {
           this.eraseSelected();
           this.codeExists = false;
         } else {
+          console.log(value)
+          this.eraseSelected();
           this.contract = await this.contracts.find(obj => {
             return obj.id == value;
           });
@@ -180,7 +182,7 @@ export default {
               }
             }
           );
-          this.contract.code = res.data.code;
+          this.contract.code = await res.data.code;
           this.codeExists = true;
         }
       } catch (e) {

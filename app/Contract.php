@@ -83,6 +83,12 @@ class Contract extends Model
 					$q
 						->whereYear('start_date', $year)
 						->whereMonth('start_date', $month);
+				})
+				->orWhere(function ($q) use ($year, $first_day_of_month, $last_day_of_month) {
+					$q
+						->whereDate('end_date', '>=', $first_day_of_month)
+						->whereYear('start_date', $year)
+						->whereDate('start_date', '<=', $last_day_of_month);
 				});
 		})->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('contracts.start_date')->get();
 	}

@@ -88,7 +88,7 @@
         </span>
       </template>
       <template slot="items" slot-scope="props">
-        <v-hover>
+        <v-hover v-if="props.item.contract.employee" close-delay="0" open-delay="150">
           <tr
             slot-scope="{ hover }"
             :class="(props.item.contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`"
@@ -198,6 +198,9 @@
       <v-alert slot="no-results" :value="true" color="error">
         La búsqueda de "{{ search }}" no encontró resultados.
       </v-alert>
+      <v-alert slot="no-data" :value="true" color="error" icon="warning">
+        No hay datos para mostrar
+      </v-alert>
     </v-data-table>
   </v-container>
 </template>
@@ -235,12 +238,12 @@ export default {
   },
   async created() {
     await this.getProcedure();
-    this.getValidContracts()
-    this.getPayrolls();
+    await this.getValidContracts()
+    await this.getPayrolls();
   },
   mounted() {
-    this.bus.$on("closeDialog", () => {
-      this.getPayrolls();
+    this.bus.$on("closeDialog", async() => {
+      await this.getPayrolls();
     });
   },
   computed: {
@@ -374,6 +377,7 @@ export default {
           `/api/v1/procedure/${this.$route.params.id}/payroll`
         );
         this.payrolls = res.data;
+        return Promise.resolve()
       } catch (e) {
         console.log(e);
       }
