@@ -45,8 +45,6 @@
                 </v-btn>
                 <span>Editar</span>
               </v-tooltip>
-              
-              </v-tooltip> 
             </td>
           </tr>
         </template>

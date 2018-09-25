@@ -11,7 +11,6 @@
       <v-card-text>
         <v-flex>
           <v-autocomplete
-            v-validate="'required'"
             :items="contracts"
             hide-selected
             clearable
@@ -20,16 +19,10 @@
             item-text="id"
             item-value="id"
             @change="employeeChange"
+            :auto-select-one-item="false"
+            v-model="selected"
             single-line
-            required
           >
-            <template slot="no-data">
-              <v-list-tile>
-                <v-list-tile-title>
-                  Debe seleccionar un empleado
-                </v-list-tile-title>
-              </v-list-tile>
-            </template>
             <template
               slot="selection"
               slot-scope="{ item, selected }"
@@ -114,7 +107,8 @@ export default {
       dialog: false,
       search: null,
       contract: null,
-      codeExists: false
+      codeExists: false,
+      selected: ""
     };
   },
   methods: {
@@ -139,10 +133,12 @@ export default {
       } catch (e) {
         console.log(e);
       } finally {
+        this.eraseSelected();
         this.close();
       }
     },
     eraseSelected() {
+      this.selected = "";
       this.contract = {
         code: null,
         employee: {
