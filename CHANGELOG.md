@@ -2,6 +2,18 @@
 
 ---
 
+## [1.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.1.0) - 2018-09-25
+
+### Added
+
+* Restriction on employee deletion when it's signed up on one or more payrolls
+* Option add and remove contracts on a created procedure
+* Changed language on datepickers
+
+### Changed
+
+* Fixed contract validation, removed retirement date not null when search by end date
+
 ## [1.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.0.1) - 2018-09-21
 
 ### Added

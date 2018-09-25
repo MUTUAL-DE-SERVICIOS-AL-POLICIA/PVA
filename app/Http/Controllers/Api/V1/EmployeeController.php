@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Employee;
+use App\Payroll;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeEditForm;
 use App\Http\Requests\EmployeeStoreForm;
@@ -13,13 +14,15 @@ use Illuminate\Http\Request;
  * Resource to retrieve, store and update Emmployee data
  */
 
-class EmployeeController extends Controller {
+class EmployeeController extends Controller
+{
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
+	public function index()
+	{
 		return Employee::with('city_identity_card')
 			->with('management_entity')
 			->with('city_birth')
@@ -33,7 +36,8 @@ class EmployeeController extends Controller {
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(EmployeeStoreForm $request) {
+	public function store(EmployeeStoreForm $request)
+	{
 		$employee = Employee::create($request->all());
 		return $employee;
 	}
@@ -44,7 +48,8 @@ class EmployeeController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id) {
+	public function show($id)
+	{
 		return Employee::findOrFail($id);
 	}
 
@@ -55,7 +60,8 @@ class EmployeeController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(EmployeeEditForm $request, $id) {
+	public function update(EmployeeEditForm $request, $id)
+	{
 		$employee = Employee::findOrFail($id);
 		$employee->fill($request->all());
 		$employee->save();
@@ -68,9 +74,19 @@ class EmployeeController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
-		$employee = Employee::findOrFail($id);
-		$employee->delete();
-		return $employee;
+	public function destroy($id)
+	{
+		if (Payroll::where('employee_id', $id)->count() > 0) {
+			return response()->json([
+				'message' => 'No autorizado',
+				'errors' => [
+					'type' => ['El empleado está registrado en una o más planillas'],
+				],
+			], 403);
+		} else {
+			$employee = Employee::findOrFail($id);
+			$employee->delete();
+			return $employee;
+		}
 	}
 }
