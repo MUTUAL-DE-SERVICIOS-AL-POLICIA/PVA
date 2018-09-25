@@ -75,6 +75,7 @@ class Contract extends Model
 				})
 				->orWhere(function ($q) use ($year, $month) {
 					$q
+						->whereNull('retirement_date')
 						->whereYear('end_date', $year)
 						->whereMonth('end_date', $month);
 				})
