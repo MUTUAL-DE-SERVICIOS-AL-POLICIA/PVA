@@ -27,7 +27,7 @@
               slot="selection"
               slot-scope="{ item, selected }"
             >
-              {{ `${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name}` }}
+              {{ `${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name} ${(item.employee.second_name) ? item.employee.second_name : ''}` }}
             </template>
             <template
               slot="item"
@@ -36,7 +36,7 @@
               <v-list-tile-content>
                 <v-layout wrap row>
                   <v-flex>
-                    <v-list-tile-title v-text="`${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name}`"></v-list-tile-title>
+                    <v-list-tile-title v-text="`${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name} ${(item.employee.second_name) ? item.employee.second_name : ''}`"></v-list-tile-title>
                     <v-list-tile-sub-title v-text="`${item.position.name}`"></v-list-tile-sub-title>
                   </v-flex>
                 </v-layout>

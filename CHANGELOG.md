@@ -2,6 +2,12 @@
 
 ---
 
+## [1.2.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.2.0) - 2018-09-27
+
+### Changed
+
+* Migration to split first_name to allow second_name on employees table
+
 ## [1.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.1.0) - 2018-09-25
 
 ### Added

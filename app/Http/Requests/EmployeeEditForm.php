@@ -4,13 +4,15 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EmployeeEditForm extends FormRequest {
+class EmployeeEditForm extends FormRequest
+{
 	/**
 	 * Determine if the user is authorized to make this request.
 	 *
 	 * @return bool
 	 */
-	public function authorize() {
+	public function authorize()
+	{
 		return true;
 	}
 
@@ -19,13 +21,15 @@ class EmployeeEditForm extends FormRequest {
 	 *
 	 * @return array
 	 */
-	public function rules() {
+	public function rules()
+	{
 		$this->sanitize();
 
 		return [];
 	}
 
-	public function sanitize() {
+	public function sanitize()
+	{
 		$input = $this->all();
 
 		if (array_key_exists('gender', $input)) {
@@ -33,6 +37,9 @@ class EmployeeEditForm extends FormRequest {
 		}
 		if (array_key_exists('first_name', $input)) {
 			$input['first_name'] = strtoupper($input['first_name']);
+		}
+		if (array_key_exists('second_name', $input)) {
+			$input['second_name'] = strtoupper($input['second_name']);
 		}
 		if (array_key_exists('last_name', $input)) {
 			$input['last_name'] = strtoupper($input['last_name']);
@@ -59,7 +66,8 @@ class EmployeeEditForm extends FormRequest {
 		$this->replace($input);
 	}
 
-	public function messages() {
+	public function messages()
+	{
 		return [];
 	}
 }
