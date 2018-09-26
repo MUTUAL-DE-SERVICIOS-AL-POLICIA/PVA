@@ -102,6 +102,9 @@
                     label="Fecha de conclusión"
                     prepend-icon="event" :disabled="juridica==true"
                     autocomplete='cc-exp-year'
+                    readonly
+                    clearable
+                    @input="dateEndNull"
                   ></v-text-field>
                   <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc" locale="es-bo"></v-date-picker>
                 </v-menu>
@@ -115,13 +118,16 @@
                   full-width
                   max-width="290px"
                   min-width="290px"
-                  :disabled="juridica==true"
+                  :disabled="juridica==true"                  
                 >
                   <v-text-field
                     slot="activator"
                     v-model="formatDateRetirement"
                     prepend-icon="event"
-                    label="Fecha de retiro" :disabled="juridica==true"                
+                    label="Fecha de retiro" :disabled="juridica==true"
+                    readonly
+                    clearable
+                    @input="dateRetirementNull"
                   ></v-text-field>
                   <v-date-picker v-model="date3" no-title @input="menuDate3 = false" locale="es-bo"></v-date-picker>
                 </v-menu>
@@ -160,7 +166,9 @@
                     v-model="formatDateCite"
                     label="Fecha de cite de Recursos Humanos"
                     prepend-icon="event"
-                    readonly :outline="juridica==true"
+                    readonly :outline="juridica==true"                    
+                    clearable
+                    @input="dateCiteNull"
                   ></v-text-field>
                   <v-date-picker v-model="date4" no-title @input="menuDate4 = false" locale="es-bo"></v-date-picker>
                 </v-menu>
@@ -419,7 +427,7 @@ export default {
     async save() {
       try {
         await this.$validator.validateAll();
-        if (this.selectedIndex != -1) {
+        if (this.selectedIndex != -1) {          
           let res = await axios.patch(
             "/api/v1/contract/" + this.selectedItem.id,
             $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
@@ -543,6 +551,15 @@ export default {
         .trim()
         .toUpperCase();
       return names;
+    },
+    dateRetirementNull(){
+      this.selectedItem.retirement_date = null;
+    },
+    dateEndNull() {
+      this.selectedItem.end_date = null;
+    },
+    dateCiteNull() {
+      this.selectedItem.rrhh_cite_date = null;
     }
   },
   mounted() {
