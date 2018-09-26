@@ -8,6 +8,7 @@
           v-model="search"
           append-icon="search"
           label="Buscar"
+          clearable
           single-line
           hide-details
           full-width

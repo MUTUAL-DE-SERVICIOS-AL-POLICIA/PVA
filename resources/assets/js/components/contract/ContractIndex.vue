@@ -21,6 +21,7 @@
               v-model="search"
               append-icon="search"
               label="Buscar"
+              clearable
               single-line
               hide-details
               width="20px"
