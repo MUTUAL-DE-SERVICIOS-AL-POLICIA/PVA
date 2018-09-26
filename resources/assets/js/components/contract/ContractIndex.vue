@@ -38,7 +38,7 @@
         :headers="headers"
         :items="contracts"
         :search="search"
-        :rows-per-page-items="[10,20]"
+        :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
         disable-initial-sort
         class="elevation-1">
         <template slot="items" slot-scope="props">
