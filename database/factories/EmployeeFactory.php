@@ -18,6 +18,7 @@ $factory->define(App\Employee::class, function (Faker $faker) {
 		'management_entity_id' => $management_entities[array_rand($management_entities)]->id,
 		'identity_card' => $faker->randomNumber(8, true),
 		'first_name' => strtoupper((rand(0, 1) == 0) ? $faker->firstname(($gender == 'M') ? 'male' : 'female') : $faker->firstname(($gender ?? 'M') ? 'male' : 'female') . ' ' . $faker->firstname(($gender == 'M') ? 'male' : 'female')),
+		'second_name' => strtoupper((rand(0, 1) == 0) ? $faker->firstname(($gender == 'M') ? 'male' : 'female') : $faker->firstname(($gender ?? 'M') ? 'male' : 'female') . ' ' . $faker->firstname(($gender == 'M') ? 'male' : 'female')),
 		'last_name' => strtoupper($faker->lastname),
 		'mothers_last_name' => strtoupper($faker->lastname),
 		'birth_date' => $faker->date($format = 'Y-m-d', $max = '1999-12-31'),

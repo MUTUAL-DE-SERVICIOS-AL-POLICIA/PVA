@@ -52,10 +52,18 @@
               ></v-select>
               <v-text-field
                 v-validate="'required|alpha_spaces'"
-                :error-messages="errors.collect('Nombre')"
-                data-vv-name="Nombre"
+                :error-messages="errors.collect('Primer nombre')"
+                data-vv-name="Primer nombre"
                 v-model="edit.first_name"
-                label="Nombres"
+                label="Primer nombre"
+                autocomplete='given-name'
+              ></v-text-field>
+              <v-text-field
+                v-validate="'alpha_spaces'"
+                :error-messages="errors.collect('Segundo nombre')"
+                data-vv-name="Segundo nombre"
+                v-model="edit.second_name"
+                label="Segundo nombre"
                 autocomplete='given-name'
               ></v-text-field>
               <v-text-field
