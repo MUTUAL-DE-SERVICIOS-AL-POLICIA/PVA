@@ -197,7 +197,7 @@ class EmployeePayroll
 		$last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month)->endOfMonth()->day;
 		$worked_days = 0;
 
-		if ($contract->end_date == null) {
+		if (is_null($contract->end_date) && is_null($contract->retirement_date) && $start_date->year <= $payroll_date->year && $start_date->month < $payroll_date->month) {
 			$worked_days = 30;
 		} else if ($start_date->year == $end_date->year && $start_date->month == $end_date->month) {
 			if ($end_date->day == $last_day_of_month && ($last_day_of_month < 30 || $last_day_of_month > 30)) {

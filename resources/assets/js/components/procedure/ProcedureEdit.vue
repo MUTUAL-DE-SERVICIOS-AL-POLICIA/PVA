@@ -462,7 +462,14 @@ export default {
 
       let workedDays = 0;
 
-      if (payroll.contract.end_date == null) {
+      if (payroll.contract.retirement_date != null) {
+        let dateRetirement = this.$moment(`${payroll.contract.retirement_date}T23:59:59.999999`);
+        if (dateRetirement.year() == payrollDate.year() && dateRetirement.month() == payrollDate.month()) {
+          dateEnd = dateRetirement;
+        }
+      }
+
+      if (payroll.contract.end_date == null && payroll.contract.retirement_date == null && dateStart.year() <= payrollDate.year() && dateStart.month() < payrollDate.month()) {
         workedDays = 30;
       } else if (
         dateStart.year() == dateEnd.year() &&
