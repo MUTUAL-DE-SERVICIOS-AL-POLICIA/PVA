@@ -67,11 +67,11 @@ class Contract extends Model
 						->whereNull('end_date')
 						->whereDate('start_date', '<=', $last_day_of_month);
 				})
-				->orWhere(function ($q) use ($year, $month) {
+				->orWhere(function ($q) use ($first_day_of_month, $last_day_of_month) {
 					$q
 						->whereNotNull('retirement_date')
-						->whereYear('retirement_date', $year)
-						->whereMonth('retirement_date', $month);
+						->whereDate('retirement_date', '>=', $first_day_of_month)
+						->whereDate('start_date', '<=', $last_day_of_month);
 				})
 				->orWhere(function ($q) use ($year, $month) {
 					$q
@@ -84,10 +84,10 @@ class Contract extends Model
 						->whereYear('start_date', $year)
 						->whereMonth('start_date', $month);
 				})
-				->orWhere(function ($q) use ($year, $first_day_of_month, $last_day_of_month) {
+				->orWhere(function ($q) use ($first_day_of_month, $last_day_of_month) {
 					$q
+						->whereNull('retirement_date')
 						->whereDate('end_date', '>=', $first_day_of_month)
-						->whereYear('start_date', $year)
 						->whereDate('start_date', '<=', $last_day_of_month);
 				});
 		})->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('contracts.start_date')->get();
