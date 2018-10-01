@@ -4,6 +4,10 @@
 
 ## [1.2.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.2.0) - 2018-09-27
 
+### Added
+
+* Excel management entities printable reports
+
 ### Changed
 
 * Migration to split first_name to allow second_name on employees table

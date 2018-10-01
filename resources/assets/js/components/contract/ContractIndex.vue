@@ -61,7 +61,7 @@
                 </span>
               </v-tooltip>
             </td>
-            <td class="justify-center layout">
+            <td class="justify-center layout" v-if="options.length > 0">
               <v-menu offset-y>
                 <v-btn slot="activator" flat icon color="info">
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
@@ -163,7 +163,7 @@ export default {
         sortable: true
       },
       {
-        text: "Opciones",
+        text: "Acciones",
         value: "employee.first_name",
         align: "center",
         sortable: false
@@ -200,6 +200,12 @@ export default {
       if (this.$store.getters.menuLeft[i].href == "contractIndex") {
         this.options = this.$store.getters.menuLeft[i].options;
       }
+    }
+    if (!this.options.includes("edit")) {
+      this.headers = this.headers
+        .filter(el => {
+          return el.text != "Acciones";
+        });
     }
   },
   methods: {

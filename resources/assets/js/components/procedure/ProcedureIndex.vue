@@ -60,6 +60,28 @@
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
+                  <v-menu offset-y class="mr-2" v-if="options.includes('afp')">
+                    <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
+                      <span>AFP</span>
+                      <v-icon small>arrow_drop_down</v-icon>
+                    </v-btn>
+                    <v-card
+                      class="scroll-y"
+                    >
+                      <v-list
+                        v-for="(item, index) in managementEntities"
+                        v-bind:item="item"
+                        v-bind:index="index"
+                        v-bind:key="item.id"
+                      >
+                        <div>
+                          <v-list-tile @click="xls(`/api/v1/payroll/print/afp/${item.id}/${procedure.year}/${procedure.month_order}`)">
+                            <span class="caption">{{ item.name }}</span>
+                          </v-list-tile>
+                        </div>
+                      </v-list>
+                    </v-card>
+                  </v-menu>
                   <v-menu offset-y v-if="options.includes('payroll')">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>Planillas</span>
@@ -208,7 +230,7 @@ export default {
     this.getYears();
     this.getManagementEntities();
     this.getEmployerNumbers();
-    this.bus.$on("closeDialog", (year) => {
+    this.bus.$on("closeDialog", year => {
       this.getYears(year);
       this.changeYear();
     });
@@ -245,6 +267,37 @@ export default {
         return ",";
       }
       return "";
+    },
+    async xls(url) {
+      try {
+        this.loading = true;
+        let res = await axios({
+          method: "GET",
+          url: url,
+          responseType: "arraybuffer"
+        });
+        const blob = new Blob([res.data], {
+          type: res.headers["content-type"]
+        });
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        const contentDisposition = res.headers["content-disposition"];
+        let fileName = "unknown";
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename=(.+)/);
+          if (fileNameMatch.length === 2) {
+            fileName = fileNameMatch[1];
+          }
+        }
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        this.loading = false;
+      } catch (e) {
+        this.loading = false;
+        console.log(e);
+      }
     },
     async print(url) {
       try {

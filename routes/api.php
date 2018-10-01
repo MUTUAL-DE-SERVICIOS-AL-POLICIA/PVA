@@ -47,6 +47,7 @@ Route::group([
 		Route::get('payroll/print/pdf/{year}/{month}', 'Api\V1\PayrollPrintController@print_pdf')->name('print_pdf_payroll');
 		Route::get('payroll/print/txt/{year}/{month}', 'Api\V1\PayrollPrintController@print_txt')->name('print_txt_payroll');
 		Route::get('payroll/print/ovt/{year}/{month}', 'Api\V1\PayrollPrintController@print_ovt')->name('print_ovt_payroll');
+		Route::get('payroll/print/afp/{management_entity_id}/{year}/{month}', 'Api\V1\PayrollPrintController@print_afp')->name('print_ovt_payroll');
 		// Payroll-Contract
 		Route::get('payroll/getpayrollcontract/{contract_id}', 'Api\V1\PayrollController@getPayrollContract')->name('payroll_contract');
 		// Position

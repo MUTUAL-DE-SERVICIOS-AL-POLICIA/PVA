@@ -18,7 +18,7 @@ export default {
       },
       title: 'Planillas',
       icon: 'attach_file',
-      options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
+      options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll']
     }, {
       href: 'userActionIndex',
       title: 'Actividad',
@@ -46,7 +46,7 @@ export default {
       title: 'Planillas',
       icon: 'attach_file',
       options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
-    },
+    }
   ],
   juridica: [
     {
@@ -64,11 +64,24 @@ export default {
   ],
   financiera: [
     {
+      href: 'employeeIndex',
+      title: 'Empleados',
+      icon: 'assignment_ind',
+      options: []
+    }, {
       href: 'contractIndex',
       params: {},
       title: 'Contratos',
       icon: 'work',
       options: []
+    }, {
+      href: 'procedureIndex',
+      params: {
+        active: true
+      },
+      title: 'Planillas',
+      icon: 'attach_file',
+      options: ['afp', 'payroll']
     }
   ]
 }
