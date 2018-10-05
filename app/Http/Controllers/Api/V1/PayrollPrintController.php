@@ -332,12 +332,12 @@ class PayrollPrintController extends Controller
 			$employees[] = $p;
 		}
 
-		$data = [];
-
 		similar_text(strtolower($management_entity->name), 'prevision', $prevision_similarity);
 		similar_text(strtolower($management_entity->name), 'futuro', $futuro_similarity);
 
 		if ($prevision_similarity > $futuro_similarity) {
+			$data = [];
+
 			foreach ($employees as $employee) {
 				$e = Employee::find($employee->employee_id);
 
@@ -380,7 +380,7 @@ class PayrollPrintController extends Controller
 					'update' => $update,
 					'update_date' => $update_date,
 					'worked_days' => $employee->worked_days,
-					'quotable' => $employee->quotable,
+					'quotable' => round($employee->quotable, 2),
 					'contributor' => '1',
 					'insurance_type' => ''
 				];
@@ -403,21 +403,59 @@ class PayrollPrintController extends Controller
 				'TIPO COTIZANTE',
 				'TIPO ASEGURADO',
 			];
+
+			$filename = implode('_', ["planilla", strtolower($management_entity->name), strtolower($month->name), $year]) . ".xlsx";
+
+			return Excel::download(new PayrollsExport($data, $headers), $filename);
 		} else {
-			$headers = [];
-			$data = [];
+			$content = "";
+
+			$total_employees = count($employees);
+
+			foreach ($employees as $i => $employee) {
+				$e = Employee::find($employee->employee_id);
+
+				$first_contract = $e->first_contract();
+				$first_date = Carbon::parse($first_contract->start_date);
+
+				$last_contract = $e->last_contract();
+
+				$address = $last_contract->position->position_group->company_address->city->name;
+
+				if ($last_contract->retirement_date) {
+					$retirement_date = Carbon::parse($last_contract->retirement_date);
+				} else {
+					$retirement_date = $last_contract->retirement_date;
+				}
+
+				if ($retirement_date) {
+					if ($retirement_date->year == $year && $retirement_date->month == $month->order) {
+						$update = 'R';
+						$update_date = $retirement_date->format('d/m/Y');
+					}
+				} elseif ($first_date->year == $year && $first_date->month == $month->order) {
+					$update = 'I';
+					$update_date = $first_date->format('d/m/Y');
+				} else {
+					$update = '';
+					$update_date = '';
+				}
+
+				$content .= implode(',', [++$i, 'CI', $employee->ci, $employee->id_ext, $employee->nua_cua, $employee->last_name, $employee->mothers_last_name, null, $employee->first_name, $employee->second_name, $address, $update, $update_date, $employee->worked_days, 'E', round($employee->quotable, 2), null, null, null, null, null, null, null]);
+
+				if ($i < ($total_employees)) {
+					$content .= "\r\n";
+				}
+			}
+
+			$filename = implode('_', ["planilla", strtolower($management_entity->name), strtolower($month->name), $year]) . ".csv";
+
+			$headers = [
+				'Content-type' => 'text/csv',
+				'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)
+			];
+
+			return Response::make($content, 200, $headers);
 		}
-
-
-		return response()->json([
-			'management_entity' => $management_entity->name,
-			'headers' => $headers,
-			'data' => $data
-		]);
-
-
-		$filename = implode('_', ["planilla", strtolower($management_entity->name), strtolower($month->name), $year]) . ".xlsx";
-
-		return Excel::download(new PayrollsExport($data, $headers), $filename);
 	}
 }
