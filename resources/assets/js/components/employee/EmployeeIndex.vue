@@ -29,6 +29,7 @@
       </v-flex>
       <EmployeeEdit :employee="{}" :bus="bus"/>
       <RemoveItem :bus="bus"/>
+      <EmployeeCertificate :employee="{}" :bus="bus"/>
     </v-toolbar>
     <v-data-table
       :headers="headers"
@@ -65,6 +66,12 @@
                 <v-icon>delete</v-icon>
               </v-btn>
               <span>Eliminar</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <v-btn medium slot="activator" flat icon color="info" @click="certificateItem(props.item)">
+                <v-icon>timelapse</v-icon>
+              </v-btn>
+              <span>Certificado de trabajo</span>
             </v-tooltip>
           </td>
         </tr>
@@ -128,12 +135,14 @@
 import Vue from "vue";
 import EmployeeEdit from "./EmployeeEdit";
 import RemoveItem from "../RemoveItem";
+import EmployeeCertificate from "./EmployeeCertificate";
 
 export default {
   name: "EmployeeIndex",
   components: {
     EmployeeEdit,
-    RemoveItem
+    RemoveItem,
+    EmployeeCertificate
   },
   data() {
     return {
@@ -228,6 +237,9 @@ export default {
     },
     removeItem(employee) {
       this.bus.$emit("openDialogRemove", `/api/v1/employee/${employee.id}`);
+    },
+    certificateItem(item) {
+      this.bus.$emit("openDialogCertificate", item);      
     },
     rowColor(payroll) {
       if (
