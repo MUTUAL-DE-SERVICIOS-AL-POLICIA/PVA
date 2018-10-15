@@ -22,7 +22,7 @@
             <p>DIRECCION DE ASUNTOS ADMINISTRATIVOS</p>
             <p>UNINDAD DE RECURSOS HUMANOS</p>
             <p>Certificado RR.HH. No. {{ $certificate->correlative }}/{{ $certificate->year }}</p>
-            <p>Fecha {{ date('d') }} de {{ Carbon::parse(date('d/m/Y'))->formatLocalized('%B') }} de {{ date('Y') }}</p>
+            <p>Fecha {{ date('d') }} de {{ Carbon::now()->formatLocalized('%B') }} de {{ date('Y') }}</p>
         </div>
         <div style="font-size: 16pt;font-weight: bold;margin-top:50px;" align="center">
             <p>CERTIFICADO DE HABERES Y APORTES LABORALES</p>
