@@ -60,8 +60,8 @@
           append-icon="search"
           label="Buscar"
           single-line
-          hide-details
           full-width
+          clearable
         ></v-text-field>
       </v-flex>
       <PayrollAdd :contracts="contracts" :procedure="procedure" :bus="bus"/>
@@ -73,6 +73,8 @@
       :search="search"
       disable-initial-sort
       expand
+      :loading="loading"
+      :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
     >
       <template slot="headerCell" slot-scope="props">
         <v-tooltip top v-if="props.header.tooltip">
@@ -88,7 +90,7 @@
         </span>
       </template>
       <template slot="items" slot-scope="props">
-        <v-hover>
+        <v-hover v-if="props.item.contract.employee" close-delay="0" open-delay="150">
           <tr
             slot-scope="{ hover }"
             :class="(props.item.contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`"
@@ -96,7 +98,7 @@
             <td>
               <v-tooltip right>
                 <span slot="activator">
-                  {{ `${props.item.contract.employee.last_name} ${props.item.contract.employee.mothers_last_name} ${props.item.contract.employee.first_name}` }}
+                  {{ `${props.item.contract.employee.last_name} ${props.item.contract.employee.mothers_last_name} ${props.item.contract.employee.first_name} ${(props.item.contract.employee.second_name) ? props.item.contract.employee.second_name : ''}` }}
                 </span>
                 <span>
                   <div>{{ `C.I: ${props.item.contract.employee.identity_card} ${props.item.contract.employee.city_identity_card.shortened}` }}</div>
@@ -198,6 +200,19 @@
       <v-alert slot="no-results" :value="true" color="error">
         La búsqueda de "{{ search }}" no encontró resultados.
       </v-alert>
+      <template slot="no-data">
+        <v-container fluid fill-height>
+          <v-layout align-center justify-center>
+            <v-progress-circular
+              :width="1"
+              :size="50"
+              color="primary"
+              indeterminate
+              class="pa-5 ma-5"
+            ></v-progress-circular>
+          </v-layout>
+        </v-container>
+      </template>
     </v-data-table>
   </v-container>
 </template>
@@ -216,6 +231,7 @@ export default {
   data() {
     return {
       bus: new Vue(),
+      loading: true,
       dialog: false,
       dialogDelete: false,
       procedure: {
@@ -235,12 +251,12 @@ export default {
   },
   async created() {
     await this.getProcedure();
-    this.getValidContracts()
-    this.getPayrolls();
+    await this.getValidContracts();
+    await this.getPayrolls();
   },
   mounted() {
-    this.bus.$on("closeDialog", () => {
-      this.getPayrolls();
+    this.bus.$on("closeDialog", async () => {
+      await this.getPayrolls();
     });
   },
   computed: {
@@ -374,6 +390,8 @@ export default {
           `/api/v1/procedure/${this.$route.params.id}/payroll`
         );
         this.payrolls = res.data;
+        this.loading = false;
+        return Promise.resolve();
       } catch (e) {
         console.log(e);
       }
@@ -444,7 +462,14 @@ export default {
 
       let workedDays = 0;
 
-      if (payroll.contract.end_date == null) {
+      if (payroll.contract.retirement_date != null) {
+        let dateRetirement = this.$moment(`${payroll.contract.retirement_date}T23:59:59.999999`);
+        if (dateRetirement.year() == payrollDate.year() && dateRetirement.month() == payrollDate.month()) {
+          dateEnd = dateRetirement;
+        }
+      }
+
+      if (payroll.contract.end_date == null && payroll.contract.retirement_date == null && dateStart.year() <= payrollDate.year() && dateStart.month() < payrollDate.month()) {
         workedDays = 30;
       } else if (
         dateStart.year() == dateEnd.year() &&

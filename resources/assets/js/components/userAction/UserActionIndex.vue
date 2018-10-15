@@ -8,6 +8,7 @@
           v-model="search"
           append-icon="search"
           label="Buscar"
+          clearable
           single-line
           hide-details
           full-width
@@ -19,7 +20,7 @@
       :headers="headers"
       :items="actions"
       :search="search"
-      :rows-per-page-items="[10,20]"
+      :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
       disable-initial-sort
       expand
     >

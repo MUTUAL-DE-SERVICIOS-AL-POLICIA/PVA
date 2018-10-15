@@ -24,23 +24,25 @@
           single-line
           hide-details
           full-width
+          clearable
         ></v-text-field>
       </v-flex>
       <EmployeeEdit :employee="{}" :bus="bus"/>
       <RemoveItem :bus="bus"/>
+      <EmployeeCertificate :employee="{}" :bus="bus"/>
     </v-toolbar>
     <v-data-table
       :headers="headers"
       :items="employees"
       :search="search"
-      :rows-per-page-items="[10,20]"
+      :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
       disable-initial-sort
       expand
     >
       <template slot="items" slot-scope="props">
         <tr :class="rowColor(props.item)">
           <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
-          <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ` }}</td>
+          <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
           <td @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
@@ -64,6 +66,12 @@
                 <v-icon>delete</v-icon>
               </v-btn>
               <span>Eliminar</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <v-btn medium slot="activator" flat icon color="info" @click="certificateItem(props.item)">
+                <v-icon>timelapse</v-icon>
+              </v-btn>
+              <span>Certificado de trabajo</span>
             </v-tooltip>
           </td>
         </tr>
@@ -127,12 +135,14 @@
 import Vue from "vue";
 import EmployeeEdit from "./EmployeeEdit";
 import RemoveItem from "../RemoveItem";
+import EmployeeCertificate from "./EmployeeCertificate";
 
 export default {
   name: "EmployeeIndex",
   components: {
     EmployeeEdit,
-    RemoveItem
+    RemoveItem,
+    EmployeeCertificate
   },
   data() {
     return {
@@ -227,6 +237,9 @@ export default {
     },
     removeItem(employee) {
       this.bus.$emit("openDialogRemove", `/api/v1/employee/${employee.id}`);
+    },
+    certificateItem(item) {
+      this.bus.$emit("openDialogCertificate", item);      
     },
     rowColor(payroll) {
       if (

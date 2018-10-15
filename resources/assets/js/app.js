@@ -10,7 +10,7 @@ import AppMain from './components/AppMain'
 import es from 'vee-validate/dist/locale/es'
 
 import toastr from 'toastr'
-import 'toastr/toastr.min.css'
+import 'toastr/build/toastr.min.css'
 Vue.prototype.toastr = toastr
 
 import print from 'print-js'

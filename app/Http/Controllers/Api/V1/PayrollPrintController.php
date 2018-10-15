@@ -17,6 +17,8 @@ use App\PositionGroup;
 use App\Procedure;
 use App\TotalPayrollEmployee;
 use App\TotalPayrollEmployer;
+use App\Certificate;
+use App\DocumentType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Response;
@@ -32,7 +34,7 @@ class PayrollPrintController extends Controller
 			$total_discounts = new TotalPayrollEmployee();
 			$total_contributions = new TotalPayrollEmployer();
 			$company = Company::select()->first();
-
+			
 			$payrolls = Payroll::where('procedure_id', $procedure->id)->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('c.start_date')->select('payrolls.*')->get();
 
 			foreach ($payrolls as $key => $payroll) {
@@ -286,7 +288,8 @@ class PayrollPrintController extends Controller
 		$content .= implode(',', ["Nro", "Tipo de documento de identidad", "Número de documento de identidad", "Lugar de expedición", "Fecha de nacimiento", "Apellido Paterno", "Apellido Materno", "Nombres", "País de nacionalidad", "Sexo", "Jubilado", "¿Aporta a la AFP?", "¿Persona con discapacidad?", "Tutor de persona con discapacidad", "Fecha de ingreso", "Fecha de retiro", "Motivo retiro", "Caja de salud", "AFP a la que aporta", "NUA/CUA", "Sucursal o ubicación adicional", "Clasificación laboral", "Cargo", "Modalidad de contrato", "Tipo contrato", "Días pagados", "Horas pagadas", "Haber Básico", "Bono de antigüedad", "Horas extra", "Monto horas extra", "Horas recargo nocturno", "Monto horas extra nocturnas", "Horas extra dominicales", "Monto horas extra dominicales", "Domingos trabajados", "Monto domingo trabajado", "Nro. dominicales", "Salario dominical", "Bono producción", "Subsidio frontera", "Otros bonos y pagos", "RC-IVA", "Aporte Caja Salud", "Aporte AFP", "Otros descuentos", "\r\n"]);
 
 		foreach ($employees as $i => $e) {
-			$content .= implode(',', [++$i, "CI", $e->ci, $e->id_ext, $e->birth_date, $e->last_name, $e->mothers_last_name, $e->first_name, "BOLIVIA", $e->gender, "0", "1", "0", "0", $e->start_date, "", "", $e->ovt->insurance_company_id, $e->ovt->management_entity_id, $e->nua_cua, "1", "", mb_strtoupper(str_replace(",", " ", $e->position)), $e->ovt->contract_type, $e->ovt->contract_mode, $e->worked_days, "8", round($e->quotable, 2), "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "", round($e->discount_old, 2), round($e->total_amount_discount_law, 2), round($e->discount_faults, 2)]);
+			$name = (is_null($e->second_name)) ? $e->first_name : implode(' ', [$e->first_name, $e->second_name]);
+			$content .= implode(',', [++$i, "CI", $e->ci, $e->id_ext, $e->birth_date, $e->last_name, $e->mothers_last_name, $name, "BOLIVIA", $e->gender, "0", "1", "0", "0", $e->start_date, "", "", $e->ovt->insurance_company_id, $e->ovt->management_entity_id, $e->nua_cua, "1", "", mb_strtoupper(str_replace(",", " ", $e->position)), $e->ovt->contract_type, $e->ovt->contract_mode, $e->worked_days, "8", round($e->quotable, 2), "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "", round($e->discount_old, 2), round($e->total_amount_discount_law, 2), round($e->discount_faults, 2)]);
 
 			if ($i < ($total_employees)) {
 				$content .= "\r\n";
@@ -301,5 +304,71 @@ class PayrollPrintController extends Controller
 		];
 
 		return Response::make($content, 200, $headers);
+	}
+
+	public function certificate($employee_id)
+	{
+		$employees = array();
+		$total_discounts = new TotalPayrollEmployee();
+		$total_contributions = new TotalPayrollEmployer();
+		$company = Company::select()->first();
+		$payrolls = Payroll::where('employee_id', $employee_id)
+							->join('procedures as p', 'p.id', '=', 'payrolls.procedure_id')
+							->join('months as m', 'm.id', '=', 'p.month_id')
+							->orderBy('p.year')
+							->orderBy('m.order')
+							->get();
+		foreach ($payrolls as $key => $payroll) {
+			$contract = $payroll->contract;
+			$employee = $contract->employee;
+
+			$rehired = true;
+			$employee_contracts = $payroll->contract->employee->contracts;
+
+			$e = new EmployeePayroll($payroll);
+
+			if (count($employee_contracts) > 1) {
+				$rehired = Util::valid_contract($payroll, $employee->last_contract());
+
+				if ($rehired) {
+					$e->setValidContact(true);
+				}
+			}
+			$employees[] = $e;
+		}		
+		return $employees;
+	}
+	public function print_certificate($employee_id)
+	{		
+		$data['payrolls'] = $this->certificate($employee_id);
+		$data['contract'] = Contract::with('employee','employee.city_identity_card','position')->where('employee_id', $employee_id)->orderBy('end_date', 'desc')->select('contracts.active as act', '*')->first();
+
+		$correlative = 1;
+		$year = date('Y');
+		$document_type = DocumentType::where('shortened', 'C.T.')->first();
+		$certificate = Certificate::where('document_type_id', $document_type->id)->orderBy('correlative', 'desc')->first();
+		if ($certificate) {
+			$correlative = $certificate->correlative + 1;
+			if ($certificate->year != $year) {
+				$correlative = 1;
+			}
+		}
+
+		$new_certificate = new Certificate;
+		$new_certificate->document_type_id = $document_type->id;
+		$new_certificate->correlative = $correlative;
+		$new_certificate->year = $year;
+		$new_certificate->data = json_encode($data);
+		$new_certificate->save();
+
+		$data['certificate'] = $new_certificate;
+		
+		return \PDF::loadView('payroll.print_certificate', $data)
+			->setOption('page-width', '220')
+			->setOption('page-height', '280')
+			->setOption('margin-left', '20')
+			->setOption('margin-right', '15')
+			->setOption('encoding', 'utf-8')
+			->stream('certificado');
 	}
 }

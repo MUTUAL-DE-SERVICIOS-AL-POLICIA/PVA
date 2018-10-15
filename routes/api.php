@@ -47,6 +47,8 @@ Route::group([
 		Route::get('payroll/print/pdf/{year}/{month}', 'Api\V1\PayrollPrintController@print_pdf')->name('print_pdf_payroll');
 		Route::get('payroll/print/txt/{year}/{month}', 'Api\V1\PayrollPrintController@print_txt')->name('print_txt_payroll');
 		Route::get('payroll/print/ovt/{year}/{month}', 'Api\V1\PayrollPrintController@print_ovt')->name('print_ovt_payroll');
+		Route::get('payroll/certificate/{id}', 'Api\V1\PayrollPrintController@certificate')->name('certificate_payroll');
+		Route::get('payroll/print/certificate/{id}', 'Api\V1\PayrollPrintController@print_certificate')->name('print_certificate_payroll');
 		// Payroll-Contract
 		Route::get('payroll/getpayrollcontract/{contract_id}', 'Api\V1\PayrollController@getPayrollContract')->name('payroll_contract');
 		// Position
@@ -241,6 +243,7 @@ Route::group([
 			Route::post('contract', 'Api\V1\ContractController@store')->name('contract_store');
 			Route::delete('contract/{id}', 'Api\V1\ContractController@destroy')->name('contract_delete');
 			Route::get('contract/valid/{procedure_id}', 'Api\V1\ContractController@valid_date')->name('contract_valid');
+			Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
 			// Job Schedule
 			Route::post('jobs_chedule', 'Api\V1\JobScheduleController@store')->name('jobs_chedule_store');
 			Route::patch('jobs_chedule/{id}', 'Api\V1\JobScheduleController@update')->name('jobs_chedule_update');

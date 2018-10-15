@@ -2,7 +2,7 @@
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close" scrollable>
     <v-tooltip slot="activator" top>
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
-      <span>Nuevo Empleado</span>
+      <span>Añadir contrato</span>
     </v-tooltip>
     <v-card>
       <v-toolbar dark color="secondary">
@@ -16,7 +16,7 @@
             clearable
             label="Buscar empleado"
             :readonly="false"
-            item-text="id"
+            item-text="employee.last_name"
             item-value="id"
             @change="employeeChange"
             :auto-select-one-item="false"
@@ -27,7 +27,7 @@
               slot="selection"
               slot-scope="{ item, selected }"
             >
-              {{ `${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name}` }}
+              {{ `${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name} ${(item.employee.second_name) ? item.employee.second_name : ''}` }}
             </template>
             <template
               slot="item"
@@ -36,7 +36,7 @@
               <v-list-tile-content>
                 <v-layout wrap row>
                   <v-flex>
-                    <v-list-tile-title v-text="`${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name}`"></v-list-tile-title>
+                    <v-list-tile-title v-text="`${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name} ${(item.employee.second_name) ? item.employee.second_name : ''}`"></v-list-tile-title>
                     <v-list-tile-sub-title v-text="`${item.position.name}`"></v-list-tile-sub-title>
                   </v-flex>
                 </v-layout>
@@ -67,7 +67,7 @@
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Fecha de inicio:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ this.contract.start_date | moment('L') }}</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ $moment(this.contract.start_date).format('L') }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Fecha de conclusión:</v-list-tile-content>
@@ -75,7 +75,7 @@
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Fecha de retiro:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ (this.contract.retirement_date) ? (this.contract.retirement_date | moment('L')) : '-' }}</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ (this.contract.retirement_date) ? ($moment(this.contract.retirement_date).format('L')) : '-' }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="font-weight-bold">Puesto:</v-list-tile-content>
@@ -165,6 +165,7 @@ export default {
           this.eraseSelected();
           this.codeExists = false;
         } else {
+          this.eraseSelected();
           this.contract = await this.contracts.find(obj => {
             return obj.id == value;
           });
@@ -180,7 +181,8 @@ export default {
               }
             }
           );
-          this.contract.code = res.data.code;
+          this.contract.code = await res.data.code;
+          this.$forceUpdate();
           this.codeExists = true;
         }
       } catch (e) {

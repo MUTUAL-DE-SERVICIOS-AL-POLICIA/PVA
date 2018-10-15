@@ -12,4 +12,7 @@ class DocumentType extends Model {
 	public function document() {
 		return $this->hasMany(Document::class);
 	}
+	public function certificate() {
+		return $this->hasMany(Certificate::class);
+	}
 }

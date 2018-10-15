@@ -19,6 +19,7 @@ class EmployeePayroll
 		$this->employee_id = $employee->id;
 		$this->year = $payroll->procedure->year;
 		$this->month_id = $payroll->procedure->month->order;
+		$this->month_shortened = $payroll->procedure->month->shortened;
 		$this->payroll_id = $payroll->id;
 		$this->previous_month_balance = $payroll->previous_month_balance;
 		$this->next_month_balance = $payroll->next_month_balance;
@@ -28,9 +29,10 @@ class EmployeePayroll
 		$this->insurance_company_id = $contract->insurance_company_id;
 		$this->ci_ext = $this->ci . ' ' . $this->id_ext;
 		$this->first_name = $employee->first_name;
+		$this->second_name = $employee->second_name;
 		$this->last_name = $employee->last_name;
 		$this->mothers_last_name = $employee->mothers_last_name;
-		$this->full_name = implode(" ", [$this->last_name, $this->mothers_last_name, $this->first_name]);
+		$this->full_name = implode(" ", [$this->last_name, $this->mothers_last_name, $this->first_name, $this->second_name]);
 		$this->account_number = $employee->account_number;
 		$this->birth_date = Carbon::parse($employee->birth_date)->format('d/m/Y');
 		$this->gender = $employee->gender;
@@ -197,11 +199,11 @@ class EmployeePayroll
 		$last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month)->endOfMonth()->day;
 		$worked_days = 0;
 
-		if ($contract->end_date == null) {
+		if (is_null($contract->end_date) && is_null($contract->retirement_date) && $start_date->year <= $payroll_date->year && $start_date->month < $payroll_date->month) {
 			$worked_days = 30;
 		} else if ($start_date->year == $end_date->year && $start_date->month == $end_date->month) {
 			if ($end_date->day == $last_day_of_month && ($last_day_of_month < 30 || $last_day_of_month > 30)) {
-				$worked_days = 30 - $start_date->day + 1;
+				$worked_days = 30 - $start_date->day;
 			} else {
 				$worked_days = $end_date->day - $start_date->day;
 			}
