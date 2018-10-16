@@ -4,6 +4,18 @@
       <v-toolbar-title>{{ procedure.month.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <div class="text-xs-center">
+        <v-menu
+        v-model="menuDate"
+        >
+          <v-text-field
+            slot="activator"
+            v-model="selectedDate"
+            label="Fecha de Pago"
+            prepend-icon="event"
+            readonly
+          ></v-text-field>
+          <v-date-picker v-model="date" @input="menuDate = false" @change="updatePayDate(procedure.id, date)" locale="es-bo"></v-date-picker>
+        </v-menu>
         <v-dialog
           v-model="dialogDelete"
           width="500"
@@ -246,7 +258,10 @@ export default {
       },
       payrolls: [],
       contracts: [],
-      search: ""
+      search: "",
+      menuDate: null,
+      date: null,
+      selectedDate: null
     };
   },
   async created() {
@@ -337,6 +352,11 @@ export default {
       ];
     }
   },
+  watch: {
+    date(val) {
+      this.selectedDate = this.$moment(this.date).format("DD/MM/YYYY");
+    },
+  },
   methods: {
     deletePayroll(item) {
       this.bus.$emit("openDialogRemove", `/payroll/${item.id}`);
@@ -380,6 +400,7 @@ export default {
           `/procedure/${this.$route.params.id}/discounts`
         );
         this.procedure = res.data;
+        this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
       } catch (e) {
         console.log(e);
       }
@@ -532,6 +553,9 @@ export default {
       } catch (e) {
         console.log(e);
       }
+    },
+    async updatePayDate(id, date) {
+      let res = await axios.get('/api/v1/procedure/pay_date/'+ id +'/' + date);
     }
   }
 };

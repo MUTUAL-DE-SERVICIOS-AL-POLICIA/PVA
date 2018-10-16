@@ -27,7 +27,18 @@
           >
             <v-card :color="procedure.active ? 'warning' : 'green lighten-4'" height="100%">
               <v-card-title>
-                <div class="font-weight-light display-1">{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</div>
+                <v-flex xs6>
+                  <div class="font-weight-light display-1">{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</div>
+                </v-flex>
+                <v-flex xs6>
+                  <v-text-field
+                    slot="activator"
+                    v-model="$moment(procedure.pay_date).format('DD/MM/YYYY')"
+                    label="Fecha de Pago"
+                    prepend-icon="event"
+                    disabled
+                  ></v-text-field>
+                </v-flex>
               </v-card-title>
               <v-progress-linear :indeterminate="true" v-if="loading"></v-progress-linear>
               <div v-else>
@@ -200,7 +211,6 @@
 <script>
 import Vue from "vue";
 import ProcedureAdd from "./ProcedureAdd";
-
 export default {
   name: "ProcedureIndex",
   components: {
