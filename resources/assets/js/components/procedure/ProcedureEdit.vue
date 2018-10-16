@@ -400,7 +400,9 @@ export default {
           `/api/v1/procedure/${this.$route.params.id}/discounts`
         );
         this.procedure = res.data;
-        this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
+        if (res.data.pay_date){
+          this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
+        }
       } catch (e) {
         console.log(e);
       }
