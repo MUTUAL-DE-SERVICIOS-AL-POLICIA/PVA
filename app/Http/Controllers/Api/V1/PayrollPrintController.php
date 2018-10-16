@@ -316,7 +316,7 @@ class PayrollPrintController extends Controller
 		$grouped_payrolls = [];
 
 		foreach ($employees as $e) {
-			$grouped_payrolls[$e->code][] = $e;
+			$grouped_payrolls[$e->employee_id][] = $e;
 		}
 
 		$employees = [];
