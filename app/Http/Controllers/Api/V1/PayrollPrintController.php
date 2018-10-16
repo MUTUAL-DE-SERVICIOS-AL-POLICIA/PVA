@@ -17,6 +17,8 @@ use App\PositionGroup;
 use App\Procedure;
 use App\TotalPayrollEmployee;
 use App\TotalPayrollEmployer;
+use App\Certificate;
+use App\DocumentType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Response;
@@ -457,5 +459,72 @@ class PayrollPrintController extends Controller
 
 			return Response::make($content, 200, $headers);
 		}
+	}
+
+	public function certificate($employee_id)
+	{
+		$employees = array();
+		$total_discounts = new TotalPayrollEmployee();
+		$total_contributions = new TotalPayrollEmployer();
+		$company = Company::select()->first();
+		$payrolls = Payroll::where('employee_id', $employee_id)
+			->join('procedures as p', 'p.id', '=', 'payrolls.procedure_id')
+			->join('months as m', 'm.id', '=', 'p.month_id')
+			->orderBy('p.year')
+			->orderBy('m.order')
+			->get();
+		foreach ($payrolls as $key => $payroll) {
+			$contract = $payroll->contract;
+			$employee = $contract->employee;
+
+			$rehired = true;
+			$employee_contracts = $payroll->contract->employee->contracts;
+
+			$e = new EmployeePayroll($payroll);
+
+			if (count($employee_contracts) > 1) {
+				$rehired = Util::valid_contract($payroll, $employee->last_contract());
+
+				if ($rehired) {
+					$e->setValidContact(true);
+				}
+			}
+			$employees[] = $e;
+		}
+		return $employees;
+	}
+
+	public function print_certificate($employee_id)
+	{
+		$data['payrolls'] = $this->certificate($employee_id);
+		$data['contract'] = Contract::with('employee', 'employee.city_identity_card', 'position')->where('employee_id', $employee_id)->orderBy('end_date', 'desc')->select('contracts.active as act', '*')->first();
+
+		$correlative = 1;
+		$year = date('Y');
+		$document_type = DocumentType::where('shortened', 'C.T.')->first();
+		$certificate = Certificate::where('document_type_id', $document_type->id)->orderBy('correlative', 'desc')->first();
+		if ($certificate) {
+			$correlative = $certificate->correlative + 1;
+			if ($certificate->year != $year) {
+				$correlative = 1;
+			}
+		}
+
+		$new_certificate = new Certificate;
+		$new_certificate->document_type_id = $document_type->id;
+		$new_certificate->correlative = $correlative;
+		$new_certificate->year = $year;
+		$new_certificate->data = json_encode($data);
+		$new_certificate->save();
+
+		$data['certificate'] = $new_certificate;
+
+		return \PDF::loadView('payroll.print_certificate', $data)
+			->setOption('page-width', '220')
+			->setOption('page-height', '280')
+			->setOption('margin-left', '20')
+			->setOption('margin-right', '15')
+			->setOption('encoding', 'utf-8')
+			->stream('certificado');
 	}
 }

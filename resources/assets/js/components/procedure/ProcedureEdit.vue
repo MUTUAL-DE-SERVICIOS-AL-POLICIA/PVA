@@ -339,12 +339,12 @@ export default {
   },
   methods: {
     deletePayroll(item) {
-      this.bus.$emit("openDialogRemove", `/api/v1/payroll/${item.id}`);
+      this.bus.$emit("openDialogRemove", `/payroll/${item.id}`);
     },
     async deleteProcedure() {
       try {
         let res = await axios.delete(
-          `/api/v1/payroll/drop/${this.procedure.id}`
+          `/payroll/drop/${this.procedure.id}`
         );
         this.toastr.warning(
           `Eliminados ${res.data.deleted} registros del mes de ${this.$moment()
@@ -362,7 +362,7 @@ export default {
     },
     async savePayroll(payroll) {
       try {
-        await axios.patch(`/api/v1/payroll/${payroll.id}`, {
+        await axios.patch(`/payroll/${payroll.id}`, {
           unworked_days: parseInt(payroll.unworked_days),
           rc_iva: Number(payroll.rc_iva),
           faults: Number(payroll.faults),
@@ -377,7 +377,7 @@ export default {
     async getProcedure() {
       try {
         let res = await axios.get(
-          `/api/v1/procedure/${this.$route.params.id}/discounts`
+          `/procedure/${this.$route.params.id}/discounts`
         );
         this.procedure = res.data;
       } catch (e) {
@@ -387,7 +387,7 @@ export default {
     async getPayrolls() {
       try {
         let res = await axios.get(
-          `/api/v1/procedure/${this.$route.params.id}/payroll`
+          `/procedure/${this.$route.params.id}/payroll`
         );
         this.payrolls = res.data;
         this.loading = false;
@@ -399,7 +399,7 @@ export default {
     async getValidContracts() {
       try {
         let res = await axios.get(
-          `/api/v1/contract/valid/${this.procedure.id}`
+          `/contract/valid/${this.procedure.id}`
         );
         this.contracts = res.data;
       } catch (e) {
@@ -520,7 +520,7 @@ export default {
     },
     async closeProcedure() {
       try {
-        let res = await axios.patch(`/api/v1/procedure/${this.procedure.id}`, {
+        let res = await axios.patch(`/procedure/${this.procedure.id}`, {
           active: !this.procedure.active
         });
         this.toastr.warning(

@@ -72,7 +72,7 @@ export default {
     async authenticate(auth) {
       try {
         if (await this.$validator.validateAll()) {
-          let res = await axios.post("/api/v1/auth", auth);
+          let res = await axios.post("/auth", auth);
           this.$store.commit("login", res.data);
           this.$router.go({
             name: "employeeIndex"

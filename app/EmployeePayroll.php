@@ -19,6 +19,7 @@ class EmployeePayroll
 		$this->employee_id = $employee->id;
 		$this->year = $payroll->procedure->year;
 		$this->month_id = $payroll->procedure->month->order;
+		$this->month_shortened = $payroll->procedure->month->shortened;
 		$this->payroll_id = $payroll->id;
 		$this->previous_month_balance = $payroll->previous_month_balance;
 		$this->next_month_balance = $payroll->next_month_balance;

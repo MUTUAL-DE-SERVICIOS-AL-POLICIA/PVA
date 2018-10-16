@@ -69,9 +69,7 @@ const router = new VueRouter({
 
 axios.defaults.headers.common['Accept'] = 'application/json'
 axios.defaults.headers.common['Content-Type'] = 'application/json'
-if (localStorage.getItem('token_type') && localStorage.getItem('token')) {
-  axios.defaults.headers.common['Authorization'] = `${localStorage.getItem('token_type')} ${localStorage.getItem('token')}`
-}
+axios.defaults.headers.common['Authorization'] = `${store.getters.token.type} ${store.getters.token.value}`
 
 axios.interceptors.response.use(response => {
   return response;

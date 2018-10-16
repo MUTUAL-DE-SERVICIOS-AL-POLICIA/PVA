@@ -96,7 +96,7 @@ export default {
     },
     async getDate() {
       try {
-        let res = await axios.get(`/api/v1/date`);
+        let res = await axios.get(`/date`);
         this.$store.commit("setDate", res.data.now);
       } catch (e) {
         console.log(e);

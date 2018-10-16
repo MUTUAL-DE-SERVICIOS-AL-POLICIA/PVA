@@ -20,6 +20,11 @@ export default {
       icon: 'attach_file',
       options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll']
     }, {
+      href: 'userIndex',
+      title: 'Usuarios',
+      icon: 'person',
+      options: ['edit']
+    }, {
       href: 'userActionIndex',
       title: 'Actividad',
       icon: 'timeline',

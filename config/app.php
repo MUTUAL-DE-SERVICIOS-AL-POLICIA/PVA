@@ -243,6 +243,8 @@ return [
 
 		// Util
 		'Util' => App\Helpers\Util::class,
+		// Util
+		'Ldap' => App\Helpers\Ldap::class,
 
 		// Carbon
 		'Carbon' => \Carbon\Carbon::class,

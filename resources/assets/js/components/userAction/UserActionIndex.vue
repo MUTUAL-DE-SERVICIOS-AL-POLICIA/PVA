@@ -99,14 +99,14 @@ export default {
   methods: {
     async getActions() {
       try {
-        let res = await axios.get(`/api/v1/user_action`);
+        let res = await axios.get(`/user_action`);
         this.actions = res.data;
       } catch (e) {
         console.log(e);
       }
     },
     removeItem(id) {
-      this.bus.$emit("openDialogRemove", `/api/v1/user_action/${id}`);
+      this.bus.$emit("openDialogRemove", `/user_action/${id}`);
     },
   }
 };

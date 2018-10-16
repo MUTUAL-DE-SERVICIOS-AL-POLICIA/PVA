@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserForm;
 use App\Http\Requests\UserEmployeeForm;
 use App\User;
+use App\UserAction;
 use App\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,7 +26,7 @@ class UserController extends Controller
 	 */
 	public function index()
 	{
-		return User::get();
+		return User::with('roles')->orderBy('username')->get();
 	}
 
 	/**
@@ -36,7 +37,7 @@ class UserController extends Controller
 	 */
 	public function store(UserEmployeeForm $request)
 	{
-		if (!env("ADLDAP_AUTHENTICATION")) {
+		if (!env("LDAP_AUTHENTICATION")) {
 			$employee = Employee::findOrFail(request("employee_id"));
 			$user = new User();
 			$user->username = "";
@@ -99,8 +100,26 @@ class UserController extends Controller
 	 */
 	public function destroy($id)
 	{
-		$user = User::findOrFail($id);
-		$user->delete();
-		return $user;
+		if (UserAction::where('user_id', $id)->count() == 0) {
+			$user = User::findOrFail($id);
+			if ($user->username != 'admin') {
+				$user->delete();
+				return $user;
+			} else {
+				return response()->json([
+					'message' => 'Bad Request Error',
+					'errors' => [
+						'type' => ['Este usuario no se puede eliminar'],
+					],
+				], 400);
+			}
+		} else {
+			return response()->json([
+				'message' => 'Bad Request Error',
+				'errors' => [
+					'type' => ['El usuario tiene acciones registradas'],
+				],
+			], 400);
+		}
 	}
 }

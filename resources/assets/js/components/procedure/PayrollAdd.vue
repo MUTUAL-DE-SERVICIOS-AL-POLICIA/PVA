@@ -120,7 +120,7 @@ export default {
     async addPayroll() {
       try {
         if (this.contract.employee.identity_card) {
-          let res = await axios.post(`/api/v1/payroll`, {
+          let res = await axios.post(`/payroll`, {
             procedure_id: this.procedure.id,
             contract_id: this.contract.id,
             employee_id: this.contract.employee.id,
@@ -170,7 +170,7 @@ export default {
             return obj.id == value;
           });
           let res = await axios.get(
-            `/api/v1/payroll/procedure/${this.procedure.id}`,
+            `/payroll/procedure/${this.procedure.id}`,
             {
               params: {
                 contract_id: this.contract.id,

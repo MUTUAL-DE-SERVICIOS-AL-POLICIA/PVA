@@ -258,7 +258,7 @@ export default {
     },
     async getCities() {
       try {
-        let res = await axios.get(`/api/v1/city`);
+        let res = await axios.get(`/city`);
         this.cities = res.data;
       } catch (e) {
         this.dialog = false;
@@ -267,7 +267,7 @@ export default {
     },
     async getManagementEntities() {
       try {
-        let res = await axios.get(`/api/v1/management_entity`);
+        let res = await axios.get(`/management_entity`);
         this.managementEntities = res.data;
       } catch (e) {
         this.dialog = false;
@@ -280,10 +280,10 @@ export default {
         let res;
         if (valid) {
           if (this.newEmployee) {
-            res = await axios.post(`/api/v1/employee`, this.edit);
+            res = await axios.post(`/employee`, this.edit);
             this.toastr.success('Insertado correctamente')
           } else {
-            res = await axios.patch(`/api/v1/employee/${this.edit.id}`, this.edit);
+            res = await axios.patch(`/employee/${this.edit.id}`, this.edit);
             this.toastr.success('Actualizado correctamente')
           }
           this.close();
