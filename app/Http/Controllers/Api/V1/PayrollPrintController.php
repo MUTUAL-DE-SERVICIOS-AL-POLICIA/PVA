@@ -29,6 +29,14 @@ class PayrollPrintController extends Controller
 	{
 		$procedure = Procedure::where('month_id', $month)->where('year', $year)->select()->first();
 
+		$previous_month = $month - 1;
+		$previous_year = $year;
+		if($previous_month == 0) {
+			$previous_month = 12;
+			$previous_year = $year - 1;
+		}
+		$previous_procedure = Procedure::where('month_id', $previous_month)->where('year', $previous_year)->select()->first();
+
 		if (isset($procedure->id)) {
 			$employees = array();
 			$total_discounts = new TotalPayrollEmployee();
@@ -91,6 +99,7 @@ class PayrollPrintController extends Controller
 				'total_contributions' => $total_contributions,
 				'employees' => $employees,
 				'procedure' => $procedure,
+				'previous_procedure' => $previous_procedure,
 				'tribute' => $procedure->employer_tribute,
 				'company' => $company,
 				'title' => (object)array(
@@ -176,7 +185,8 @@ class PayrollPrintController extends Controller
 				$response->data['title']->table_header3 = 'Saldo a favor de:';
 				$response->data['title']->table_header4 = 'Saldo anterior a favor del dependiente';
 				$response->data['title']->minimun_salary = $response->data['tribute']->minimum_salary;
-				$response->data['title']->ufv = $response->data['tribute']->ufv;
+				$response->data['title']->ufv = $response->data['procedure']->ufv;
+				$response->data['title']->previous_ufv = $response->data['previous_procedure']->ufv;
 				break;
 			default:
 				abort(404);

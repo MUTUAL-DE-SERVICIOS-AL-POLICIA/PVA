@@ -166,7 +166,7 @@
                         <td>{{ ++$index2 }}</td>
                         <td>{{ $employee->ci_ext }}</td>
                         <td class="name">{{ $employee->full_name }}</td>
-                        @php ($tribute = Payroll::tribute_calculation($employee->net_salary, $employee->discount_rc_iva, $employee->previous_month_balance, $title->minimun_salary, $title->ufv))
+                        @php ($tribute = Payroll::tribute_calculation($employee->net_salary, $employee->discount_rc_iva, $employee->previous_month_balance, $title->minimun_salary, $title->ufv, $title->previous_ufv))
                         <td>{{ Util::format_number($employee->net_salary) }}</td>
                         <td>{{ Util::format_number($tribute->min_disponible) }}</td>
                         <td>{{ Util::format_number($tribute->dif_salario_min_disponible) }}</td>
@@ -209,7 +209,7 @@
                     <td>{{ $employee->ci_ext }}</td>
                     <td class="name">{{ $employee->full_name }}</td>
                 @if ($title->report_type == 'T')
-                    @php ($tribute = Payroll::tribute_calculation($employee->net_salary, $employee->discount_rc_iva, $employee->previous_month_balance, $title->minimun_salary, $title->ufv))
+                    @php ($tribute = Payroll::tribute_calculation($employee->net_salary, $employee->discount_rc_iva, $employee->previous_month_balance, $title->minimun_salary, $title->ufv,  $title->previous_ufv))
                     <td>{{ Util::format_number($employee->net_salary) }}</td>
                     <td>{{ Util::format_number($tribute->min_disponible) }}</td>
                     <td>{{ Util::format_number($tribute->dif_salario_min_disponible) }}</td>

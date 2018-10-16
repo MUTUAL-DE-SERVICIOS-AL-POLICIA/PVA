@@ -144,4 +144,28 @@ class ProcedureController extends Controller
 	{
 		return Procedure::leftjoin('months as m', 'm.id', '=', 'month_id')->orderBy('year', ($order == 'last') ? 'DESC' : 'ASC')->orderBy('m.order', ($order == 'last') ? 'DESC' : 'ASC')->select('procedures.*')->first();
 	}
+
+	/**
+	 * Update a pay_date procedures stored in DB.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function pay_date($id, $date)
+	{
+		$day = Carbon::parse($date)->day;
+ 		$month = Carbon::parse($date)->month;
+ 		$year = Carbon::parse($date)->year;
+
+    	$content = file_get_contents('https://www.bcb.gob.bo/librerias/indicadores/ufv/gestion.php?sdd='.$day.'&smm='.$month.'&saa='.$year.'&Button=++Ver++&reporte_pdf='.$month.'*'.$day.'*'.$year.'**'.$month.'*'.$day.'*'.$year.'*&edd='.$day.'&emm='.$month.'&eaa='.$year.'&qlist=1');    	
+        $patron = '|<div align="center">(.*?)</div>|is';
+        preg_match_all($patron, $content, $extracto);
+        $ufv = trim($extracto[1][1]);
+
+
+        $procedure = Procedure::find($id);
+		$procedure->pay_date = $date;
+		$procedure->ufv = floatval(str_replace(',', '.', $ufv));
+		$procedure->save();
+		return $procedure;
+	}
 }

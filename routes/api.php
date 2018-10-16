@@ -76,6 +76,7 @@ Route::group([
 		Route::get('procedure/{id}', 'Api\V1\ProcedureController@show')->name('procedure_details');
 		Route::get('procedure/date/{id}', 'Api\V1\ProcedureController@date')->name('procedure_dates');
 		Route::get('procedure/order/{order}', 'Api\V1\ProcedureController@order')->name('procedure_last');
+		Route::get('procedure/pay_date/{id}/{date}', 'Api\V1\ProcedureController@pay_date')->name('pay_date');
 		Route::group([
 			'prefix' => 'procedure/year',
 		], function () {
