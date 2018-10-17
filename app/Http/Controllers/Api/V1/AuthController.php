@@ -45,6 +45,7 @@ class AuthController extends Controller
 
 			if ($ldap->connection && $ldap->verify_open_port()) {
 				if ($ldap->bind($request['username'], $request['password'])) {
+					$ldap->unbind();
 					$user = User::where('username', $request['username'])->first();
 					if ($user) {
 						if ($user->active) {

@@ -87,6 +87,13 @@ class Handler extends ExceptionHandler
 					'type' => ['No autorizado'],
 				]
 			], 403);
+		} elseif ($exception instanceof HttpException && $exception->getStatusCode() == 409) {
+			return response()->json([
+				'message' => 'Conflict',
+				'errors' => [
+					'type' => ['El registro ya existe'],
+				]
+			], 409);
 		} else {
 			LOG::error('Error inesperado: ' . $exception);
 		}
