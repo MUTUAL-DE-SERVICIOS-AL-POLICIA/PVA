@@ -8,7 +8,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.2.11",
+        "php": "^7.2.10",
         "barryvdh/laravel-cors": "^v0.11.2",
         "barryvdh/laravel-snappy": "^v0.4.3",
         "fideloper/proxy": "^4.0.0",
