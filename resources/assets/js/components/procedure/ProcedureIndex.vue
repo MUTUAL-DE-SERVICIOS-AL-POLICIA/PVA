@@ -37,6 +37,14 @@
                     label="Fecha de Pago"
                     prepend-icon="event"
                     disabled
+                    v-if="procedure.pay_date"
+                  ></v-text-field>
+                  <v-text-field
+                    slot="activator"                    
+                    label="Fecha de Pago"
+                    prepend-icon="event"
+                    disabled
+                    v-else
                   ></v-text-field>
                 </v-flex>
               </v-card-title>

@@ -400,7 +400,9 @@ export default {
           `/procedure/${this.$route.params.id}/discounts`
         );
         this.procedure = res.data;
-        this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
+        if (res.data.pay_date){
+          this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
+        }
       } catch (e) {
         console.log(e);
       }
@@ -555,7 +557,15 @@ export default {
       }
     },
     async updatePayDate(id, date) {
-      let res = await axios.get('/api/v1/procedure/pay_date/'+ id +'/' + date);
+      try{
+        await axios.get('/procedure/pay_date/'+ id +'/' + date);
+        this.toastr.success(
+          `Registrado correctamente`
+        );
+      } catch(e) {
+        console.log(e);
+      }
+
     }
   }
 };
