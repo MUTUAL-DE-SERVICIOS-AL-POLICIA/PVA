@@ -55,12 +55,16 @@ class UserController extends Controller
 			$employee = Employee::findOrFail(request("employee_id"));
 			$ldap = new Ldap();
 			$user = new User();
-			$username = $ldap->get_entry($employee->id)['uid'];
+			$entry = $ldap->get_entry($employee->id);
+			$username = $entry['uid'];
 
 			if ($username) {
 				$user->username = $username;
+				$user->name = implode(' ', [$entry['givenName'], $entry['sn']]);
+				$user->position = $entry['title'];
 				$user->password = Hash::make($username);
 				$user->save();
+
 				return $user;
 			}
 			abort(409);

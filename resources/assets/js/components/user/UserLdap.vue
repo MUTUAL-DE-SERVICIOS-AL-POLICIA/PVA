@@ -13,7 +13,7 @@
           <td class="text-xs-center">{{ props.item.givenName }} {{ props.item.sn }}</td>
           <td class="text-xs-center">{{ props.item.title }}</td>
           <td class="text-xs-center">
-            <v-tooltip top>
+            <v-tooltip top v-if="!props.item.added">
               <v-btn slot="activator" flat icon color="primary" @click.native="createUser(props.item.employeeNumber)">
                 <v-icon>add_circle</v-icon>
               </v-btn>
@@ -91,10 +91,13 @@ export default {
       try {
         let res = await axios.get("/ldap");
         this.users = _.sortBy(res.data, "uid");
-        this.registeredUsers.forEach(value => {
-          this.users = this.users.filter(function(obj) {
-            return obj.uid != value;
-          });
+
+        this.registeredUsers.forEach(uid => {
+          let obj = this.users.find(el => el.uid == uid);
+          if (obj) {
+            let index = this.users.indexOf(obj);
+            this.users.fill((obj.added = true), index, index++);
+          }
         });
       } catch (e) {
         console.log(e);

@@ -46,41 +46,25 @@ class AuthController extends Controller
 			if ($ldap->connection && $ldap->verify_open_port()) {
 				if ($ldap->bind($request['username'], $request['password'])) {
 					$ldap->unbind();
-					$user = User::where('username', $request['username'])->first();
+					$user = User::where('username', $request['username'])->where('active', true)->first();
 					if ($user) {
-						if ($user->active) {
-							if (!Hash::check($request['password'], $user->password)) {
-								$user->password = Hash::make($request['password']);
-								$user->remember_token = null;
-								$user->save();
-							}
-						} else {
-							return response()->json([
-								'message' => 'No autorizado',
-								'errors' => [
-									'type' => ['Usuario inactivo'],
-								],
-							], 401);
+						if (!Hash::check($request['password'], $user->password)) {
+							$user->password = Hash::make($request['password']);
+							$user->remember_token = null;
+							$user->save();
 						}
-					} else {
-						$user = new User();
-						$user->username = $request['username'];
-						$user->password = Hash::make($request['password']);
-						$user->active = false;
+						$token = auth('api')->login($user);
+						$user->remember_token = $token;
 						$user->save();
-						return response()->json([
-							'message' => 'No autorizado',
-							'errors' => [
-								'type' => ['Usuario inactivo'],
-							],
-						], 401);
+						return $this->respondWithToken($token);
 					}
-					$token = auth('api')->attempt(request(['username', 'password']));
-					$user->remember_token = $token;
-					$user->save();
-
-					return $this->respondWithToken($token);
 				}
+				return response()->json([
+					'message' => 'No autorizado',
+					'errors' => [
+						'type' => ['Usuario o contraseña incorrectos'],
+					],
+				], 401);
 			}
 		}
 

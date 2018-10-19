@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Employee;
+use App\User;
 use Ldap;
 
 class LdapController extends Controller
@@ -23,10 +23,9 @@ class LdapController extends Controller
   /**
    * Store a newly created resource in storage.
    *
-   * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store()
   {
     $ldap = new Ldap();
 
@@ -46,9 +45,14 @@ class LdapController extends Controller
       $new_entry = Employee::findOrFail($e);
       $last_contract = $new_entry->last_contract();
       if ($last_contract) {
+        $givenName = $new_entry->first_name;
+        if ($new_entry->second_name) $givenName .= ' ' . $new_entry->second_name;
+        $sn = $new_entry->last_name;
+        if ($new_entry->mothers_last_name) $sn .= ' ' . $new_entry->mothers_last_name;
+
         if ($ldap->create_entry([
-          'sn' => implode(' ', [$new_entry->last_name, $new_entry->mothers_last_name]),
-          'givenName' => implode(' ', [$new_entry->first_name, $new_entry->second_name]),
+          'sn' => $sn,
+          'givenName' => $givenName,
           'title' => $new_entry->last_contract()->position->name,
           'employeeNumber' => $new_entry->id
         ])) {
@@ -102,17 +106,24 @@ class LdapController extends Controller
 
   /**
    * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
   public function update($id)
   {
     $ldap = new Ldap();
+    $old_entry = $ldap->get_entry($id);
 
     $employee = Employee::findOrFail($id);
     $last_contract = $employee->last_contract();
+
+    $user = User::where('username', $old_entry['uid'])->where('active', true)->first();
+
+    if ($user) {
+      $user->name = implode(' ', [$old_entry['givenName'], $old_entry['sn']]);
+      $user->position = $employee->last_contract()->position->name;
+      $user->save();
+    }
 
     return response()->json([
       'employee' => $employee,
