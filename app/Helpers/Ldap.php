@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Util;
+
 class Ldap
 {
   private $config;
@@ -23,14 +25,13 @@ class Ldap
 
     $this->config['account_suffix'] = implode(',', [env("LDAP_ACCOUNT_SUFFIX"), $this->config['base_dn']]);
 
-    $this->config['ldap_url'] = 'ldap://' . $this->config['ldap_host'];
+    $this->config['ldap_url'] = $this->config['ldap_ssl'] ? 'ldaps://' : 'ldap://';
+    $this->config['ldap_url'] .= $this->config['ldap_host'];
 
     $this->connection = @ldap_connect($this->config['ldap_url'], $this->config['ldap_port']);
 
-    if ($this->config['ldap_ssl'] && $this->connection) {
-      ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, 3);
-      ldap_set_option($this->connection, LDAP_OPT_REFERRALS, 0);
-    }
+    ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, 3);
+    ldap_set_option($this->connection, LDAP_OPT_REFERRALS, 0);
   }
 
   public function verify_open_port()
@@ -147,8 +148,6 @@ class Ldap
       if ($this->bind_admin()) {
         $deleted = @ldap_delete($this->connection, $this->config['user_id_key'] . '=' . $uid . ',' . $this->config['account_suffix']);
 
-        $this->unbind();
-
         return $deleted;
       }
     }
@@ -159,41 +158,9 @@ class Ldap
     if ($this->connection && $this->verify_open_port()) {
       if ($this->bind_admin()) {
         if (!$this->entry_exists($data['employeeNumber'])) {
-          $firstname = explode(' ', $data['givenName']);
-          $surnames = explode(' ', $data['sn']);
-
-          $i = 0;
-          do {
-            switch ($i) {
-              case 0:
-                $uid = substr($firstname[0], 0, 1) . $surnames[0];
-                $data["cn"] = implode(' ', [$firstname[0], $surnames[0]]);
-                break;
-              case 1:
-                if (count($firstname) > 1) {
-                  $uid = substr($firstname[0], 0, 1) . substr($firstname[1], 0, 1) . $surnames[0];
-                  $data["cn"] = implode(' ', [$firstname[0], $firstname[1], $surnames[0]]);
-                }
-                break;
-              case 2:
-                if (count($surnames) > 1) {
-                  $uid = substr($firstname[0], 0, 1) . $surnames[0] . substr($surnames[1], 0, 1);
-                  $data["cn"] = implode(' ', [$firstname[0], $surnames[0], $surnames[1]]);
-                }
-                break;
-              case 3:
-                if (count($firstname) > 1 && count($surnames) > 1) {
-                  $uid = substr($firstname[0], 0, 1) . substr($firstname[1], 0, 1) . $surnames[0] . substr($surnames[1], 0, 1);
-                  $data["cn"] = implode(' ', [$firstname[0], $firstname[1], $surnames[0], $surnames[1]]);
-                }
-                break;
-              default:
-                $uid = substr($firstname[0], 0, 1) . $surnames[0] . ($i - 3);
-                $data["cn"] = implode(' ', [$firstname[0], $surnames[0], ($i - 3)]);
-            }
-            $i++;
-          } while ($this->entry_exists($uid, 'uid'));
-          $uid = strtolower($uid);
+          $valid_uid = $this->valid_uid($data);
+          $data = $valid_uid['data'];
+          $uid = $valid_uid['uid'];
 
           $domain = [];
           foreach (explode(',', $this->config['base_dn']) as $value) {
@@ -209,13 +176,55 @@ class Ldap
 
           $added = @ldap_add($this->connection, $this->config['user_id_key'] . '=' . $uid . ',' . $this->config['account_suffix'], $data);
 
-          $this->unbind();
-
           return $added;
         }
         return null;
       }
     }
+  }
+
+  private function valid_uid($data)
+  {
+    $firstname = explode(' ', $data['givenName']);
+    $surnames = explode(' ', $data['sn']);
+
+    $i = 0;
+    do {
+      switch ($i) {
+        case 0:
+          $uid = substr($firstname[0], 0, 1) . $surnames[0];
+          $data["cn"] = implode(' ', [$firstname[0], $surnames[0]]);
+          break;
+        case 1:
+          if (count($firstname) > 1) {
+            $uid = substr($firstname[0], 0, 1) . substr($firstname[1], 0, 1) . $surnames[0];
+            $data["cn"] = implode(' ', [$firstname[0], $firstname[1], $surnames[0]]);
+          }
+          break;
+        case 2:
+          if (count($surnames) > 1) {
+            $uid = substr($firstname[0], 0, 1) . $surnames[0] . substr($surnames[1], 0, 1);
+            $data["cn"] = implode(' ', [$firstname[0], $surnames[0], $surnames[1]]);
+          }
+          break;
+        case 3:
+          if (count($firstname) > 1 && count($surnames) > 1) {
+            $uid = substr($firstname[0], 0, 1) . substr($firstname[1], 0, 1) . $surnames[0] . substr($surnames[1], 0, 1);
+            $data["cn"] = implode(' ', [$firstname[0], $firstname[1], $surnames[0], $surnames[1]]);
+          }
+          break;
+        default:
+          $uid = substr($firstname[0], 0, 1) . $surnames[0] . ($i - 3);
+          $data["cn"] = implode(' ', [$firstname[0], $surnames[0], ($i - 3)]);
+      }
+      $i++;
+    } while ($this->entry_exists($uid, 'uid'));
+    $uid = strtolower(Util::sanitize_word($uid));
+
+    return [
+      'data' => $data,
+      'uid' => $uid
+    ];
   }
 
   public function modify_entry($id, $data, $type = 'id')
@@ -235,8 +244,6 @@ class Ldap
 
         $updated = @ldap_modify($this->connection, $this->config['user_id_key'] . '=' . $uid . ',' . $this->config['account_suffix'], $data);
 
-        $this->unbind();
-
         return $updated;
       }
     }
@@ -248,6 +255,7 @@ class Ldap
       if ($this->bind_admin()) {
         $search = ldap_search($this->connection, $this->config['account_suffix'], "(|(" . $this->config['user_id_key'] . "=*))", array($this->config['user_id_key'], "title", "givenName", "cn", "sn", "mail", "employeenumber"));
         $entries = ldap_get_entries($this->connection, $search);
+
         $result = [];
 
         foreach ($entries as $key => $value) {
@@ -265,10 +273,10 @@ class Ldap
           }
         }
 
-        $this->unbind();
         return $result;
       }
     }
+    abort(500);
   }
 
   public function hash_password($password)
@@ -287,8 +295,6 @@ class Ldap
       $new_password = array('userPassword' => $this->hash_password($new_password));
 
       $update = @ldap_mod_replace($this->connection, $this->config['user_id_key'] . '=' . $username . ',' . $this->config['account_suffix'], $new_password);
-
-      $this->unbind();
 
       return $update;
     }

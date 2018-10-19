@@ -162,7 +162,7 @@ Route::group([
 			'middleware' => 'role:admin',
 		], function () {
 			// User
-			Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update', 'destroy']);
+			Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update']);
 			Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'destroy']);
 			// Role
 			Route::get('role', 'Api\V1\RoleController@index')->name('roles_list');

@@ -80,20 +80,50 @@ class Handler extends ExceptionHandler
 					'type' => [$error_message],
 				]
 			], $code);
-		} elseif ($exception instanceof HttpException && $exception->getStatusCode() == 403) {
-			return response()->json([
-				'message' => 'Forbidden',
-				'errors' => [
-					'type' => ['No autorizado'],
-				]
-			], 403);
-		} elseif ($exception instanceof HttpException && $exception->getStatusCode() == 409) {
-			return response()->json([
-				'message' => 'Conflict',
-				'errors' => [
-					'type' => ['El registro ya existe'],
-				]
-			], 409);
+		} elseif ($exception instanceof HttpException) {
+			switch ($exception->getStatusCode()) {
+				case 401:
+					return response()->json([
+						'message' => 'Unauthorized',
+						'exception' => $exception,
+						'errors' => [
+							'type' => ['Sesión caducada'],
+						]
+					], $exception->getStatusCode());
+				case 403:
+					return response()->json([
+						'message' => 'Forbidden',
+						'errors' => [
+							'type' => ['No autorizado'],
+						]
+					], $exception->getStatusCode());
+					break;
+				case 409:
+					return response()->json([
+						'message' => 'Conflict',
+						'errors' => [
+							'type' => ['El registro ya existe'],
+						]
+					], $exception->getStatusCode());
+					break;
+				case 500:
+					return response()->json([
+						'message' => 'Internal Server Error',
+						'exception' => $exception,
+						'errors' => [
+							'type' => ['Error interno del servidor'],
+						]
+					], $exception->getStatusCode());
+					break;
+				default:
+					return response()->json([
+						'message' => 'Internal Server Error',
+						'exception' => $exception,
+						'errors' => [
+							'type' => ['Error ' . $exception->getStatusCode()],
+						]
+					], $exception->getStatusCode());
+			}
 		} else {
 			LOG::error('Error inesperado: ' . $exception);
 		}

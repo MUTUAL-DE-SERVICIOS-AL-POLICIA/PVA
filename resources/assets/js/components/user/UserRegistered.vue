@@ -65,6 +65,9 @@ export default {
   mounted() {
     this.getRoles();
     this.getUsers();
+    this.bus.$on("closeDialog", () => {
+      this.$router.go(0);
+    });
   },
   methods: {
     verifyRole(roles, role) {
@@ -124,7 +127,6 @@ export default {
     },
     removeItem(user) {
       this.bus.$emit("openDialogRemove", `/user/${user.id}`);
-      this.getUsers();
     }
   }
 };

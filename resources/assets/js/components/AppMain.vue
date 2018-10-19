@@ -68,7 +68,7 @@
     </v-content>
     <v-footer :fixed="fixed" app>
       <v-spacer></v-spacer>
-      <span class="font-weight-thin caption">MUSERPOL <span class="copyleft">&copy;</span> - 2018</span>
+      <span class="font-weight-thin caption mr-2">MUSERPOL <span class="copyleft">&copy;</span> - 2018</span>
     </v-footer>
   </v-app>
 </template>
