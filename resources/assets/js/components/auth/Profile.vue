@@ -17,6 +17,18 @@
         <v-flex xs10>
           {{ $store.getters.currentUser.roles[0].display_name }}
         </v-flex>
+        <v-flex xs2 font-weight-bold v-if="$store.getters.currentUser.name">
+          Nombre:
+        </v-flex>
+        <v-flex xs10 v-if="$store.getters.currentUser.name">
+          {{ $store.getters.currentUser.name }}
+        </v-flex>
+        <v-flex xs2 font-weight-bold v-if="$store.getters.currentUser.position">
+          Cargo:
+        </v-flex>
+        <v-flex xs10 v-if="$store.getters.currentUser.position">
+          {{ $store.getters.currentUser.position }}
+        </v-flex>
       </v-card-title>
       <v-card-text v-if="!$store.getters.ldapAuth || this.$store.getters.currentUser.username == 'admin'">
         <span class="info--text">Cambiar Contraseña</span>
@@ -58,7 +70,7 @@
           </v-form>
         </v-flex>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions v-if="!$store.getters.ldapAuth || this.$store.getters.currentUser.username == 'admin'">
         <v-flex xs3>
           <v-btn
             @click="changePassword(auth)"

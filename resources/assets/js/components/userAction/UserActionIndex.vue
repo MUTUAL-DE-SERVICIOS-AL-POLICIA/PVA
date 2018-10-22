@@ -26,7 +26,15 @@
     >
       <template slot="items" slot-scope="props">
         <tr>
-          <td class="text-md-center" @click="props.expanded = !props.expanded">{{ (props.item.user) ? props.item.user.username : '-' }}</td>
+          <td class="text-md-center" @click="props.expanded = !props.expanded">
+            <v-tooltip right v-if="props.item.user">
+              <span slot="activator">{{ (props.item.user) ? props.item.user.name : '-' }}</span>
+              <span>{{ props.item.user.position }}</span>
+            </v-tooltip>
+            <span v-else>
+              {{ (props.item.user) ? props.item.user.name : '-' }}
+            </span>
+          </td>
           <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.method }}</td>
           <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.path }}</td>
           <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.created_at | moment('LL') }}</td>

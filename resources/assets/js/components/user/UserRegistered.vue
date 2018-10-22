@@ -10,7 +10,20 @@
     >
       <template slot="items" slot-scope="props">
         <tr>
-          <td class="text-xs-center">{{ props.item.username }}</td>
+          <td class="text-xs-center">
+            <v-tooltip right v-if="props.item.name">
+              <span slot="activator">
+                {{ props.item.username }}
+              </span>
+              <span>
+                <div>{{ props.item.name }}</div>
+                <div>{{ props.item.position }}</div>
+              </span>
+            </v-tooltip>
+            <span v-else>
+              {{ props.item.username }}
+            </span>
+          </td>
           <td
             v-for="(role, index) in roles"
             v-bind:item="role"
@@ -65,6 +78,9 @@ export default {
   mounted() {
     this.getRoles();
     this.getUsers();
+    this.bus.$on("closeDialog", () => {
+      this.$router.go(0);
+    });
   },
   methods: {
     verifyRole(roles, role) {
@@ -124,7 +140,6 @@ export default {
     },
     removeItem(user) {
       this.bus.$emit("openDialogRemove", `/user/${user.id}`);
-      this.getUsers();
     }
   }
 };

@@ -171,6 +171,7 @@ export default {
         {
           align: "center",
           text: "Acciones",
+          value: "second_name",
           sortable: false
         }
       ],

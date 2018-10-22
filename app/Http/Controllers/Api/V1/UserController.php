@@ -11,7 +11,7 @@ use App\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-
+use Ldap;
 /** @resource User
  *
  * Resource to retrieve, show, update and destroy User data
@@ -26,7 +26,7 @@ class UserController extends Controller
 	 */
 	public function index()
 	{
-		return User::with('roles')->orderBy('username')->get();
+		return User::where('active', true)->with('roles')->orderBy('username')->get();
 	}
 
 	/**
@@ -52,7 +52,22 @@ class UserController extends Controller
 			$user->save();
 			return $user;
 		} else {
-			abort(400);
+			$employee = Employee::findOrFail(request("employee_id"));
+			$ldap = new Ldap();
+			$user = new User();
+			$entry = $ldap->get_entry($employee->id);
+			$username = $entry['uid'];
+
+			if ($username) {
+				$user->username = $username;
+				$user->name = implode(' ', [$entry['givenName'], $entry['sn']]);
+				$user->position = $entry['title'];
+				$user->password = Hash::make($username);
+				$user->save();
+
+				return $user;
+			}
+			abort(409);
 		}
 	}
 
@@ -64,7 +79,11 @@ class UserController extends Controller
 	 */
 	public function show($id)
 	{
-		return User::findOrFail($id);
+		$user = User::findOrFail($id);
+		if ($user->active) {
+			return $user;
+		}
+		abort(404);
 	}
 
 	/**
@@ -103,7 +122,8 @@ class UserController extends Controller
 		if (UserAction::where('user_id', $id)->count() == 0) {
 			$user = User::findOrFail($id);
 			if ($user->username != 'admin') {
-				$user->delete();
+				$user->active = false;
+				$user->save();
 				return $user;
 			} else {
 				return response()->json([
