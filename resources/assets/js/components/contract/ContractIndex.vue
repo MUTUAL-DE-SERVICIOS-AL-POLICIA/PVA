@@ -61,7 +61,7 @@
                 </span>
               </v-tooltip>
             </td>
-            <td class="justify-center layout">
+            <td class="justify-center layout" v-if="options.length > 0">
               <v-menu offset-y>
                 <v-btn slot="activator" flat icon color="info">
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
@@ -163,7 +163,7 @@ export default {
         sortable: true
       },
       {
-        text: "Opciones",
+        text: "Acciones",
         value: "employee.first_name",
         align: "center",
         sortable: false
@@ -201,11 +201,17 @@ export default {
         this.options = this.$store.getters.menuLeft[i].options;
       }
     }
+    if (!this.options.includes("edit")) {
+      this.headers = this.headers
+        .filter(el => {
+          return el.text != "Acciones";
+        });
+    }
   },
   methods: {
     async getContracts(active = this.active) {
       try {
-        let res = await axios.get(`/api/v1/contract`);
+        let res = await axios.get(`/contract`);
         this.contractsActive = res.data.filter(obj => {
           return obj.active === true;
         });
@@ -227,14 +233,14 @@ export default {
     },
     async removeItem(item) {
       let payroll = await axios.get(
-        "/api/v1/payroll/getpayrollcontract/" + item.id
+        "/payroll/getpayrollcontract/" + item.id
       );
       if (payroll.data) {
         alert(
           "No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS"
         );
       } else {
-        this.bus.$emit("openDialogRemove", `/api/v1/contract/${item.id}`);
+        this.bus.$emit("openDialogRemove", `/contract/${item.id}`);
       }
     },
     fullName(employee) {
@@ -274,7 +280,7 @@ export default {
       try {
         let res = await axios({
           method: "GET",
-          url: `/api/v1/contract/print/${item.id}/${type}`,
+          url: `/contract/print/${item.id}/${type}`,
           responseType: "arraybuffer"
         });
         let blob = new Blob([res.data], {

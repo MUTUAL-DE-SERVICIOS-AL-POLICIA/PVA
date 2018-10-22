@@ -47,6 +47,7 @@ Route::group([
 		Route::get('payroll/print/pdf/{year}/{month}', 'Api\V1\PayrollPrintController@print_pdf')->name('print_pdf_payroll');
 		Route::get('payroll/print/txt/{year}/{month}', 'Api\V1\PayrollPrintController@print_txt')->name('print_txt_payroll');
 		Route::get('payroll/print/ovt/{year}/{month}', 'Api\V1\PayrollPrintController@print_ovt')->name('print_ovt_payroll');
+		Route::get('payroll/print/afp/{management_entity_id}/{year}/{month}', 'Api\V1\PayrollPrintController@print_afp')->name('print_ovt_payroll');
 		Route::get('payroll/certificate/{id}', 'Api\V1\PayrollPrintController@certificate')->name('certificate_payroll');
 		Route::get('payroll/print/certificate/{id}', 'Api\V1\PayrollPrintController@print_certificate')->name('print_certificate_payroll');
 		// Payroll-Contract
@@ -76,6 +77,7 @@ Route::group([
 		Route::get('procedure/{id}', 'Api\V1\ProcedureController@show')->name('procedure_details');
 		Route::get('procedure/date/{id}', 'Api\V1\ProcedureController@date')->name('procedure_dates');
 		Route::get('procedure/order/{order}', 'Api\V1\ProcedureController@order')->name('procedure_last');
+		Route::get('procedure/pay_date/{id}/{date}', 'Api\V1\ProcedureController@pay_date')->name('pay_date');
 		Route::group([
 			'prefix' => 'procedure/year',
 		], function () {
@@ -154,13 +156,18 @@ Route::group([
 		Route::get('document/{id}', 'Api\V1\DocumentController@show')->name('document_details');
 		Route::get('document_type', 'Api\V1\DocumentTypeController@index')->name('document_type_list');
 		Route::get('document_type/{id}', 'Api\V1\DocumentTypeController@show')->name('document_type_details');
-
+		// Departure
+		Route::get('departure_type', 'Api\V1\DepartureTypeController@index')->name('departure_type_list');
+		Route::get('departure_reason', 'Api\V1\DepartureReasonController@index')->name('departure_reason_list');
+		Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
+		Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update']);
 		// ADMIN routes
 		Route::group([
 			'middleware' => 'role:admin',
 		], function () {
 			// User
-			Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'delete']);
+			Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update']);
+			Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'destroy']);
 			// Role
 			Route::get('role', 'Api\V1\RoleController@index')->name('roles_list');
 			Route::get('role/{id}', 'Api\V1\RoleController@show')->name('role_details');

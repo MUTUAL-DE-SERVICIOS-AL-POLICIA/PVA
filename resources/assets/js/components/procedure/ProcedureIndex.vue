@@ -27,7 +27,26 @@
           >
             <v-card :color="procedure.active ? 'warning' : 'green lighten-4'" height="100%">
               <v-card-title>
-                <div class="font-weight-light display-1">{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</div>
+                <v-flex xs6>
+                  <div class="font-weight-light display-1">{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</div>
+                </v-flex>
+                <v-flex xs6>
+                  <v-text-field
+                    slot="activator"
+                    v-model="$moment(procedure.pay_date).format('DD/MM/YYYY')"
+                    label="Fecha de Pago"
+                    prepend-icon="event"
+                    disabled
+                    v-if="procedure.pay_date"
+                  ></v-text-field>
+                  <v-text-field
+                    slot="activator"                    
+                    label="Fecha de Pago"
+                    prepend-icon="event"
+                    disabled
+                    v-else
+                  ></v-text-field>
+                </v-flex>
               </v-card-title>
               <v-progress-linear :indeterminate="true" v-if="loading"></v-progress-linear>
               <div v-else>
@@ -41,25 +60,47 @@
                   </v-btn>
                   <v-btn icon v-if="options.includes('ticket')">
                     <v-tooltip top>
-                      <v-btn slot="activator" icon flat @click.prevent="print(`/api/v1/ticket/print/${procedure.id}`)">
+                      <v-btn slot="activator" icon flat @click.prevent="print(`/ticket/print/${procedure.id}`)">
                         <v-icon :color="procedure.active ? 'info' : 'primary'">print</v-icon>
                       </v-btn>
                       <span>Imprimir boletas</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/api/v1/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="options.includes('bank')">
+                  <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="options.includes('bank')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                       <span>TXT Banco</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/api/v1/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="options.includes('ovt')">
+                  <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="options.includes('ovt')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">work</v-icon>
                       <span>CSV OVT</span>
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
+                  <v-menu offset-y class="mr-2" v-if="options.includes('afp')">
+                    <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
+                      <span>AFP</span>
+                      <v-icon small>arrow_drop_down</v-icon>
+                    </v-btn>
+                    <v-card
+                      class="scroll-y"
+                    >
+                      <v-list
+                        v-for="(item, index) in managementEntities"
+                        v-bind:item="item"
+                        v-bind:index="index"
+                        v-bind:key="item.id"
+                      >
+                        <div>
+                          <v-list-tile @click="xls(`/payroll/print/afp/${item.id}/${procedure.year}/${procedure.month_order}`)">
+                            <span class="caption">{{ item.name }}</span>
+                          </v-list-tile>
+                        </div>
+                      </v-list>
+                    </v-card>
+                  </v-menu>
                   <v-menu offset-y v-if="options.includes('payroll')">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>Planillas</span>
@@ -76,12 +117,12 @@
                         v-bind:key="item.id"
                       >
                         <div v-if="item == 'H'">
-                          <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${item}&report_name=B-${index}&valid_contracts=1&with_account=1`)">
+                          <v-list-tile @click="print(`/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${item}&report_name=B-${index}&valid_contracts=1&with_account=1`)">
                             <span class="caption">B-{{ ++index }} ({{ item }}.)</span>
                           </v-list-tile>
                         </div>
                         <div v-else-if="item == 'P'">
-                          <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=P&report_name=B-2&valid_contracts=0&with_account=0&management_entity=0&position_group=0&employer_number=1`)">
+                          <v-list-tile @click="print(`/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=P&report_name=B-2&valid_contracts=0&with_account=0&management_entity=0&position_group=0&employer_number=1`)">
                             <span class="caption">B-{{ ++index }} ({{ item }}.)</span>
                           </v-list-tile>
                         </div>
@@ -92,15 +133,15 @@
                         v-bind:index="index"
                         v-bind:key="item.id"
                       >
-                        <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${item}&report_name=A-${index}&valid_contracts=0&with_account=0`)">
+                        <v-list-tile @click="print(`/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${item}&report_name=A-${index}&valid_contracts=0&with_account=0`)">
                           <span class="caption">A-{{ ++index }} ({{ item }}.)</span>
                         </v-list-tile>
                       </v-list>
                       <v-list>
-                        <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=T&report_name=A-3&valid_contracts=0&with_account=0`)">
+                        <v-list-tile @click="print(`/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=T&report_name=A-3&valid_contracts=0&with_account=0`)">
                           <span class="caption">A-3 (T.)</span>
                         </v-list-tile>
-                        <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=T&report_name=A-8&valid_contracts=0&with_account=0`)">
+                        <v-list-tile @click="print(`/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=T&report_name=A-8&valid_contracts=0&with_account=0`)">
                           <span class="caption">A-8 (T.)</span>
                         </v-list-tile>
                       </v-list>
@@ -116,7 +157,7 @@
                           v-bind:index="indexM"
                           v-bind:key="m.id"
                         >
-                          <v-list-tile @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${t}&report_name=A-${parseInt(`${indexT}${indexM}`, 2) + 4}&valid_contracts=0&with_account=0&management_entity=${m.id}`)">
+                          <v-list-tile @click="print(`/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${t}&report_name=A-${parseInt(`${indexT}${indexM}`, 2) + 4}&valid_contracts=0&with_account=0&management_entity=${m.id}`)">
                             <span class="caption">A-{{ parseInt(`${indexT}${indexM}`, 2) + 4 }} ({{ t }}. AFP {{ m.name }})</span>
                           </v-list-tile>
                         </div>
@@ -137,7 +178,7 @@
                             <v-list-tile
                               slot="activator"
                               v-if="e.cities.length > 0"
-                              @click="print(`/api/v1/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${t}&report_name=${t}-${indexT+indexE+4}&valid_contracts=0&with_account=0&management_entity=0&position_group=0&employer_number=${e.id}`)"
+                              @click="print(`/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=${t}&report_name=${t}-${indexT+indexE+4}&valid_contracts=0&with_account=0&management_entity=0&position_group=0&employer_number=${e.id}`)"
                             >
                               <span class="caption">{{ t }}-{{ e.id }} ({{ t }}.</span>
                               <span
@@ -178,7 +219,6 @@
 <script>
 import Vue from "vue";
 import ProcedureAdd from "./ProcedureAdd";
-
 export default {
   name: "ProcedureIndex",
   components: {
@@ -208,7 +248,7 @@ export default {
     this.getYears();
     this.getManagementEntities();
     this.getEmployerNumbers();
-    this.bus.$on("closeDialog", (year) => {
+    this.bus.$on("closeDialog", year => {
       this.getYears(year);
       this.changeYear();
     });
@@ -223,13 +263,13 @@ export default {
   methods: {
     async getLastProcedure() {
       try {
-        let res = await axios.get(`/api/v1/procedure/order/last`);
+        let res = await axios.get(`/procedure/order/last`);
         if (res.data.id) {
           if (!res.data.active) {
-            res = await axios.get(`/api/v1/procedure/date/${res.data.id}`);
+            res = await axios.get(`/procedure/date/${res.data.id}`);
             let newDate = this.$moment(res.data.first_date).add(1, "months");
             this.newProcedure.year = newDate.year();
-            res = await axios.get(`/api/v1/month/order/${newDate.month() + 1}`);
+            res = await axios.get(`/month/order/${newDate.month() + 1}`);
             this.newProcedure.month_id = res.data.id;
             this.newProcedure.month = res.data.order - 1;
           }
@@ -245,6 +285,37 @@ export default {
         return ",";
       }
       return "";
+    },
+    async xls(url) {
+      try {
+        this.loading = true;
+        let res = await axios({
+          method: "GET",
+          url: url,
+          responseType: "arraybuffer"
+        });
+        const blob = new Blob([res.data], {
+          type: res.headers["content-type"]
+        });
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        const contentDisposition = res.headers["content-disposition"];
+        let fileName = "unknown";
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename=(.+)/);
+          if (fileNameMatch.length === 2) {
+            fileName = fileNameMatch[1];
+          }
+        }
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        this.loading = false;
+      } catch (e) {
+        this.loading = false;
+        console.log(e);
+      }
     },
     async print(url) {
       try {
@@ -293,7 +364,7 @@ export default {
     },
     async getEmployerNumbers() {
       try {
-        let res = await axios.get(`/api/v1/employer_number`);
+        let res = await axios.get(`/employer_number`);
         this.employerNumbers = res.data;
       } catch (e) {
         console.log(e);
@@ -301,7 +372,7 @@ export default {
     },
     async getYears(year) {
       try {
-        let res = await axios.get(`/api/v1/procedure/year/list`);
+        let res = await axios.get(`/procedure/year/list`);
         this.years = res.data;
         this.yearSelected = year || Math.max(...this.years);
       } catch (e) {
@@ -310,7 +381,7 @@ export default {
     },
     async getManagementEntities() {
       try {
-        let res = await axios.get(`/api/v1/management_entity`);
+        let res = await axios.get(`/management_entity`);
         this.managementEntities = res.data;
       } catch (e) {
         console.log(e);
@@ -319,7 +390,7 @@ export default {
     async getProcedures(year) {
       try {
         await this.getLastProcedure();
-        let res = await axios.get(`/api/v1/procedure/year/${year}`);
+        let res = await axios.get(`/procedure/year/${year}`);
         this.procedures = res.data;
         if (year == this.newProcedure.year) {
           if (
@@ -349,12 +420,12 @@ export default {
       try {
         this.loading = true;
         let procedure = await axios.post(
-          `/api/v1/procedure`,
+          `/procedure`,
           this.newProcedure
         );
         procedure = procedure.data;
         let payrolls = await axios.post(
-          `/api/v1/procedure/${procedure.id}/payroll`
+          `/procedure/${procedure.id}/payroll`
         );
         payrolls = payrolls.data;
         this.getProcedures(this.newProcedure.year);

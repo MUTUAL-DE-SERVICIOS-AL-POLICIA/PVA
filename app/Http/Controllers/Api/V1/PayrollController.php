@@ -104,7 +104,7 @@ class PayrollController extends Controller
 		return Payroll::where('contract_id', $contract_id)->first();
 	}
 
-	public static function tribute_calculation($salary, $rciva, $mes_anterior, $min_salary, $ufv)
+	public static function tribute_calculation($salary, $rciva, $mes_anterior, $min_salary, $ufv, $previous_ufv)
 	{
 
 		$min_disponible = $min_salary * 2;
@@ -123,16 +123,16 @@ class PayrollController extends Controller
 		$fisco = 0;
 		$dependiente = 0;
 		if (($rciva + $min_disponible_13) < $idf) {
-			$fisco = round($idf - ($rciva + $min_disponible_13));
+			$fisco = round($idf - ($rciva + $min_disponible_13), 2);
 		}
 		if (($rciva + $min_disponible_13) > $idf) {
-			$dependiente = round(($rciva + $min_disponible_13) - $idf);
+			$dependiente = round(($rciva + $min_disponible_13) - $idf, 2);
 		}
 		$saldo_mes_anterior = $mes_anterior;
 		$actualizacion = 0;
 
 		if ($salary >= ($min_salary * 4)) {
-			$actualizacion = $ufv;
+			$actualizacion = $ufv / $previous_ufv;
 		}
 		$total = $saldo_mes_anterior + $actualizacion;
 		$saldo_favor_dependiente = $dependiente + $total;
@@ -153,12 +153,12 @@ class PayrollController extends Controller
 		$tribute['fisco'] = $fisco;
 		$tribute['dependiente'] = $dependiente;
 		$tribute['saldo_mes_anterior'] = $saldo_mes_anterior;
-		$tribute['actualizacion'] = $actualizacion;
+		$tribute['actualizacion'] = round($actualizacion, 8);
 		$tribute['total'] = $total;
 		$tribute['saldo_favor_dependiente'] = $saldo_favor_dependiente;
 		$tribute['saldo_utilizado'] = $saldo_utilizado;
 		$tribute['impuesto_pagar'] = $impuesto_pagar;
-		$tribute['saldo_mes_siguiente'] = $saldo_mes_siguiente;
+		$tribute['saldo_mes_siguiente'] = round($saldo_mes_siguiente);
 		return (object)$tribute;
 	}
 }

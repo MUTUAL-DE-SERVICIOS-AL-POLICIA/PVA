@@ -128,7 +128,7 @@ export default {
   methods: {
     async initialize() {
       try {
-        let company = await axios.get("/api/v1/company");
+        let company = await axios.get("/company");
         this.company = company.data;
       } catch (e) {
         console.log(e);

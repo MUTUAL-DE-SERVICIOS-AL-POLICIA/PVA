@@ -55,7 +55,7 @@ export default {
       try {
         this.loading = true
         let res = await axios.get(
-          `/api/v1/month/order/${Number(this.dateSelected.split("-")[1])}`
+          `/month/order/${Number(this.dateSelected.split("-")[1])}`
         );
         let newProcedure = {
           new: true,
@@ -64,12 +64,12 @@ export default {
           active: true
         };
         let procedure = await axios.post(
-          `/api/v1/procedure`,
+          `/procedure`,
           newProcedure
         );
         procedure = procedure.data;
         let payrolls = await axios.post(
-          `/api/v1/procedure/${procedure.id}/payroll`
+          `/procedure/${procedure.id}/payroll`
         );
         payrolls = payrolls.data;
         this.toastr.success(

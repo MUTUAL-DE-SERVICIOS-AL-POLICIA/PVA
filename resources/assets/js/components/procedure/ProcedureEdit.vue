@@ -4,6 +4,18 @@
       <v-toolbar-title>{{ procedure.month.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <div class="text-xs-center">
+        <v-menu
+        v-model="menuDate"
+        >
+          <v-text-field
+            slot="activator"
+            v-model="selectedDate"
+            label="Fecha de Pago"
+            prepend-icon="event"
+            readonly
+          ></v-text-field>
+          <v-date-picker v-model="date" @input="menuDate = false" @change="updatePayDate(procedure.id, date)" locale="es-bo"></v-date-picker>
+        </v-menu>
         <v-dialog
           v-model="dialogDelete"
           width="500"
@@ -246,7 +258,10 @@ export default {
       },
       payrolls: [],
       contracts: [],
-      search: ""
+      search: "",
+      menuDate: null,
+      date: null,
+      selectedDate: null
     };
   },
   async created() {
@@ -337,14 +352,19 @@ export default {
       ];
     }
   },
+  watch: {
+    date(val) {
+      this.selectedDate = this.$moment(this.date).format("DD/MM/YYYY");
+    },
+  },
   methods: {
     deletePayroll(item) {
-      this.bus.$emit("openDialogRemove", `/api/v1/payroll/${item.id}`);
+      this.bus.$emit("openDialogRemove", `/payroll/${item.id}`);
     },
     async deleteProcedure() {
       try {
         let res = await axios.delete(
-          `/api/v1/payroll/drop/${this.procedure.id}`
+          `/payroll/drop/${this.procedure.id}`
         );
         this.toastr.warning(
           `Eliminados ${res.data.deleted} registros del mes de ${this.$moment()
@@ -362,7 +382,7 @@ export default {
     },
     async savePayroll(payroll) {
       try {
-        await axios.patch(`/api/v1/payroll/${payroll.id}`, {
+        await axios.patch(`/payroll/${payroll.id}`, {
           unworked_days: parseInt(payroll.unworked_days),
           rc_iva: Number(payroll.rc_iva),
           faults: Number(payroll.faults),
@@ -377,9 +397,12 @@ export default {
     async getProcedure() {
       try {
         let res = await axios.get(
-          `/api/v1/procedure/${this.$route.params.id}/discounts`
+          `/procedure/${this.$route.params.id}/discounts`
         );
         this.procedure = res.data;
+        if (res.data.pay_date){
+          this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
+        }
       } catch (e) {
         console.log(e);
       }
@@ -387,7 +410,7 @@ export default {
     async getPayrolls() {
       try {
         let res = await axios.get(
-          `/api/v1/procedure/${this.$route.params.id}/payroll`
+          `/procedure/${this.$route.params.id}/payroll`
         );
         this.payrolls = res.data;
         this.loading = false;
@@ -399,7 +422,7 @@ export default {
     async getValidContracts() {
       try {
         let res = await axios.get(
-          `/api/v1/contract/valid/${this.procedure.id}`
+          `/contract/valid/${this.procedure.id}`
         );
         this.contracts = res.data;
       } catch (e) {
@@ -520,7 +543,7 @@ export default {
     },
     async closeProcedure() {
       try {
-        let res = await axios.patch(`/api/v1/procedure/${this.procedure.id}`, {
+        let res = await axios.patch(`/procedure/${this.procedure.id}`, {
           active: !this.procedure.active
         });
         this.toastr.warning(
@@ -532,6 +555,17 @@ export default {
       } catch (e) {
         console.log(e);
       }
+    },
+    async updatePayDate(id, date) {
+      try{
+        await axios.get('/procedure/pay_date/'+ id +'/' + date);
+        this.toastr.success(
+          `Registrado correctamente`
+        );
+      } catch(e) {
+        console.log(e);
+      }
+
     }
   }
 };

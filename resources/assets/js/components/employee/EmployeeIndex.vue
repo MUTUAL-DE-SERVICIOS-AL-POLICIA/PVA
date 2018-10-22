@@ -171,6 +171,7 @@ export default {
         {
           align: "center",
           text: "Acciones",
+          value: "second_name",
           sortable: false
         }
       ],
@@ -204,7 +205,7 @@ export default {
   methods: {
     async getEmployees(active = this.active) {
       try {
-        let res = await axios.get(`/api/v1/employee`);
+        let res = await axios.get(`/employee`);
         this.employeesActive = res.data.filter(obj => {
           return obj.active === true;
         });
@@ -224,7 +225,7 @@ export default {
     },
     async switchActive(employee) {
       try {
-        let res = await axios.patch(`/api/v1/employee/${employee.id}`, {
+        let res = await axios.patch(`/employee/${employee.id}`, {
           active: employee.active
         });
         this.getEmployees(employee.active);
@@ -236,7 +237,7 @@ export default {
       this.bus.$emit("openDialog", employee);
     },
     removeItem(employee) {
-      this.bus.$emit("openDialogRemove", `/api/v1/employee/${employee.id}`);
+      this.bus.$emit("openDialogRemove", `/employee/${employee.id}`);
     },
     certificateItem(item) {
       this.bus.$emit("openDialogCertificate", item);      

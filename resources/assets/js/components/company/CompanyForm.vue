@@ -96,7 +96,7 @@ export default {
   methods: {
     async initialize() {
       try {
-        let documentTypes = await axios.get('/api/v1/document_type')
+        let documentTypes = await axios.get('/document_type')
         this.documentTypes = documentTypes.data        
       } catch(e) {
         console.log(e)
@@ -115,27 +115,27 @@ export default {
           var doc = null
           if (this.selectedIndex != -1) {
             if (this.selectedItem.document_id) {
-              doc = await axios.put('/api/v1/document/' + this.selectedDocument.id, this.selectedDocument)              
+              doc = await axios.put('/document/' + this.selectedDocument.id, this.selectedDocument)              
             } else {
               if (this.selectedDocument.name) {
-                doc = await axios.post('/api/v1/document', this.selectedDocument)
+                doc = await axios.post('/document', this.selectedDocument)
               }
             }
             if (doc != null) {
-              let res = await axios.put('/api/v1/company/' + this.selectedItem.id, $.extend({}, this.selectedItem, {'document_id': doc.data.id}))
+              let res = await axios.put('/company/' + this.selectedItem.id, $.extend({}, this.selectedItem, {'document_id': doc.data.id}))
             } else {
-              let res = await axios.put('/api/v1/company/' + this.selectedItem.id, this.selectedItem)
+              let res = await axios.put('/company/' + this.selectedItem.id, this.selectedItem)
             }            
             this.close()
             this.toastr.success('Editado correctamente')
           } else {             
             if (this.selectedDocument.name) {
-              doc = await axios.post('/api/v1/document', this.selectedDocument)
+              doc = await axios.post('/document', this.selectedDocument)
             }
             if (doc != null) {
-              let res = await axios.post('/api/v1/company', this.selectedItem)
+              let res = await axios.post('/company', this.selectedItem)
             } else {
-              let res = await axios.post('/api/v1/company', $.extend({}, this.selectedItem, {'document_id': doc.data.id}))
+              let res = await axios.post('/company', $.extend({}, this.selectedItem, {'document_id': doc.data.id}))
             }            
             this.close()
             this.toastr.success('Registrado correctamente')

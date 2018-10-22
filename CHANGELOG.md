@@ -2,7 +2,27 @@
 
 ---
 
+## [1.3.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.0) - 2018-10-22
+
+### Added
+
+* Ldap users administration
+* Set and unset roles from users
+* Management entity reports
+* Printable job certificate
+
+### Changed
+
+* Ldap connection library
+* Environment variables
+* Procedures table
+* Split first name to add second name on Users table
+
 ## [1.2.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.2.0) - 2018-09-27
+
+### Added
+
+* Excel management entities printable reports
 
 ### Changed
 

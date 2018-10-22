@@ -22,6 +22,8 @@ use App\DocumentType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Response;
+use App\Exports\PayrollsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PayrollPrintController extends Controller
 {
@@ -29,12 +31,20 @@ class PayrollPrintController extends Controller
 	{
 		$procedure = Procedure::where('month_id', $month)->where('year', $year)->select()->first();
 
+		$previous_month = $month - 1;
+		$previous_year = $year;
+		if($previous_month == 0) {
+			$previous_month = 12;
+			$previous_year = $year - 1;
+		}
+		$previous_procedure = Procedure::where('month_id', $previous_month)->where('year', $previous_year)->select()->first();
+
 		if (isset($procedure->id)) {
 			$employees = array();
 			$total_discounts = new TotalPayrollEmployee();
 			$total_contributions = new TotalPayrollEmployer();
 			$company = Company::select()->first();
-			
+
 			$payrolls = Payroll::where('procedure_id', $procedure->id)->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('c.start_date')->select('payrolls.*')->get();
 
 			foreach ($payrolls as $key => $payroll) {
@@ -91,6 +101,7 @@ class PayrollPrintController extends Controller
 				'total_contributions' => $total_contributions,
 				'employees' => $employees,
 				'procedure' => $procedure,
+				'previous_procedure' => $previous_procedure,
 				'tribute' => $procedure->employer_tribute,
 				'company' => $company,
 				'title' => (object)array(
@@ -176,7 +187,8 @@ class PayrollPrintController extends Controller
 				$response->data['title']->table_header3 = 'Saldo a favor de:';
 				$response->data['title']->table_header4 = 'Saldo anterior a favor del dependiente';
 				$response->data['title']->minimun_salary = $response->data['tribute']->minimum_salary;
-				$response->data['title']->ufv = $response->data['tribute']->ufv;
+				$response->data['title']->ufv = $response->data['procedure']->ufv;
+				$response->data['title']->previous_ufv = $response->data['previous_procedure']->ufv;
 				break;
 			default:
 				abort(404);
@@ -306,6 +318,159 @@ class PayrollPrintController extends Controller
 		return Response::make($content, 200, $headers);
 	}
 
+	public function print_afp($management_entity_id, $year, $month)
+	{
+		$management_entity = ManagementEntity::findOrFail($management_entity_id);
+		$month = Month::findOrFail($month);
+
+		$employees = $this->getFormattedData($year, $month->id, 0, 0, $management_entity->id, 0, 0, 0)->data['employees'];
+
+		$grouped_payrolls = [];
+
+		foreach ($employees as $e) {
+			$grouped_payrolls[$e->employee_id][] = $e;
+		}
+
+		$employees = [];
+		foreach ($grouped_payrolls as $payroll_group) {
+			$p = null;
+			foreach ($payroll_group as $key => $pr) {
+				if ($key == 0) {
+					$p = $pr;
+				} else {
+					$p->mergePayroll($pr);
+				}
+			}
+			$employees[] = $p;
+		}
+
+		similar_text(strtolower($management_entity->name), 'prevision', $prevision_similarity);
+		similar_text(strtolower($management_entity->name), 'futuro', $futuro_similarity);
+
+		if ($prevision_similarity > $futuro_similarity) {
+			$data = [];
+
+			foreach ($employees as $employee) {
+				$e = Employee::find($employee->employee_id);
+
+				$ci = explode('-', $employee->ci);
+
+				$first_contract = $e->first_contract();
+				$first_date = Carbon::parse($first_contract->start_date);
+
+				$last_contract = $e->last_contract();
+
+				if ($last_contract->retirement_date) {
+					$retirement_date = Carbon::parse($last_contract->retirement_date);
+				} else {
+					$retirement_date = $last_contract->retirement_date;
+				}
+
+				if ($retirement_date) {
+					if ($retirement_date->year == $year && $retirement_date->month == $month->order) {
+						$update = 'R';
+						$update_date = $retirement_date->format('Ymd');
+					}
+				} elseif ($first_date->year == $year && $first_date->month == $month->order) {
+					$update = 'I';
+					$update_date = $first_date->format('Ymd');
+				} else {
+					$update = '';
+					$update_date = '';
+				}
+
+				$data[] = [
+					'doc_type' => 'CI',
+					'ci' => $ci[0],
+					'ci_complement' => (count($ci) > 1) ? $ci[1] : '',
+					'nua_cua' => $employee->nua_cua,
+					'last_name' => $employee->last_name,
+					'mothers_last_name' => $employee->mothers_last_name,
+					'husband_last_name' => '',
+					'first_name' => $employee->first_name,
+					'second_name' => $employee->second_name,
+					'update' => $update,
+					'update_date' => $update_date,
+					'worked_days' => $employee->worked_days,
+					'quotable' => round($employee->quotable, 2),
+					'contributor' => '1',
+					'insurance_type' => ''
+				];
+			}
+
+			$headers = [
+				'TIPO DOC.',
+				'NUMERO DOCUMENTO',
+				'ALFANUMERICO DEL DOCUMENTO',
+				'NUA/CUA',
+				'AP. PATERNO',
+				'AP. MATERNO',
+				'AP. CASADA',
+				'PRIMER NOMBRE',
+				'SEG. NOMBRE',
+				'NOVEDAD',
+				'FECHA NOVEDAD',
+				'DIAS',
+				'TOTAL GANADO',
+				'TIPO COTIZANTE',
+				'TIPO ASEGURADO',
+			];
+
+			$filename = implode('_', ["planilla", strtolower($management_entity->name), strtolower($month->name), $year]) . ".xlsx";
+
+			return Excel::download(new PayrollsExport($data, $headers), $filename);
+		} else {
+			$content = "";
+
+			$total_employees = count($employees);
+
+			foreach ($employees as $i => $employee) {
+				$e = Employee::find($employee->employee_id);
+
+				$first_contract = $e->first_contract();
+				$first_date = Carbon::parse($first_contract->start_date);
+
+				$last_contract = $e->last_contract();
+
+				$address = $last_contract->position->position_group->company_address->city->name;
+
+				if ($last_contract->retirement_date) {
+					$retirement_date = Carbon::parse($last_contract->retirement_date);
+				} else {
+					$retirement_date = $last_contract->retirement_date;
+				}
+
+				if ($retirement_date) {
+					if ($retirement_date->year == $year && $retirement_date->month == $month->order) {
+						$update = 'R';
+						$update_date = $retirement_date->format('d/m/Y');
+					}
+				} elseif ($first_date->year == $year && $first_date->month == $month->order) {
+					$update = 'I';
+					$update_date = $first_date->format('d/m/Y');
+				} else {
+					$update = '';
+					$update_date = '';
+				}
+
+				$content .= implode(',', [++$i, 'CI', $employee->ci, $employee->id_ext, $employee->nua_cua, $employee->last_name, $employee->mothers_last_name, null, $employee->first_name, $employee->second_name, $address, $update, $update_date, $employee->worked_days, 'E', round($employee->quotable, 2), null, null, null, null, null, null, null]);
+
+				if ($i < ($total_employees)) {
+					$content .= "\r\n";
+				}
+			}
+
+			$filename = implode('_', ["planilla", strtolower($management_entity->name), strtolower($month->name), $year]) . ".csv";
+
+			$headers = [
+				'Content-type' => 'text/csv',
+				'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)
+			];
+
+			return Response::make($content, 200, $headers);
+		}
+	}
+
 	public function certificate($employee_id)
 	{
 		$employees = array();
@@ -313,11 +478,11 @@ class PayrollPrintController extends Controller
 		$total_contributions = new TotalPayrollEmployer();
 		$company = Company::select()->first();
 		$payrolls = Payroll::where('employee_id', $employee_id)
-							->join('procedures as p', 'p.id', '=', 'payrolls.procedure_id')
-							->join('months as m', 'm.id', '=', 'p.month_id')
-							->orderBy('p.year')
-							->orderBy('m.order')
-							->get();
+			->join('procedures as p', 'p.id', '=', 'payrolls.procedure_id')
+			->join('months as m', 'm.id', '=', 'p.month_id')
+			->orderBy('p.year')
+			->orderBy('m.order')
+			->get();
 		foreach ($payrolls as $key => $payroll) {
 			$contract = $payroll->contract;
 			$employee = $contract->employee;
@@ -335,13 +500,14 @@ class PayrollPrintController extends Controller
 				}
 			}
 			$employees[] = $e;
-		}		
+		}
 		return $employees;
 	}
+
 	public function print_certificate($employee_id)
-	{		
+	{
 		$data['payrolls'] = $this->certificate($employee_id);
-		$data['contract'] = Contract::with('employee','employee.city_identity_card','position')->where('employee_id', $employee_id)->orderBy('end_date', 'desc')->select('contracts.active as act', '*')->first();
+		$data['contract'] = Contract::with('employee', 'employee.city_identity_card', 'position')->where('employee_id', $employee_id)->orderBy('end_date', 'desc')->select('contracts.active as act', '*')->first();
 
 		$correlative = 1;
 		$year = date('Y');
@@ -362,7 +528,7 @@ class PayrollPrintController extends Controller
 		$new_certificate->save();
 
 		$data['certificate'] = $new_certificate;
-		
+
 		return \PDF::loadView('payroll.print_certificate', $data)
 			->setOption('page-width', '220')
 			->setOption('page-height', '280')

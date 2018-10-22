@@ -9,7 +9,7 @@
       fixed
       app
       v-if="this.$store.getters.currentUser"
-      id="navbar"
+      class="normal"
     >
       <v-list>
         <v-list-tile v-for="item in menu_left" :key="item.title" :to="{name: item.href, params: item.params}">
@@ -68,7 +68,7 @@
     </v-content>
     <v-footer :fixed="fixed" app>
       <v-spacer></v-spacer>
-      <span class="font-weight-thin caption">MUSERPOL - 2018</span>
+      <span class="font-weight-thin caption mr-2">MUSERPOL <span class="copyleft">&copy;</span> - 2018</span>
     </v-footer>
   </v-app>
 </template>
@@ -96,7 +96,7 @@ export default {
     },
     async getDate() {
       try {
-        let res = await axios.get(`/api/v1/date`);
+        let res = await axios.get(`/date`);
         this.$store.commit("setDate", res.data.now);
       } catch (e) {
         console.log(e);
@@ -112,7 +112,8 @@ export default {
 </script>
 
 <style>
-#navbar {
-  background-color: #f5f5f5;
+.copyleft {
+  display:inline-block;
+  transform: rotate(180deg);
 }
 </style>

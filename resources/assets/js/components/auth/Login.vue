@@ -13,7 +13,7 @@
           </v-card-title>
           <v-form>
             <v-text-field
-              v-validate="'required|min:5|max:255'"
+              v-validate="'required|min:4|max:255'"
               @keyup.enter="focusPassword()"
               v-model="auth.username"
               prepend-icon="person"
@@ -25,7 +25,7 @@
               required
             ></v-text-field>
             <v-text-field
-              v-validate="'required|min:5|max:255'"
+              v-validate="'required|min:4|max:255'"
               @keyup.enter="authenticate(auth)"
               v-model="auth.password"
               prepend-icon="lock"
@@ -72,7 +72,7 @@ export default {
     async authenticate(auth) {
       try {
         if (await this.$validator.validateAll()) {
-          let res = await axios.post("/api/v1/auth", auth);
+          let res = await axios.post("/auth", auth);
           this.$store.commit("login", res.data);
           this.$router.go({
             name: "employeeIndex"

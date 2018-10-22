@@ -387,19 +387,19 @@ export default {
   methods: {
     async initialize() {
       try {
-        let employees = await axios.get("/api/v1/employee");
+        let employees = await axios.get("/employee");
         this.employees = employees.data;
-        let positions = await axios.get("/api/v1/position");
+        let positions = await axios.get("/position");
         this.positions = positions.data;
-        let contractTypes = await axios.get("/api/v1/contract_type");
+        let contractTypes = await axios.get("/contract_type");
         this.contractTypes = contractTypes.data;
-        let contractModes = await axios.get("/api/v1/contract_mode");
+        let contractModes = await axios.get("/contract_mode");
         this.contractModes = contractModes.data;
-        let retirementReasons = await axios.get("/api/v1/retirement_reason");
+        let retirementReasons = await axios.get("/retirement_reason");
         this.retirementReasons = retirementReasons.data;
-        let insuranceCompanies = await axios.get("/api/v1/insurance_company");
+        let insuranceCompanies = await axios.get("/insurance_company");
         this.insuranceCompanies = insuranceCompanies.data;
-        let jobSchedules = await axios.get("/api/v1/jobs_chedule");
+        let jobSchedules = await axios.get("/jobs_chedule");
         this.jobSchedules = jobSchedules.data;
       } catch (e) {
         console.log(e);
@@ -429,14 +429,14 @@ export default {
         await this.$validator.validateAll();
         if (this.selectedIndex != -1) {          
           let res = await axios.patch(
-            "/api/v1/contract/" + this.selectedItem.id,
+            "/contract/" + this.selectedItem.id,
             $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
           );
           this.close();
           this.toastr.success("Editado correctamente");
         } else {
           let res = await axios.post(
-            "/api/v1/contract",
+            "/contract",
             $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
           );
           this.close();
@@ -450,11 +450,11 @@ export default {
       try {
         await this.$validator.validateAll();
         let newres = await axios.post(
-          "/api/v1/contract",
+          "/contract",
           $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
         );
         let editres = await axios.patch(
-          "/api/v1/contract/" + this.selectedItem.id,
+          "/contract/" + this.selectedItem.id,
           { active: false }
         );
         this.close();
@@ -468,15 +468,15 @@ export default {
     },
     async onSelectEmployee(v) {
       if (v) {
-        let employee = await axios.get("/api/v1/employee/" + v);
+        let employee = await axios.get("/employee/" + v);
         this.tableEmployee = employee.data;
       }
     },
     async onSelectPosition(v) {
       if (v) {
-        let position = await axios.get("/api/v1/position/" + v);
+        let position = await axios.get("/position/" + v);
         let positionFree = await axios.get(
-          "/api/v1/contract/position_free/" + v
+          "/contract/position_free/" + v
         );
         if (positionFree.data) {
           if (!this.selectedItem.id) {
@@ -487,7 +487,7 @@ export default {
         }
         this.tablePosition = position.data.name;
         let charge = await axios.get(
-          "/api/v1/charge/" + position.data.charge_id
+          "/charge/" + position.data.charge_id
         );
         this.tableSalary = charge.data.base_wage;
       }

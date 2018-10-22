@@ -39,7 +39,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click="close"><v-icon>close</v-icon> Cancelar</v-btn>
-        <v-btn color="success" :disabled="this.errors.any()" @click.prevent="print(`/api/v1/payroll/print/certificate/${contract.employee_id}`)"><v-icon>check</v-icon> Imprimir</v-btn>
+        <v-btn color="success" :disabled="this.errors.any()" @click.prevent="print(`/payroll/print/certificate/${contract.employee_id}`)"><v-icon>check</v-icon> Imprimir</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -138,11 +138,11 @@ export default {
       this.bus.$emit("closeDialog");
     },
     async getPayrolls(id){
-      let res = await axios.get('/api/v1/payroll/certificate/'+id);
+      let res = await axios.get('/payroll/certificate/'+id);
       this.payrolls = res.data;
     },
     async getContract(id){
-      let res = await axios.get('/api/v1/contract/last_contract/'+id);
+      let res = await axios.get('/contract/last_contract/'+id);
       this.contract = res.data;
       console.log(this.contract);
     },

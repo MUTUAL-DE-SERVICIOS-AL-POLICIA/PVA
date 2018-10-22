@@ -6,6 +6,8 @@ import Contract from './components/contract/ContractIndex'
 import Procedure from './components/procedure/ProcedureIndex'
 import ProcedureEdit from './components/procedure/ProcedureEdit'
 import UserAction from './components/userAction/UserActionIndex'
+import UserIndex from './components/user/UserIndex'
+import DepartureIndex from './components/departure/DepartureIndex'
 
 export const routes = [
   {
@@ -20,7 +22,6 @@ export const routes = [
       requiresAuth: true
     }
   }, {
-
     path: '*',
     redirect: {
       name: 'employeeIndex',
@@ -67,9 +68,23 @@ export const routes = [
       requiresAuth: true
     }
   }, {
+    path: '/user',
+    component: UserIndex,
+    name: 'userIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
     path: '/userAction',
     component: UserAction,
     name: 'userActionIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/departure',
+    component: DepartureIndex,
+    name: 'departureIndex',
     meta: {
       requiresAuth: true
     }

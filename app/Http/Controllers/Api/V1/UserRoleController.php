@@ -12,14 +12,16 @@ use App\User;
  * Resource to retrieve, show, update and destroy User-Role relation
  */
 
-class UserRoleController extends Controller {
+class UserRoleController extends Controller
+{
 	/**
 	 * Display a listing of the roles related to user.
 	 *
 	 * @param  \App\User  $user_id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function get_roles($user_id) {
+	public function get_roles($user_id)
+	{
 		$user = User::findOrFail($user_id);
 		return $user->roles;
 	}
@@ -31,7 +33,8 @@ class UserRoleController extends Controller {
 	 * @param  \App\Role  $role_id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function get_role($user_id, $role_id) {
+	public function get_role($user_id, $role_id)
+	{
 		$user = User::findOrFail($user_id);
 		$role = Role::findOrFail($role_id);
 		if ($user->hasRole($role->name)) {
@@ -48,12 +51,23 @@ class UserRoleController extends Controller {
 	 * @param  \App\Role  $role_id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function set_role($user_id, $role_id) {
+	public function set_role($user_id, $role_id)
+	{
 		$user = User::findOrFail($user_id);
 		$role = Role::findOrFail($role_id);
-		$user->attachRole($role);
-		$user->roles;
-		return $user;
+		if ($user->username != 'admin') {
+			$user->detachRoles($user->roles);
+			$user->attachRole($role);
+			$user->roles;
+			return $user;
+		} else {
+			return response()->json([
+				'message' => 'Bad Request',
+				'errors' => [
+					'type' => ['El usuario no puede ser editado'],
+				],
+			], 400);
+		}
 	}
 
 	/**
@@ -63,11 +77,21 @@ class UserRoleController extends Controller {
 	 * @param  \App\Role  $role_id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function unset_role($user_id, $role_id) {
+	public function unset_role($user_id, $role_id)
+	{
 		$user = User::findOrFail($user_id);
 		$role = Role::findOrFail($role_id);
-		$user->detachRole($role);
-		$user->roles;
-		return $user;
+		if ($user->username != 'admin') {
+			$user->detachRole($role);
+			$user->roles;
+			return $user;
+		} else {
+			return response()->json([
+				'message' => 'Bad Request',
+				'errors' => [
+					'type' => ['El usuario no puede ser editado'],
+				],
+			], 400);
+		}
 	}
 }
