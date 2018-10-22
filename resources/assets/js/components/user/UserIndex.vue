@@ -4,6 +4,7 @@
       <v-toolbar-title>Usuarios</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-dialog
+        persistent
         v-model="dialog"
         width="500"
         @keydown.esc="$router.go({name:'userIndex'})"

@@ -28,6 +28,7 @@ class LdapController extends Controller
   public function store()
   {
     $ldap = new Ldap();
+    $ldap->create_group();
 
     $employees = Employee::where('active', true)->pluck('id')->toArray();
 

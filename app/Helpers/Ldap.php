@@ -27,8 +27,9 @@ class Ldap
 
     $this->config['ldap_url'] = $this->config['ldap_ssl'] ? 'ldaps://' : 'ldap://';
     $this->config['ldap_url'] .= $this->config['ldap_host'];
+    $this->config['ldap_url'] = implode(':', [$this->config['ldap_url'], $this->config['ldap_port']]);
 
-    $this->connection = @ldap_connect($this->config['ldap_url'], $this->config['ldap_port']);
+    $this->connection = @ldap_connect($this->config['ldap_url']);
 
     ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, 3);
     ldap_set_option($this->connection, LDAP_OPT_REFERRALS, 0);
@@ -149,6 +150,34 @@ class Ldap
         $deleted = @ldap_delete($this->connection, $this->config['user_id_key'] . '=' . $uid . ',' . $this->config['account_suffix']);
 
         return $deleted;
+      }
+    }
+  }
+
+  public function create_group()
+  {
+    if ($this->connection && $this->verify_open_port()) {
+      if ($this->bind_admin()) {
+        $search = ldap_list($this->connection, "dc=muserpol,dc=gob,dc=bo", "ou=*", array("ou"));
+        $entries = ldap_get_entries($this->connection, $search);
+        $result = [];
+
+        foreach ($entries as $key => $entry) {
+          if ($entry['ou'][0]) {
+            $result[] = $entry['ou'][0];
+          }
+        }
+
+        $info['objectClass'] = ['organizationalUnit', 'top'];
+        $info['ou'] = explode('=', env('LDAP_ACCOUNT_SUFFIX'))[1];
+        $search = array_search($info['ou'], $result);
+
+        if (is_bool($search) && $search == false) {
+          $result = @ldap_add($this->connection, $this->config['account_suffix'], $info);
+          return $result;
+        }
+
+        return false;
       }
     }
   }
