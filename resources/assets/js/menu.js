@@ -29,6 +29,11 @@ export default {
       title: 'Actividad',
       icon: 'timeline',
       options: ['edit']
+    }, {
+      href: 'departureIndex',
+      title: 'Solicitud de salidas',
+      icon: 'directions_run',
+      options: []
     }
   ],
   rrhh: [

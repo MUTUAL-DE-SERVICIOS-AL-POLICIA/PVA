@@ -156,7 +156,11 @@ Route::group([
 		Route::get('document/{id}', 'Api\V1\DocumentController@show')->name('document_details');
 		Route::get('document_type', 'Api\V1\DocumentTypeController@index')->name('document_type_list');
 		Route::get('document_type/{id}', 'Api\V1\DocumentTypeController@show')->name('document_type_details');
-
+		// Departure
+		Route::get('departure_type', 'Api\V1\DepartureTypeController@index')->name('departure_type_list');
+		Route::get('departure_reason', 'Api\V1\DepartureReasonController@index')->name('departure_reason_list');
+		Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
+		Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update']);
 		// ADMIN routes
 		Route::group([
 			'middleware' => 'role:admin',

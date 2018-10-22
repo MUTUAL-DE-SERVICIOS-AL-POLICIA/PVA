@@ -7,6 +7,7 @@ import Procedure from './components/procedure/ProcedureIndex'
 import ProcedureEdit from './components/procedure/ProcedureEdit'
 import UserAction from './components/userAction/UserActionIndex'
 import UserIndex from './components/user/UserIndex'
+import DepartureIndex from './components/departure/DepartureIndex'
 
 export const routes = [
   {
@@ -77,6 +78,13 @@ export const routes = [
     path: '/userAction',
     component: UserAction,
     name: 'userActionIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/departure',
+    component: DepartureIndex,
+    name: 'departureIndex',
     meta: {
       requiresAuth: true
     }
