@@ -27,39 +27,9 @@
             <v-flex xs12>
               <v-form ref="form">
                 <v-layout row wrap>
-                  <v-flex xs8>
-
-                  </v-flex>
-                  <v-flex xs4>
-                    <v-menu
-                      :close-on-content-click="true"
-                      v-model="menuDate"
-                      :nudge-right="40"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      max-width="290px"
-                      min-width="290px"
-                    >
-                      <v-text-field
-                        slot="activator"
-                        v-model="selectedItem.date"
-                        label="Fecha de inicio"
-                        prepend-icon="event"
-                        v-validate="'required'"
-                        name="Fecha de inicio"
-                        :error-messages="errors.collect('Fecha de inicio')"
-                        autocomplete='cc-exp-month'
-                      ></v-text-field>
-                      <v-date-picker v-model="date" no-title locale="es-bo"></v-date-picker>
-                    </v-menu>
-                  </v-flex>
-                  <v-flex xs8>
-                  </v-flex>
                   <v-flex xs4>
                     <v-radio-group 
-                      v-model="selectedItem.type"
+                      v-model="type"
                       :mandatory="false" 
                       @change="getDepartureReason"
                       v-validate="'required'"
@@ -73,14 +43,14 @@
                   </v-flex>
                   <v-flex xs12>
                     <v-text-field
-                      v-model="selectedItem.name"
+                      v-model="name"
                       label="Nombre"
                       disabled
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs12>
                     <v-text-field
-                      v-model="selectedItem.place"
+                      v-model="place"
                       label="Oficina"
                       disabled
                     ></v-text-field>
@@ -96,7 +66,7 @@
                   </v-flex>
                   <v-flex xs12>
                     <v-autocomplete
-                      v-model="selectedItem.reason"
+                      v-model="selectedItem.departure_reason_id"
                       :items="reasons"
                       item-text="description"
                       item-value="id"
@@ -118,7 +88,7 @@
                     >
                       <v-text-field
                         slot="activator"
-                        v-model="selectedItem.timeEntry"
+                        v-model="selectedItem.entry_time"
                         label="Hora de entrada"
                         prepend-icon="access_time"
                         readonly
@@ -126,13 +96,13 @@
                       ></v-text-field>
                       <v-time-picker
                         v-if="menuTimeEntry"
-                        v-model="selectedItem.timeEntry"
+                        v-model="selectedItem.entry_time"
                         full-width
                         format="24hr"
                         min="07:30"
                         max="18:30"
                         no-title
-                        @change="$refs.menu1.save(selectedItem.timeEntry)"
+                        @change="$refs.menu1.save(selectedItem.entry_time)"
                       ></v-time-picker>
                     </v-menu>
                   </v-flex>
@@ -147,7 +117,7 @@
                     >
                       <v-text-field
                         slot="activator"
-                        v-model="selectedItem.timeDeparture"
+                        v-model="selectedItem.departure_time"
                         label="Hora de salida"
                         prepend-icon="access_time"
                         readonly
@@ -155,13 +125,13 @@
                       ></v-text-field>
                       <v-time-picker
                         v-if="menuTimeDeparture"
-                        v-model="selectedItem.timeDeparture"
+                        v-model="selectedItem.departure_time"
                         full-width
                         format="24hr"
                         min="07:30"
                         max="18:30"
                         no-title
-                        @change="$refs.menu2.save(selectedItem.timeDeparture)"
+                        @change="$refs.menu2.save(selectedItem.departure_time)"
                       ></v-time-picker>
                     </v-menu>
                   </v-flex>
@@ -176,7 +146,7 @@
                     >
                       <v-text-field
                         slot="activator"
-                        v-model="selectedItem.timeReturn"
+                        v-model="selectedItem.return_time"
                         label="Hora de retorno"
                         prepend-icon="access_time"
                         readonly
@@ -184,18 +154,77 @@
                       ></v-text-field>
                       <v-time-picker
                         v-if="menuTimeReturn"
-                        v-model="selectedItem.timeReturn"
+                        v-model="selectedItem.return_time"
                         format="24hr"
                         min="07:30"
                         max="18:30"
                         no-title
-                        @change="$refs.menu3.save(selectedItem.timeReturn)"
+                        @change="$refs.menu3.save(selectedItem.return_time)"
                       ></v-time-picker>
+                    </v-menu>
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-divider
+                      class="mx-2"
+                      inset
+                      vertical
+                    ></v-divider>
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-menu
+                      :close-on-content-click="true"
+                      v-model="menuDateStart"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                    >
+                      <v-text-field
+                        slot="activator"
+                        v-model="selectedItem.start_date"
+                        label="Fecha de salida"
+                        prepend-icon="event"
+                        v-validate="'required'"
+                        name="Fecha de inicio"
+                        :error-messages="errors.collect('Fecha de inicio')"
+                        autocomplete='cc-exp-month'
+                        clearable
+                      ></v-text-field>
+                      <v-date-picker v-model="dateStart" no-title locale="es-bo"></v-date-picker>
+                    </v-menu>
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-menu
+                      :close-on-content-click="true"
+                      v-model="menuDateEnd"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                    >
+                      <v-text-field
+                        slot="activator"
+                        v-model="selectedItem.end_date"
+                        label="Fecha de retorno"
+                        prepend-icon="event"
+                        v-validate="'required'"
+                        name="Fecha de retorno"
+                        :error-messages="errors.collect('Fecha de retorno')"
+                        autocomplete='cc-exp-month'
+                        clearable
+                      ></v-text-field>
+                      <v-date-picker v-model="dateEnd" no-title locale="es-bo"></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <v-flex xs12>
                     <v-textarea
-                      v-model="selectedItem.observation"
+                      v-model="selectedItem.description"
                       label="Observaciones"
                       hint=""
                     ></v-textarea>
@@ -230,23 +259,28 @@ export default {
   components: {
   },
   data: () => ({
-    menuDate: null,
-    date: null,
     selectedItem: {
-      date: null,
-      type: null,
-      name: null,
-      place: null,
+      employee_id: null,
+      departure_reason_id: null,
       destiny: null,
-      reason: null,
-      timeEntry: null,
-      timeDeparture: null,
-      timeReturn: null,
-      observation: null
+      entry_time: null,
+      departure_time: null,
+      return_time: null,
+      start_date: null,
+      end_date: null,
+      description: null,
+      approved: false      
     },
+    type: null,
+    name: null,
+    place: null,
     disabledReason: true,
     types: [],
     reasons: [],
+    menuDateStart: null,
+    dateStart: null,
+    menuDateEnd: null,
+    dateEnd: null,
     menuTimeEntry: false,
     menuTimeDeparture: false,
     menuTimeReturn: false,
@@ -258,16 +292,20 @@ export default {
     
   },
   watch: {
-    date(val) {
-      this.selectedItem.date = this.$moment(this.date).format("DD/MM/YYYY");
+    dateStart(val) {
+      this.selectedItem.start_date = this.$moment(this.dateStart).format("DD/MM/YYYY");
     },
+    dateEnd(val) {
+      this.selectedItem.end_date = this.$moment(this.dateEnd).format("DD/MM/YYYY");
+    }
   },
   async created() {
     this.getDepartureType();
     console.log(this.$store.getters);
-    this.selectedItem.date = this.$moment().format("DD/MM/YYYY");
-    this.selectedItem.name = this.$store.getters.currentUser.username;  // set name with LDAP
-    this.selectedItem.place = this.$store.getters.currentUser.username;  // set place with LDAP
+    this.selectedItem.dateDeparture = this.$moment().format("DD/MM/YYYY");
+    this.selectedItem.employee_id = this.$store.getters.currentUser.username;  // set name with LDAP
+    this.name = this.$store.getters.currentUser.username;  // set place with LDAP
+    this.place = this.$store.getters.currentUser.username;  // set place with LDAP
     
   },
   methods: {
@@ -281,7 +319,7 @@ export default {
     },
     async getDepartureReason() {
       try{
-        let res = await axios.get('/departure_reason/get_reason/' + this.selectedItem.type);
+        let res = await axios.get('/departure_reason/get_reason/' + this.type);
         this.reasons = res.data;
         this.disabledReason = false;
       } catch(e){
@@ -291,7 +329,10 @@ export default {
     async save() {
       try {
         await this.$validator.validateAll();
-        let res = await axios.get('/departure_reason/get_reason/', this.selectedItem.type);
+        let res = await axios.post('/departuere', this.selectedItem);
+        this.toastr.success(
+          `Solicitado correctamente`
+        );
       } catch (e) {
         console.log(e);
       }
