@@ -160,6 +160,7 @@ Route::group([
 		Route::get('departure_type', 'Api\V1\DepartureTypeController@index')->name('departure_type_list');
 		Route::get('departure_reason', 'Api\V1\DepartureReasonController@index')->name('departure_reason_list');
 		Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
+		Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update']);
 		// ADMIN routes
 		Route::group([
 			'middleware' => 'role:admin',
