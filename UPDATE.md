@@ -10,13 +10,6 @@
 rm -rf vendor/adldap
 ```
 
-* Update migrations on database
-
-```sh
-php artisan migrate
-php artisan migrate:status
-```
-
 * Remove cached files
 
 ```sh
