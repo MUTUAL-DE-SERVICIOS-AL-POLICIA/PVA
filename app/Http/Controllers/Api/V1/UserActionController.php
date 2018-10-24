@@ -19,7 +19,7 @@ class UserActionController extends Controller
 	 */
 	public function index()
 	{
-		return UserAction::with('user')->orderBy('created_at', 'DESC')->get();
+		return UserAction::with('user.employee')->orderBy('created_at', 'DESC')->get();
 	}
 
 	/**
@@ -30,7 +30,9 @@ class UserActionController extends Controller
 	 */
 	public function show($id)
 	{
-		return UserAction::findOrFail($id);
+		$action = UserAction::findOrFail($id);
+		$action->user->employee;
+		return $action;
 	}
 
 	/**

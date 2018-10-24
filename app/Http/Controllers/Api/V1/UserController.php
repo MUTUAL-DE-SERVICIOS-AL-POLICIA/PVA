@@ -26,7 +26,7 @@ class UserController extends Controller
 	 */
 	public function index()
 	{
-		return User::where('active', true)->with('roles')->orderBy('username')->get();
+		return User::where('active', true)->with('employee')->with('roles')->orderBy('username')->get();
 	}
 
 	/**
@@ -60,7 +60,7 @@ class UserController extends Controller
 
 			if ($username) {
 				$user->username = $username;
-				$user->name = implode(' ', [$entry['givenName'], $entry['sn']]);
+				$user->employee_id = $employee->id;
 				$user->position = $entry['title'];
 				$user->password = Hash::make($username);
 				$user->save();
@@ -81,6 +81,7 @@ class UserController extends Controller
 	{
 		$user = User::findOrFail($id);
 		if ($user->active) {
+			$user->employee;
 			return $user;
 		}
 		abort(404);

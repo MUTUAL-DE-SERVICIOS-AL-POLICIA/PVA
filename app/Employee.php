@@ -58,4 +58,9 @@ class Employee extends Model
 	{
 		return $this->contracts()->orderBy('start_date', 'DESC')->skip(1)->first();
 	}
+
+	public function users()
+	{
+		return $this->hasMany(User::class);
+	}
 }

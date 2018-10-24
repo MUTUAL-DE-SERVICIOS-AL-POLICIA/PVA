@@ -3,14 +3,12 @@
     <v-toolbar>
         <v-toolbar-title>Contratos</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn-toggle v-model="toggle_one">
-          <v-btn  @click="getContracts(true)" :class="active ? 'primary white--text' : 'normal'">
-            <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
-          </v-btn>
-          <v-btn  @click="getContracts(false)" :class="!active ? 'primary white--text' : 'normal'">
-            <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
-          </v-btn>
-        </v-btn-toggle>
+        <v-btn  @click="getContracts(true)" :class="active ? 'primary white--text' : 'normal'" class="mr-0">
+          <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
+        </v-btn>
+        <v-btn  @click="getContracts(false)" :class="!active ? 'primary white--text' : 'normal'" class="ml-0">
+          <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
+        </v-btn>
         <v-divider
           class="mx-2"
           inset
@@ -132,7 +130,7 @@ export default {
     RemoveItem
   },
   data: () => ({
-    toggle_one: 0,
+    active: true,
     bus: new Vue(),
     headers: [
       {
@@ -186,9 +184,6 @@ export default {
     },
     formTitle() {
       return this.selectedIndex === -1 ? "Nuevo contrato" : "Editar contrato";
-    },
-    active() {
-      return !Boolean(this.toggle_one);
     }
   },
   async created() {
@@ -215,10 +210,10 @@ export default {
         this.contractsActive = res.data.filter(obj => {
           return obj.active === true;
         });
+        this.active = active;
         this.contractsInactive = res.data.filter(obj => {
           return obj.active === false;
         });
-        this.toggle_one = this.active ? 0 : 1;
         if (active) {
           this.contracts = this.contractsActive;
         } else {
