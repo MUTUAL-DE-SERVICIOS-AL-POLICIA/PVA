@@ -121,7 +121,6 @@ class LdapController extends Controller
     $user = User::where('username', $old_entry['uid'])->where('active', true)->first();
 
     if ($user) {
-      $user->name = implode(' ', [$old_entry['givenName'], $old_entry['sn']]);
       $user->position = $employee->last_contract()->position->name;
       $user->save();
     }

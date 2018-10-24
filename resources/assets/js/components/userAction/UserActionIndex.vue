@@ -27,13 +27,14 @@
       <template slot="items" slot-scope="props">
         <tr>
           <td class="text-md-center" @click="props.expanded = !props.expanded">
-            <v-tooltip right v-if="props.item.user">
-              <span slot="activator">{{ (props.item.user) ? props.item.user.name : '-' }}</span>
-              <span>{{ props.item.user.position }}</span>
-            </v-tooltip>
-            <span v-else>
-              {{ (props.item.user) ? props.item.user.name : '-' }}
-            </span>
+            <span v-if="!props.item.user_id">{{ JSON.parse(props.item.data).username }}</span>
+            <div v-else>
+              <span v-if="!props.item.user.employee_id">{{ props.item.user.username }}</span>
+              <v-tooltip right v-else>
+                <span slot="activator">{{ props.item.user.employee.first_name }} {{ props.item.user.employee.second_name }} {{ props.item.user.employee.last_name }} {{ props.item.user.employee.mothers_last_name }}</span>
+                <span>{{ props.item.user.position }}</span>
+              </v-tooltip>
+            </div>
           </td>
           <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.method }}</td>
           <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.path }}</td>

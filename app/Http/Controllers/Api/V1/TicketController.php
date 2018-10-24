@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Payroll;
 use App\Procedure;
 
-class TicketController extends Controller {
-	function print($id) {
+class TicketController extends Controller
+{
+	function print($id)
+	{
 		$procedure = Procedure::findOrFail($id);
 		$grouped_payrolls = Payroll::where('procedure_id', $procedure->id)->leftJoin('employees as e', 'e.id', '=', 'payrolls.employee_id')->leftJoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('c.start_date')->get()->groupBy('code');
 		$payrolls = [];

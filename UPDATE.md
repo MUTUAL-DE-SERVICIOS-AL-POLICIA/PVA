@@ -2,6 +2,18 @@
 
 ---
 
+## From [1.3.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.0) to [1.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.1)
+
+* Remove cached files
+
+```sh
+composer update
+php artisan vendor:publish
+php artisan migrate
+rm public/js/app.js
+yarn prod && php artisan view:clear && php artisan config:cache
+```
+
 ## From [1.2.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.2.0) to [1.3.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.0)
 
 * Remove unnecesary `adldap` library
