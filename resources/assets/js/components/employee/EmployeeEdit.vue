@@ -200,8 +200,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="error" @click="close"><v-icon>close</v-icon> Cancelar</v-btn>
-        <v-btn color="success" :disabled="this.errors.any()" @click="saveEmployee"><v-icon>check</v-icon> Guardar</v-btn>
+        <v-btn color="error" @click.native="close"><v-icon>close</v-icon> Cancelar</v-btn>
+        <v-btn color="success" :disabled="this.errors.any()" @click.native="saveEmployee"><v-icon>check</v-icon> Guardar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -245,7 +245,7 @@ export default {
   },
   methods: {
     resetVariables() {
-      this.newEmployee = false;
+      this.newEmployee = true;
       this.edit = {};
       this.birth_date = null;
       this.birth_date_formatted = null;
@@ -301,7 +301,7 @@ export default {
       this.edit = employee;
       this.birth_date = this.edit.birth_date;
       this.dialog = true;
-      this.newEmployee = false;
+      this.newEmployee = employee ? false : true;
       this.maxDate = this.$moment(this.$store.getters.dateNow).subtract(18, 'years')
       this.minDate = this.$moment(this.$store.getters.dateNow).subtract(150, 'years')
     });

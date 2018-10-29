@@ -49,6 +49,25 @@ class Employee extends Model
 		return $this->hasMany(Payroll::class);
 	}
 
+	public function consultant()
+	{
+		$contract = $this->last_contract();
+		$consultant_contract = $this->last_consultant_contract();
+		if ($contract && $consultant_contract) {
+			if ($contract->start_date->greaterThan($consultant_contract->start_date)) {
+				return false;
+			} else {
+				return true;
+			}
+		} elseif (!$contract && $consultant_contract) {
+			return true;
+		} elseif ($contract && !$consultant_contract) {
+			return false;
+		} else {
+			return null;
+		}
+	}
+
 	public function consultant_payrolls()
 	{
 		return $this->hasMany(ConsultantPayroll::class);

@@ -3,6 +3,7 @@ import Profile from './components/auth/Profile'
 import Employee from './components/employee/EmployeeIndex'
 import Company from './components/company/CompanyIndex'
 import Contract from './components/contract/ContractIndex'
+import Consultant from './components/contract/ConsultantIndex'
 import Procedure from './components/procedure/ProcedureIndex'
 import ProcedureEdit from './components/procedure/ProcedureEdit'
 import UserAction from './components/userAction/UserActionIndex'
@@ -55,7 +56,7 @@ export const routes = [
     }
   }, {
     path: '/consultant',
-    component: Contract,
+    component: Consultant,
     name: 'consultantIndex',
     meta: {
       requiresAuth: true

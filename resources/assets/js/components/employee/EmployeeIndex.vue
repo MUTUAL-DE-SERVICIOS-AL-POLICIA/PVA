@@ -2,6 +2,14 @@
   <v-container>
     <v-toolbar>
       <v-toolbar-title>Empleados Eventuales</v-toolbar-title>
+      <v-tooltip color="white" bottom>
+        <v-icon slot="activator" class="ml-4">info</v-icon>
+        <div>
+          <v-alert :value="true" type="info">SIN CONTRATOS</v-alert>
+          <v-alert :value="true" type="warning" class="black--text">SIN DATOS PERSONALES</v-alert>
+          <v-alert :value="true" type="error">SIN CUENTA BANCARIA O AFP</v-alert>
+        </div>
+      </v-tooltip>
       <v-spacer></v-spacer>
       <v-btn  @click="getEmployees(false)" :class="!this.active ? 'primary white--text' : 'normal'" class="mr-0">
         <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
@@ -41,6 +49,7 @@
         <tr :class="rowColor(props.item)">
           <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
           <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
+          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'EVENTUAL') }} </td>
           <td @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
@@ -54,7 +63,7 @@
           </td>
           <td class="justify-center layout" v-if="options.includes('edit')">
             <v-tooltip top>
-              <v-btn medium slot="activator" flat icon color="info" @click="editItem(props.item)">
+              <v-btn medium slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
@@ -65,7 +74,7 @@
               </v-btn>
               <span>Eliminar</span>
             </v-tooltip>
-            <v-tooltip top>
+            <v-tooltip top v-if="props.item.consultant != null">
               <v-btn medium slot="activator" flat icon color="info" @click="certificateItem(props.item)">
                 <v-icon>timelapse</v-icon>
               </v-btn>
@@ -155,6 +164,7 @@ export default {
       headers: [
         { align: "center", text: "C.I.", value: "identity_card" },
         { text: "Funcionario", value: "last_name" },
+        { align: "center", text: "Tipo Contrato", value: "consultant", sortable: false },
         { align: "center", text: "Fecha de Nacimiento", value: "birth_date" },
         { text: "# Cuenta", value: "mothers_last_name" },
         { text: "AFP", value: "first_name" },
@@ -238,20 +248,24 @@ export default {
     certificateItem(item) {
       this.bus.$emit("openDialogCertificate", item);      
     },
-    rowColor(payroll) {
+    rowColor(employee) {
       if (
-        payroll.birth_date == null ||
-        payroll.nua_cua == null ||
-        payroll.account_number == null
+        employee.birth_date == null ||
+        employee.nua_cua == null ||
+        employee.account_number == null
       ) {
-        return "error";
+        return "error white--text";
       } else if (
-        payroll.location == null ||
-        payroll.zone == null ||
-        payroll.street == null ||
-        payroll.address_number == null
+        employee.location == null ||
+        employee.zone == null ||
+        employee.street == null ||
+        employee.address_number == null
       ) {
         return "warning";
+      } else if (
+        employee.consultant == null
+      ) {
+        return "info white--text";
       } else {
         return "";
       }

@@ -8,7 +8,7 @@ export default {
     }, {
       href: 'contractIndex',
       params: {},
-      title: 'Contratos',
+      title: 'Contratos Eventuales',
       icon: 'work',
       options: ['new', 'edit', 'delete', 'renew', 'printInsurance', 'printContract']
     }, {
@@ -74,7 +74,7 @@ export default {
     }, {
       href: 'contractIndex',
       params: {},
-      title: 'Contratos',
+      title: 'Contratos Eventuales',
       icon: 'work',
       options: ['printContract', 'edit']
     }
@@ -88,7 +88,7 @@ export default {
     }, {
       href: 'contractIndex',
       params: {},
-      title: 'Contratos',
+      title: 'Contratos Eventuales',
       icon: 'work',
       options: []
     }, {
