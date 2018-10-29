@@ -39,9 +39,19 @@ class Employee extends Model
 		return $this->hasMany(Contract::class);
 	}
 
+	public function consultant_contracts()
+	{
+		return $this->hasMany(ConsultantContract::class);
+	}
+
 	public function payrolls()
 	{
 		return $this->hasMany(Payroll::class);
+	}
+
+	public function consultant_payrolls()
+	{
+		return $this->hasMany(ConsultantPayroll::class);
 	}
 
 	public function first_contract()
@@ -49,14 +59,29 @@ class Employee extends Model
 		return $this->contracts()->orderBy('start_date', 'ASC')->first();
 	}
 
+	public function first_consultant_contract()
+	{
+		return $this->consultant_contracts()->orderBy('start_date', 'ASC')->first();
+	}
+
 	public function last_contract()
 	{
 		return $this->contracts()->orderBy('start_date', 'DESC')->first();
 	}
 
+	public function last_consultant_contract()
+	{
+		return $this->consultant_contracts()->orderBy('start_date', 'DESC')->first();
+	}
+
 	public function before_last_contract()
 	{
 		return $this->contracts()->orderBy('start_date', 'DESC')->skip(1)->first();
+	}
+
+	public function before_last_consultant_contract()
+	{
+		return $this->consultant_contracts()->orderBy('start_date', 'DESC')->skip(1)->first();
 	}
 
 	public function users()

@@ -13,12 +13,12 @@
     >
       <v-list>
         <v-list-tile v-for="item in menu_left" :key="item.title" :to="{name: item.href, params: item.params}">
-          <v-list-tile-action>
-            <v-tooltip right>
-              <v-icon slot="activator">{{ item.icon }}</v-icon>
-              <span>{{ item.title }}</span>
-            </v-tooltip>
-          </v-list-tile-action>
+          <v-tooltip right>
+            <v-list-tile-action slot="activator">
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-tile-action>
+            <span>{{ item.title }}</span>
+          </v-tooltip>
           <v-list-tile-content>
             <v-list-tile-title>
               {{ item.title }}

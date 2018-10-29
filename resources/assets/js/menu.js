@@ -12,6 +12,12 @@ export default {
       icon: 'work',
       options: ['new', 'edit', 'delete', 'renew', 'printInsurance', 'printContract']
     }, {
+      href: 'consultantIndex',
+      params: {},
+      title: 'Contratos Consultores',
+      icon: 'pie_chart',
+      options: ['new', 'edit', 'delete', 'renew', 'printInsurance']
+    }, {
       href: 'procedureIndex',
       params: {
         active: true
@@ -40,8 +46,14 @@ export default {
     }, {
       href: 'contractIndex',
       params: {},
-      title: 'Contratos',
+      title: 'Contratos Eventuales',
       icon: 'work',
+      options: ['new', 'edit', 'delete', 'renew', 'printInsurance']
+    }, {
+      href: 'consultantIndex',
+      params: {},
+      title: 'Contratos Consultores',
+      icon: 'pie_chart',
       options: ['new', 'edit', 'delete', 'renew', 'printInsurance']
     }, {
       href: 'procedureIndex',

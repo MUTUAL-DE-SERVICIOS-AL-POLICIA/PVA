@@ -1,7 +1,7 @@
 <template>
   <v-container >
     <v-toolbar>
-        <v-toolbar-title>Contratos</v-toolbar-title>
+        <v-toolbar-title>Contratos Eventuales</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn  @click="getContracts(true)" :class="active ? 'primary white--text' : 'normal'" class="mr-0">
           <div class="font-weight-regular subheading pa-2">ACTIVOS</div>

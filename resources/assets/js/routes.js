@@ -54,6 +54,13 @@ export const routes = [
       requiresAuth: true
     }
   }, {
+    path: '/consultant',
+    component: Contract,
+    name: 'consultantIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
     path: '/procedure',
     component: Procedure,
     name: 'procedureIndex',
