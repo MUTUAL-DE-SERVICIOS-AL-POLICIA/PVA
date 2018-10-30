@@ -30,7 +30,7 @@
         inset
         vertical
       ></v-divider>
-      <ContractForm :contract="{}" :bus="bus"/>
+      <ConsultantForm :contract="{}" :bus="bus"/>
       <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
@@ -106,13 +106,13 @@
 </template>
 <script type="text/javascript">
 import Vue from "vue";
-import ContractForm from "./ContractForm";
+import ConsultantForm from "./ConsultantForm";
 import RemoveItem from "../RemoveItem";
 import { admin, rrhh, juridica } from "../../menu.js";
 export default {
   name: "ConsultantIndex",
   components: {
-    ContractForm,
+    ConsultantForm,
     RemoveItem
   },
   data: () => ({
@@ -157,8 +157,6 @@ export default {
     contractsActive: [],
     contractsInactive: [],
     search: "",
-    switch1: true,
-    contractState: "vigentes",
     options: []
   }),
   computed: {
