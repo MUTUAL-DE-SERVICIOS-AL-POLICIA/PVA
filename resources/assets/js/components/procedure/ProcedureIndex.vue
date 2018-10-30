@@ -33,10 +33,10 @@
                 <v-flex xs6>
                   <v-text-field
                     slot="activator"
-                    v-model="$moment(procedure.pay_date).format('DD/MM/YYYY')"
+                    :value="$moment(procedure.pay_date).format('DD/MM/YYYY')"
                     label="Fecha de Pago"
                     prepend-icon="event"
-                    disabled
+                    readonly
                     v-if="procedure.pay_date"
                   ></v-text-field>
                   <v-text-field
@@ -366,6 +366,7 @@ export default {
       try {
         let res = await axios.get(`/employer_number`);
         this.employerNumbers = res.data;
+        this.changeYear();
       } catch (e) {
         console.log(e);
       }

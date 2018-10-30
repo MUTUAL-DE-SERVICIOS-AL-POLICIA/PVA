@@ -66,7 +66,7 @@ class Util
 
 	public static function formatMoney($value)
 	{
-		$value = number_format(floatval($value), 2, ' . ', ', ');
+		$value = number_format(floatval($value), 2, '.', ',');
 		return $value;
 	}
 

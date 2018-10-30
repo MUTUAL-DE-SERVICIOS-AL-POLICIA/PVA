@@ -3,13 +3,15 @@
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder {
+class DatabaseSeeder extends Seeder
+{
 	/**
 	 * Seed the application's database.
 	 *
 	 * @return void
 	 */
-	public function run() {
+	public function run()
+	{
 		$this->command->info('Unguarding models');
 		Model::unguard();
 
@@ -54,7 +56,6 @@ class DatabaseSeeder extends Seeder {
 			DB::statement('TRUNCATE TABLE ' . $table . ' CASCADE;');
 		}
 
-		$this->call(UserSeeder::class);
 		$this->call(CitySeeder::class);
 		$this->call(InsuranceCompanySeeder::class);
 		$this->call(ManagementEntitySeeder::class);
@@ -66,6 +67,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call(ChargeSeeder::class);
 		$this->call(PositionSeeder::class);
 		$this->call(EmployeeSeeder::class);
+		$this->call(UserSeeder::class);
 		$this->call(JobScheduleSeeder::class);
 		$this->call(RetirementReasonSeeder::class);
 		$this->call(ContractTypeSeeder::class);

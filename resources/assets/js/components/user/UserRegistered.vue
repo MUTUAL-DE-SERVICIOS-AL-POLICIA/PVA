@@ -11,9 +11,9 @@
       <template slot="items" slot-scope="props">
         <tr>
           <td class="text-xs-center">
-            <v-tooltip right v-if="props.item.name">
+            <v-tooltip right v-if="props.item.employee">
               <span slot="activator">
-                {{ props.item.username }}
+                {{ props.item.employee.first_name }} {{ props.item.employee.second_name }} {{ props.item.employee.last_name }} {{ props.item.employee.mothers_last_name }}
               </span>
               <span>
                 <div>{{ props.item.name }}</div>

@@ -3,14 +3,12 @@
     <v-toolbar>
       <v-toolbar-title>Empleados</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn-toggle v-model="toggle_one">
-        <v-btn  @click="getEmployees(false)" :class="!this.active ? 'primary white--text' : 'normal'">
-          <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
-        </v-btn>
-        <v-btn  @click="getEmployees(true)" :class="this.active ? 'primary white--text' : 'normal'">
-          <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
-        </v-btn>
-      </v-btn-toggle>
+      <v-btn  @click="getEmployees(false)" :class="!this.active ? 'primary white--text' : 'normal'" class="mr-0">
+        <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
+      </v-btn>
+      <v-btn  @click="getEmployees(true)" :class="this.active ? 'primary white--text' : 'normal'" class="ml-0">
+        <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
+      </v-btn>
       <v-divider
         class="mx-2"
         inset
@@ -150,7 +148,6 @@ export default {
       startIndex: 0,
       dialog: false,
       active: false,
-      toggle_one: 0,
       employeesActive: [],
       employeesInactive: [],
       employees: [],
@@ -210,7 +207,6 @@ export default {
           return obj.active === true;
         });
         this.active = active;
-        this.toggle_one = this.active ? 1 : 0;
         this.employeesInactive = res.data.filter(obj => {
           return obj.active === false;
         });
