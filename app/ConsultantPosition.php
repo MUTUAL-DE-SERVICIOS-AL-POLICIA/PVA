@@ -11,7 +11,7 @@ class ConsultantPosition extends Model
   protected $dates = ['deleted_at'];
   public $timestamps = true;
   public $guarded = ['id'];
-  protected $fillable = ['name', 'charge_id', 'position_group_id', 'active'];
+  protected $fillable = ['name', 'charge_id', 'position_group_id'];
 
   public function depends_from()
   {

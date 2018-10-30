@@ -157,8 +157,9 @@ class ContractController extends Controller
     }
     return $contracts;
   }
+
   public function last_contract($employee_id)
   {
-    return Contract::with('employee','employee.city_identity_card','position')->where('employee_id', $employee_id)->orderBy('end_date', 'desc')->select('contracts.active as act', '*')->first();
+    return Contract::with('employee', 'employee.city_identity_card', 'position')->where('employee_id', $employee_id)->orderBy('end_date', 'desc')->select('contracts.active as act', '*')->first();
   }
 }

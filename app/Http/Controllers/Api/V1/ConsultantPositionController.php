@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PositionForm;
-use App\Position;
+use App\Http\Requests\ConsultantPositionForm;
+use App\ConsultantPosition;
 use Illuminate\Http\Request;
 
-/** @resource Position
- *
- * Resource to retrieve, store and update position data
- */
-class PositionController extends Controller
+class ConsultantPositionController extends Controller
 {
   /**
    * Display a listing of the resource.
@@ -20,7 +16,7 @@ class PositionController extends Controller
    */
   public function index()
   {
-    return Position::with('charge', 'position_group')->get();
+    return ConsultantPosition::with('charge', 'position_group')->get();
   }
 
   /**
@@ -29,33 +25,33 @@ class PositionController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(PositionForm $request)
+  public function store(ConsultantPositionForm $request)
   {
-    $position = Position::create($request->all());
+    $position = ConsultantPosition::create($request->all());
     return $position;
   }
 
   /**
    * Display the specified resource.
    *
-   * @param  int  $id
+   * @param  \App\ConsultantPosition  $consultantPosition
    * @return \Illuminate\Http\Response
    */
   public function show($id)
   {
-    return Position::findOrFail($id);
+    return ConsultantPosition::findOrFail($id);
   }
 
   /**
    * Update the specified resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
+   * @param  \App\ConsultantPosition  $consultantPosition
    * @return \Illuminate\Http\Response
    */
   public function update(PositionForm $request, $id)
   {
-    $position = Position::findOrFail($id);
+    $position = ConsultantPosition::findOrFail($id);
     $position->fill($request->all());
     $position->save();
     return $position;
@@ -64,12 +60,12 @@ class PositionController extends Controller
   /**
    * Remove the specified resource from storage.
    *
-   * @param  int  $id
+   * @param  \App\ConsultantPosition  $consultantPosition
    * @return \Illuminate\Http\Response
    */
   public function destroy($id)
   {
-    $position = Position::findOrFail($id);
+    $position = ConsultantPosition::findOrFail($id);
     $position->delete();
     return $position;
   }

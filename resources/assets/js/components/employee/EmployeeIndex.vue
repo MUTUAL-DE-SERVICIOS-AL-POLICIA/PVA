@@ -2,7 +2,7 @@
   <v-container>
     <v-toolbar>
       <v-toolbar-title>Empleados Eventuales</v-toolbar-title>
-      <v-tooltip color="white" bottom>
+      <v-tooltip color="white" role="button" bottom>
         <v-icon slot="activator" class="ml-4">info</v-icon>
         <div>
           <v-alert :value="true" type="info">SIN CONTRATOS</v-alert>

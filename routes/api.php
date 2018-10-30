@@ -40,6 +40,9 @@ Route::group([
 		// Position
 		Route::get('position', 'Api\V1\PositionController@index')->name('positions_list');
 		Route::get('position/{id}', 'Api\V1\PositionController@show')->name('position_details');
+		// Consultant Position
+		Route::get('consultant_position', 'Api\V1\ConsultantPositionController@index')->name('consultant_positions_list');
+		Route::get('consultant_position/{id}', 'Api\V1\ConsultantPositionController@show')->name('consultant_position_details');
 		// Payroll
 		Route::get('payroll', 'Api\V1\PayrollController@index')->name('payroll_list');
 		Route::get('payroll/{id}', 'Api\V1\PayrollController@show')->name('payroll_details');
@@ -52,6 +55,11 @@ Route::group([
 		Route::get('payroll/print/certificate/{id}', 'Api\V1\PayrollPrintController@print_certificate')->name('print_certificate_payroll');
 		// Payroll-Contract
 		Route::get('payroll/getpayrollcontract/{contract_id}', 'Api\V1\PayrollController@getPayrollContract')->name('payroll_contract');
+		// Consultant Payroll
+		Route::get('consultant_payroll', 'Api\V1\ConsultantPayrollController@index')->name('consultant_payroll_list');
+		Route::get('consultant_payroll/{id}', 'Api\V1\ConsultantPayrollController@show')->name('consultant_payroll_details');
+		// Consultant Payroll-Contract
+		Route::get('consultant_payroll/getpayrollcontract/{contract_id}', 'Api\V1\ConsultantPayrollController@getPayrollContract')->name('consultant_payroll_contract');
 		// Position
 		Route::group([
 			'prefix' => 'position/{superior_id}',
@@ -69,6 +77,9 @@ Route::group([
 		Route::get('contract/{id}', 'Api\V1\ContractController@show')->name('contract_details');
 		Route::get('contract/position_free/{position_id}', 'Api\V1\ContractController@positionFree')->name('contract_position_free');
 		Route::get('contract/print/{id}/{type}', 'Api\V1\ContractController@print')->name('contract_print');
+		// Consultant Contract
+		Route::get('consultant_contract', 'Api\V1\ConsultantContractController@index')->name('consultant_contracts_list');
+		Route::get('consultant_contract/{id}', 'Api\V1\ConsultantContractController@show')->name('consultant_contract_details');
 		// Job Schedule
 		Route::get('jobs_chedule', 'Api\V1\JobScheduleController@index')->name('jobs_chedule_list');
 		Route::get('jobs_chedule/{id}', 'Api\V1\JobScheduleController@show')->name('jobs_chedule_details');
@@ -231,10 +242,18 @@ Route::group([
 			Route::post('position', 'Api\V1\PositionController@store')->name('position_store');
 			Route::patch('position/{id}', 'Api\V1\PositionController@update')->name('position_update');
 			Route::delete('position/{id}', 'Api\V1\PositionController@destroy')->name('position_delete');
+			// Consultant Position
+			Route::post('consultant_position', 'Api\V1\ConsultantPositionController@store')->name('consultant_position_store');
+			Route::patch('consultant_position/{id}', 'Api\V1\ConsultantPositionController@update')->name('consultant_position_update');
+			Route::delete('consultant_position/{id}', 'Api\V1\ConsultantPositionController@destroy')->name('position_delete');
 			// Payroll
 			Route::post('payroll', 'Api\V1\PayrollController@store')->name('payroll_store');
 			Route::patch('payroll/{id}', 'Api\V1\PayrollController@update')->name('payroll_update');
 			Route::delete('payroll/{id}', 'Api\V1\PayrollController@destroy')->name('payroll_delete');
+			// Consultant Payroll
+			Route::post('consultant_payroll', 'Api\V1\ConsultantPayrollController@store')->name('consultant_payroll_store');
+			Route::patch('consultant_payroll/{id}', 'Api\V1\ConsultantPayrollController@update')->name('consultant_payroll_update');
+			Route::delete('consultant_payroll/{id}', 'Api\V1\ConsultantPayrollController@destroy')->name('consultant_payroll_delete');
 			// Position
 			Route::group([
 				'prefix' => 'position/{superior_id}',
@@ -251,6 +270,9 @@ Route::group([
 			Route::delete('contract/{id}', 'Api\V1\ContractController@destroy')->name('contract_delete');
 			Route::get('contract/valid/{procedure_id}', 'Api\V1\ContractController@valid_date')->name('contract_valid');
 			Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
+			// Consultant Contract
+			Route::post('consultant_contract', 'Api\V1\ConsultantContractController@store')->name('consultant_contract_store');
+			Route::delete('consultant_contract/{id}', 'Api\V1\ConsultantContractController@destroy')->name('consultant_contract_delete');
 			// Job Schedule
 			Route::post('jobs_chedule', 'Api\V1\JobScheduleController@store')->name('jobs_chedule_store');
 			Route::patch('jobs_chedule/{id}', 'Api\V1\JobScheduleController@update')->name('jobs_chedule_update');
