@@ -156,6 +156,9 @@
                 v-model="edit.management_entity_id"
                 single-line
                 :menu-props="{ auto: true, overflowY: true }"
+                v-validate="'required'"
+                :error-messages="errors.collect('AFP')"
+                data-vv-name="AFP"
               ></v-select>
               <v-text-field
                 v-validate="'required'"
