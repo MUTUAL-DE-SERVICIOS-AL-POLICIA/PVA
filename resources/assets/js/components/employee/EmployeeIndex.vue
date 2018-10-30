@@ -164,9 +164,9 @@ export default {
       headers: [
         { align: "center", text: "C.I.", value: "identity_card" },
         { text: "Funcionario", value: "last_name" },
-        { align: "center", text: "Tipo Contrato", value: "consultant", sortable: false },
+        { align: "center", text: "Tipo Contrato", value: "mothers_last_name", sortable: false },
         { align: "center", text: "Fecha de Nacimiento", value: "birth_date" },
-        { text: "# Cuenta", value: "mothers_last_name" },
+        { text: "# Cuenta", value: "account_number" },
         { text: "AFP", value: "first_name" },
         { text: "CUA/NUA", value: "nua_cua" },
         {
