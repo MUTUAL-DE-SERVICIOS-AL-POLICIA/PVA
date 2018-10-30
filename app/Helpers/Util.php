@@ -216,7 +216,7 @@ class Util
 		return $grouped;
 	}
 
-	public static function format_number($number, $decimals = 2, $thousand_separator = ', ', $decimal_separator = ' . ')
+	public static function format_number($number, $decimals = 2, $thousand_separator = ',', $decimal_separator = '.')
 	{
 		return number_format(round($number, $decimals), $decimals, $decimal_separator, $thousand_separator);
 	}
@@ -281,7 +281,7 @@ class Util
 		if (($number < 0) || ($number > 999999999)) {
 			return ' No es posible convertir el numero a letras ';
 		}
-		$div_decimales = explode(' . ', $number);
+		$div_decimales = explode('.', $number);
 		if (count($div_decimales) > 1) {
 			$number = $div_decimales[0];
 			$decNumberStr = (string)$div_decimales[1];
