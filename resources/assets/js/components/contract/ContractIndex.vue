@@ -101,7 +101,7 @@
                 <v-list-tile-content><p><strong>Modalidad de contratación: </strong>{{ props.item.contract_mode.name }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Número de contrato: </strong>{{ props.item.contract_number }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Referencia de contratación: </strong>{{ props.item.hiring_reference_number }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Cite de Recursos Humanos: </strong>{{ props.item.rrh_cite }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Cite de Recursos Humanos: </strong>{{ props.item.rrhh_cite }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Fecha de cite de recursos Humanos: </strong>{{ props.item.rrhh_cite_date }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Cite de evaluación: </strong>{{ props.item.performance_cite }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Número de asegurado: </strong>{{ props.item.insurance_number }}</p></v-list-tile-content>
