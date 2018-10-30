@@ -474,7 +474,7 @@ export default {
     },
     workedDays(payroll) {
       let payrollDate = this.$moment(
-        `${this.procedure.year}0${this.procedure.month.order}01`
+        `${this.procedure.year}${this.procedure.month.order}01`
       );
 
       let lastDayOfMonth = payrollDate.endOf("month").date();

@@ -129,8 +129,8 @@ class ProcedureController extends Controller
 	{
 		$procedure = Procedure::findOrFail($id);
 		return response()->json([
-			'first_date' => Carbon::create(2018, 8)->startOfMonth()->format('Y-m-d'),
-			'end_date' => Carbon::create(2018, 8)->endOfMonth()->format('Y-m-d'),
+			'first_date' => Carbon::create($procedure->year, $procedure->month->order)->startOfMonth()->format('Y-m-d'),
+			'end_date' => Carbon::create($procedure->year, $procedure->month->order)->endOfMonth()->format('Y-m-d'),
 			'now' => Carbon::now()->format('Y-m-d'),
 		]);
 	}
@@ -153,16 +153,16 @@ class ProcedureController extends Controller
 	public function pay_date($id, $date)
 	{
 		$day = Carbon::parse($date)->day;
- 		$month = Carbon::parse($date)->month;
- 		$year = Carbon::parse($date)->year;
+		$month = Carbon::parse($date)->month;
+		$year = Carbon::parse($date)->year;
 
-    	$content = file_get_contents('https://www.bcb.gob.bo/librerias/indicadores/ufv/gestion.php?sdd='.$day.'&smm='.$month.'&saa='.$year.'&Button=++Ver++&reporte_pdf='.$month.'*'.$day.'*'.$year.'**'.$month.'*'.$day.'*'.$year.'*&edd='.$day.'&emm='.$month.'&eaa='.$year.'&qlist=1');    	
-        $patron = '|<div align="center">(.*?)</div>|is';
-        preg_match_all($patron, $content, $extracto);
-        $ufv = trim($extracto[1][1]);
+		$content = file_get_contents('https://www.bcb.gob.bo/librerias/indicadores/ufv/gestion.php?sdd=' . $day . '&smm=' . $month . '&saa=' . $year . '&Button=++Ver++&reporte_pdf=' . $month . '*' . $day . '*' . $year . '**' . $month . '*' . $day . '*' . $year . '*&edd=' . $day . '&emm=' . $month . '&eaa=' . $year . '&qlist=1');
+		$patron = '|<div align="center">(.*?)</div>|is';
+		preg_match_all($patron, $content, $extracto);
+		$ufv = trim($extracto[1][1]);
 
 
-        $procedure = Procedure::find($id);
+		$procedure = Procedure::find($id);
 		$procedure->pay_date = $date;
 		$procedure->ufv = floatval(str_replace(',', '.', $ufv));
 		$procedure->save();
