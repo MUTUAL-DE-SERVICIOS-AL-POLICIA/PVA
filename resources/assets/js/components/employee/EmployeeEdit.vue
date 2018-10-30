@@ -108,8 +108,8 @@
                     <v-date-picker
                       ref="picker"
                       v-model="birth_date"
-                      :max="this.maxDate.format('YYYY-MM-DD')"
-                      :min="this.minDate.format('YYYY-MM-DD')"
+                      :max="this.maxDate.format('Y-M-D')"
+                      :min="this.minDate.format('Y-M-D')"
                       locale="es-bo"
                       @change="saveDate"
                     ></v-date-picker>
@@ -303,7 +303,7 @@ export default {
       this.dialog = true;
       this.newEmployee = employee ? false : true;
       this.maxDate = this.$moment(this.$store.getters.dateNow).subtract(18, 'years')
-      this.minDate = this.$moment(this.$store.getters.dateNow).subtract(150, 'years')
+      this.minDate = this.$moment(this.$store.getters.dateNow).subtract(100, 'years')
     });
     this.getCities();
     this.getManagementEntities();

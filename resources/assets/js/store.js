@@ -1,11 +1,12 @@
 import menu from "./menu.js";
+import moment from 'moment';
 
 export default {
   state: {
     currentUser: localStorage.getItem('user') || null,
     menuLeft: null,
     ldapAuth: JSON.parse(process.env.MIX_LDAP_AUTHENTICATION),
-    dateNow: null,
+    dateNow: moment().format('Y-M-D'),
     token: {
       type: localStorage.getItem('token_type') || null,
       value: localStorage.getItem('token') || null
