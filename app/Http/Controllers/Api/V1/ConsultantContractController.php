@@ -58,11 +58,10 @@ class ConsultantContractController extends Controller
     $contract = ConsultantContract::findOrFail($id);
     $contract->fill($request->all());
     $contract->save();
-    if ($request->schedule['id']) {
+    if ($request->schedules) {
       $contract->job_schedules()->detach();
-      $contract->job_schedules()->attach($request->schedule['id']);
-      if ($request->schedule['id'] == 1) {
-        $contract->job_schedules()->attach(2);
+      foreach ($request->schedules as $schedule) {
+        $contract->job_schedules()->attach($schedule);
       }
     }
     return $contract;
@@ -74,10 +73,30 @@ class ConsultantContractController extends Controller
    * @param  \App\ConsultantContract  $consultantContract
    * @return \Illuminate\Http\Response
    */
-  public function destroy(ConsultantContract $consultantContract)
+  public function destroy($id)
   {
     $contract = ConsultantContract::findOrFail($id);
     $contract->delete();
     return $contract;
+  }
+
+  /**
+   * Display the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function positionFree($id)
+  {
+    $contract = ConsultantContract::where('active', true)->where('consultant_position_id', $id)->first();
+    if ($contract) {
+      return response()->json([
+        'free' => false
+      ]);
+    } else {
+      return response()->json([
+        'free' => true
+      ]);
+    }
   }
 }

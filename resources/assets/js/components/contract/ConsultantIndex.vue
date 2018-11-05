@@ -62,13 +62,13 @@
           </td>
           <td class="justify-center layout" v-if="options.length > 0">
             <v-tooltip top v-if="options.includes('renew')">
-              <v-btn slot="activator" flat icon color="info" @click="editItem(props.item, 'recontract')">
+              <v-btn slot="activator" flat icon color="info" @click="editItem(props.item, false)">
                 <v-icon>autorenew</v-icon>
               </v-btn>
               <span>Recontratar</span>
             </v-tooltip>
             <v-tooltip top v-if="options.includes('edit')">
-              <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
+              <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, true)">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
@@ -207,18 +207,14 @@ export default {
       }
     },
     editItem(item, mode) {
-      this.bus.$emit("openDialog", $.extend({}, item, { mode: mode }));
+      this.bus.$emit("openDialog", Object.assign(item, {edit: mode}));
     },
     async removeItem(item) {
-      let payroll = await axios.get(
-        "/payroll/getpayrollcontract/" + item.id
-      );
-      if (payroll.data) {
-        alert(
-          "No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS"
-        );
+      let payrolls = await axios.get(`/consultant_payroll/contract/${item.id}`)
+      if (payrolls.data.count > 0) {
+        this.toastr.success('No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS')
       } else {
-        this.bus.$emit("openDialogRemove", `/contract/${item.id}`);
+        this.bus.$emit("openDialogRemove", `/consultant_contract/${item.id}`)
       }
     },
     fullName(employee) {

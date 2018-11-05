@@ -37,9 +37,13 @@ class ConsultantPositionController extends Controller
    * @param  \App\ConsultantPosition  $consultantPosition
    * @return \Illuminate\Http\Response
    */
-  public function show($id)
+  public function show(ConsultantPositionForm $request, $id)
   {
-    return ConsultantPosition::findOrFail($id);
+    $position = ConsultantPosition::findOrFail($id);
+    if ($position->charge_id == $request['charge_id'] && $position->position_group_id == $request['position_group_id']) {
+      return $position;
+    }
+    abort(404);
   }
 
   /**
@@ -69,4 +73,17 @@ class ConsultantPositionController extends Controller
     $position->delete();
     return $position;
   }
+
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  \App\ConsultantPosition  $consultantPosition
+   * @return \Illuminate\Http\Response
+   */
+  public function find(Request $request)
+  {
+    $position = ConsultantPosition::where('name', $request['name'])->where('charge_id', $request['charge_id'])->where('position_group_id', $request['position_group_id'])->first();
+    return $position;
+  }
+
 }

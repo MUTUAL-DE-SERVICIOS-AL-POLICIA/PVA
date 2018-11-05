@@ -3,7 +3,7 @@ require('./bootstrap')
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
-import VeeValidate from 'vee-validate'
+import VeeValidate, { Validator } from 'vee-validate'
 import { routes } from './routes'
 import StoreData from './store'
 import AppMain from './components/AppMain'
@@ -50,7 +50,7 @@ import moment from 'moment'
 moment.updateLocale('es', require('moment/locale/es'))
 Vue.use(require('vue-moment'), {
   moment
-});
+})
 
 Vue.use(VeeValidate, {
   locale: 'es',
@@ -111,3 +111,5 @@ new Vue({
   },
   locale: 'es',
 })
+
+Validator.localize('es', es)

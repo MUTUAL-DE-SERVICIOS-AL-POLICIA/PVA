@@ -43,6 +43,7 @@ Route::group([
 		// Consultant Position
 		Route::get('consultant_position', 'Api\V1\ConsultantPositionController@index')->name('consultant_positions_list');
 		Route::get('consultant_position/{id}', 'Api\V1\ConsultantPositionController@show')->name('consultant_position_details');
+		Route::get('consultant_position/find/with_name', 'Api\V1\ConsultantPositionController@find')->name('consultant_positions_find');
 		// Payroll
 		Route::get('payroll', 'Api\V1\PayrollController@index')->name('payroll_list');
 		Route::get('payroll/{id}', 'Api\V1\PayrollController@show')->name('payroll_details');
@@ -59,7 +60,7 @@ Route::group([
 		Route::get('consultant_payroll', 'Api\V1\ConsultantPayrollController@index')->name('consultant_payroll_list');
 		Route::get('consultant_payroll/{id}', 'Api\V1\ConsultantPayrollController@show')->name('consultant_payroll_details');
 		// Consultant Payroll-Contract
-		Route::get('consultant_payroll/getpayrollcontract/{contract_id}', 'Api\V1\ConsultantPayrollController@getPayrollContract')->name('consultant_payroll_contract');
+		Route::get('consultant_payroll/contract/{contract_id}', 'Api\V1\ConsultantPayrollController@getPayrollContract')->name('consultant_payroll_contract');
 		// Position
 		Route::group([
 			'prefix' => 'position/{superior_id}',
@@ -80,6 +81,7 @@ Route::group([
 		// Consultant Contract
 		Route::get('consultant_contract', 'Api\V1\ConsultantContractController@index')->name('consultant_contracts_list');
 		Route::get('consultant_contract/{id}', 'Api\V1\ConsultantContractController@show')->name('consultant_contract_details');
+		Route::get('consultant_contract/position_free/{position_id}', 'Api\V1\ConsultantContractController@positionFree')->name('consultant_contract_position_free');
 		// Job Schedule
 		Route::get('jobs_chedule', 'Api\V1\JobScheduleController@index')->name('jobs_chedule_list');
 		Route::get('jobs_chedule/{id}', 'Api\V1\JobScheduleController@show')->name('jobs_chedule_details');
@@ -348,6 +350,7 @@ Route::group([
 			'middleware' => 'role:admin|rrhh|juridica',
 		], function () {
 			Route::patch('contract/{id}', 'Api\V1\ContractController@update')->name('contract_update');
+			Route::patch('consultant_contract/{id}', 'Api\V1\ConsultantContractController@update')->name('consultant_contract_update');
 		});
 	});
 });

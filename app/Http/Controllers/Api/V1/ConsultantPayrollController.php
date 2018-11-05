@@ -96,6 +96,8 @@ class ConsultantPayrollController extends Controller
    */
   public function getPayrollContract($contract_id)
   {
-    return ConsultantPayroll::where('consultant_contract_id', $contract_id)->first();
+    return response()->json([
+      'count' => ConsultantPayroll::where('consultant_contract_id', $contract_id)->count()
+    ]);
   }
 }
