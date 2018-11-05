@@ -82,7 +82,7 @@
       disable-initial-sort
       expand
       :loading="loading"
-      :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
+      :rows-per-page-items="[{text:'TODO',value:-1},10,20,30]"
     >
       <template slot="headerCell" slot-scope="props">
         <v-tooltip top v-if="props.header.tooltip">
