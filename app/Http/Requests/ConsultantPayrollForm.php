@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PayrollForm extends FormRequest
+class ConsultantPayrollForm extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class PayrollForm extends FormRequest
 	public function rules()
 	{
 		return [
-			'procedure_id' => 'required',
+			'consultant_procedure_id' => 'required',
 			'consultant_contract_id' => 'required',
 			'employee_id' => 'required',
 			'consultant_position_id' => 'required',

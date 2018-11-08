@@ -204,7 +204,6 @@ export default {
   data() {
     return {
       dialog: false,
-      options: this.$store.getters.menuLeft.find(o => o.href === 'consultantIndex'),
       datePicker: {
         start: {
           formattedDate: null,
@@ -225,7 +224,8 @@ export default {
         start_date: null,
         end_date: null,
         consultant_position: null,
-        consultant_position_id: null
+        consultant_position_id: null,
+        new: true
       },
       formTitle: 'Nuevo contrato de consultoría',
       employees: [],
@@ -257,7 +257,6 @@ export default {
     this.getCharges()
     this.getJobSchedules()
     this.getPositionGroups()
-    this.options = this.options ? this.options.options : []
   },
   mounted() {
     this.bus.$on("openDialog", item => {
@@ -411,7 +410,6 @@ export default {
             let res = await axios.get(`/consultant_contract/position_free/${position.id}`)
             this.table.position.free = res.data.free
           } else {
-            this.table.position.name = position
             this.table.position.free = true
           }
           this.getPositions()
@@ -471,7 +469,11 @@ export default {
               active: false
             })
           }
-          await axios.post(`/consultant_contract`, this.selectedItem)
+          if (this.selectedItem.new) {
+            await axios.post(`/consultant_contract`, this.selectedItem)
+          } else {
+            await axios.patch(`/consultant_contract/${this.selectedItem.id}`, this.selectedItem)
+          }
           this.toastr.success('Consultor agregado exitosamente')
           this.closeDialog()
         }

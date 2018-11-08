@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\ConsultantContract;
+use App\ConsultantProcedure;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -98,5 +99,25 @@ class ConsultantContractController extends Controller
         'free' => true
       ]);
     }
+  }
+
+  /**
+   * Display the contract's list with valid date from procedure.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function valid_date($procedure_id)
+  {
+    $procedure = ConsultantProcedure::findOrFail($procedure_id);
+    $contracts = new ConsultantContract();
+    $contracts = $contracts->valid_date($procedure->year, $procedure->month->order);
+    foreach ($contracts as $contract) {
+      $contract->employee;
+      $contract->employee->city_identity_card;
+      $contract->consultant_position->position_group;
+      $contract->consultant_position->charge;
+    }
+    return $contracts;
   }
 }

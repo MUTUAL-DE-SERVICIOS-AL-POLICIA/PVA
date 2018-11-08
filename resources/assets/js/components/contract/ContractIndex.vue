@@ -33,7 +33,11 @@
         <ContractForm :contract="{}" :bus="bus"/>
         <RemoveItem :bus="bus"/>
     </v-toolbar>
+    <div v-if="loading">
+      <Loading/>
+    </div>
     <v-data-table
+        v-else
         :headers="headers"
         :items="contracts"
         :search="search"
@@ -59,30 +63,30 @@
                 </span>
               </v-tooltip>
             </td>
-            <td class="justify-center layout" v-if="options.length > 0">
+            <td class="justify-center layout" v-if="$route.params.options.length > 0">
               <v-menu offset-y>
                 <v-btn slot="activator" flat icon color="info">
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
                 </v-btn>
                 <v-list>
-                  <v-list-tile @click="print(props.item, 'printEventual')" v-if="options.includes('printContract')"> Contrato</v-list-tile>
-                  <v-list-tile @click="print(props.item, 'printUp')" v-if="options.includes('printInsurance')"> Alta del seguro</v-list-tile>
-                  <v-list-tile @click="print(props.item, 'printLow')" v-if="options.includes('printInsurance')"> Baja del seguro</v-list-tile>
+                  <v-list-tile @click="print(props.item, 'printEventual')" v-if="$route.params.options.includes('printContract')"> Contrato</v-list-tile>
+                  <v-list-tile @click="print(props.item, 'printUp')" v-if="$route.params.options.includes('printInsurance')"> Alta del seguro</v-list-tile>
+                  <v-list-tile @click="print(props.item, 'printLow')" v-if="$route.params.options.includes('printInsurance')"> Baja del seguro</v-list-tile>
                 </v-list>
               </v-menu>
-              <v-tooltip top v-if="options.includes('renew')">
+              <v-tooltip top v-if="$route.params.options.includes('renew') && checkEnd(props.item) != ''">
                 <v-btn slot="activator" flat icon color="info" @click="editItem(props.item, 'recontract')">
                   <v-icon>autorenew</v-icon>
                 </v-btn>
                 <span>Recontratar</span>
               </v-tooltip>
-              <v-tooltip top v-if="options.includes('edit')">
+              <v-tooltip top v-if="$route.params.options.includes('edit')">
                 <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
                   <v-icon>edit</v-icon>
                 </v-btn>
                 <span>Editar</span>
               </v-tooltip>
-              <v-tooltip top v-if="options.includes('delete')">
+              <v-tooltip top v-if="$route.params.options.includes('delete')">
                 <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                   <v-icon>delete</v-icon>
                 </v-btn>
@@ -122,14 +126,17 @@
 import Vue from "vue";
 import ContractForm from "./ContractForm";
 import RemoveItem from "../RemoveItem";
+import Loading from "../Loading";
 import { admin, rrhh, juridica } from "../../menu.js";
 export default {
   name: "ContractIndex",
   components: {
     ContractForm,
-    RemoveItem
+    RemoveItem,
+    Loading
   },
   data: () => ({
+    loading: true,
     active: true,
     bus: new Vue(),
     headers: [
@@ -173,7 +180,6 @@ export default {
     search: "",
     switch1: true,
     contracState: "vigentes",
-    options: []
   }),
   computed: {
     endDate() {
@@ -186,22 +192,17 @@ export default {
       return this.selectedIndex === -1 ? "Nuevo contrato" : "Editar contrato";
     }
   },
-  async created() {
-    this.getContracts(this.active);
-    this.bus.$on("closeDialog", () => {
-      this.getContracts(this.active);
-    });
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "contractIndex") {
-        this.options = this.$store.getters.menuLeft[i].options;
-      }
-    }
-    if (!this.options.includes("edit")) {
+  mounted() {
+    if (!this.$route.params.options.includes("edit")) {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Acciones";
         });
     }
+    this.getContracts(this.active);
+    this.bus.$on("closeDialog", () => {
+      this.getContracts(this.active);
+    });
   },
   methods: {
     async getContracts(active = this.active) {
@@ -219,6 +220,7 @@ export default {
         } else {
           this.contracts = this.contractsInactive.reverse();
         }
+        this.loading = false
       } catch (e) {
         console.log(e);
       }

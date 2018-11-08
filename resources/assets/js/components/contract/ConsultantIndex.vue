@@ -33,7 +33,11 @@
       <ConsultantForm :contract="{}" :bus="bus"/>
       <RemoveItem :bus="bus"/>
     </v-toolbar>
+    <div v-if="loading">
+      <Loading/>
+    </div>
     <v-data-table
+      v-else
       :headers="headers"
       :items="contracts"
       :search="search"
@@ -60,20 +64,20 @@
               </span>
             </v-tooltip>
           </td>
-          <td class="justify-center layout" v-if="options.length > 0">
-            <v-tooltip top v-if="options.includes('renew')">
-              <v-btn slot="activator" flat icon color="info" @click="editItem(props.item, false)">
+          <td class="justify-center layout" v-if="$route.params.options.length > 0">
+            <v-tooltip top v-if="$route.params.options.includes('renew') && checkEnd(props.item) != ''">
+              <v-btn slot="activator" flat icon color="info" @click="editItem(Object.assign(props.item, {new: true}), false)">
                 <v-icon>autorenew</v-icon>
               </v-btn>
               <span>Recontratar</span>
             </v-tooltip>
-            <v-tooltip top v-if="options.includes('edit')">
-              <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, true)">
+            <v-tooltip top v-if="$route.params.options.includes('edit')">
+              <v-btn slot="activator" flat icon color="accent" @click="editItem(Object.assign(props.item, {new: false}), true)">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top v-if="options.includes('delete')">
+            <v-tooltip top v-if="$route.params.options.includes('delete')">
               <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -108,14 +112,17 @@
 import Vue from "vue";
 import ConsultantForm from "./ConsultantForm";
 import RemoveItem from "../RemoveItem";
+import Loading from "../Loading";
 import { admin, rrhh, juridica } from "../../menu.js";
 export default {
   name: "ConsultantIndex",
   components: {
     ConsultantForm,
-    RemoveItem
+    RemoveItem,
+    Loading
   },
   data: () => ({
+    loading: true,
     active: true,
     bus: new Vue(),
     headers: [
@@ -156,8 +163,7 @@ export default {
     contracts: [],
     contractsActive: [],
     contractsInactive: [],
-    search: "",
-    options: []
+    search: ""
   }),
   computed: {
     endDate() {
@@ -171,20 +177,15 @@ export default {
     }
   },
   async created() {
+    if (!this.$route.params.options.includes("edit")) {
+      this.headers = this.headers.filter(el => {
+        return el.text != "Acciones"
+      })
+    }
     this.getContracts(this.active);
     this.bus.$on("closeDialog", () => {
       this.getContracts(this.active);
-    });
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "contractIndex") {
-        this.options = this.$store.getters.menuLeft[i].options;
-      }
-    }
-    if (!this.options.includes("edit")) {
-      this.headers = this.headers.filter(el => {
-        return el.text != "Acciones";
-      });
-    }
+    })
   },
   methods: {
     async getContracts(active = this.active) {
@@ -202,6 +203,7 @@ export default {
         } else {
           this.contracts = this.contractsInactive.reverse();
         }
+        this.loading = false
       } catch (e) {
         console.log(e);
       }

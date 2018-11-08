@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\ConsultantPayroll;
+use App\ConsultantProcedure;
 use Illuminate\Http\Request;
 use App\Http\Requests\ConsultantPayrollForm;
 
@@ -27,16 +28,16 @@ class ConsultantPayrollController extends Controller
    */
   public function store(ConsultantPayrollForm $request)
   {
-    $procedure = Procedure::findOrFail($request['procedure_id']);
+    $procedure = ConsultantProcedure::findOrFail($request['consultant_procedure_id']);
     $year_shortened = substr(strval($procedure->year), -2);
     if (ConsultantPayroll::where('code', 'LIKE', "%-$year_shortened")->count() == 0) {
       $code = implode('-', ['C', str_pad(1, 3, '0', STR_PAD_LEFT), $year_shortened]);
     } else {
-      $payroll = ConsultantPayroll::where('procedure_id', $request['procedure_id'])->where('charge_id', $request['charge_id'])->where('position_group_id', $request['position_group_id'])->where('consultant_position_id', $request['consultant_position_id'])->where('employee_id', $request['employee_id'])->first();
+      $payroll = ConsultantPayroll::where('consultant_procedure_id', $request['consultant_procedure_id'])->where('charge_id', $request['charge_id'])->where('position_group_id', $request['position_group_id'])->where('consultant_position_id', $request['consultant_position_id'])->where('employee_id', $request['employee_id'])->first();
       if ($payroll) {
         $code = $payroll->code;
       } else {
-        $last_code = ConsultantPayroll::where('procedure_id', $procedure->id)->orderBy('code', 'DESC')->select('code')->first();
+        $last_code = ConsultantPayroll::where('consultant_procedure_id', $procedure->id)->orderBy('code', 'DESC')->select('code')->first();
         if ($last_code) {
           $last_code = intval(explode('-', $last_code->code)[1]);
         } else {

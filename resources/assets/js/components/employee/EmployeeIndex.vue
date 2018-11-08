@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-toolbar>
-      <v-toolbar-title>Empleados Eventuales</v-toolbar-title>
+      <v-toolbar-title>Empleados</v-toolbar-title>
       <v-tooltip color="white" role="button" bottom>
         <v-icon slot="activator" class="ml-4">info</v-icon>
         <div>
@@ -37,7 +37,11 @@
       <RemoveItem :bus="bus"/>
       <EmployeeCertificate :employee="{}" :bus="bus"/>
     </v-toolbar>
+    <div v-if="loading">
+      <Loading/>
+    </div>
     <v-data-table
+      v-else
       :headers="headers"
       :items="employees"
       :search="search"
@@ -54,14 +58,14 @@
           <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-          <td class="text-md-center" v-if="options.length > 0">
+          <td class="text-md-center" v-if="$route.params.options.length > 0">
             <v-switch
               v-model="props.item.active"
               @click.native="switchActive(props.item)"
-              v-if="options.includes('edit')"
+              v-if="$route.params.options.includes('edit')"
             ></v-switch>
           </td>
-          <td class="justify-center layout" v-if="options.includes('edit')">
+          <td class="justify-center layout" v-if="$route.params.options.includes('edit')">
             <v-tooltip top>
               <v-btn medium slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
                 <v-icon>edit</v-icon>
@@ -142,6 +146,7 @@
 import Vue from "vue";
 import EmployeeEdit from "./EmployeeEdit";
 import RemoveItem from "../RemoveItem";
+import Loading from "../Loading";
 import EmployeeCertificate from "./EmployeeCertificate";
 
 export default {
@@ -149,10 +154,12 @@ export default {
   components: {
     EmployeeEdit,
     RemoveItem,
-    EmployeeCertificate
+    EmployeeCertificate,
+    Loading
   },
   data() {
     return {
+      loading: true,
       bus: new Vue(),
       startIndex: 0,
       dialog: false,
@@ -187,19 +194,8 @@ export default {
       ]
     };
   },
-  async mounted() {
-    this.getEmployees(this.active);
-    this.bus.$on("closeDialog", () => {
-      this.getEmployees(this.active);
-    });
-  },
-  created() {
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "employeeIndex") {
-        this.options = this.$store.getters.menuLeft[i].options;
-      }
-    }
-    if (!this.options.includes("edit")) {
+  mounted() {
+    if (!this.$route.params.options.includes("edit")) {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Activo";
@@ -208,6 +204,10 @@ export default {
           return el.text != "Acciones";
         });
     }
+    this.getEmployees(this.active);
+    this.bus.$on("closeDialog", () => {
+      this.getEmployees(this.active);
+    });
   },
   methods: {
     async getEmployees(active = this.active) {
@@ -225,6 +225,7 @@ export default {
         } else {
           this.employees = this.employeesActive;
         }
+        this.loading = false
       } catch (e) {
         console.log(e);
       }

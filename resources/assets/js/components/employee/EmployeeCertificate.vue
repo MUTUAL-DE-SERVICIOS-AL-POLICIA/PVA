@@ -123,14 +123,7 @@ export default {
       ],
     };
   },
-  created() {
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == 'employeeCertificate') {
-        this.options = this.$store.getters.menuLeft[i].options
-      }
-    }
-  },
-  methods: {    
+  methods: {
     close() {
       this.dialog = false;
       this.$validator.reset();

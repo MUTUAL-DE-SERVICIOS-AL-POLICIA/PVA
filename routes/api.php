@@ -59,6 +59,10 @@ Route::group([
 		// Consultant Payroll
 		Route::get('consultant_payroll', 'Api\V1\ConsultantPayrollController@index')->name('consultant_payroll_list');
 		Route::get('consultant_payroll/{id}', 'Api\V1\ConsultantPayrollController@show')->name('consultant_payroll_details');
+		Route::get('consultant_payroll/print/pdf/{year}/{month}', 'Api\V1\ConsultantPayrollPrintController@print_pdf')->name('consultant_print_pdf_payroll');
+		Route::get('consultant_payroll/print/txt/{year}/{month}', 'Api\V1\ConsultantPayrollPrintController@print_txt')->name('consultant_print_txt_payroll');
+		Route::get('consultant_payroll/certificate/{id}', 'Api\V1\ConsultantPayrollPrintController@certificate')->name('consultant_certificate_payroll');
+		Route::get('consultant_payroll/print/certificate/{id}', 'Api\V1\ConsultantPayrollPrintController@print_certificate')->name('consultant_print_certificate_payroll');
 		// Consultant Payroll-Contract
 		Route::get('consultant_payroll/contract/{contract_id}', 'Api\V1\ConsultantPayrollController@getPayrollContract')->name('consultant_payroll_contract');
 		// Position
@@ -103,6 +107,24 @@ Route::group([
 			Route::get('', 'Api\V1\ProcedurePayrollController@get_payrolls')->name('procedure_payrolls');
 		});
 		Route::get('procedure/{id}/discounts', 'Api\V1\ProcedureController@discounts')->name('procedure_discounts');
+		// Consultant Procedure
+		Route::get('consultant_procedure', 'Api\V1\ConsultantProcedureController@index')->name('consultant_procedure_list');
+		Route::get('consultant_procedure/{id}', 'Api\V1\ConsultantProcedureController@show')->name('consultant_procedure_details');
+		Route::get('consultant_procedure/date/{id}', 'Api\V1\ConsultantProcedureController@date')->name('consultant_procedure_dates');
+		Route::get('consultant_procedure/order/{order}', 'Api\V1\ConsultantProcedureController@order')->name('consultant_procedure_last');
+		Route::get('consultant_procedure/pay_date/{id}/{date}', 'Api\V1\ConsultantProcedureController@pay_date')->name('pay_date');
+		Route::group([
+			'prefix' => 'consultant_procedure/year',
+		], function () {
+			Route::get('/list', 'Api\V1\ConsultantProcedureYearController@years')->name('consultant_procedure_years');
+			Route::get('/{year}', 'Api\V1\ConsultantProcedureYearController@with_year')->name('consultant_procedure_with_year');
+		});
+		Route::group([
+			'prefix' => 'consultant_procedure/{id}/payroll',
+		], function () {
+			Route::get('', 'Api\V1\ConsultantProcedurePayrollController@get_payrolls')->name('consultant_procedure_payrolls');
+		});
+		Route::get('consultant_procedure/{id}/discounts', 'Api\V1\ConsultantProcedureController@discounts')->name('consultant_procedure_discounts');
 		// Employer Number
 		Route::get('employer_number', 'Api\V1\EmployerNumberController@index')->name('employer_number_list');
 		Route::get('employer_number/{id}', 'Api\V1\EmployerNumberController@show')->name('employer_number_details');
@@ -223,6 +245,8 @@ Route::group([
 			Route::delete('document_type/{id}', 'Api\V1\DocumentTypeController@destroy')->name('document_type_delete');
 			// Remove Payrolls
 			Route::delete('payroll/drop/{procedure_id}', 'Api\V1\ProcedurePayrollController@delete_payrolls')->name('payrolls_delete');
+			// Remove Consultant Payrolls
+			Route::delete('consultant_payroll/drop/{procedure_id}', 'Api\V1\ConsultantProcedurePayrollController@delete_payrolls')->name('consultant_payrolls_delete');
 		});
 
 		// RRHH routes
@@ -275,6 +299,7 @@ Route::group([
 			// Consultant Contract
 			Route::post('consultant_contract', 'Api\V1\ConsultantContractController@store')->name('consultant_contract_store');
 			Route::delete('consultant_contract/{id}', 'Api\V1\ConsultantContractController@destroy')->name('consultant_contract_delete');
+			Route::get('consultant_contract/valid/{procedure_id}', 'Api\V1\ConsultantContractController@valid_date')->name('consultant_contract_valid');
 			// Job Schedule
 			Route::post('jobs_chedule', 'Api\V1\JobScheduleController@store')->name('jobs_chedule_store');
 			Route::patch('jobs_chedule/{id}', 'Api\V1\JobScheduleController@update')->name('jobs_chedule_update');
@@ -288,6 +313,16 @@ Route::group([
 				'prefix' => 'procedure/{id}/payroll',
 			], function () {
 				Route::post('', 'Api\V1\ProcedurePayrollController@generate_payrolls')->name('procedure_generate_payrolls');
+			});
+			// Consultant Procedure
+			Route::post('consultant_procedure', 'Api\V1\ConsultantProcedureController@store')->name('consultant_procedure_store');
+			Route::patch('consultant_procedure/{id}', 'Api\V1\ConsultantProcedureController@update')->name('consultant_procedure_update');
+			Route::delete('consultant_procedure/{id}', 'Api\V1\ProcedureController@destroy')->name('consultant_procedure_delete');
+			Route::get('consultant_payroll/procedure/{procedure_id}', 'Api\V1\ConsultantProcedurePayrollController@getPayrollProcedure')->name('consultant_payroll_exists_procedure');
+			Route::group([
+				'prefix' => 'consultant_procedure/{id}/payroll',
+			], function () {
+				Route::post('', 'Api\V1\ConsultantProcedurePayrollController@generate_payrolls')->name('consultant_procedure_generate_payrolls');
 			});
 			// Employer Number
 			Route::post('employer_number', 'Api\V1\EmployerNumberController@store')->name('employer_number_store');

@@ -343,20 +343,46 @@ class Util
 		}
 	}
 
-	public static function valid_contract($payroll, $contract)
+	public static function compare_consultant_dates($contract_date, $payroll)
 	{
-		if (!$contract) {
-			$contract = $payroll->contract;
+		$end_of_month = self::end_of_month($payroll->consultant_procedure->year, $payroll->consultant_procedure->month->order);
+
+		if ($end_of_month->day < 30) {
+			return Carbon::parse($contract_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->consultant_procedure->year, $payroll->consultant_procedure->month->order)->endOfMonth()->setTime(0, 0, 0));
+		} else {
+			return Carbon::parse($contract_date)->setTime(0, 0, 0)->gte(Carbon::create($payroll->consultant_procedure->year, $payroll->consultant_procedure->month->order, 30)->setTime(0, 0, 0));
 		}
-		$end_of_month = self::end_of_month($payroll->procedure->year, $payroll->procedure->month->order);
+	}
+
+	public static function valid_contract($payroll, $contract, $type = 'eventual')
+	{
+		if ($type == 'eventual') {
+			if (!$contract) {
+				$contract = $payroll->contract;
+			}
+			$end_of_month = self::end_of_month($payroll->procedure->year, $payroll->procedure->month->order);
+		} elseif ($type == 'consultant') {
+			if (!$contract) {
+				$contract = $payroll->consultant_contract;
+			}
+			$end_of_month = self::end_of_month($payroll->consultant_procedure->year, $payroll->consultant_procedure->month->order);
+		}
 
 		if (Carbon::parse($contract->start_date)->setTime(0, 0, 0)->lte($end_of_month)) {
 			if (is_null($contract->end_date) && is_null($contract->retirement_date)) {
 				return true;
 			} elseif (!is_null($contract->retirement_date)) {
-				return self::compare_dates($contract->retirement_date, $payroll);
+				if ($type == 'eventual') {
+					return self::compare_dates($contract->retirement_date, $payroll);
+				} elseif ($type == 'consultant') {
+					return self::compare_consultant_dates($contract->retirement_date, $payroll);
+				}
 			} else {
-				return self::compare_dates($contract->end_date, $payroll);
+				if ($type == 'eventual') {
+					return self::compare_dates($contract->end_date, $payroll);
+				} elseif ($type == 'consultant') {
+					return self::compare_consultant_dates($contract->end_date, $payroll);
+				}
 			}
 		} else {
 			return false;

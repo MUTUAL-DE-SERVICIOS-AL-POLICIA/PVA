@@ -75,6 +75,6 @@ class ConsultantContract extends Model
             ->whereDate('end_date', '>=', $first_day_of_month)
             ->whereDate('start_date', '<=', $last_day_of_month);
         });
-    })->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('contracts.start_date')->get();
+    })->leftjoin('employees as e', 'e.id', '=', 'consultant_contracts.employee_id')->select('consultant_contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('consultant_contracts.start_date')->get();
   }
 }

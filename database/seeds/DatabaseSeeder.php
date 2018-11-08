@@ -48,6 +48,8 @@ class DatabaseSeeder extends Seeder
 			'months',
 			'procedures',
 			'payrolls',
+			'consultant_procedures',
+			'consultant_payrolls',
 			'user_actions',
 		];
 
@@ -81,6 +83,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(MonthSeeder::class);
 		$this->call(ProcedureSeeder::class);
 		$this->call(PayrollSeeder::class);
+		$this->call(ConsultantProcedureSeeder::class);
 		$this->call(ConsultantPayrollSeeder::class);
 		$this->call(UserActionSeeder::class);
 	}

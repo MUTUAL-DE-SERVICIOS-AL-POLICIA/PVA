@@ -33,7 +33,7 @@ class PayrollPrintController extends Controller
 
 		$previous_month = $month - 1;
 		$previous_year = $year;
-		if($previous_month == 0) {
+		if ($previous_month == 0) {
 			$previous_month = 12;
 			$previous_year = $year - 1;
 		}
@@ -52,7 +52,7 @@ class PayrollPrintController extends Controller
 				$employee = $contract->employee;
 
 				$rehired = true;
-				$employee_contracts = $payroll->contract->employee->contracts;
+				$employee_contracts = $employee->contracts;
 
 				$e = new EmployeePayroll($payroll);
 

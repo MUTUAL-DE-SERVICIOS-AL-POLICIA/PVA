@@ -11,14 +11,14 @@ class ConsultantPayroll extends Model
   protected $dates = ['deleted_at'];
   public $timestamps = true;
   public $guarded = ['id'];
-  protected $fillable = ['code', 'unworked_days', 'procedure_id', 'consultant_contract_id', 'employee_id', 'charge_id', 'position_group_id', 'consultant_position_id', 'faults'];
+  protected $fillable = ['code', 'unworked_days', 'consultant_procedure_id', 'consultant_contract_id', 'employee_id', 'charge_id', 'position_group_id', 'consultant_position_id', 'faults'];
 
-  public function procedure()
+  public function consultant_procedure()
   {
-    return $this->belongsTo(Procedure::class);
+    return $this->belongsTo(ConsultantProcedure::class);
   }
 
-  public function contract()
+  public function consultant_contract()
   {
     return $this->belongsTo(ConsultantContract::class);
   }
@@ -38,7 +38,7 @@ class ConsultantPayroll extends Model
     return $this->belongsTo(PositionGroup::class);
   }
 
-  public function position()
+  public function consultant_position()
   {
     return $this->belongsTo(ConsultantPosition::class);
   }

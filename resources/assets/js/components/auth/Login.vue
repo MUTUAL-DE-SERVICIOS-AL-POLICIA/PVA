@@ -75,7 +75,8 @@ export default {
           let res = await axios.post("/auth", auth);
           this.$store.commit("login", res.data);
           this.$router.go({
-            name: "employeeIndex"
+            name: "employeeIndex",
+            params: this.$store.getters.menuLeft.find(obj => { return obj.href == 'employeeIndex' }).params
           });
         }
       } catch (e) {

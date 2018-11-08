@@ -72,7 +72,7 @@
           clearable
         ></v-text-field>
       </v-flex>
-      <PayrollAdd :contracts="contracts" :procedure="procedure" :bus="bus"/>
+      <ConsultantPayrollAdd :contracts="contracts" :procedure="procedure" :bus="bus"/>
       <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
@@ -98,21 +98,21 @@
         </span>
       </template>
       <template slot="items" slot-scope="props">
-        <v-hover v-if="props.item.contract.employee" close-delay="0" open-delay="150">
+        <v-hover v-if="props.item.consultant_contract.employee" close-delay="0" open-delay="150">
           <tr
             slot-scope="{ hover }"
-            :class="(props.item.contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`"
+            :class="(props.item.consultant_contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`"
           >
             <td>
               <v-tooltip right>
                 <span slot="activator">
-                  {{ `${props.item.contract.employee.last_name} ${props.item.contract.employee.mothers_last_name} ${props.item.contract.employee.first_name} ${(props.item.contract.employee.second_name) ? props.item.contract.employee.second_name : ''}` }}
+                  {{ `${props.item.consultant_contract.employee.last_name} ${props.item.consultant_contract.employee.mothers_last_name} ${props.item.consultant_contract.employee.first_name} ${(props.item.consultant_contract.employee.second_name) ? props.item.consultant_contract.employee.second_name : ''}` }}
                 </span>
                 <span>
-                  <div>{{ `C.I: ${props.item.contract.employee.identity_card} ${props.item.contract.employee.city_identity_card.shortened}` }}</div>
-                  <div>{{ `Cargo: ${props.item.contract.position.name}` }}</div>
-                  <div>{{ `Haber: ${props.item.contract.position.charge.base_wage}` }}</div>
-                  <div v-if="props.item.contract.contract_number">{{ `Contrato: ${props.item.contract.contract_number}` }}</div>
+                  <div>{{ `C.I: ${props.item.consultant_contract.employee.identity_card} ${props.item.consultant_contract.employee.city_identity_card.shortened}` }}</div>
+                  <div>{{ `Cargo: ${props.item.consultant_contract.consultant_position.name}` }}</div>
+                  <div>{{ `Haber: ${props.item.consultant_contract.consultant_position.charge.base_wage}` }}</div>
+                  <div v-if="props.item.consultant_contract.contract_number">{{ `Contrato: ${props.item.consultant_contract.contract_number}` }}</div>
                 </span>
               </v-tooltip>
             </td>
@@ -136,29 +136,9 @@
             <td>
               <v-text-field
                 v-validate="'required'"
-                :error-messages="errors.collect('RC-IVA')"
-                data-vv-name="RC-IVA"
-                v-model="props.item.rc_iva"
-                class="body-1"
-                @keyup.enter.native="savePayroll(props.item)"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                v-validate="'required'"
                 :error-messages="errors.collect('Descuentos')"
                 data-vv-name="Descuentos"
                 v-model="props.item.faults"
-                class="body-1"
-                @keyup.enter.native="savePayroll(props.item)"
-              ></v-text-field>
-            </td>
-            <td>
-              <v-text-field
-                v-validate="'required'"
-                :error-messages="errors.collect('Descuentos')"
-                data-vv-name="Descuentos"
-                v-model="props.item.previous_month_balance"
                 class="body-1"
                 @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
@@ -170,7 +150,7 @@
                     Guardar
                   </v-btn>
                 </v-flex>
-                <v-flex xs6 pl-4 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                <v-flex xs6 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
                   <v-btn small class="error" @click="deletePayroll(props.item)">
                     Eliminar
                   </v-btn>
@@ -181,24 +161,21 @@
               {{ total(props.item) }}
             </td>
             <td class="text-md-center">
-              {{ totalDiscounts(props.item).toFixed(2) }}
+              {{ $moment(props.item.consultant_contract.start_date).format('DD/MM/YYYY') }}
             </td>
-            <td class="text-md-center">
-              {{ $moment(props.item.contract.start_date).format('DD/MM/YYYY') }}
-            </td>
-            <td class="text-md-center" v-if="props.item.contract.end_date == null">
+            <td class="text-md-center" v-if="props.item.consultant_contract.end_date == null">
               Indefinido
             </td>
-            <td class="text-md-center" v-else-if="props.item.contract.retirement_date == null">
-              {{ $moment(props.item.contract.end_date).format('DD/MM/YYYY') }}
+            <td class="text-md-center" v-else-if="props.item.consultant_contract.retirement_date == null">
+              {{ $moment(props.item.consultant_contract.end_date).format('DD/MM/YYYY') }}
             </td>
             <td class="text-md-center" v-else>
               <v-tooltip top>
                 <span slot="activator">
-                  {{ $moment(props.item.contract.retirement_date).format('DD/MM/YYYY') }}
+                  {{ $moment(props.item.consultant_contract.retirement_date).format('DD/MM/YYYY') }}
                 </span>
                 <span>
-                  Fecha Conclusión: {{ $moment(props.item.contract.end_date).format('DD/MM/YYYY') }}
+                  Fecha Conclusión: {{ $moment(props.item.consultant_contract.end_date).format('DD/MM/YYYY') }}
                 </span>
               </v-tooltip>
             </td>
@@ -227,13 +204,13 @@
 
 <script>
 import Vue from "vue";
-import PayrollAdd from "./PayrollAdd";
+import ConsultantPayrollAdd from "./ConsultantPayrollAdd";
 import RemoveItem from "../RemoveItem";
 
 export default {
-  name: "ProcedureEdit",
+  name: "ConsultantProcedureEdit",
   components: {
-    PayrollAdd,
+    ConsultantPayrollAdd,
     RemoveItem
   },
   data() {
@@ -247,9 +224,6 @@ export default {
         year: null,
         month: {
           name: null
-        },
-        employee_discount: {
-          rc_iva: 0
         }
       },
       payrolls: [],
@@ -299,42 +273,15 @@ export default {
           value: "contract.employee.first_name"
         },
         {
-          text: `RC-IVA ${this.procedure.employee_discount.rc_iva * 100}%`,
-          align: "center",
-          sortable: false,
-          value: "contract.employee.identity_card"
-        },
-        {
           text: `Descuentos`,
           tooltip:
             "Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes",
           align: "center",
           sortable: false
         },
-        {
-          text: `Saldo tributario`,
-          tooltip:
-            "Saldo tributario del mes anterior (Planilla tributaria. A-3)",
-          align: "center",
-          sortable: false
-        },
         { text: `Acciones`, align: "center", value: "", sortable: false },
         {
           text: `Líquido pagable`,
-          align: "center",
-          value: "",
-          sortable: false
-        },
-        {
-          text: `Total descuentos`,
-          tooltip: `Renta vejez ${this.procedure.employee_discount.elderly *
-            100}%, Riesgo común ${this.procedure.employee_discount.common_risk *
-            100}%, Comisión ${this.procedure.employee_discount.comission *
-            100}%, Aporte solidario del asegurado ${this.procedure
-            .employee_discount.solidary *
-            100}%, Aporte Nacional solidario ${this.procedure.employee_discount
-            .national *
-            100}% y Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes`,
           align: "center",
           value: "",
           sortable: false
@@ -355,12 +302,12 @@ export default {
   },
   methods: {
     deletePayroll(item) {
-      this.bus.$emit("openDialogRemove", `/payroll/${item.id}`);
+      this.bus.$emit("openDialogRemove", `/consultant_payroll/${item.id}`);
     },
     async deleteProcedure() {
       try {
         let res = await axios.delete(
-          `/payroll/drop/${this.procedure.id}`
+          `/consultant_payroll/drop/${this.procedure.id}`
         );
         this.toastr.warning(
           `Eliminados ${res.data.deleted} registros del mes de ${this.$moment()
@@ -369,8 +316,8 @@ export default {
             .toUpperCase()} de ${res.data.procedure.year}`
         );
         this.$router.push({
-          name: "procedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Eventuales' }).group.find(obj => { return obj.href ==  'procedureIndex'}).params
+          name: "consultantProcedureIndex",
+          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Consultores' }).group.find(obj => { return obj.href ==  'consultantProcedureIndex'}).params
         });
       } catch (e) {
         console.log(e);
@@ -379,11 +326,9 @@ export default {
     },
     async savePayroll(payroll) {
       try {
-        await axios.patch(`/payroll/${payroll.id}`, {
+        await axios.patch(`/consultant_payroll/${payroll.id}`, {
           unworked_days: parseInt(payroll.unworked_days),
-          rc_iva: Number(payroll.rc_iva),
-          faults: Number(payroll.faults),
-          previous_month_balance: Number(payroll.previous_month_balance)
+          faults: Number(payroll.faults)
         });
         this.toastr.success("Guardado");
       } catch (e) {
@@ -394,7 +339,7 @@ export default {
     async getProcedure() {
       try {
         let res = await axios.get(
-          `/procedure/${this.$route.params.id}/discounts`
+          `/consultant_procedure/${this.$route.params.id}`
         );
         this.procedure = res.data;
         if (res.data.pay_date){
@@ -407,7 +352,7 @@ export default {
     async getPayrolls() {
       try {
         let res = await axios.get(
-          `/procedure/${this.$route.params.id}/payroll`
+          `/consultant_procedure/${this.$route.params.id}/payroll`
         );
         this.payrolls = res.data;
         this.loading = false;
@@ -419,7 +364,7 @@ export default {
     async getValidContracts() {
       try {
         let res = await axios.get(
-          `/contract/valid/${this.procedure.id}`
+          `/consultant_contract/valid/${this.procedure.id}`
         );
         this.contracts = res.data;
       } catch (e) {
@@ -428,46 +373,13 @@ export default {
     },
     quotable(payroll) {
       return (
-        Number(payroll.contract.position.charge.base_wage) /
+        Number(payroll.consultant_contract.consultant_position.charge.base_wage) /
         30 *
         this.workedDays(payroll)
       );
     },
-    calculateDiscount(payroll, discount) {
-      return this.quotable(payroll) * Number(discount);
-    },
-    calculateTotalDiscountLaw(payroll) {
-      return (
-        this.calculateDiscount(
-          payroll,
-          this.procedure.employee_discount.elderly
-        ) +
-        this.calculateDiscount(
-          payroll,
-          this.procedure.employee_discount.common_risk
-        ) +
-        this.calculateDiscount(
-          payroll,
-          this.procedure.employee_discount.comission
-        ) +
-        this.calculateDiscount(
-          payroll,
-          this.procedure.employee_discount.solidary
-        ) +
-        this.calculateDiscount(
-          payroll,
-          this.procedure.employee_discount.national
-        )
-      );
-    },
-    totalDiscounts(payroll) {
-      return (
-        this.calculateTotalDiscountLaw(payroll) +
-        parseFloat(Number(payroll.faults) || 0)
-      );
-    },
     total(payroll) {
-      return (this.quotable(payroll) - this.totalDiscounts(payroll)).toFixed(2);
+      return (this.quotable(payroll) - parseFloat(Number(payroll.faults)).toFixed(2)).toFixed(2)
     },
     workedDays(payroll) {
       let payrollDate = this.$moment(
@@ -476,20 +388,20 @@ export default {
 
       let lastDayOfMonth = payrollDate.endOf("month").date();
 
-      let dateStart = this.$moment(payroll.contract.start_date);
+      let dateStart = this.$moment(payroll.consultant_contract.start_date);
 
-      let dateEnd = this.$moment(payroll.contract.end_date);
+      let dateEnd = this.$moment(payroll.consultant_contract.end_date);
 
       let workedDays = 0;
 
-      if (payroll.contract.retirement_date != null) {
-        let dateRetirement = this.$moment(`${payroll.contract.retirement_date}T23:59:59.999999`);
+      if (payroll.consultant_contract.retirement_date != null) {
+        let dateRetirement = this.$moment(`${payroll.consultant_contract.retirement_date}T23:59:59.999999`);
         if (dateRetirement.year() == payrollDate.year() && dateRetirement.month() == payrollDate.month()) {
           dateEnd = dateRetirement;
         }
       }
 
-      if (payroll.contract.end_date == null && payroll.contract.retirement_date == null && dateStart.year() <= payrollDate.year() && dateStart.month() < payrollDate.month()) {
+      if (payroll.consultant_contract.end_date == null && payroll.consultant_contract.retirement_date == null && dateStart.year() <= payrollDate.year() && dateStart.month() < payrollDate.month()) {
         workedDays = 30;
       } else if (
         dateStart.year() == dateEnd.year() &&
@@ -540,15 +452,15 @@ export default {
     },
     async closeProcedure() {
       try {
-        let res = await axios.patch(`/procedure/${this.procedure.id}`, {
+        let res = await axios.patch(`/consultant_procedure/${this.procedure.id}`, {
           active: !this.procedure.active
         });
         this.toastr.warning(
           `Planilla de mes de ${res.data.month.name} cerrada`
         );
         this.$router.push({
-          name: "procedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Eventuales' }).group.find(obj => { return obj.href ==  'procedureIndex'}).params
+          name: "consultantProcedureIndex",
+          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Consultores' }).group.find(obj => { return obj.href ==  'consultantProcedureIndex'}).params
         });
       } catch (e) {
         console.log(e);
@@ -556,14 +468,15 @@ export default {
     },
     async updatePayDate(id, date) {
       try{
-        await axios.get('/procedure/pay_date/'+ id +'/' + date);
+        await axios.patch(`/consultant_procedure/${id}`, {
+          pay_date: date
+        });
         this.toastr.success(
           `Registrado correctamente`
         );
       } catch(e) {
         console.log(e);
       }
-
     }
   }
 };
