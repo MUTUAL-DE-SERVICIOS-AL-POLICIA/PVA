@@ -18,4 +18,9 @@ class Certificate extends Model
     {
         return $this->belongsTo(DocumentType::class);
     }
+
+    public function departures()
+    {
+    	return $this->hasMany(Departure::class, 'certificate_id', 'id');
+    }
 }

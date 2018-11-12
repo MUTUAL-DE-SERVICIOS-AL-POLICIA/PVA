@@ -28,9 +28,24 @@ class CertificateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($request)
+    public function store(Request $request)
     {
-        $certificate = Certificate::create($request->all());
+        $correlative = 1;
+        $year = date('Y');
+        $certificate = Certificate::where('document_type_id', $request->document_type_id)->orderBy('correlative', 'desc')->first();
+        if ($certificate) {
+          $correlative = $certificate->correlative + 1;
+          if ($certificate->year != $year) {
+            $correlative = 1;
+          }
+        }
+        $certificate = new Certificate;
+        $certificate->document_type_id = $request->document_type_id;
+        $certificate->correlative = $correlative;
+        $certificate->year = $year;
+        $certificate->data = json_encode($request->data);
+        $certificate->save();
+
         return $certificate;
     }
 
