@@ -12,30 +12,34 @@ class DepartureReasonSeeder extends Seeder
     public function run()
     {
         $types = [
-			['departure_type_id' => 1, 'name' => 'Personal', 'day' => 0, 'hour' => 2, 'each' => 'mes', 'pay' => true, 'description' => 'Salida personal con goce de haberes aplicable a 2hrs/mes'],
-			['departure_type_id' => 1, 'name' => 'Personal', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => false, 'description' => 'Salida personal sin goce de haberes'],
-			['departure_type_id' => 2, 'name' => 'Viaje', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Comision por viaje al interior o exterior'],
-			['departure_type_id' => 2, 'name' => 'Reunion', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Comision por Reunion'],
-			['departure_type_id' => 2, 'name' => 'Taller', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Comision por Taller'],
-			['departure_type_id' => 2, 'name' => 'Diligencia', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Comision por Diligencias'],
-			['departure_type_id' => 3, 'name' => 'Matrimonio', 'day' => 3, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Licencia por Matrimonio'],
-			['departure_type_id' => 3, 'name' => 'Fallecimiento de familiares', 'day' => 3, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Por fallecimiento de padres, conyugue, hermanos o hijos'],
-			['departure_type_id' => 3, 'name' => 'Fallecimiento de parientes politicos', 'day' => 2, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Por fallecimiento de parientes politicos suegros y cuñados'],
-			['departure_type_id' => 3, 'name' => 'Nacimiento', 'day' => 3, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Licencia por Nacimiento de hijos'],
-			['departure_type_id' => 3, 'name' => 'Academico', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Licencia por asistencia a becas, cursos, seminarios y posgrados'],
-			['departure_type_id' => 3, 'name' => 'Enfermedad', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Licencia por Enfermedad'],
-			['departure_type_id' => 3, 'name' => 'Natalidad', 'day' => 90, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Licencia por natalidad 45 dias antes y 45 dias despues del alumbramiento'],
-			['departure_type_id' => 3, 'name' => 'Cumpleaños', 'day' => 0, 'hour' => 4, 'each' => '', 'pay' => true, 'description' => 'Licencia por aniversario natal de medio dia'],
-			['departure_type_id' => 3, 'name' => 'Personal', 'day' => 2, 'hour' => 0, 'each' => 'anio', 'pay' => true, 'description' => 'Licencia personal 2dias/año'],
-			['departure_type_id' => 3, 'name' => 'Cultural o deportiva', 'day' => 0, 'hour' => 0, 'each' => 'variable', 'pay' => true, 'description' => 'Licencia por asistencia cultural o deprtiva en representacion de la institucion'],
-			['departure_type_id' => 3, 'name' => 'Jurado Electoral', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Licencia por actividades electorales'],
-			['departure_type_id' => 3, 'name' => 'Mamografia o papanicolao', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => true, 'description' => 'Licencia por examenes de mamografia o papanicolao una vez al año'],
-			['departure_type_id' => 3, 'name' => 'Otros', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => false, 'description' => 'Licencia sin goce de haberes'],
-			['departure_type_id' => 4, 'name' => 'Otros', 'day' => 0, 'hour' => 0, 'each' => '', 'pay' => false, 'description' => 'Otras salidas']
-		];
+            ['id'=>1, 'departure_type_id' => 1, 'name' => 'Personal', 'day' => null, 'hour' => 2, 'each' => 'mes', 'pay' => true, 'description' => 'Para asuntos de indole personal con un maximo de 2 horas en el mes'],
+            ['id'=>2, 'departure_type_id' => 1, 'name' => 'Comision por viaje', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Comisión por viaje'],
+            ['id'=>3, 'departure_type_id' => 1, 'name' => 'Comision por reunion', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Comisión por reunión'],
+            ['id'=>4, 'departure_type_id' => 1, 'name' => 'Comision por curso/taller', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Comisión por curso/taller'],
+            ['id'=>5, 'departure_type_id' => 1, 'name' => 'Comision por diligencia', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Comisión por diligencia'],
+            ['id'=>6, 'departure_type_id' => 1, 'name' => 'Salida a la CNS', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Salidas para atención médica con hora de ingreso, salida y la firma del medico'],
+            ['id'=>7, 'departure_type_id' => 1, 'name' => 'Cumpleaños', 'day' => null, 'hour' => 4, 'each' => null, 'pay' => true, 'description' => 'Medio dia de tolerancia, presentar fotocopia de C.I.'],
+            ['id'=>8, 'departure_type_id' => 1, 'name' => 'Otros', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Otros motivos'],
+            
 
-		foreach ($types as $type) {
-			App\DepartureReason::create($type);
-		}
+            ['id'=>9, 'departure_type_id' => 2, 'name' => 'Fallecimiento de padres, conyuge, hermanos o hijos', 'day' => 3, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Por fallecimiento de padres, conyuge, hermanos o hijos, debiendo presentar certificado de defuncion hasta los 5 dias de finalizada la licencia (3 dias hábiles.)'],
+            ['id'=>10, 'departure_type_id' => 2, 'name' => 'Fallecimiento de suegros o cuñados', 'day' => 2, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Por fallecimiento de suegros y cuñados, debiendo presentar certificado de defuncion hasta los 5 dias de finalizada la licencia. (2 días hábiles)'],
+            ['id'=>11, 'departure_type_id' => 2, 'name' => 'Nacimiento de hijos', 'day' => 3, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Nacimiento de hijos, con obligacion de presentar certificado de nacimiento correspondiente. (3 días hábiles)'],
+            ['id'=>12, 'departure_type_id' => 2, 'name' => 'Asistencia a becas, cursos, seminarios, posgrado', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Siempre que se encuentre vinculada al logro de objetivos establecidos en el Programa de Operaciones Anual Institucional'],
+            ['id'=>13, 'departure_type_id' => 2, 'name' => 'Enfermedad', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Enfermedad'],
+            ['id'=>14, 'departure_type_id' => 2, 'name' => 'Maternidad', 'day' => 90, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Baja prenatal y posnatal por un periodo de 90 dias calendario, 45 dias antes y 45 dias despues del alumbramiento'],
+            ['id'=>15, 'departure_type_id' => 2, 'name' => 'Matrimonio', 'day' => 3, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Gozara de 3 dias habiles de licencia previa presentacion de la certificación de inscripción expedida por el oficial de registro civil'],
+            ['id'=>16, 'departure_type_id' => 2, 'name' => 'Personal', 'day' => 2, 'hour' => null, 'each' => 'anio', 'pay' => true, 'description' => 'Para la resolución de asuntos de indole personal, previa autorización del inmediato superior, los cuales no podrán ser consecutivos ni anteriores o posteriores a las vacaciones o feriados. (2 días hábiles por año)'],
+            ['id'=>17, 'departure_type_id' => 2, 'name' => 'Actividad cultural o deportiva', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Actividades que sean realizadas en el país en representación de la institución'],
+            ['id'=>18, 'departure_type_id' => 2, 'name' => 'Jurado electoral', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'En caso de haber sido designado jurado electoral'],
+            ['id'=>19, 'departure_type_id' => 2, 'name' => 'Mamografia/Papanicolao', 'day' => 1, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Las servidoras públicas gozarán de un día'],
+            ['id'=>20, 'departure_type_id' => 2, 'name' => 'Compensación', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Por Compensación'],
+            ['id'=>21, 'departure_type_id' => 2, 'name' => 'Otros c/g Haberes', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Otros motivos con justificación aprobada por la autoridad correspondiente'],
+            ['id'=>22, 'departure_type_id' => 2, 'name' => 'Otros s/g Haberes', 'day' => null, 'hour' => null, 'each' => null, 'pay' => false, 'description' => 'Otros motivos sin goce de haberes con un maximo de 10 días habiles ']
+        ];
+
+        foreach ($types as $type) {
+            App\DepartureReason::create($type);
+        }
     }
 }

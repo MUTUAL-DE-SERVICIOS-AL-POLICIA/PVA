@@ -31,9 +31,14 @@ export default {
       options: ['edit']
     }, {
       href: 'departureIndex',
-      title: 'Solicitud de salidas',
+      title: 'Salidas/Licencias',
       icon: 'directions_run',
-      options: []
+      options: ['new', 'edit', 'delete', 'active', 'print']
+    }, {
+      href: 'departureAdmin',
+      title: 'Administrador de Salidas y Licencias',
+      icon: 'directions_walk',
+      options: ['new', 'edit', 'delete', 'active', 'print']
     }
   ],
   rrhh: [
@@ -93,5 +98,13 @@ export default {
       icon: 'attach_file',
       options: ['afp', 'payroll']
     }
-  ]
+  ],
+  employee: [
+    {
+      href: 'departureIndex',
+      title: 'Solicitud de salidas',
+      icon: 'directions_run',
+      options: ['new', 'edit', 'print']
+    }
+  ],
 }

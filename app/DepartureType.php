@@ -9,7 +9,7 @@ class DepartureType extends Model {
 	public $guarded = ['id'];
 	protected $fillable = ['name', 'description'];
 
-	public function document_reason() {
-		return $this->hasMany(DocumentReason::class);
+	public function departure_reasons() {
+		return $this->hasMany(DepartureReason::class);
 	}
 }

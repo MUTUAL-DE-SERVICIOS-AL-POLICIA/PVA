@@ -15,7 +15,9 @@ class CreateDepartureTypesTable extends Migration
     {
         Schema::create('departure_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->integer('document_type_id')->nullable();
+            $table->foreign('document_type_id')->references('id')->on('document_types');
+            $table->string('name');            
             $table->text('description');
             $table->timestamps();
         });
