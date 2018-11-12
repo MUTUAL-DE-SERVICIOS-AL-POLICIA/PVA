@@ -29,7 +29,7 @@ export default {
       title: 'Actividad',
       icon: 'timeline',
       options: ['edit']
-<<<<<<< HEAD
+
     }, {
       href: 'departureIndex',
       title: 'Salidas/Licencias',
@@ -40,8 +40,7 @@ export default {
       title: 'Administrador de Salidas y Licencias',
       icon: 'directions_walk',
       options: ['new', 'edit', 'delete', 'active', 'print']
-=======
->>>>>>> c88936e2ca04e9b12009a67413647d6a729e6248
+
     }
   ],
   rrhh: [
