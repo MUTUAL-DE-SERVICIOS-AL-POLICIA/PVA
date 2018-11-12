@@ -30,18 +30,7 @@ export default {
       icon: 'timeline',
       options: ['edit']
 
-    }, {
-      href: 'departureIndex',
-      title: 'Salidas/Licencias',
-      icon: 'directions_run',
-      options: ['new', 'edit', 'delete', 'active', 'print']
-    }, {
-      href: 'departureAdmin',
-      title: 'Administrador de Salidas y Licencias',
-      icon: 'directions_walk',
-      options: ['new', 'edit', 'delete', 'active', 'print']
-
-    }
+    },
   ],
   rrhh: [
     {
@@ -63,6 +52,13 @@ export default {
       title: 'Planillas',
       icon: 'attach_file',
       options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
+    },
+    {
+      href: 'departureAdmin',
+      title: 'Administrador de Salidas y Licencias',
+      icon: 'directions_walk',
+      options: ['new', 'edit', 'delete', 'active', 'print']
+
     }
   ],
   juridica: [
@@ -104,9 +100,9 @@ export default {
   employee: [
     {
       href: 'departureIndex',
-      title: 'Solicitud de salidas',
+      title: 'Salidas/Licencias',
       icon: 'directions_run',
-      options: ['new', 'edit', 'print']
+      options: ['new', 'edit', 'delete', 'active', 'print']
     }
   ],
 }
