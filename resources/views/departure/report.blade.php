@@ -43,7 +43,7 @@
     </style>
 </head>
 <body>
-    <br>
+<br>
 <div class="doc">
     <div class="head center"> Reporte de Salidas y Licencias  </div>
     <br>

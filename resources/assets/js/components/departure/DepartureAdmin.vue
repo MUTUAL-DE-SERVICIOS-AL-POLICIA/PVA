@@ -3,7 +3,7 @@
     <v-toolbar>
         <v-toolbar-title>Salidas, Comisiones y Licencias</v-toolbar-title>
         <v-spacer></v-spacer>  
-         <DepartureReport :contract="{}" :bus="bus"/>
+         <DepartureReport :bus="bus"/>
         <v-divider
           class="mx-2"
           inset
@@ -80,7 +80,7 @@ import DepartureReport from "./DepartureReport";
 import RemoveItem from "../RemoveItem";
 import { admin, rrhh, juridica } from "../../menu.js";
 export default {
-  name: "ContractIndex",
+  name: "DepartureIndex",
   components: {
     DepartureReport,
     RemoveItem
@@ -132,8 +132,6 @@ export default {
       }
     ],
     departures: [],
-    contractsActive: [],
-    contractsInactive: [],
     search: "",
     switch1: true,
     contracState: "vigentes",
@@ -161,11 +159,9 @@ export default {
   },
   methods: {
     async getDepartures() {
-      try {       
-        let contract = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);
-        
-        let res = await axios.get(`/departure/get_departures/${contract.data.id}`);
-        this.departures = res.data;      
+      try {
+        let res = await axios.get(`/departure`);
+        this.departures = res.data;
       } catch (e) {
         console.log(e);
       }

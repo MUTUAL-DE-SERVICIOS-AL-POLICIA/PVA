@@ -31,6 +31,19 @@ export default {
       options: ['edit']
 
     },
+    {
+      href: 'departureAdmin',
+      title: 'Administrador de Salidas y Licencias',
+      icon: 'directions_walk',
+      options: ['new', 'edit', 'delete', 'active', 'print']
+
+    },
+    {
+      href: 'departureIndex',
+      title: 'Salidas/Licencias',
+      icon: 'directions_run',
+      options: ['new', 'edit', 'delete', 'active', 'print']
+    }
   ],
   rrhh: [
     {
