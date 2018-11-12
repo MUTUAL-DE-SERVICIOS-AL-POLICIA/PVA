@@ -1,6 +1,6 @@
 <template>
-  <v-container >
-    <v-toolbar>
+  <v-container>
+    <v-toolbar :color="$route.params.color">
         <v-toolbar-title>Contratos Eventuales</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn  @click="getContracts(true)" :class="active ? 'primary white--text' : 'normal'" class="mr-0">

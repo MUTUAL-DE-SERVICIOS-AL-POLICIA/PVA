@@ -17,7 +17,8 @@ export default {
           title: 'Contratos Eventuales',
           icon: 'work',
           params: {
-            options: ['new', 'edit', 'delete', 'renew', 'printInsurance', 'printContract']
+            options: ['new', 'edit', 'delete', 'renew', 'printInsurance', 'printContract'],
+            color: 'blue lighten-4'
           }
         }, {
           href: 'procedureIndex',
@@ -25,7 +26,8 @@ export default {
           icon: 'attach_file',
           params: {
             active: true,
-            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll']
+            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll'],
+            color: 'blue lighten-4'
           }
         }
       ]
@@ -39,7 +41,8 @@ export default {
           title: 'Contratos Consultores',
           icon: 'work',
           params: {
-            options: ['new', 'edit', 'delete', 'renew', 'printInsurance']
+            options: ['new', 'edit', 'delete', 'renew', 'printInsurance'],
+            color: 'yellow lighten-5'
           }
         }, {
           href: 'consultantProcedureIndex',
@@ -47,7 +50,8 @@ export default {
           icon: 'attach_file',
           params: {
             active: true,
-            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll']
+            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll'],
+            color: 'yellow lighten-5'
           }
         }
       ]

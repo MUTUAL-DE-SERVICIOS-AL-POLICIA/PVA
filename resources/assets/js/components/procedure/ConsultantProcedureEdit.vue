@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-toolbar>
-      <v-toolbar-title>{{ procedure.month.name }}</v-toolbar-title>
+      <v-toolbar-title>CONSULTORES {{ procedure.month.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu v-model="menuDate">
         <v-text-field
@@ -116,7 +116,7 @@
                 </span>
               </v-tooltip>
             </td>
-            <td class="text-md-center">
+            <td class="text-md-center font-weight-medium">
               {{ workedDays(props.item) }}
             </td>
             <td>
@@ -157,7 +157,7 @@
                 </v-flex>
               </v-layout>
             </td>
-            <td class="text-md-center">
+            <td class="text-md-center font-weight-bold">
               {{ total(props.item) }}
             </td>
             <td class="text-md-center">
