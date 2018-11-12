@@ -2,6 +2,17 @@
 
 ---
 
+## [1.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.1) - 2018-10-24
+
+### Added
+
+* Employee's users dependency
+
+### Fixed
+
+* Username on actions view
+* Number format on printable procedures
+
 ## [1.3.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.0) - 2018-10-22
 
 ### Added

@@ -3,69 +3,65 @@
     <v-toolbar>
       <v-toolbar-title>{{ procedure.month.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div class="text-xs-center">
-        <v-menu
-        v-model="menuDate"
+      <v-menu v-model="menuDate">
+        <v-text-field
+          slot="activator"
+          v-model="selectedDate"
+          label="Fecha de Pago"
+          prepend-icon="event"
+          readonly
+        ></v-text-field>
+        <v-date-picker v-model="date" @input="menuDate = false" @change="updatePayDate(procedure.id, date)" locale="es-bo"></v-date-picker>
+      </v-menu>
+      <v-dialog
+        v-model="dialogDelete"
+        width="500"
+        @keydown.esc="dialogDelete = false"
+      >
+        <v-btn
+          slot="activator"
+          color="error"
+          dark
+          v-if="$store.getters.currentUser.roles[0].name == 'admin'"
         >
-          <v-text-field
-            slot="activator"
-            v-model="selectedDate"
-            label="Fecha de Pago"
-            prepend-icon="event"
-            readonly
-          ></v-text-field>
-          <v-date-picker v-model="date" @input="menuDate = false" @change="updatePayDate(procedure.id, date)" locale="es-bo"></v-date-picker>
-        </v-menu>
-        <v-dialog
-          v-model="dialogDelete"
-          width="500"
-          @keydown.esc="dialogDelete = false"
+          Eliminar Planilla
+        </v-btn>
+        <v-card>
+          <v-card-text class="title">
+            ¿Esta seguro que desea eliminar la planilla?
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="success" small @click="dialogDelete = false"><v-icon small>check</v-icon> Cancelar</v-btn>
+            <v-btn color="error" small @click="deleteProcedure"><v-icon small>close</v-icon> Eliminar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+        v-model="dialog"
+        width="500"
+        @keydown.esc="dialog = false"
+      >
+        <v-btn
+          slot="activator"
+          color="error"
+          dark
         >
-          <v-btn
-            slot="activator"
-            color="error"
-            dark
-            v-if="$store.getters.currentUser.roles[0].name == 'admin'"
-          >
-            Eliminar Planilla
-          </v-btn>
-          <v-card>
-            <v-card-text class="title">
-              ¿Esta seguro que desea eliminar la planilla?
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="success" small @click="dialogDelete = false"><v-icon small>check</v-icon> Cancelar</v-btn>
-              <v-btn color="error" small @click="deleteProcedure"><v-icon small>close</v-icon> Eliminar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-dialog
-          v-model="dialog"
-          width="500"
-          @keydown.esc="dialog = false"
-        >
-          <v-btn
-            slot="activator"
-            color="error"
-            dark
-          >
-            {{ message }} Planilla
-          </v-btn>
-          <v-card>
-            <v-card-text class="title">
-              ¿Esta seguro que desea {{ message }} la planilla?
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="success" small @click="dialog = false"><v-icon small>check</v-icon> Cancelar</v-btn>
-              <v-btn color="error" small @click="closeProcedure"><v-icon small>close</v-icon> {{ message }}</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </div>
+          {{ message }} Planilla
+        </v-btn>
+        <v-card>
+          <v-card-text class="title">
+            ¿Esta seguro que desea {{ message }} la planilla?
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="success" small @click="dialog = false"><v-icon small>check</v-icon> Cancelar</v-btn>
+            <v-btn color="error" small @click="closeProcedure"><v-icon small>close</v-icon> {{ message }}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-flex xs2>
         <v-text-field
           v-model="search"
@@ -167,15 +163,15 @@
                 @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
             </td>
-            <td class="text-md-center">
+            <td>
               <v-layout wrap>
-                <v-flex xs6 pr-3>
-                  <v-btn class="accent" @click="savePayroll(props.item)">
+                <v-flex xs6>
+                  <v-btn small class="accent" @click="savePayroll(props.item)">
                     Guardar
                   </v-btn>
                 </v-flex>
-                <v-flex xs6 pl-3 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
-                  <v-btn class="error" @click="deletePayroll(props.item)">
+                <v-flex xs6 pl-4 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                  <v-btn small class="error" @click="deletePayroll(props.item)">
                     Eliminar
                   </v-btn>
                 </v-flex>
@@ -474,7 +470,7 @@ export default {
     },
     workedDays(payroll) {
       let payrollDate = this.$moment(
-        `${this.procedure.year}0${this.procedure.month.order}01`
+        `${this.procedure.year}${this.procedure.month.order}01`
       );
 
       let lastDayOfMonth = payrollDate.endOf("month").date();

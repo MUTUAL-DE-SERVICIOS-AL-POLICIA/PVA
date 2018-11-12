@@ -108,8 +108,8 @@
                     <v-date-picker
                       ref="picker"
                       v-model="birth_date"
-                      :max="this.maxDate.format('YYYY-MM-DD')"
-                      :min="this.minDate.format('YYYY-MM-DD')"
+                      :max="this.maxDate.format('Y-M-D')"
+                      :min="this.minDate.format('Y-M-D')"
                       locale="es-bo"
                       @change="saveDate"
                     ></v-date-picker>
@@ -156,6 +156,9 @@
                 v-model="edit.management_entity_id"
                 single-line
                 :menu-props="{ auto: true, overflowY: true }"
+                v-validate="'required'"
+                :error-messages="errors.collect('AFP')"
+                data-vv-name="AFP"
               ></v-select>
               <v-text-field
                 v-validate="'required'"
@@ -303,7 +306,7 @@ export default {
       this.dialog = true;
       this.newEmployee = false;
       this.maxDate = this.$moment(this.$store.getters.dateNow).subtract(18, 'years')
-      this.minDate = this.$moment(this.$store.getters.dateNow).subtract(150, 'years')
+      this.minDate = this.$moment(this.$store.getters.dateNow).subtract(100, 'years')
     });
     this.getCities();
     this.getManagementEntities();
