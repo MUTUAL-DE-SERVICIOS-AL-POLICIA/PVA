@@ -83,8 +83,8 @@
                         </v-list-tile>
                       </v-list>
                       <v-list>
-                        <v-list-tile @click="print(`/consultant_payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_name=C-1&valid_contracts=0&with_account=0`)">
-                          <span class="caption">C-1</span>
+                        <v-list-tile @click="print(`/consultant_payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_name=GENERAL&valid_contracts=0&with_account=0`)">
+                          <span class="caption">GENERAL</span>
                         </v-list-tile>
                       </v-list>
                     </v-card>

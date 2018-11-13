@@ -73,9 +73,10 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
+                      :disabled="!selectedItem.edit"
                     >
                       <v-text-field
-                        clearable
+                        :clearable="selectedItem.edit"
                         slot="activator"
                         v-model="datePicker.start.formattedDate"
                         label="Inicio"
@@ -172,6 +173,41 @@
                   ></v-radio>
                 </v-radio-group>
               </v-form>
+              <v-divider class="mb-3"></v-divider>
+              <v-card v-if="!selectedItem.new && selectedItem.edit">
+                <v-form ref="form">
+                  <v-select
+                    :items="retirementReasons"
+                    item-text="name"
+                    item-value="id"
+                    label="Motivo de retiro"
+                    v-model="selectedItem.retirement_reason_id"
+                    clearable
+                  ></v-select>
+                  <v-menu
+                    :close-on-content-click="false"
+                    v-model="datePicker.retirement.display"
+                    offset-y
+                    full-width
+                    max-width="290px"
+                    min-width="290px"
+                    v-if="selectedItem.retirement_reason_id"
+                  >
+                    <v-text-field
+                      clearable
+                      slot="activator"
+                      v-model="datePicker.retirement.formattedDate"
+                      label="Fecha de retiro"
+                      prepend-icon="event"
+                      v-validate="selectedItem.retirement_reason_id ? 'required' : ''"
+                      name="Fecha de retiro"
+                      :error-messages="errors.collect('Fecha de retiro')"
+                      readonly
+                    ></v-text-field>
+                    <v-date-picker locale="es-bo" v-model="selectedItem.retirement_date" no-title @input="datePicker.retirement.display = false" :min="$moment(selectedItem.start_date).add(1, 'days').toISOString().split('T')[0]" :max="$moment(selectedItem.end_date).toISOString().split('T')[0]"></v-date-picker>
+                  </v-menu>
+                </v-form>
+              </v-card>
             </v-flex>
             <v-flex xs12 sm6 md6>
               <v-card>
@@ -239,6 +275,10 @@ export default {
           display: false,
           min: null
         },
+        retirement: {
+          formattedDate: null,
+          display: false
+        },
         rrhh: {
           formattedDate: null,
           display: false
@@ -248,6 +288,8 @@ export default {
         edit: true,
         start_date: null,
         end_date: null,
+        retirement_date: null,
+        retirement_reason_id: null,
         consultant_position: null,
         consultant_position_id: null,
         new: true
@@ -258,6 +300,7 @@ export default {
       positionGroups: [],
       charges: [],
       jobSchedules: [],
+      retirementReasons: [],
       table: {
         employee: {
           last_name: '',
@@ -283,6 +326,7 @@ export default {
     this.getCharges()
     this.getJobSchedules()
     this.getPositionGroups()
+    this.getRetirementReasons()
   },
   mounted() {
     this.bus.$on("openDialog", item => {
@@ -327,8 +371,17 @@ export default {
         this.monthSalaryCalc()
       }
     },
+    'selectedItem.retirement_date': function(value) {
+      if (value) this.datePicker.retirement.formattedDate = this.$moment(value).format('L')
+    },
     'selectedItem.rrhh_cite_date': function(value) {
       if (value) this.datePicker.rrhh.formattedDate = this.$moment(value).format('L')
+    },
+    'selectedItem.retirement_reason_id': function(value) {
+      if (!value) {
+        this.selectedItem.retirement_reason_id = null
+        this.selectedItem.retirement_date = null
+      }
     }
   },
   methods: {
@@ -350,6 +403,10 @@ export default {
           display: false,
           min: null
         },
+        retirement: {
+          formattedDate: null,
+          display: false
+        },
         rrhh: {
           formattedDate: null,
           display: false
@@ -360,8 +417,11 @@ export default {
         edit: true,
         start_date: null,
         end_date: null,
+        retirement_date: null,
+        retirement_reason_id: null,
         position: null,
-        consultant_position_id: null
+        consultant_position_id: null,
+        new: true
       },
       this.table = {
         employee: {
@@ -466,6 +526,14 @@ export default {
         console.log(e)
       }
     },
+    async getRetirementReasons() {
+      try {
+        let res = await axios.get("/retirement_reason")
+        this.retirementReasons = res.data
+      } catch (e) {
+        console.log(e)
+      }
+    },
     onSelectCharge(id) {
       if (id) {
         this.table.charge = this.charges.find(o => o.id == id)
@@ -497,14 +565,19 @@ export default {
             this.selectedItem.consultant_position_id = res.data.id
             this.toastr.success('Cargo creado exitosamente')
           }
-          if (!this.selectedItem.edit) {
+          if (this.selectedItem.new) {
+            await axios.post(`/consultant_contract`, this.selectedItem)
+          } else if (!this.selectedItem.edit && !this.selectedItem.new) {
             await axios.patch(`/consultant_contract/${this.selectedItem.id}`, {
               active: false
             })
-          }
-          if (this.selectedItem.new) {
             await axios.post(`/consultant_contract`, this.selectedItem)
           } else {
+            if ((this.selectedItem.retirement_date && this.selectedItem.retirement_reason_id)) {
+              this.selectedItem.active = false
+            } else {
+              this.selectedItem.active = true
+            }
             await axios.patch(`/consultant_contract/${this.selectedItem.id}`, this.selectedItem)
           }
           this.toastr.success('Consultor agregado exitosamente')

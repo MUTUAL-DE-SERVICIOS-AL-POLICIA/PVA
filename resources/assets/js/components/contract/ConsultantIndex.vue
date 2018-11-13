@@ -66,13 +66,13 @@
           </td>
           <td class="justify-center layout" v-if="$route.params.options.length > 0">
             <v-tooltip top v-if="$route.params.options.includes('renew') && checkEnd(props.item) != ''">
-              <v-btn slot="activator" flat icon color="info" @click="editItem(Object.assign(props.item, {new: true}), false)">
+              <v-btn slot="activator" flat icon color="info" @click="editItem(Object.assign(props.item, {edit: false, new: false}))">
                 <v-icon>autorenew</v-icon>
               </v-btn>
               <span>Recontratar</span>
             </v-tooltip>
             <v-tooltip top v-if="$route.params.options.includes('edit')">
-              <v-btn slot="activator" flat icon color="accent" @click="editItem(Object.assign(props.item, {new: false}), true)">
+              <v-btn slot="activator" flat icon color="accent" @click="editItem(Object.assign(props.item, {edit: true, new: false}))">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
@@ -209,12 +209,12 @@ export default {
       }
     },
     editItem(item, mode) {
-      this.bus.$emit("openDialog", Object.assign(item, {edit: mode}));
+      this.bus.$emit("openDialog", item)
     },
     async removeItem(item) {
       let payrolls = await axios.get(`/consultant_payroll/contract/${item.id}`)
       if (payrolls.data.count > 0) {
-        this.toastr.success('No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS')
+        this.toastr.warning('No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS')
       } else {
         this.bus.$emit("openDialogRemove", `/consultant_contract/${item.id}`)
       }
@@ -228,15 +228,13 @@ export default {
     checkEnd(contract) {
       if (
         contract.retirement_date != null &&
-        this.endDate.isSame(this.$moment(contract.retirement_date), 'year') &&
-        this.endDate.isSame(this.$moment(contract.retirement_date), 'month') &&
+        this.endDate.isSame(this.$moment(contract.retirement_date), 'month', 'year') &&
         !this.active
       ) {
         return "danger";
       } else if (
         contract.end_date != null &&
-        this.endDate.isSame(this.$moment(contract.end_date), 'year') &&
-        this.endDate.isSame(this.$moment(contract.end_date), 'month') &&
+        this.endDate.isSame(this.$moment(contract.end_date), 'month', 'year') &&
         !this.active
       ) {
         return "warning";
