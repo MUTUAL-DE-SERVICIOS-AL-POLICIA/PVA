@@ -182,6 +182,31 @@
                     <v-chip v-if="!table.position.free" small color="red" text-color="white">Ocupado</v-chip>
                   </p>
                   <p><strong>Haber Basico: </strong> {{ table.charge.base_wage }} Bs. </p>
+                  <table class="v-datatable v-table">
+                    <thead>
+                      <tr>
+                        <th>Mes</th>
+                        <th>Dias</th>
+                        <th>Salario</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="item in table.months"
+                        :key="item.name"
+                      >
+                        <td> {{ (item.name).toUpperCase() }} </td>
+                        <td class="text-xs-center">{{ item.count }}</td>
+                        <td class="text-xs-right">{{ item.salary }} Bs.</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                          <td colspan="2"><span>Total </span></td>
+                          <td class="text-xs-right font-weight-bold">{{ table.months.reduce((total, o) => parseFloat(o.salary) + total,0).toFixed(2) }} Bs.</td>
+                        </tr>
+                    </tfoot>
+                  </table>
                 </v-card-text>
               </v-card>
             </v-flex>
@@ -247,7 +272,8 @@ export default {
         charge: {
           name: '',
           base_wage: ''
-        }
+        },
+        months: []
       }
     }
   },
@@ -288,13 +314,18 @@ export default {
         } else if (date.date() > 1) {
           this.datePicker.end.min = date.add(1, 'month').subtract(1, 'days').toISOString().split('T')[0]
         }
-        if (this.$moment(this.datePicker.end.min).diff(this.$moment(this.datePicker.start), 'days') < 30) {
+
+        if (this.$moment(this.selectedItem.end_date).diff(this.$moment(this.datePicker.start), 'days') < 30) {
           this.selectedItem.end_date = this.datePicker.end.min
         }
+        this.monthSalaryCalc()
       }
     },
     'selectedItem.end_date': function(value) {
-      if (value) this.datePicker.end.formattedDate = this.$moment(value).format('L')
+      if (value) {
+        this.datePicker.end.formattedDate = this.$moment(value).format('L')
+        this.monthSalaryCalc()
+      }
     },
     'selectedItem.rrhh_cite_date': function(value) {
       if (value) this.datePicker.rrhh.formattedDate = this.$moment(value).format('L')
@@ -346,7 +377,8 @@ export default {
         charge: {
           name: '',
           base_wage: ''
-        }
+        },
+        months: []
       }
     },
     formatDate (date) {
@@ -437,6 +469,7 @@ export default {
     onSelectCharge(id) {
       if (id) {
         this.table.charge = this.charges.find(o => o.id == id)
+        this.monthSalaryCalc()
       } else {
         this.table.charge = {
           name: '',
@@ -479,6 +512,45 @@ export default {
         }
       } catch (e) {
         console.log(e)
+      }
+    },
+    monthSalaryCalc() {
+      if (this.selectedItem.start_date && this.selectedItem.end_date && this.table.charge.base_wage) {
+        this.table.months = []
+
+        let startDate = this.$moment(this.selectedItem.start_date)
+        let endDate = this.$moment(this.selectedItem.end_date)
+        let diary = this.table.charge.base_wage / 30
+
+        let count = 30 - startDate.format('D') + 1
+        this.table.months.push({
+          name: startDate.format('MMMM'),
+          count: count,
+          salary: (diary * count).toFixed(2)
+        })
+
+        while (!endDate.isSame(startDate, 'month', 'year')) {
+          if (!endDate.isSame(startDate.add(1, 'month'), 'month', 'year')) {
+            this.table.months.push({
+              name: startDate.format('MMMM'),
+              count: 30,
+              salary: Number(this.table.charge.base_wage).toFixed(2)
+            })
+          } else {
+            count = Number(endDate.format('D'))
+
+            let lastDayOfMonth = Number(endDate.endOf('month').format('D'))
+            if (lastDayOfMonth != 30 && count == lastDayOfMonth) {
+              count = 30
+            }
+
+            this.table.months.push({
+              name: endDate.format('MMMM'),
+              count: count,
+              salary: (diary * count).toFixed(2)
+            })
+          }
+        }
       }
     }
   }
