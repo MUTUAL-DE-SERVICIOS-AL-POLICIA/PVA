@@ -65,6 +65,12 @@ export default {
       title: 'Administrador de Salidas y Licencias',
       icon: 'directions_walk',
       options: ['edit', 'active', 'print']
+    }, 
+    {
+      href: 'departureIndex',
+      title: 'Salidas/Licencias',
+      icon: 'directions_run',
+      options: ['new', 'edit', 'delete', 'active', 'print']
     }
   ],
   juridica: [
@@ -79,6 +85,11 @@ export default {
       title: 'Contratos',
       icon: 'work',
       options: ['printContract', 'edit']
+    }, {
+      href: 'departureIndex',
+      title: 'Salidas/Licencias',
+      icon: 'directions_run',
+      options: ['new', 'edit', 'delete', 'active', 'print']
     }
   ],
   financiera: [
@@ -109,8 +120,7 @@ export default {
       title: 'Inicio',
       icon: 'home',
       options: []
-    },
-    {
+    }, {
       href: 'departureIndex',
       title: 'Salidas/Licencias',
       icon: 'directions_run',
