@@ -163,7 +163,8 @@ export default {
   },
   methods: {
     async getDepartures() {
-      try {       
+      try {
+        console.log(this.$store.getters.currentUser);
         let contract = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);        
         let res = await axios.get(`/departure/get_departures/${contract.data.id}`);        
         this.departures = res.data;
