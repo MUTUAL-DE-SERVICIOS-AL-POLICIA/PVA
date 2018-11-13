@@ -48,6 +48,8 @@ class DatabaseSeeder extends Seeder
 			'months',
 			'procedures',
 			'payrolls',
+			'consultant_procedures',
+			'consultant_payrolls',
 			'user_actions',
 		];
 
@@ -66,6 +68,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(PositionGroupSeeder::class);
 		$this->call(ChargeSeeder::class);
 		$this->call(PositionSeeder::class);
+		$this->call(ConsultantPositionSeeder::class);
 		$this->call(EmployeeSeeder::class);
 		$this->call(UserSeeder::class);
 		$this->call(JobScheduleSeeder::class);
@@ -73,12 +76,15 @@ class DatabaseSeeder extends Seeder
 		$this->call(ContractTypeSeeder::class);
 		$this->call(ContractModeSeeder::class);
 		$this->call(ContractSeeder::class);
+		$this->call(ConsultantContractSeeder::class);
 		$this->call(EmployeeDiscountSeeder::class);
 		$this->call(EmployerContributionSeeder::class);
 		$this->call(EmployerTributeSeeder::class);
 		$this->call(MonthSeeder::class);
 		$this->call(ProcedureSeeder::class);
 		$this->call(PayrollSeeder::class);
+		$this->call(ConsultantProcedureSeeder::class);
+		$this->call(ConsultantPayrollSeeder::class);
 		$this->call(UserActionSeeder::class);
 	}
 }

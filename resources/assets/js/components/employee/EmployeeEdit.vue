@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close" scrollable>
-    <v-tooltip slot="activator" top v-if="options.includes('new')">
+    <v-tooltip slot="activator" top v-if="$route.params.options.includes('new')">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Empleado</span>
     </v-tooltip>
@@ -203,8 +203,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="error" @click="close"><v-icon>close</v-icon> Cancelar</v-btn>
-        <v-btn color="success" :disabled="this.errors.any()" @click="saveEmployee"><v-icon>check</v-icon> Guardar</v-btn>
+        <v-btn color="error" @click.native="close"><v-icon>close</v-icon> Cancelar</v-btn>
+        <v-btn color="success" :disabled="this.errors.any()" @click.native="saveEmployee"><v-icon>check</v-icon> Guardar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -239,16 +239,9 @@ export default {
       maxDate: this.$moment(this.$store.getters.dateNow).subtract(18, 'years') || this.$moment().subtract(18, 'years')
     };
   },
-  created() {
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == 'contractIndex') {
-        this.options = this.$store.getters.menuLeft[i].options
-      }
-    }
-  },
   methods: {
     resetVariables() {
-      this.newEmployee = false;
+      this.newEmployee = true;
       this.edit = {};
       this.birth_date = null;
       this.birth_date_formatted = null;
@@ -304,7 +297,7 @@ export default {
       this.edit = employee;
       this.birth_date = this.edit.birth_date;
       this.dialog = true;
-      this.newEmployee = false;
+      this.newEmployee = employee ? false : true;
       this.maxDate = this.$moment(this.$store.getters.dateNow).subtract(18, 'years')
       this.minDate = this.$moment(this.$store.getters.dateNow).subtract(100, 'years')
     });

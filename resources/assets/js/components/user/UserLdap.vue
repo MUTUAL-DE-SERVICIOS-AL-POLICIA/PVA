@@ -109,7 +109,8 @@ export default {
           employee_id: id
         });
         this.$router.go({
-          name: "userIndex"
+          name: "userIndex",
+          params: this.$store.getters.menuLeft.find(obj => { return obj.href == 'userIndex' }).params
         });
       } catch (e) {
         console.log(e);

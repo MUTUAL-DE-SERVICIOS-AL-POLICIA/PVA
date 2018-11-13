@@ -36,7 +36,7 @@
                       name="Tipo"
                       :error-messages="errors.collect('Tipo')"
                       >
-                      <span v-for="type in types">
+                      <span v-for="type in types" :key="type.id">
                         <v-radio :label="type.name" :value="type.id"></v-radio>
                       </span>
                     </v-radio-group>
@@ -285,8 +285,7 @@ export default {
     menuTimeDeparture: false,
     menuTimeReturn: false,
     alert: true,
-    valid: true,
-    options: []
+    valid: true
   }),
   computed: {
     

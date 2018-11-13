@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
-    <v-tooltip slot="activator" top v-if="options.includes('new')">
+    <v-tooltip slot="activator" top v-if="$route.params.options.includes('new')">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Contrato</span>
     </v-tooltip>
@@ -327,11 +327,6 @@ export default {
     };
   },
   created() {
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "contractIndex") {
-        this.options = this.$store.getters.menuLeft[i].options;
-      }
-    }
     if (this.$store.getters.currentUser.roles[0].name == "juridica") {
       this.juridica = 1;
     }

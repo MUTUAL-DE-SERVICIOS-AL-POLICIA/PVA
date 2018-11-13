@@ -1,9 +1,11 @@
 <template>
   <v-app>
     <v-navigation-drawer
+      stateless
+      value="true"
       persistent
       :mini-variant="miniVariant"
-      :clipped="clipped"
+      :clipped="true"
       v-model="drawer"
       enable-resize-watcher
       fixed
@@ -12,31 +14,70 @@
       class="normal"
     >
       <v-list>
-        <v-list-tile v-for="item in menu_left" :key="item.title" :to="{name: item.href, params: item.params}">
-          <v-list-tile-action>
+        <div v-for="item in menuLeft" :key="item.title">
+          <v-list-tile :to="{name: item.href, params: item.params}" v-if="!item.group" class="mb-0">
             <v-tooltip right>
-              <v-icon slot="activator">{{ item.icon }}</v-icon>
-              <span>{{ item.title }}</span>
+              <v-list-tile-action slot="activator">
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+              <span>{{ item.title }} {{ item.params }}</span>
             </v-tooltip>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              {{ item.title }}
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                {{ item.title }}
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-group
+            v-else
+            :value="false"
+            :class="`${item.color} lighten-3`"
+          >
+            <v-list-tile slot="activator">
+              <v-tooltip right>
+                <v-list-tile-action slot="activator">
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-tile-action>
+                <span>{{ item.title }}</span>
+              </v-tooltip>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  {{ item.title }}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
+            <v-list :class="`${item.color} lighten-5`">
+              <v-list-tile v-for="group in item.group" :key="group.href" :to="{name: group.href, params: group.params}">
+                <v-tooltip right>
+                  <v-list-tile-action slot="activator">
+                    <v-icon>{{ group.icon }}</v-icon>
+                  </v-list-tile-action>
+                  <span>{{ group.title }}</span>
+                </v-tooltip>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    {{ group.title }}
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-list-group>
+        </div>
       </v-list>
     </v-navigation-drawer>
+
     <v-toolbar
       class="primary white--text"
       app
-      :clipped-left="clipped"
+      :clipped-left="true"
       v-if="this.$store.getters.currentUser"
     >
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon v-html="miniVariant ? 'more_vert' : 'menu'" class="white--text"></v-icon>
       </v-btn>
-      <v-toolbar-title v-text="titles"></v-toolbar-title>
+      <v-toolbar-title v-text="`SISTEMA DE RECURSOS HUMANOS`"></v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-menu offset-y>
@@ -66,7 +107,7 @@
         <router-view></router-view>
       </v-slide-x-transition>
     </v-content>
-    <v-footer :fixed="fixed" app>
+    <v-footer :fixed="true" app>
       <v-spacer></v-spacer>
       <span class="font-weight-thin caption mr-2">MUSERPOL <span class="copyleft">&copy;</span> - 2018</span>
     </v-footer>
@@ -77,15 +118,9 @@
 export default {
   data() {
     return {
-      clipped: true,
       drawer: true,
-      fixed: true,
-      menu_left: null,
-      role: null,
-      miniVariant: true,
-      right: true,
-      rightDrawer: false,
-      titles: "SISTEMA DE RECURSOS HUMANOS"
+      menuLeft: null,
+      miniVariant: true
     };
   },
   name: "app-header",
@@ -106,7 +141,7 @@ export default {
   },
   created: function() {
     this.getDate();
-    this.menu_left = this.$store.getters.menuLeft;
+    this.menuLeft = this.$store.getters.menuLeft;
   }
 };
 </script>

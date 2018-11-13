@@ -23,11 +23,17 @@ class EmployeeController extends Controller
 	 */
 	public function index()
 	{
-		return Employee::with('city_identity_card')
+		$employees = Employee::with('city_identity_card')
 			->with('management_entity')
 			->with('city_birth')
 			->orderBy('last_name')
 			->get();
+
+		foreach ($employees as $employee) {
+			$employee->consultant = $employee->consultant();
+		}
+
+		return $employees;
 	}
 
 	/**

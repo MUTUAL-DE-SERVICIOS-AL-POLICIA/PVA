@@ -3,8 +3,11 @@ import Profile from './components/auth/Profile'
 import Employee from './components/employee/EmployeeIndex'
 import Company from './components/company/CompanyIndex'
 import Contract from './components/contract/ContractIndex'
+import Consultant from './components/contract/ConsultantIndex'
 import Procedure from './components/procedure/ProcedureIndex'
+import ConsultantProcedure from './components/procedure/ConsultantProcedureIndex'
 import ProcedureEdit from './components/procedure/ProcedureEdit'
+import ConsultantProcedureEdit from './components/procedure/ConsultantProcedureEdit'
 import UserAction from './components/userAction/UserActionIndex'
 import UserIndex from './components/user/UserIndex'
 import DepartureIndex from './components/departure/DepartureIndex'
@@ -26,7 +29,8 @@ export const routes = [
     redirect: {
       name: 'employeeIndex',
       params: {
-        active: true
+        active: true,
+        options: ['new', 'edit', 'delete', 'print']
       },
     },
     meta: {
@@ -54,6 +58,13 @@ export const routes = [
       requiresAuth: true
     }
   }, {
+    path: '/consultant',
+    component: Consultant,
+    name: 'consultantIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
     path: '/procedure',
     component: Procedure,
     name: 'procedureIndex',
@@ -61,9 +72,23 @@ export const routes = [
       requiresAuth: true
     }
   }, {
+    path: '/consultant_procedure',
+    component: ConsultantProcedure,
+    name: 'consultantProcedureIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
     path: '/procedure/:id',
     component: ProcedureEdit,
     name: 'procedureEdit',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/consultantProcedure/:id',
+    component: ConsultantProcedureEdit,
+    name: 'consultantProcedureEdit',
     meta: {
       requiresAuth: true
     }

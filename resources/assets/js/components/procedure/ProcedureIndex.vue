@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <v-toolbar>
-      <v-toolbar-title>Planillas</v-toolbar-title>
+    <v-toolbar :color="$route.params.color">
+      <v-toolbar-title>Planillas Eventuales</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-flex xs2>
         <v-select
@@ -12,9 +12,12 @@
           @change="changeYear"
         ></v-select>
       </v-flex>
-      <ProcedureAdd v-if="$store.getters.currentUser.roles[0].name == 'admin'" :bus="bus"/>
+      <ProcedureAdd v-if="$store.getters.currentUser.roles[0].name == 'admin'" :bus="bus" type="eventual"/>
     </v-toolbar>
-    <v-card>
+    <div v-if="loading">
+      <Loading/>
+    </div>
+    <v-card v-else>
       <v-container
         fluid
         grid-list-md
@@ -40,7 +43,7 @@
                     v-if="procedure.pay_date"
                   ></v-text-field>
                   <v-text-field
-                    slot="activator"                    
+                    slot="activator"
                     label="Fecha de Pago"
                     prepend-icon="event"
                     disabled
@@ -52,13 +55,13 @@
               <div v-else>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="(procedure.active && options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="(procedure.active && $route.params.options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                       <span>Editar</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon v-if="options.includes('ticket')">
+                  <v-btn icon v-if="$route.params.options.includes('ticket')">
                     <v-tooltip top>
                       <v-btn slot="activator" icon flat @click.prevent="print(`/ticket/print/${procedure.id}`)">
                         <v-icon :color="procedure.active ? 'info' : 'primary'">print</v-icon>
@@ -66,20 +69,20 @@
                       <span>Imprimir boletas</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="options.includes('bank')">
+                  <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$route.params.options.includes('bank')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                       <span>TXT Banco</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="options.includes('ovt')">
+                  <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="$route.params.options.includes('ovt')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">work</v-icon>
                       <span>CSV OVT</span>
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y class="mr-2" v-if="options.includes('afp')">
+                  <v-menu offset-y class="mr-2" v-if="$route.params.options.includes('afp')">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>AFP</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -101,7 +104,7 @@
                       </v-list>
                     </v-card>
                   </v-menu>
-                  <v-menu offset-y v-if="options.includes('payroll')">
+                  <v-menu offset-y v-if="$route.params.options.includes('payroll')">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>Planillas</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -202,7 +205,7 @@
                   <v-btn
                     color="info"
                     @click="storeProcedure"
-                    v-if="options.includes('new')"
+                    v-if="$route.params.options.includes('new')"
                   >
                     Registrar
                   </v-btn>
@@ -219,15 +222,17 @@
 <script>
 import Vue from "vue";
 import ProcedureAdd from "./ProcedureAdd";
+import Loading from "../Loading";
 export default {
   name: "ProcedureIndex",
   components: {
-    ProcedureAdd
+    ProcedureAdd,
+    Loading
   },
   data() {
     return {
       bus: new Vue(),
-      loading: false,
+      loading: true,
       years: [],
       procedures: [],
       newProcedure: {
@@ -240,8 +245,7 @@ export default {
       yearSelected: null,
       templateTypes: ["H", "P"],
       managementEntities: [],
-      employerNumbers: [],
-      options: []
+      employerNumbers: []
     };
   },
   mounted() {
@@ -252,13 +256,6 @@ export default {
       this.getYears(year);
       this.changeYear();
     });
-  },
-  created() {
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "procedureIndex") {
-        this.options = this.$store.getters.menuLeft[i].options;
-      }
-    }
   },
   methods: {
     async getLastProcedure() {
@@ -274,6 +271,7 @@ export default {
             this.newProcedure.month = res.data.order - 1;
           }
         }
+        this.loading = false
         return Promise.resolve();
       } catch (e) {
         console.log(e);
@@ -410,12 +408,11 @@ export default {
       }
     },
     changeYear() {
-      if (this.years.length > 0) {
-        this.getProcedures(this.yearSelected);
-      } else {
+      if (this.years.length == 0) {
         this.years.unshift(this.newProcedure.year);
         this.yearSelected = this.newProcedure.year;
       }
+      this.getProcedures(this.yearSelected);
     },
     async storeProcedure() {
       try {
