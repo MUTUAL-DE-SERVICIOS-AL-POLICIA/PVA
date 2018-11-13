@@ -259,7 +259,7 @@ Route::group([
 			Route::delete('contract/{id}', 'Api\V1\ContractController@destroy')->name('contract_delete');
 			Route::get('contract/valid/{procedure_id}', 'Api\V1\ContractController@valid_date')->name('contract_valid');
 			Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
-			Route::get('contract/contract_position_group/{contract_id}', 'Api\V1\ContractController@contract_position_group')->name('contract_pocontract_position_groupsition');
+			Route::get('contract/contract_position_group/{contract_id}', 'Api\V1\ContractController@contract_position_group')->name('contract_position_group');
 			// Job Schedule
 			Route::post('jobs_chedule', 'Api\V1\JobScheduleController@store')->name('jobs_chedule_store');
 			Route::patch('jobs_chedule/{id}', 'Api\V1\JobScheduleController@update')->name('jobs_chedule_update');

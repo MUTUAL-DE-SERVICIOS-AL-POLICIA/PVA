@@ -2,7 +2,7 @@ export default {
   dataIterator: {
     rowsPerPageText: 'Filas por pagina:',
     rowsPerPageAll: 'Todo',
-    pageText: '{0}-{1} of {2}',
+    pageText: '{0}-{1} de {2}',
     noResultsText: 'Sin registros encontrados',
     nextPage: 'Siguiente',
     prevPage: 'Anterior'
