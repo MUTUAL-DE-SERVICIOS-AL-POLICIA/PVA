@@ -171,7 +171,7 @@ Route::group([
 
 		// ADMIN routes
 		Route::group([
-			'middleware' => 'role:admin',
+			'middleware' => 'role:admin|empleado',
 		], function () {
 			// User
 			Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update']);
@@ -222,7 +222,7 @@ Route::group([
 
 		// RRHH routes
 		Route::group([
-			'middleware' => 'role:admin|rrhh',
+			'middleware' => 'role:admin|rrhh|empleado',
 		], function () {
 			// Ticket
 			Route::get('ticket/print/{id}', 'Api\V1\TicketController@print')->name('ticket_print');
@@ -332,7 +332,7 @@ Route::group([
 
 		// JURIDICA-RRHH routes
 		Route::group([
-			'middleware' => 'role:admin|rrhh|juridica',
+			'middleware' => 'role:admin|rrhh|juridica|empleado',
 		], function () {
 			Route::patch('contract/{id}', 'Api\V1\ContractController@update')->name('contract_update');
 		});

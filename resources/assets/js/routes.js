@@ -9,6 +9,8 @@ import UserAction from './components/userAction/UserActionIndex'
 import UserIndex from './components/user/UserIndex'
 import DepartureIndex from './components/departure/DepartureIndex'
 import DepartureAdmin from './components/departure/DepartureAdmin'
+import Dashboard from './components/dashboard/Dashboard'
+
 
 export const routes = [
   {
@@ -25,7 +27,7 @@ export const routes = [
   }, {
     path: '*',
     redirect: {
-      name: 'employeeIndex',
+      name: 'dashboard',
       params: {
         active: true
       },
@@ -93,6 +95,13 @@ export const routes = [
     path: '/departure_admin',
     component: DepartureAdmin,
     name: 'departureAdmin',
+    meta: {
+      requiresAuth: true
+    }
+  },{
+    path: '/dashboard',
+    component: Dashboard,
+    name: 'dashboard',
     meta: {
       requiresAuth: true
     }

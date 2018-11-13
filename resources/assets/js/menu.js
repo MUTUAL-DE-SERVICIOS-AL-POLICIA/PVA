@@ -35,15 +35,9 @@ export default {
       href: 'departureAdmin',
       title: 'Administrador de Salidas y Licencias',
       icon: 'directions_walk',
-      options: ['new', 'edit', 'delete', 'active', 'print']
+      options: ['edit', 'active', 'print']
 
     },
-    {
-      href: 'departureIndex',
-      title: 'Salidas/Licencias',
-      icon: 'directions_run',
-      options: ['new', 'edit', 'delete', 'active', 'print']
-    }
   ],
   rrhh: [
     {
@@ -70,8 +64,7 @@ export default {
       href: 'departureAdmin',
       title: 'Administrador de Salidas y Licencias',
       icon: 'directions_walk',
-      options: ['new', 'edit', 'delete', 'active', 'print']
-
+      options: ['edit', 'active', 'print']
     }
   ],
   juridica: [
@@ -110,7 +103,13 @@ export default {
       options: ['afp', 'payroll']
     }
   ],
-  employee: [
+  empleado: [
+    {
+      href: 'dashboard',
+      title: 'Inicio',
+      icon: 'home',
+      options: []
+    },
     {
       href: 'departureIndex',
       title: 'Salidas/Licencias',

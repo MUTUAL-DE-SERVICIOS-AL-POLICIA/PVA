@@ -62,7 +62,6 @@ class ContractTypeDepartureReasonSeeder extends Seeder
 			['contract_type_id'=> 4, 'departure_reason' => 3],
 			['contract_type_id'=> 4, 'departure_reason' => 4],
 			['contract_type_id'=> 4, 'departure_reason' => 5],
-			['contract_type_id'=> 4, 'departure_reason' => 6],
 		];
 
 		foreach ($types as $type) {

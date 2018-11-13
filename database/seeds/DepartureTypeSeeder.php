@@ -13,7 +13,7 @@ class DepartureTypeSeeder extends Seeder
     {
         $types = [			
 			['id'=> 1,'document_type_id' => 6, 'name' => 'Salida', 'description' => 'Solicitud directa'],
-			['id'=> 2,'document_type_id' => 7, 'name' => 'Licencia', 'description' => 'Solicitud mediante presentacion de nota']
+			['id'=> 2,'document_type_id' => 7, 'name' => 'Licencia', 'description' => 'Solicitud mediante presentación de nota']
 		];
 
 		foreach ($types as $type) {

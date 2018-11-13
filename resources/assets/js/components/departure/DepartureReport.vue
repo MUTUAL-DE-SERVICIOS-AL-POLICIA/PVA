@@ -37,6 +37,18 @@
                       clearable
                       >
                     </v-autocomplete>
+                  </v-flex>                  
+                  <v-flex xs3>
+                    <v-select
+                      :items="types"
+                      item-text="name"
+                      item-value="id"
+                      v-model="selectedItem.type"
+                      label="Tipo"
+                      hint="Dejar en blanco para seleccionar Todos"
+                      persistent-hint
+                      clearable
+                    ></v-select>
                   </v-flex>
                   <v-flex xs3>
                     <v-select
@@ -45,18 +57,6 @@
                       item-value="state"
                       v-model="selectedItem.state"
                       label="Estado"
-                      hint="Dejar en blanco para seleccionar Todos"
-                      persistent-hint
-                      clearable
-                    ></v-select>
-                  </v-flex>
-                  <v-flex xs3>
-                    <v-select
-                      :items="types"
-                      item-text="name"
-                      item-value="id"
-                      v-model="selectedItem.type"
-                      label="Tipos"
                       hint="Dejar en blanco para seleccionar Todos"
                       persistent-hint
                       clearable

@@ -57,8 +57,8 @@
                 <br>
                 <span class="title">FORMULARIO DE SOLICITUD</span>
             </div>
-            <div class="col" style="width: 35%;text-align: right;">
-                {{ $departure->departure_reason->departure_type->name }}
+            <div class="col" style="width: 35%;text-align: right;font-size: 18pt;font-weight: bold;text-transform: uppercase;">
+                <span style="background: #EFEFEF"> {{ $departure->departure_reason->departure_type->name }} </span>
             </div>
             <div class="clear"></div>
         </div>
@@ -105,8 +105,9 @@
                 </p>
             </div>
             <div class="clear"></div>
-        </div>
+        </div>        
     </div>
+    <div style="font-size: 6pt" align="right"> Impreso el {{ date('d/m/Y H:i') }} </div>
     <br>
     <hr>
     <br>
@@ -119,8 +120,8 @@
                 <br>
                 <span class="title">FORMULARIO DE SOLICITUD</span>
             </div>
-            <div class="col" style="width: 35%;text-align: right;">
-                {{ $departure->departure_reason->departure_type->name }}
+            <div class="col" style="width: 35%;text-align: right;font-size: 18pt;font-weight: bold;text-transform: uppercase;">
+                <span style="background: #EFEFEF"> {{ $departure->departure_reason->departure_type->name }} </span>
             </div>
             <div class="clear"></div>
         </div>
@@ -168,5 +169,6 @@
             <div class="clear"></div>
         </div>
     </div>
+    <div style="font-size: 6pt" align="right"> Impreso el {{ date('d/m/Y H:i') }} </div>
 </body>
 </html>

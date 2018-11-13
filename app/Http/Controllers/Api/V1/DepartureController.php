@@ -104,9 +104,9 @@ class DepartureController extends Controller
                 }
                 if ($year == $departure_year) {
                     if ($departure->departure_reason->departure_type_id == 2 && $departure->departure_reason->name == 'Personal' && $departure->approved == true) {
-                        if ($departure->on_vacation != false) {
+                        // if ($departure->on_vacation != false) {
                             $total_minutes_year = $total_minutes_year + $e->departure_minutes;
-                        }
+                        // }
                     }
                 }
                 $dep[] = $e;
@@ -142,14 +142,10 @@ class DepartureController extends Controller
      */
     public function destroy($id)
     {
-        $departure_schedules = DepartureSchedule::where('departure_id', $id)->delete();
-
         $departure = Departure::findOrFail($id);
         $departure->delete();
-
         $certificate = Certificate::findOrFail($departure->certificate_id);
         $certificate->delete();
-
         return $departure;
     }
 
@@ -181,6 +177,7 @@ class DepartureController extends Controller
     function print_report(Request $request) 
     {
         $search['state'] = $request->state;
+        $search['type'] = $request->type;
         $search['start_date'] = $request->start_date;
         $search['end_date'] = $request->end_date;
 
@@ -221,6 +218,8 @@ class DepartureController extends Controller
             ->setOption('margin-right', $pageMargins[1])
             ->setOption('margin-bottom', $pageMargins[2])
             ->setOption('margin-left', $pageMargins[3])
+            ->setOption('footer-font-size', 5)
+            ->setOption('footer-center', '[page] de [topage] - Impreso el ' . date('m/d/Y H:i'))
             ->setOption('encoding', 'utf-8')
             ->stream($pageName);
     }

@@ -47,12 +47,16 @@
 <div class="doc">
     <div class="head center"> Reporte de Salidas y Licencias  </div>
     <br>
-    <div style="font-size: 10pt;font-weight: bold;">
+    <div style="float:left;width: 50%;font-size: 10pt;font-weight: bold;">
         <p>Dirección/Oficina: <span> {{ (!isset($search->position_group))?'TODOS':$search->position_group->name }} </span></p>
         <p>Empleado: <span> {{ (!isset($search->employee))?'TODOS':($search->employee->first_name.' '.$search->employee->last_name.' '.$search->employee->mothers_last_name) }} </span></p>
+        <p>Tipo: <span> {{ ($search->type == null)? 'TODOS':(($search->type == 1)?'SALIDAS':'LICENCIAS') }} </span></p> 
+    </div>
+    <div style="float:left;width: 50%;font-size: 10pt;font-weight: bold;" align="right">
         <p>Estado: <span> {{ ($search->state == null)? 'TODOS':(($search->state == true)?'APROBADO':'RECHAZADO') }} </span></p> 
         <p>Del <span> {{ $search->start_date }} </span> hasta <span> {{ $search->end_date }} </span></p> 
     </div>
+    <div style="clear: both;"></div>
     <div class="content">
         <table style="font-size: 8pt;">
             <thead>
@@ -83,7 +87,7 @@
                     <td> {{ Carbon::parse($departure->return_date)->format('d/m/Y') }} </td>
                     <td> {{ Carbon::parse($departure->departure_time)->format('H:i') }} </td>
                     <td> {{ Carbon::parse($departure->return_time)->format('H:i') }} </td>
-                    <td> {{ ($departure->approved == true)? 'APROBADO': (($departure->approved == false)? 'RECHAZADO':'PENDIENTE') }} </td>
+                    <td> {{ (is_null($departure->approved))? 'PENDIENTE': (($departure->approved == true)? 'APROBADO':'RECHAZADO') }} </td>
                 </tr>
                 @endforeach
             </tbody>

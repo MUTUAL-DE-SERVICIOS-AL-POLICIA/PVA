@@ -1,7 +1,7 @@
 <template>
   <v-container >
     <v-toolbar>
-        <v-toolbar-title>Salidas, Comisiones y Licencias</v-toolbar-title>
+        <v-toolbar-title>Administrador de Salidas, Comisiones y Licencias</v-toolbar-title>
         <v-spacer></v-spacer>  
          <DepartureReport :bus="bus"/>
         <v-divider
@@ -146,7 +146,7 @@ export default {
       this.getDepartures();
     });
     for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "departureIndex") {
+      if (this.$store.getters.menuLeft[i].href == "departureAdmin") {
         this.options = this.$store.getters.menuLeft[i].options;
       }
     }
