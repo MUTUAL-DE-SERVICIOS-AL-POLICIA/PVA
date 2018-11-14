@@ -196,7 +196,7 @@ export default {
         let link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
         const contentDisposition = res.headers["content-disposition"];
-        let fileName = "unknown";
+        let fileName = `sueldos_${url.split('/').slice(-1)[0]}_${url.split('/').slice(-2)[0]}`;
         if (contentDisposition) {
           const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
           if (fileNameMatch.length === 2) {
