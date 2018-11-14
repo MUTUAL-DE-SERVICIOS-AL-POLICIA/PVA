@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-toolbar :color="$route.params.color">
+    <v-toolbar :color="$store.getters.color">
       <v-toolbar-title>Contratos Consultores</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn  @click="getContracts(true)" :class="active ? 'primary white--text' : 'normal'" class="mr-0">
@@ -64,20 +64,20 @@
               </span>
             </v-tooltip>
           </td>
-          <td class="justify-center layout" v-if="$route.params.options.length > 0">
-            <v-tooltip top v-if="$route.params.options.includes('renew') && checkEnd(props.item) != ''">
+          <td class="justify-center layout" v-if="$store.getters.options.length > 0">
+            <v-tooltip top v-if="$store.getters.options.includes('renew') && checkEnd(props.item) != ''">
               <v-btn slot="activator" flat icon color="info" @click="editItem(Object.assign(props.item, {edit: false, new: false}))">
                 <v-icon>autorenew</v-icon>
               </v-btn>
               <span>Recontratar</span>
             </v-tooltip>
-            <v-tooltip top v-if="$route.params.options.includes('edit')">
+            <v-tooltip top v-if="$store.getters.options.includes('edit')">
               <v-btn slot="activator" flat icon color="accent" @click="editItem(Object.assign(props.item, {edit: true, new: false}))">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top v-if="$route.params.options.includes('delete')">
+            <v-tooltip top v-if="$store.getters.options.includes('delete')">
               <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -167,17 +167,17 @@ export default {
   }),
   computed: {
     endDate() {
-      return this.$moment(this.$store.getters.dateNow).endOf('month')
+      return this.$moment(this.$route.getters.dateNow).endOf('month')
     },
     dateNow() {
-      return this.$moment(this.$store.getters.dateNow)
+      return this.$moment(this.$route.getters.dateNow)
     },
     formTitle() {
       return this.selectedIndex === -1 ? "Nuevo contrato" : "Editar contrato";
     }
   },
   async created() {
-    if (!this.$route.params.options.includes("edit")) {
+    if (!this.$store.getters.options.includes("edit")) {
       this.headers = this.headers.filter(el => {
         return el.text != "Acciones"
       })
