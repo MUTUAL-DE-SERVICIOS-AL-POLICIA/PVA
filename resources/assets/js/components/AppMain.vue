@@ -15,7 +15,7 @@
     >
       <v-list>
         <div v-for="item in menuLeft" :key="item.title">
-          <v-list-tile :to="{name: item.href, params: item.params}" v-if="!item.group" class="mb-0">
+          <v-list-tile :to="{name: item.href, params: item.params}" v-if="!item.group" class="mb-0" @click.native="setOptions(item.params)">
             <v-tooltip right>
               <v-list-tile-action slot="activator">
                 <v-icon>{{ item.icon }}</v-icon>
@@ -137,6 +137,9 @@ export default {
         console.log(e);
         this.$store.commit("setDate", this.$moment().format("YYYY-MM-DD"));
       }
+    },
+    async setOptions(params) {
+      this.$store.commit("setOptions", params);
     }
   },
   created: function() {

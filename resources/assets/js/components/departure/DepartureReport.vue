@@ -158,15 +158,9 @@ export default {
                 {state: 'false', name: 'Rechazado'}
               ],
       types: [],
-      options: []
     };
   },
   created() {
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "contractIndex") {
-        this.options = this.$store.getters.menuLeft[i].options;
-      }
-    }
     if (this.$store.getters.currentUser.roles[0].name == "juridica") {
       this.juridica = 1;
     }

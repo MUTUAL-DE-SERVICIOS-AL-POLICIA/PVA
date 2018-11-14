@@ -159,12 +159,15 @@ class DepartureController extends Controller
     {        
         $pageWidth   = '216';
         $pageHeight  = '279';
-        $pageMargins = [20, 10, 0, 10];
+        $pageMargins = [10, 10, 10, 10];
         $pageName    = 'Solicitud.pdf';
+        
         $data        = [
             'departure' => Departure::findOrFail($departure_id)
         ];
+        // $headerHtml  = view()->make('partials.head_form', $data)->render();
         return \PDF::loadView('departure.print', $data)
+            // ->setOption('header-html', $headerHtml)
             ->setOption('page-width', $pageWidth)
             ->setOption('page-height', $pageHeight)
             ->setOption('margin-top', $pageMargins[0])
