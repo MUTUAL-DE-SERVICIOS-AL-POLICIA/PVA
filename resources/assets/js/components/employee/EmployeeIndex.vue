@@ -1,7 +1,13 @@
 <template>
   <v-container fluid>
     <v-toolbar>
-      <v-toolbar-title>Empleados</v-toolbar-title>
+      <v-toolbar-title>
+        <v-select
+          :items="['Empleados', 'Eventuales', 'Consultores', 'Sin contratos']"
+          v-model="employeeType"
+          class="title font-weight-medium"
+        ></v-select>
+      </v-toolbar-title>
       <v-tooltip color="white" role="button" bottom>
         <v-icon slot="activator" class="ml-4">info</v-icon>
         <div>
@@ -43,7 +49,7 @@
     <v-data-table
       v-else
       :headers="headers"
-      :items="employees"
+      :items="filteredEmployees"
       :search="search"
       :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
       disable-initial-sort
@@ -191,8 +197,28 @@ export default {
       ],
       subHeaders: [
         { align: "center", value: "name", text: "Name", sortable: false }
-      ]
+      ],
+      employeeType: 'Empleados'
     };
+  },
+  computed: {
+    filteredEmployees() {
+      if (this.employeeType == 'Empleados') {
+        return this.employees
+      } else if (this.employeeType == 'Eventuales') {
+        return this.employees.filter(o => {
+          return o.consultant == false
+        })
+      } else if (this.employeeType == 'Consultores') {
+        return this.employees.filter(o => {
+          return o.consultant == true
+        })
+      } else if (this.employeeType == 'Sin contratos') {
+        return this.employees.filter(o => {
+          return o.consultant == null
+        })
+      }
+    }
   },
   mounted() {
     if (!this.$route.params.options.includes("edit")) {
