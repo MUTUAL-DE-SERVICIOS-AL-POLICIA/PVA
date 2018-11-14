@@ -15,7 +15,8 @@ class AddNameAndPositionToUsersTable extends Migration
   {
     Schema::table('users', function (Blueprint $table) {
       $table->dropUnique(['username']);
-      $table->string('name')->nullable();
+      $table->integer('employee_id')->nullable();
+      $table->foreign('employee_id')->references('id')->on('employees');
       $table->string('position')->nullable();
     });
   }
@@ -29,7 +30,7 @@ class AddNameAndPositionToUsersTable extends Migration
   {
     Schema::table('users', function (Blueprint $table) {
       $table->unique('username');
-      $table->dropColumn('name');
+      $table->dropColumn('employee_id');
       $table->dropColumn('position');
     });
   }

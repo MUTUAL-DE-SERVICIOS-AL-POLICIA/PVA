@@ -17,7 +17,7 @@ class DepartureTypeController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return DepartureType::get();
+		return DepartureType::with('departure_reasons')->get();
 	}
 
 	/**

@@ -14,4 +14,8 @@ class DepartureReason extends Model
     {
         return $this->belongsTo(DepartureType::class);
     }
+
+    public function contract_types () {
+		return $this->belongsToMany(ContractType::class);
+	}
 }

@@ -60,7 +60,7 @@
                   :disabled="juridica==true"
                 ></v-select>
                 <v-menu
-                  :close-on-content-click="true"
+                  :close-on-content-click="false"
                   v-model="menuDate"
                   :nudge-right="40"
                   lazy
@@ -82,10 +82,10 @@
                     readonly :disabled="juridica==true"
                     autocomplete='cc-exp-month'
                   ></v-text-field>
-                  <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc" locale="es-bo"></v-date-picker>
+                  <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc" :min="minDate" locale="es-bo"></v-date-picker>
                 </v-menu>
                 <v-menu
-                  :close-on-content-click="true"
+                  :close-on-content-click="false"
                   v-model="menuDate2"
                   :nudge-right="40"
                   lazy
@@ -323,7 +323,8 @@ export default {
         rrhh_cite_date: ""
       },
       selectedSchedule: {},
-      juridica: 0
+      juridica: 0,
+      minDate: this.$moment().format('YYYY')+'-01-01'
     };
   },
   created() {
@@ -488,12 +489,14 @@ export default {
       }
     },
     monthSalaryCalc() {
-      let cont = 0;
+      
       let data = {};
       let month = "";
       let total = 0;
+
       var d1 = this.$moment(this.date);
       var d2 = this.$moment(this.date2);
+      var endDay2 = this.$moment(this.date2).endOf('month').format('DD');
       var diff = d2.diff(d1, "month");
       if (d2.date() < d1.date()) {
         diff++;
@@ -515,7 +518,7 @@ export default {
             .month(d1.month() + i)
             .month() == d2.month()
         ) {
-          if (d2.date() >= 30) {
+          if (d2.date() == 30 || d2.date() == endDay2 ) {
             day = 30;
           } else {
             day = d2.date();
@@ -555,7 +558,7 @@ export default {
     },
     dateCiteNull() {
       this.selectedItem.rrhh_cite_date = null;
-    }
+    }    
   },
   mounted() {
     this.bus.$on("openDialog", item => {
@@ -568,6 +571,11 @@ export default {
       this.selectedIndex = item;
       if (item.mode == "recontract") {
         this.recontract = true;
+        var end_date = this.$moment(item.end_date).add(1, 'days').calendar();
+        this.minDate = this.$moment(end_date).format('YYYY-MM-DD');
+        this.date = this.minDate;
+        this.date2 = '';
+        // this.formatDateStart();
       }
       if (item.job_schedules[0]) {
         this.selectedSchedule = item.job_schedules[0];

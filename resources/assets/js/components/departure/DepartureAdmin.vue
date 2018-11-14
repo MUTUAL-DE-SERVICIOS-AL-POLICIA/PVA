@@ -1,15 +1,9 @@
 <template>
   <v-container >
     <v-toolbar>
-        <v-toolbar-title>Salidas, Comisiones y Licencias</v-toolbar-title>
-        <v-spacer></v-spacer>        
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <v-chip color="secondary white--text"> Hrs/mes: {{ hrsxMes }} </v-chip>
-        <v-chip color="secondary white--text"> dias/año: {{ dayxYear }} </v-chip>
+        <v-toolbar-title>Administrador de Salidas, Comisiones y Licencias</v-toolbar-title>
+        <v-spacer></v-spacer>  
+         <DepartureReport :bus="bus"/>
         <v-divider
           class="mx-2"
           inset
@@ -26,12 +20,6 @@
               width="20px"
             ></v-text-field>
         </v-toolbar-title>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <DepartureForm :contract="{}" :bus="bus"/>
         <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
@@ -43,29 +31,26 @@
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr :class="checkEnd(props.item)">
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.contract.employee.identity_card }} {{ props.item.contract.employee.city_identity_card.shortened }}</td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ fullName(props.item.contract.employee) }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.contract.position.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.departure_type.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ $moment(props.item.created_at).format('DD/MM/YYYY') }} </td>
-            <td class="text-xs-center"> {{ (props.item.approved == true)? 'APROBADO' : (props.item.approved == false)? 'RECHAZADO' : 'PENDIENTE' }} </td>
+            <td class="text-md-center">
+              <v-switch
+                v-model="props.item.approved"
+                @click.native="switchActive(props.item)"
+                v-if="$route.params.options.includes('active')"
+              ></v-switch>
+            </td>
             <td class="justify-center layout" v-if="$route.params.options.length > 0">
               <v-tooltip top v-if="$route.params.options.includes('print')">
                 <v-btn slot="activator" flat icon color="accent" @click="print(props.item)">
                   <v-icon>print</v-icon>
                 </v-btn>
                 <span>Imprimir</span>
-              </v-tooltip>
-              <v-tooltip top v-if="$route.params.options.includes('edit') && props.item.approved == null">
-                <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
-                  <v-icon>edit</v-icon>
-                </v-btn>
-                <span>Editar</span>
-              </v-tooltip>
-              <v-tooltip top v-if="$route.params.options.includes('delete') && props.item.approved == null">
-                <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
-                  <v-icon>delete</v-icon>
-                </v-btn>
-                <span>Eliminar</span>
-              </v-tooltip>
+              </v-tooltip>              
             </td>
           </tr>
         </template>
@@ -91,13 +76,13 @@
 </template>
 <script type="text/javascript">
 import Vue from "vue";
-import DepartureForm from "./DepartureForm";
+import DepartureReport from "./DepartureReport";
 import RemoveItem from "../RemoveItem";
 import { admin, rrhh, juridica } from "../../menu.js";
 export default {
-  name: "ContractIndex",
+  name: "DepartureIndex",
   components: {
-    DepartureForm,
+    DepartureReport,
     RemoveItem
   },
   data: () => ({
@@ -105,18 +90,33 @@ export default {
     bus: new Vue(),
     headers: [
       {
+        text: "C.I.",
+        value: "contractemployee.identity_card",
+        align: "center"
+      },
+      {
+        text: "Nombres",
+        value: "contract.employee.last_name",
+        align: "center"
+      },
+      {
+        text: "Puesto",
+        value: "contract.position.name",
+        align: "center"
+      },
+      {
         text: "Tipo",
         value: "departure_reason.departure_type.name",
         align: "center"
       },
       {
         text: "Razón",
-        value: "departure_reason.name",
+        value: "contract.position.name",
         align: "center"
       },      
       {
         text: "Fecha de Solicitud",
-        value: "created_at",
+        value: "description",
         align: "center"
       },
       {
@@ -132,13 +132,10 @@ export default {
       }
     ],
     departures: [],
-    contractsActive: [],
-    contractsInactive: [],
     search: "",
     switch1: true,
     contracState: "vigentes",
-    hrsxMes: null,
-    dayxYear: null
+    options: []
   }),
   computed: {    
     
@@ -148,7 +145,7 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getDepartures();
     });
-    if (!this.$route.params.options.includes("edit")) {
+    if (!this.$route.params.options.includes('edit')) {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Acciones";
@@ -158,15 +155,8 @@ export default {
   methods: {
     async getDepartures() {
       try {
-        console.log(this.$store.getters.currentUser);
-        let contract = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);        
-        let res = await axios.get(`/departure/get_departures/${contract.data.id}`);        
+        let res = await axios.get(`/departure`);
         this.departures = res.data;
-
-        let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
-        // var hora = departure_used.data.total_hours_month_res / 60 ;
-        this.hrsxMes = Math.trunc((departure_used.data.total_minutes_month_rest / 60)) + " hr. y " + (departure_used.data.total_minutes_month_rest % 60) + " min.";
-        this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest % 480) + " hr.";
       } catch (e) {
         console.log(e);
       }
@@ -175,6 +165,7 @@ export default {
       this.bus.$emit("openDialog", $.extend({}, item, { mode: mode }));
     },
     async removeItem(item) {
+      console.log(item);
       let departure = await axios.get("/departure/" + item.id
       );
       if (departure.data.approved == true) {
@@ -199,9 +190,19 @@ export default {
       if (departure.approved == true) {
         return "";
       } else if (departure.approved == false){
-        return "danger";
+        return "";
       } else {
         return "warning";
+      }
+    },
+    async switchActive(departure) {
+      try {
+        let res = await axios.patch(`/departure/${departure.id}`, {
+          approved: departure.approved
+        });
+        this.getDepartures();
+      } catch (e) {
+        console.log(e);
       }
     },
     async print(item) {

@@ -39,7 +39,7 @@
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.shortened }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.tax_number }}</td>
             <td class="justify-center layout">              
-              <v-tooltip top v-if="options.includes('edit')">
+              <v-tooltip top v-if="$route.params.options.includes('edit')">
                 <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, props.item.document)">
                   <v-icon>edit</v-icon>
                 </v-btn>
@@ -119,11 +119,6 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.initialize();
     });
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "companyIndex") {
-        this.options = this.$store.getters.menuLeft[i].options;
-      }
-    }
   },
   methods: {
     async initialize() {

@@ -28,6 +28,8 @@ Route::group([
 				Route::get('', 'Api\V1\EmployeeContractController@get_contract')->name('employee_contracts_details');
 			});
 		});
+		// Certificate
+		Route::resource('certificate', 'Api\V1\CertificateController')->only(['index', 'show', 'store', 'update']);
 		// City
 		Route::resource('city', 'Api\V1\CityController')->only(['index', 'show']);
 		// Management Entity
@@ -192,13 +194,19 @@ Route::group([
 		Route::get('document_type', 'Api\V1\DocumentTypeController@index')->name('document_type_list');
 		Route::get('document_type/{id}', 'Api\V1\DocumentTypeController@show')->name('document_type_details');
 		// Departure
-		Route::get('departure_type', 'Api\V1\DepartureTypeController@index')->name('departure_type_list');
-		Route::get('departure_reason', 'Api\V1\DepartureReasonController@index')->name('departure_reason_list');
+		Route::resource('departure_type', 'Api\V1\DepartureTypeController')->only(['index', 'show']);
 		Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
-		Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update']);
+		Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
+		Route::get('departure/get_departures/{id}', 'Api\V1\DepartureController@get_departures')->name('get_departures');
+		Route::get('departure/get_departures_used/{id}', 'Api\V1\DepartureController@get_departures_used')->name('get_departures_used');
+		Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
+		Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
+		Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
+		Route::resource('departure_schedule', 'Api\V1\DepartureScheduleController')->only(['index', 'show', 'store', 'update']);
+
 		// ADMIN routes
 		Route::group([
-			'middleware' => 'role:admin',
+			'middleware' => 'role:admin|empleado',
 		], function () {
 			// User
 			Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update']);
@@ -251,7 +259,7 @@ Route::group([
 
 		// RRHH routes
 		Route::group([
-			'middleware' => 'role:admin|rrhh',
+			'middleware' => 'role:admin|rrhh|empleado',
 		], function () {
 			// Ticket
 			Route::get('ticket/print/{id}', 'Api\V1\TicketController@print')->name('ticket_print');
@@ -296,6 +304,7 @@ Route::group([
 			Route::delete('contract/{id}', 'Api\V1\ContractController@destroy')->name('contract_delete');
 			Route::get('contract/valid/{procedure_id}', 'Api\V1\ContractController@valid_date')->name('contract_valid');
 			Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
+			Route::get('contract/contract_position_group/{contract_id}', 'Api\V1\ContractController@contract_position_group')->name('contract_position_group');
 			// Consultant Contract
 			Route::post('consultant_contract', 'Api\V1\ConsultantContractController@store')->name('consultant_contract_store');
 			Route::delete('consultant_contract/{id}', 'Api\V1\ConsultantContractController@destroy')->name('consultant_contract_delete');
@@ -382,7 +391,7 @@ Route::group([
 
 		// JURIDICA-RRHH routes
 		Route::group([
-			'middleware' => 'role:admin|rrhh|juridica',
+			'middleware' => 'role:admin|rrhh|juridica|empleado',
 		], function () {
 			Route::patch('contract/{id}', 'Api\V1\ContractController@update')->name('contract_update');
 			Route::patch('consultant_contract/{id}', 'Api\V1\ConsultantContractController@update')->name('consultant_contract_update');
