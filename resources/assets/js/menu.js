@@ -9,63 +9,57 @@ export default {
       }
     }, {
       href: 'employeeIndex',
-      title: 'Empleados',
-      icon: 'assignment_ind',
+      title: 'Personas',
+      icon: 'group',
       params: {
         options: ['new', 'edit', 'delete', 'print']
       }
     }, {
       title: 'Eventuales',
-      icon: 'settings_backup_restore',
-      color: 'blue',
+      icon: 'person',
       group: [
         {
           href: 'contractIndex',
           title: 'Contratos Eventuales',
-          icon: 'work',
+          icon: 'gavel',
           params: {
-            options: ['new', 'edit', 'delete', 'renew', 'printInsurance', 'printContract'],
-            color: 'blue lighten-4'
+            options: ['new', 'edit', 'delete', 'renew', 'printInsurance', 'printContract']
           }
         }, {
           href: 'procedureIndex',
           title: 'Planillas Eventuales',
-          icon: 'attach_file',
+          icon: 'storage',
           params: {
             active: true,
-            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll'],
-            color: 'blue lighten-4'
+            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll']
           }
         }
       ]
     }, {
       title: 'Consultores',
-      icon: 'swap_horiz',
-      color: 'yellow',
+      icon: 'work',
       group: [
         {
           href: 'consultantIndex',
           title: 'Contratos Consultores',
-          icon: 'work',
+          icon: 'gavel',
           params: {
-            options: ['new', 'edit', 'delete', 'renew'],
-            color: 'yellow lighten-5'
+            options: ['new', 'edit', 'delete', 'renew']
           }
         }, {
           href: 'consultantProcedureIndex',
           title: 'Planillas Consultores',
-          icon: 'attach_file',
+          icon: 'storage',
           params: {
             active: true,
-            options: ['new', 'edit', 'ticket', 'bank', 'payroll'],
-            color: 'yellow lighten-5'
+            options: ['new', 'edit', 'ticket', 'bank', 'payroll']
           }
         }
       ]
     }, {
       href: 'userIndex',
       title: 'Usuarios',
-      icon: 'person',
+      icon: 'security',
       params: {
         options: ['edit']
       }
@@ -78,7 +72,7 @@ export default {
       }
     }, {
       href: 'departureAdmin',
-      title: 'Administrador de Salidas y Licencias',
+      title: 'Salidas y Licencias',
       icon: 'directions_walk',
       params: {
         options: ['edit', 'active', 'print']
@@ -103,15 +97,13 @@ export default {
     }, {
       title: 'Eventuales',
       icon: 'settings_backup_restore',
-      color: 'blue',
       group: [
         {
           href: 'contractIndex',
           title: 'Contratos Eventuales',
           icon: 'work',
           params: {
-            options: ['new', 'edit', 'delete', 'renew', 'printInsurance'],
-            color: 'blue lighten-4'
+            options: ['new', 'edit', 'delete', 'renew', 'printInsurance']
           }
         }, {
           href: 'procedureIndex',
@@ -119,15 +111,13 @@ export default {
           icon: 'attach_file',
           params: {
             active: true,
-            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll'],
-            color: 'blue lighten-4'
+            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
           }
         }
       ]
     }, {
       title: 'Consultores',
       icon: 'swap_horiz',
-      color: 'yellow',
       group: [
         {
           href: 'consultantIndex',
@@ -135,7 +125,6 @@ export default {
           icon: 'work',
           params: {
             options: ['new', 'edit', 'delete', 'renew'],
-            color: 'yellow lighten-5'
           }
         }, {
           href: 'consultantProcedureIndex',
@@ -144,7 +133,6 @@ export default {
           params: {
             active: true,
             options: ['new', 'edit', 'ticket', 'bank', 'payroll'],
-            color: 'yellow lighten-5'
           }
         }
       ]
@@ -183,30 +171,26 @@ export default {
     }, {
       title: 'Eventuales',
       icon: 'settings_backup_restore',
-      color: 'blue',
       group: [
         {
           href: 'contractIndex',
           title: 'Contratos Eventuales',
           icon: 'work',
           params: {
-            options: ['printContract', 'edit'],
-            color: 'blue lighten-4'
+            options: ['printContract', 'edit']
           }
         }
       ]
     }, {
       title: 'Consultores',
       icon: 'swap_horiz',
-      color: 'yellow',
       group: [
         {
           href: 'consultantIndex',
           title: 'Contratos Consultores',
           icon: 'work',
           params: {
-            options: ['printContract', 'edit'],
-            color: 'yellow lighten-5'
+            options: ['printContract', 'edit']
           }
         }
       ]
@@ -237,15 +221,13 @@ export default {
     }, {
       title: 'Eventuales',
       icon: 'settings_backup_restore',
-      color: 'blue',
       group: [
         {
           href: 'contractIndex',
           title: 'Contratos Eventuales',
           icon: 'work',
           params: {
-            options: [],
-            color: 'blue lighten-4'
+            options: []
           }
         }, {
           href: 'procedureIndex',
@@ -253,23 +235,20 @@ export default {
           icon: 'attach_file',
           params: {
             active: true,
-            options: ['afp', 'payroll'],
-            color: 'blue lighten-4'
+            options: ['afp', 'payroll']
           }
         }
       ]
     }, {
       title: 'Consultores',
       icon: 'swap_horiz',
-      color: 'yellow',
       group: [
         {
           href: 'consultantIndex',
           title: 'Contratos Consultores',
           icon: 'work',
           params: {
-            options: [],
-            color: 'yellow lighten-5'
+            options: []
           }
         }, {
           href: 'consultantProcedureIndex',
@@ -277,8 +256,7 @@ export default {
           icon: 'attach_file',
           params: {
             active: true,
-            options: ['afp', 'payroll'],
-            color: 'yellow lighten-5'
+            options: ['afp', 'payroll']
           }
         }
       ]

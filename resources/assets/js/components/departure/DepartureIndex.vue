@@ -1,5 +1,5 @@
 <template>
-  <v-container >
+  <v-container fluid>
     <v-toolbar>
         <v-toolbar-title>Salidas, Comisiones y Licencias</v-toolbar-title>
         <v-spacer></v-spacer>        

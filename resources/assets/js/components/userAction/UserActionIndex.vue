@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>Historial de Actividad</v-toolbar-title>
       <v-spacer></v-spacer>

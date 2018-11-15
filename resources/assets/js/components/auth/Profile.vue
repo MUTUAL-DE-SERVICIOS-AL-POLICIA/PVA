@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>Perfil</v-toolbar-title>
     </v-toolbar>

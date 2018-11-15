@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-toolbar :color="$route.params.color">
+  <v-container fluid>
+    <v-toolbar>
       <v-toolbar-title>Planillas Consultores</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-flex xs2>

@@ -3,7 +3,7 @@
     <v-toolbar>
       <v-toolbar-title>
         <v-select
-          :items="['Empleados', 'Eventuales', 'Consultores', 'Sin contratos']"
+          :items="['Todos los Empleados', 'Eventuales', 'Consultores', 'Sin contratos']"
           v-model="employeeType"
           class="title font-weight-medium"
         ></v-select>
@@ -198,12 +198,12 @@ export default {
       subHeaders: [
         { align: "center", value: "name", text: "Name", sortable: false }
       ],
-      employeeType: 'Empleados'
+      employeeType: 'Todos los Empleados'
     };
   },
   computed: {
     filteredEmployees() {
-      if (this.employeeType == 'Empleados') {
+      if (this.employeeType == 'Todos los Empleados') {
         return this.employees
       } else if (this.employeeType == 'Eventuales') {
         return this.employees.filter(o => {

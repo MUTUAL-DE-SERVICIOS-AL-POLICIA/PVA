@@ -1,66 +1,55 @@
 <template>
   <v-app>
     <v-navigation-drawer
-      stateless
-      value="true"
-      persistent
       :mini-variant="miniVariant"
       :clipped="true"
       v-model="drawer"
-      enable-resize-watcher
-      fixed
       app
       v-if="this.$store.getters.currentUser"
-      class="normal"
     >
       <v-list>
-        <div v-for="item in menuLeft" :key="item.title">
-          <v-list-tile :to="{name: item.href, params: item.params}" v-if="!item.group" class="mb-0">
-            <v-tooltip right>
-              <v-list-tile-action slot="activator">
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-tile-action>
-              <span>{{ item.title }} {{ item.params }}</span>
-            </v-tooltip>
-            <v-list-tile-content>
-              <v-list-tile-title>
-                {{ item.title }}
-              </v-list-tile-title>
-            </v-list-tile-content>
+        <div v-for="item in menuLeft" :key="item.title" class="mb-0 mt-0">
+          <v-list-tile
+            :to="{name: item.href, params: item.params}"
+            v-if="!item.group"
+            active-class="tertiary"
+            @click.stop="miniVariant = true"
+            @mouseover="miniVariant = false"
+            @mouseout="miniVariant = true"
+          >
+            <v-list-tile-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
           </v-list-tile>
 
           <v-list-group
             v-else
             :value="false"
-            :class="`${item.color} lighten-3`"
+            @mouseover="miniVariant = false"
+            @mouseout="miniVariant = true"
           >
             <v-list-tile slot="activator">
-              <v-tooltip right>
-                <v-list-tile-action slot="activator">
-                  <v-icon>{{ item.icon }}</v-icon>
-                </v-list-tile-action>
-                <span>{{ item.title }}</span>
-              </v-tooltip>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ item.title }}
-                </v-list-tile-title>
-              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-title :class="miniVariant ? 'pl-3' : ''">{{ item.title }}</v-list-tile-title>
             </v-list-tile>
 
-            <v-list :class="`${item.color} lighten-5`">
-              <v-list-tile v-for="group in item.group" :key="group.href" :to="{name: group.href, params: group.params}">
-                <v-tooltip right>
-                  <v-list-tile-action slot="activator">
-                    <v-icon>{{ group.icon }}</v-icon>
-                  </v-list-tile-action>
-                  <span>{{ group.title }}</span>
-                </v-tooltip>
-                <v-list-tile-content>
-                  <v-list-tile-title>
-                    {{ group.title }}
-                  </v-list-tile-title>
-                </v-list-tile-content>
+            <v-list class="pt-0 pb-0" :class="!miniVariant ? 'pl-4' : 'pl-2'">
+              <v-list-tile
+                v-for="group in item.group"
+                :key="group.href"
+                :to="{name: group.href, params: group.params}"
+                active-class="tertiary"
+                @click.stop="miniVariant = true"
+                @mouseover="miniVariant = false"
+                @mouseout="miniVariant = true"
+              >
+                <v-list-tile-action>
+                  <v-icon>{{ group.icon }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-title>{{ group.title }}</v-list-tile-title>
               </v-list-tile>
             </v-list>
           </v-list-group>
@@ -120,7 +109,7 @@ export default {
     return {
       drawer: true,
       menuLeft: null,
-      miniVariant: true
+      miniVariant: false
     };
   },
   name: "app-header",

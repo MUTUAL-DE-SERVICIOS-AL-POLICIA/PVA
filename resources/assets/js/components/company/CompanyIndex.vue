@@ -1,5 +1,5 @@
 <template>
-  <v-container >
+  <v-container fluid>
     <v-toolbar>
         <v-toolbar-title>Compañia</v-toolbar-title>
         <v-spacer></v-spacer>        
