@@ -55,13 +55,13 @@
               <div v-else>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="(procedure.active && $route.params.options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="(procedure.active && $store.getters.options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                       <span>Editar</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon v-if="$route.params.options.includes('ticket')">
+                  <v-btn icon v-if="$store.getters.options.includes('ticket')">
                     <v-tooltip top>
                       <v-btn slot="activator" icon flat @click.prevent="print(`/ticket/print/${procedure.id}`)">
                         <v-icon :color="procedure.active ? 'info' : 'primary'">print</v-icon>
@@ -69,20 +69,20 @@
                       <span>Imprimir boletas</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$route.params.options.includes('bank')">
+                  <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$store.getters.options.includes('bank')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                       <span>TXT Banco</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="$route.params.options.includes('ovt')">
+                  <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="$store.getters.options.includes('ovt')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">work</v-icon>
                       <span>CSV OVT</span>
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y class="mr-2" v-if="$route.params.options.includes('afp')">
+                  <v-menu offset-y class="mr-2" v-if="$store.getters.options.includes('afp')">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>AFP</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -104,7 +104,7 @@
                       </v-list>
                     </v-card>
                   </v-menu>
-                  <v-menu offset-y v-if="$route.params.options.includes('payroll')">
+                  <v-menu offset-y v-if="$store.getters.options.includes('payroll')">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>Planillas</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -205,7 +205,7 @@
                   <v-btn
                     color="info"
                     @click="storeProcedure"
-                    v-if="$route.params.options.includes('new')"
+                    v-if="$store.getters.options.includes('new')"
                   >
                     Registrar
                   </v-btn>

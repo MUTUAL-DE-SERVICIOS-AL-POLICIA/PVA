@@ -64,14 +64,14 @@
           <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
           <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-          <td class="text-md-center" v-if="$route.params.options.length > 0">
+          <td class="text-md-center" v-if="$store.getters.options.length > 0">
             <v-switch
               v-model="props.item.active"
               @click.native="switchActive(props.item)"
-              v-if="$route.params.options.includes('edit')"
+              v-if="$store.getters.options.includes('edit')"
             ></v-switch>
           </td>
-          <td class="justify-center layout" v-if="$route.params.options.includes('edit')">
+          <td class="justify-center layout" v-if="$store.getters.options.includes('edit')">
             <v-tooltip top>
               <v-btn medium slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
                 <v-icon>edit</v-icon>
@@ -221,7 +221,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.$route.params.options.includes("edit")) {
+    if (!this.$store.getters.options.includes("edit")) {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Activo";

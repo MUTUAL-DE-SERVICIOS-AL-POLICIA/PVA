@@ -55,20 +55,20 @@
               <div v-else>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="(procedure.active && $route.params.options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'consultantProcedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="(procedure.active && $store.getters.options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'consultantProcedureEdit', params: { id: procedure.id }}" >
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                       <span>Editar</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/consultant_payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$route.params.options.includes('bank')">
+                  <v-btn icon @click="download(`/consultant_payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$store.getters.options.includes('bank')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                       <span>TXT Banco</span>
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y v-if="$route.params.options.includes('payroll')">
+                  <v-menu offset-y v-if="$store.getters.options.includes('payroll')">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>Planillas</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -95,7 +95,7 @@
                   <v-btn
                     color="info"
                     @click="storeProcedure"
-                    v-if="$route.params.options.includes('new')"
+                    v-if="$store.getters.options.includes('new')"
                   >
                     Registrar
                   </v-btn>

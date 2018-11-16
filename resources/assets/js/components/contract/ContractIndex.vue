@@ -63,30 +63,30 @@
                 </span>
               </v-tooltip>
             </td>
-            <td class="justify-center layout" v-if="$route.params.options.length > 0">
+            <td class="justify-center layout" v-if="$store.getters.options.length > 0">
               <v-menu offset-y>
                 <v-btn slot="activator" flat icon color="info">
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
                 </v-btn>
                 <v-list>
-                  <v-list-tile @click="print(props.item, 'printEventual')" v-if="$route.params.options.includes('printContract')"> Contrato</v-list-tile>
-                  <v-list-tile @click="print(props.item, 'printUp')" v-if="$route.params.options.includes('printInsurance')"> Alta del seguro</v-list-tile>
-                  <v-list-tile @click="print(props.item, 'printLow')" v-if="$route.params.options.includes('printInsurance')"> Baja del seguro</v-list-tile>
+                  <v-list-tile @click="print(props.item, 'printEventual')" v-if="$store.getters.options.includes('printContract')"> Contrato</v-list-tile>
+                  <v-list-tile @click="print(props.item, 'printUp')" v-if="$store.getters.options.includes('printInsurance')"> Alta del seguro</v-list-tile>
+                  <v-list-tile @click="print(props.item, 'printLow')" v-if="$store.getters.options.includes('printInsurance')"> Baja del seguro</v-list-tile>
                 </v-list>
               </v-menu>
-              <v-tooltip top v-if="$route.params.options.includes('renew') && checkEnd(props.item) != ''">
+              <v-tooltip top v-if="$store.getters.options.includes('renew') && checkEnd(props.item) != ''">
                 <v-btn slot="activator" flat icon color="info" @click="editItem(props.item, 'recontract')">
                   <v-icon>autorenew</v-icon>
                 </v-btn>
                 <span>Recontratar</span>
               </v-tooltip>
-              <v-tooltip top v-if="$route.params.options.includes('edit')">
+              <v-tooltip top v-if="$store.getters.options.includes('edit')">
                 <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
                   <v-icon>edit</v-icon>
                 </v-btn>
                 <span>Editar</span>
               </v-tooltip>
-              <v-tooltip top v-if="$route.params.options.includes('delete')">
+              <v-tooltip top v-if="$store.getters.options.includes('delete')">
                 <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                   <v-icon>delete</v-icon>
                 </v-btn>
@@ -193,7 +193,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.$route.params.options.includes("edit")) {
+    if (!this.$store.getters.options.includes("edit")) {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Acciones";

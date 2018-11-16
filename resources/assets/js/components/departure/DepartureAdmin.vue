@@ -41,11 +41,11 @@
               <v-switch
                 v-model="props.item.approved"
                 @click.native="switchActive(props.item)"
-                v-if="$route.params.options.includes('active')"
+                v-if="$store.getters.options.includes('active')"
               ></v-switch>
             </td>
-            <td class="justify-center layout" v-if="$route.params.options.length > 0">
-              <v-tooltip top v-if="$route.params.options.includes('print')">
+            <td class="justify-center layout" v-if="$store.getters.options.length > 0">
+              <v-tooltip top v-if="$store.getters.options.includes('print')">
                 <v-btn slot="activator" flat icon color="accent" @click="print(props.item)">
                   <v-icon>print</v-icon>
                 </v-btn>
@@ -134,8 +134,7 @@ export default {
     departures: [],
     search: "",
     switch1: true,
-    contracState: "vigentes",
-    options: []
+    contracState: "vigentes"
   }),
   computed: {    
     
@@ -145,7 +144,7 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getDepartures();
     });
-    if (!this.$route.params.options.includes('edit')) {
+    if (!this.$store.getters.options.includes('edit')) {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Acciones";

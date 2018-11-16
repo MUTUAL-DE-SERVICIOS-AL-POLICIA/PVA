@@ -1,15 +1,20 @@
 <template>
   <v-app>
     <v-navigation-drawer
+      persistent
       :mini-variant="miniVariant"
-      :clipped="true"
+      :clipped="clipped"
       v-model="drawer"
+      enable-resize-watcher
+      fixed
       app
       v-if="this.$store.getters.currentUser"
+      class="normal"
     >
       <v-list>
         <div v-for="item in menuLeft" :key="item.title" class="mb-0 mt-0">
           <v-list-tile
+            @click.native="setOptions(item.params)"
             :to="{name: item.href, params: item.params}"
             v-if="!item.group"
             active-class="tertiary"
@@ -42,6 +47,7 @@
                 :key="group.href"
                 :to="{name: group.href, params: group.params}"
                 active-class="tertiary"
+                @click.native="setOptions(group.params)"
                 @click.stop="miniVariant = true"
                 @mouseover="miniVariant = false"
                 @mouseout="miniVariant = true"
@@ -60,10 +66,10 @@
     <v-toolbar
       class="primary white--text"
       app
-      :clipped-left="true"
+      :clipped-left="clipped"
       v-if="this.$store.getters.currentUser"
     >
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
+      <v-btn icon @click.stop="drawer = !drawer; miniVariant = false">
         <v-icon v-html="miniVariant ? 'more_vert' : 'menu'" class="white--text"></v-icon>
       </v-btn>
       <v-toolbar-title v-text="`SISTEMA DE RECURSOS HUMANOS`"></v-toolbar-title>
@@ -107,9 +113,10 @@
 export default {
   data() {
     return {
+      clipped: true,
       drawer: true,
       menuLeft: null,
-      miniVariant: false
+      miniVariant: true
     };
   },
   name: "app-header",
@@ -126,6 +133,9 @@ export default {
         console.log(e);
         this.$store.commit("setDate", this.$moment().format("YYYY-MM-DD"));
       }
+    },
+    setOptions(params) {
+      this.$store.commit("setOptions", params);
     }
   },
   created: function() {
