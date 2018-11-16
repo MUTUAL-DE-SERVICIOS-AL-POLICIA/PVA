@@ -159,15 +159,13 @@ class DepartureController extends Controller
     {        
         $pageWidth   = '216';
         $pageHeight  = '279';
-        $pageMargins = [10, 10, 10, 10];
+        $pageMargins = [5, 5, 5, 10];
         $pageName    = 'Solicitud.pdf';
         
         $data        = [
             'departure' => Departure::findOrFail($departure_id)
         ];
-        // $headerHtml  = view()->make('partials.head_form', $data)->render();
         return \PDF::loadView('departure.print', $data)
-            // ->setOption('header-html', $headerHtml)
             ->setOption('page-width', $pageWidth)
             ->setOption('page-height', $pageHeight)
             ->setOption('margin-top', $pageMargins[0])
@@ -203,18 +201,15 @@ class DepartureController extends Controller
             $query->where('departure_reasons.departure_type_id', $request->type);   
         }
         $res = $query->get();
-
-        $headerHtml  = view()->make('partials.head')->render();
         $pageWidth   = '216';
         $pageHeight  = '279';
-        $pageMargins = [30, 20, 20, 25];
+        $pageMargins = [10, 10, 10, 15];
         $pageName    = 'Reporte de salidas/licencias.pdf';
         $data        = [
             'departures' => $res,
             'search' => (object)$search
         ];
         return \PDF::loadView('departure.report', $data)
-            ->setOption('header-html', $headerHtml)
             ->setOption('page-width', $pageWidth)
             ->setOption('page-height', $pageHeight)
             ->setOption('margin-top', $pageMargins[0])

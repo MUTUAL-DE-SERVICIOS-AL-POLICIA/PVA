@@ -31,7 +31,7 @@
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr :class="checkEnd(props.item)">
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.contract.employee.identity_card }} {{ props.item.contract.employee.city_identity_card.shortened }}</td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.contract.employee.identity_card }} {{ props.item.contract.employee.city_identity_card.shortened }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ fullName(props.item.contract.employee) }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.contract.position.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.departure_type.name }} </td>
@@ -40,13 +40,14 @@
             <td class="text-md-center">
               <v-switch
                 v-model="props.item.approved"
+                color="info"
                 @click.native="switchActive(props.item)"
                 v-if="$store.getters.options.includes('active')"
               ></v-switch>
             </td>
             <td class="justify-center layout" v-if="$store.getters.options.length > 0">
               <v-tooltip top v-if="$store.getters.options.includes('print')">
-                <v-btn slot="activator" flat icon color="accent" @click="print(props.item)">
+                <v-btn slot="activator" flat icon color="info" @click="print(props.item)">
                   <v-icon>print</v-icon>
                 </v-btn>
                 <span>Imprimir</span>
