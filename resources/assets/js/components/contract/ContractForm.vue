@@ -1,5 +1,5 @@
 <template>
-  <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
+  <v-dialog persistent v-model="dialog" max-width="1000px" @keydown.esc="close">
     <v-tooltip slot="activator" top v-if="$store.getters.options.includes('new')">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Contrato</span>
@@ -13,194 +13,194 @@
           <v-layout wrap>
             <v-flex xs12 sm6 md6>
               <v-form ref="form">
-                <v-autocomplete
-                  v-model="selectedItem.employee_id"
-                  :items="employees"
-                  item-text="identity_card"
-                  item-value="id"
-                  label="Empleado"
-                  v-on:change="onSelectEmployee"
-                  v-validate="'required'"
-                  name="Empleado"
-                  :error-messages="errors.collect('Empleado')"
-                  :disabled="recontract==true || juridica==true">
-                </v-autocomplete>
-                <v-autocomplete
-                  v-model="selectedItem.position_id"
-                  :items="positions"
-                  item-text="name" 
-                  item-value="id"
-                  label="Puesto"
-                  v-on:change="onSelectPosition"
-                  v-validate="'required'"
-                  name="Puesto"
-                  :error-messages="errors.collect('Puesto')"
-                  :disabled="recontract==true || juridica==true">
-                </v-autocomplete>
-                <v-select
-                  v-model="selectedItem.contract_type_id"
-                  :items="contractTypes"
-                  item-text="name" 
-                  item-value="id"                    
-                  label="Tipo de contratación"
-                  v-validate="'required'"
-                  name="Tipo de contratacion"
-                  :error-messages="errors.collect('Tipo de contratacion')"
-                  :disabled="juridica==true"
-                ></v-select>
-                <v-select
-                  v-model="selectedItem.contract_mode_id"
-                  :items="contractModes"
-                  item-text="name" 
-                  item-value="id"                    
-                  label="Modalidad de contratación"
-                  v-validate="'required'"
-                  name="Modalidad de contratacion"
-                  :error-messages="errors.collect('Modalidad de contratacion')"
-                  :disabled="juridica==true"
-                ></v-select>
-                <v-menu
-                  :close-on-content-click="false"
-                  v-model="menuDate"
-                  :nudge-right="40"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  max-width="290px"
-                  min-width="290px"
-                  :disabled="juridica==true"
-                >
-                  <v-text-field
-                    slot="activator"
-                    v-model="formatDateStart"
-                    label="Fecha de inicio"
-                    prepend-icon="event"
+                  <v-autocomplete
+                    v-model="selectedItem.employee_id"
+                    :items="employees"
+                    item-text="identity_card"
+                    item-value="id"
+                    label="Empleado"
+                    v-on:change="onSelectEmployee"
                     v-validate="'required'"
-                    name="Fecha de inicio"
-                    :error-messages="errors.collect('Fecha de inicio')"
-                    readonly :disabled="juridica==true"
-                    autocomplete='cc-exp-month'
-                  ></v-text-field>
-                  <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc" :min="minDate" locale="es-bo"></v-date-picker>
-                </v-menu>
-                <v-menu
-                  :close-on-content-click="false"
-                  v-model="menuDate2"
-                  :nudge-right="40"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  max-width="290px"
-                  min-width="290px"
-                  :disabled="juridica==true"
-                >
-                  <v-text-field
-                    slot="activator"
-                    v-model="formatDateEnd"
-                    label="Fecha de conclusión"
-                    prepend-icon="event" :disabled="juridica==true"
-                    autocomplete='cc-exp-year'
-                    readonly
-                    clearable
-                    @input="dateEndNull"
-                  ></v-text-field>
-                  <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc" locale="es-bo"></v-date-picker>
-                </v-menu>
-                <v-menu v-if="selectedIndex!=-1"
-                  :close-on-content-click="true"
-                  v-model="menuDate3"
-                  :nudge-right="40"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  max-width="290px"
-                  min-width="290px"
-                  :disabled="juridica==true"                  
-                >
-                  <v-text-field
-                    slot="activator"
-                    v-model="formatDateRetirement"
-                    prepend-icon="event"
-                    label="Fecha de retiro" :disabled="juridica==true"
-                    readonly
-                    clearable
-                    @input="dateRetirementNull"
-                  ></v-text-field>
-                  <v-date-picker v-model="date3" no-title @input="menuDate3 = false" locale="es-bo"></v-date-picker>
-                </v-menu>
-                <v-select v-if="selectedIndex!=-1"
-                  v-model="selectedItem.retirement_reason_id"
-                  :items="retirementReasons"
-                  item-text="name"
-                  item-value="id"
-                  label="Razón del retiro"
-                  :disabled="juridica==true"
-                ></v-select>
+                    name="Empleado"
+                    :error-messages="errors.collect('Empleado')"
+                    :disabled="recontract==true || juridica==true">
+                  </v-autocomplete>                
+                  <v-autocomplete
+                    v-model="selectedItem.position_id"
+                    :items="positions"
+                    item-text="name" 
+                    item-value="id"
+                    label="Puesto"
+                    v-on:change="onSelectPosition"
+                    v-validate="'required'"
+                    name="Puesto"
+                    :error-messages="errors.collect('Puesto')"
+                    :disabled="recontract==true || juridica==true">
+                  </v-autocomplete>
+                <v-layout row wrap>
+                  <v-flex xs6>
+                    <v-select
+                      v-model="selectedItem.contract_type_id"
+                      :items="contractTypes"
+                      item-text="name" 
+                      item-value="id"                    
+                      label="Tipo de contratación"
+                      v-validate="'required'"
+                      name="Tipo de contratacion"
+                      :error-messages="errors.collect('Tipo de contratacion')"
+                      :disabled="juridica==true"
+                    ></v-select>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-select
+                      v-model="selectedItem.contract_mode_id"
+                      :items="contractModes"
+                      item-text="name" 
+                      item-value="id"                    
+                      label="Modalidad de contratación"
+                      v-validate="'required'"
+                      name="Modalidad de contratacion"
+                      :error-messages="errors.collect('Modalidad de contratacion')"
+                      :disabled="juridica==true"
+                    ></v-select>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6>
+                    <v-menu
+                      :close-on-content-click="false"
+                      v-model="menuDate"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                      :disabled="juridica==true"
+                    >
+                      <v-text-field
+                        slot="activator"
+                        v-model="formatDateStart"
+                        label="Fecha de inicio"
+                        prepend-icon="event"
+                        v-validate="'required'"
+                        name="Fecha de inicio"
+                        :error-messages="errors.collect('Fecha de inicio')"
+                        readonly :disabled="juridica==true"
+                        autocomplete='cc-exp-month'
+                      ></v-text-field>
+                      <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc" :min="minDate" locale="es-bo"></v-date-picker>
+                    </v-menu>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-menu
+                      :close-on-content-click="false"
+                      v-model="menuDate2"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                      :disabled="juridica==true"
+                    >
+                      <v-text-field
+                        slot="activator"
+                        v-model="formatDateEnd"
+                        label="Fecha de conclusión"
+                        prepend-icon="event" :disabled="juridica==true"
+                        autocomplete='cc-exp-year'
+                        readonly
+                        clearable
+                        @input="dateEndNull"
+                      ></v-text-field>
+                      <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc" locale="es-bo"></v-date-picker>
+                    </v-menu>
+                  </v-flex>
+                </v-layout>                
                 <v-text-field
                   v-model="selectedItem.contract_number"
                   label="Número de contrato"
                   :outline="juridica==true"
                   autocomplete='cc-number'
                 ></v-text-field>
-                <v-text-field
-                  v-model="selectedItem.rrhh_cite"
-                  label="Cite de Recursos Humanos"
-                  :outline="juridica==true"
-                ></v-text-field>
-                <v-menu
-                  :close-on-content-click="true"
-                  v-model="menuDate4"
-                  :nudge-right="40"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <v-text-field
-                    slot="activator"
-                    v-model="formatDateCite"
-                    label="Fecha de cite de Recursos Humanos"
-                    prepend-icon="event"
-                    readonly :outline="juridica==true"                    
-                    clearable
-                    @input="dateCiteNull"
-                  ></v-text-field>
-                  <v-date-picker v-model="date4" no-title @input="menuDate4 = false" locale="es-bo"></v-date-picker>
-                </v-menu>
-                <v-text-field
-                  v-model="selectedItem.performance_cite"
-                  label="Cite de evaluación"
-                  :outline="juridica==true"
-                ></v-text-field>
-                <v-text-field
-                  v-model="selectedItem.hiring_reference_number"
-                  label="Referencia de contratación"
-                  :outline="juridica==true"
-                ></v-text-field>
-                <v-select
-                  v-model="selectedItem.insurance_company_id"
-                  :items="insuranceCompanies"
-                  item-text="name" 
-                  item-value="id"                    
-                  label="Compañia de seguro"
-                  v-validate="'required'"
-                  name="Seguro"
-                  :error-messages="errors.collect('Seguro')"
-                  :disabled="juridica==true"
-                ></v-select>
-                <v-text-field
-                  v-model="selectedItem.insurance_number"
-                  label="Número de asegurado"
-                  :disabled="juridica==true"
-                ></v-text-field>                
+                <v-layout row wrap>
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model="selectedItem.rrhh_cite"
+                      label="Cite de Recursos Humanos"
+                      :outline="juridica==true"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-menu
+                      :close-on-content-click="true"
+                      v-model="menuDate4"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                    >
+                      <v-text-field
+                        slot="activator"
+                        v-model="formatDateCite"
+                        label="Fecha de cite de Recursos Humanos"
+                        prepend-icon="event"
+                        readonly :outline="juridica==true"                    
+                        clearable
+                        @input="dateCiteNull"
+                      ></v-text-field>
+                      <v-date-picker v-model="date4" no-title @input="menuDate4 = false" locale="es-bo"></v-date-picker>
+                    </v-menu>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model="selectedItem.performance_cite"
+                      label="Cite de evaluación"
+                      :outline="juridica==true"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model="selectedItem.hiring_reference_number"
+                      label="Referencia de contratación"
+                      :outline="juridica==true"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6>
+                    <v-select
+                      v-model="selectedItem.insurance_company_id"
+                      :items="insuranceCompanies"
+                      item-text="name" 
+                      item-value="id"                    
+                      label="Compañia de seguro"
+                      v-validate="'required'"
+                      name="Seguro"
+                      :error-messages="errors.collect('Seguro')"
+                      :disabled="juridica==true"
+                    ></v-select>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model="selectedItem.insurance_number"
+                      label="Número de asegurado"
+                      :disabled="juridica==true"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
                 <v-textarea
                   v-model="selectedItem.description"
                   label="Descripción/Observaciones"
+                  rows="2"
                 ></v-textarea>
                 <v-radio-group 
                   v-model="selectedSchedule.id"
@@ -231,13 +231,52 @@
                   color="primary"
                   value :disabled="juridica==true || selectedItem.retirement_date != null"
                 ></v-checkbox>
+                <v-layout row wrap>
+                  <v-flex xs6>
+                    <v-select v-if="selectedIndex!=-1"
+                      v-model="selectedItem.retirement_reason_id"
+                      :items="retirementReasons"
+                      item-text="name"
+                      item-value="id"
+                      label="Razón del retiro"
+                      :disabled="juridica==true"
+                    ></v-select>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-menu v-if="selectedIndex!=-1"
+                      :close-on-content-click="true"
+                      v-model="menuDate3"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                      :disabled="juridica==true"                  
+                    >
+                      <v-text-field
+                        slot="activator"
+                        v-model="formatDateRetirement"
+                        prepend-icon="event"
+                        label="Fecha de retiro" :disabled="juridica==true"
+                        readonly
+                        clearable
+                        @input="dateRetirementNull"
+                      ></v-text-field>
+                      <v-date-picker v-model="date3" no-title @input="menuDate3 = false" locale="es-bo"></v-date-picker>
+                    </v-menu>
+                  </v-flex>                  
+                </v-layout>
               </v-form>
             </v-flex>
             <v-spacer></v-spacer>
             <v-flex xs12 sm6 md6>
               <v-card>
                 <v-card-text>
-                  <p><strong>Empleado: </strong> {{ fullName(tableEmployee) }} </p>
+                  <p><strong>Empleado: </strong> {{ fullName(tableEmployee) }} 
+                    <v-chip v-if="tableEmployeeFree==1" small color="red" text-color="white">Ocupado</v-chip>
+                  </p>
                   <p><strong>Puesto: </strong> {{ tablePosition }} 
                     <v-chip v-if="tablePositionFree==1" small color="red" text-color="white">Ocupado</v-chip>
                   </p>
@@ -277,7 +316,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click.native="close"><v-icon>close</v-icon> Cancelar</v-btn>
-        <v-btn color="success" :disabled="!valid" @click="save()" v-if="recontract==false"><v-icon>check</v-icon> Guardar</v-btn>
+        <v-btn color="success" :disabled="this.errors.any() || !valid || tableEmployeeFree==1 || tablePositionFree==1" @click="save()" v-if="recontract==false"><v-icon>check</v-icon> Guardar</v-btn>
         <v-btn color="success" :disabled="!valid" @click="saveRecontract()" v-if="recontract==true"><v-icon>done_all</v-icon> Recontratar</v-btn>
       </v-card-actions>
     </v-card>
@@ -312,7 +351,8 @@ export default {
       selectedIndex: -1,
       tableEmployee: "",
       tablePosition: "",
-      tablePositionFree: "",
+      tablePositionFree: 0,
+      tableEmployeeFree: 0,
       tableSalary: "",
       tableSalaryTotal: 0,
       tableData: [],
@@ -327,7 +367,7 @@ export default {
       minDate: this.$moment().format('YYYY')+'-01-01'
     };
   },
-  created() {
+  created() {    
     if (this.$store.getters.currentUser.roles[0].name == "juridica") {
       this.juridica = 1;
     }
@@ -411,32 +451,35 @@ export default {
         retirement_date: "",
         rrhh_cite_date: ""
       };
-      (this.selectedSchedule = {}),
-        (this.tableEmployee = ""),
-        (this.tablePosition = ""),
-        (this.tablePositionFree = ""),
-        (this.tableSalary = ""),
-        (this.tableSalaryTotal = 0),
-        (this.tableData = []),
-        (this.recontract = false);
+      this.selectedSchedule = {},
+      this.tableEmployee = "",
+      this.tablePosition = "",
+      this.tablePositionFree = 0,
+      this.tableEmployeeFree = 0,
+      this.tableSalary = "",
+      this.tableSalaryTotal = 0,
+      this.tableData = [],
+      this.recontract = false;
     },
     async save() {
       try {
-        await this.$validator.validateAll();
-        if (this.selectedIndex != -1) {          
-          let res = await axios.patch(
-            "/contract/" + this.selectedItem.id,
-            $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
-          );
-          this.close();
-          this.toastr.success("Editado correctamente");
-        } else {
-          let res = await axios.post(
-            "/contract",
-            $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
-          );
-          this.close();
-          this.toastr.success("Registrado correctamente");
+        let valid = await this.$validator.validateAll();
+        if (valid) {
+          if (this.selectedIndex != -1) {          
+            let res = await axios.patch(
+              "/contract/" + this.selectedItem.id,
+              $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+            );
+            this.close();
+            this.toastr.success("Editado correctamente");
+          } else {
+            let res = await axios.post(
+              "/contract",
+              $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+            );
+            this.close();
+            this.toastr.success("Registrado correctamente");
+          }
         }
       } catch (e) {
         console.log(e);
@@ -466,10 +509,15 @@ export default {
       if (v) {
         let employee = await axios.get("/employee/" + v);
         this.tableEmployee = employee.data;
+        let employeeFree = await axios.get("/contract/last_contract/" + v);        
+        if (employeeFree.data.active == true) {
+          this.tableEmployeeFree = 1;
+        }
       }
     },
     async onSelectPosition(v) {
       if (v) {
+        this.tablePositionFree = 0;
         let position = await axios.get("/position/" + v);
         let positionFree = await axios.get(
           "/contract/position_free/" + v
@@ -478,8 +526,6 @@ export default {
           if (!this.selectedItem.id) {
             this.tablePositionFree = 1;
           }
-        } else {
-          this.tablePositionFree = 0;
         }
         this.tablePosition = position.data.name;
         let charge = await axios.get(
@@ -577,6 +623,7 @@ export default {
         this.date2 = '';
         // this.formatDateStart();
       }
+      this.onSelectEmployee();
       if (item.job_schedules[0]) {
         this.selectedSchedule = item.job_schedules[0];
       }
