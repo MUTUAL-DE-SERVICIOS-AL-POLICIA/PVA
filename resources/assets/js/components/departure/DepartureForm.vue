@@ -76,7 +76,7 @@
                           >
                             <v-text-field
                               slot="activator"
-                              v-model="selectedItem.departure_date"
+                              v-model="dateDeparture"
                               label="Fecha de salida"
                               prepend-icon="event"
                               v-validate="'required'"
@@ -85,7 +85,7 @@
                               autocomplete='cc-exp-month'
                               clearable
                             ></v-text-field>
-                            <v-date-picker v-model="dateDeparture" no-title locale="es-bo" @change="checkMonthDayYear"></v-date-picker>
+                            <v-date-picker v-model="selectedItem.departure_date" @input="menuDateDeparture = false" no-title locale="es-bo" @change="checkMonthDayYear"></v-date-picker>
                           </v-menu>
                         </v-flex>
                         <v-flex xs6>
@@ -102,7 +102,7 @@
                           >
                             <v-text-field
                               slot="activator"
-                              v-model="selectedItem.return_date"
+                              v-model="dateReturn"
                               label="Fecha de retorno"
                               prepend-icon="event"
                               v-validate="'required'"
@@ -111,7 +111,7 @@
                               autocomplete='cc-exp-month'                        
                               clearable
                             ></v-text-field>
-                            <v-date-picker v-model="dateReturn" no-title locale="es-bo" @change="checkMonthDayYear"></v-date-picker>
+                            <v-date-picker v-model="selectedItem.return_date" input="menuDateReturn = false" no-title locale="es-bo" @change="checkMonthDayYear"></v-date-picker>
                           </v-menu>                          
                         </v-flex>                      
                         <v-flex xs6>
@@ -270,11 +270,11 @@ export default {
     }    
   },
   watch: {
-    dateDeparture(val) {
-      this.selectedItem.departure_date = this.$moment(this.dateDeparture).format("DD/MM/YYYY");
+    'selectedItem.departure_date'(val) {
+      this.dateDeparture = this.$moment(this.selectedItem.departure_date).format("DD/MM/YYYY");
     },
-    dateReturn(val) {
-      this.selectedItem.return_date = this.$moment(this.dateReturn).format("DD/MM/YYYY");
+    'selectedItem.return_date'(val) {
+      this.dateReturn = this.$moment(this.selectedItem.return_date).format("DD/MM/YYYY");
     }
   },
   methods: {
@@ -343,7 +343,6 @@ export default {
     async save() {
       try {
         let valid = await this.$validator.validateAll();
-        console.log(valid);
         if (valid) {
           if (this.selectedIndex === -1) {
             this.selectedCertificate.data = this.selectedItem;
