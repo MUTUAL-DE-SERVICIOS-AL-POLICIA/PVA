@@ -346,7 +346,6 @@ export default {
         if (valid) {
           if (this.selectedIndex === -1) {
             this.selectedCertificate.data = this.selectedItem;
-            console.log(this.selectedItem);
             let certificate = await axios.post('/certificate', this.selectedCertificate);
             this.selectedItem.certificate_id = certificate.data.id;
             let departure = await axios.post('/departure', this.selectedItem);
