@@ -80,8 +80,7 @@
                         <td class="text-left uppercase px-5 py-3"> {{ $departure->departure_reason->name }} </td>
                         <td class="text-left uppercase px-5 py-3"> {{ Carbon::parse($departure->departure_date)->format('d/m/Y').' '.Carbon::parse($departure->departure_time)->format('H:i') }} </td>
                         <td class="text-left uppercase px-5 py-3"> {{ Carbon::parse($departure->return_date)->format('d/m/Y').' '.Carbon::parse($departure->return_time)->format('H:i') }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ (is_null($departure->approved)) ? 'Pendiente':($departure->approved==true)? 'Aprobado':'Rechazado' }} </td>
-                    </tr>
+                        <td class="text-left uppercase px-5 py-3"> {{ (is_null($departure->approved))? 'PENDIENTE': (($departure->approved == true)? 'APROBADO':'RECHAZADO') }} </td>
                     @endforeach
                 </tbody>
             </table>
