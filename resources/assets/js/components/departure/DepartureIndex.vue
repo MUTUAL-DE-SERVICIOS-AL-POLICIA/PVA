@@ -47,20 +47,20 @@
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ $moment(props.item.created_at).format('DD/MM/YYYY') }} </td>
             <td class="text-xs-center"> {{ (props.item.approved == true)? 'APROBADO' : (props.item.approved == false)? 'RECHAZADO' : 'PENDIENTE' }} </td>
-            <td class="justify-center layout" v-if="$store.getters.options.length > 0">
-              <v-tooltip top v-if="$store.getters.options.includes('print')">
+            <td class="justify-center layout">
+              <v-tooltip top>
                 <v-btn slot="activator" flat icon color="accent" @click="print(props.item)">
                   <v-icon>print</v-icon>
                 </v-btn>
                 <span>Imprimir</span>
               </v-tooltip>
-              <v-tooltip top v-if="$store.getters.options.includes('edit') && props.item.approved == null">
+              <v-tooltip top v-if="props.item.approved == null">
                 <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
                   <v-icon>edit</v-icon>
                 </v-btn>
                 <span>Editar</span>
               </v-tooltip>
-              <v-tooltip top v-if="$store.getters.options.includes('delete') && props.item.approved == null">
+              <v-tooltip top v-if="props.item.approved == null">
                 <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                   <v-icon>delete</v-icon>
                 </v-btn>
@@ -148,12 +148,9 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getDepartures();
     });
-    if (!this.$store.getters.options.includes("edit")) {
-      this.headers = this.headers
-        .filter(el => {
-          return el.text != "Acciones";
-        });
-    }
+    this.headers = this.headers.filter(el => {
+      return el.text != "Acciones";
+    });
   },
   methods: {
     async getDepartures() {
