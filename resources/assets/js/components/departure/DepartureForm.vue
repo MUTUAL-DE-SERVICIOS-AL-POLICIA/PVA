@@ -351,8 +351,6 @@ export default {
             let departure = await axios.post('/departure', this.selectedItem);
           } else {
             let departure = await axios.patch("/departure/" + this.selectedItem.id, this.selectedItem);
-            this.selectedItem.departure_id = departure.data.id;
-            let abc = await axios.patch("/departure_schedule/" + this.selectedItem.id, this.selectedItem);
           }
           this.close();
           this.toastr.success(
