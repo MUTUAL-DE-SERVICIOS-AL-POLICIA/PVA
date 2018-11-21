@@ -32,8 +32,7 @@ export const routes = [
     redirect: {
       name: 'dashboard',
       params: {
-        active: true,
-        options: ['new', 'edit', 'delete', 'print']
+        active: true
       },
     },
     meta: {

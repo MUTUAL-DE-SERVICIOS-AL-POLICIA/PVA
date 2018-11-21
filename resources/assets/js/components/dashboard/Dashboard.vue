@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-card>
       <v-container fluid grid-list-md>
-        <v-layout row wrap>
+        <v-layout row wrap v-if="$store.getters.currentUser.roles[0].name != 'empleado'">
           <v-flex xs12 sm4 v-for="filter in filteredEmployees" :key="filter.icon">
             <v-card :color="filter.color" dark>
               <v-layout row wrap>
@@ -42,6 +42,22 @@
                     <div v-else-if="'new' in filter && filter.new.length == 0" slot="activator" class="subheading font-weight-light">Nuevos este mes: {{ filter.new.length }}</div>
                     <div v-if="'inactive' in filter.total" class="subheading font-weight-light">Inactivos: {{ filter.total.inactive }}</div>
                     <br v-else class="display-2">
+                  </v-card-text>
+                </v-flex>
+              </v-layout>
+            </v-card>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap v-else>
+          <v-flex xs12 sm4>
+            <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}">
+              <v-layout row wrap>
+                <v-flex xs4 class="text-xs-center" mt-4>
+                  <v-icon size="80">directions_run</v-icon>
+                </v-flex>
+                <v-flex xs8>
+                  <v-card-text class="text-xs-center">
+                    <div class="display-3 font-weight-thin">Salidas y Licencias</div>
                   </v-card-text>
                 </v-flex>
               </v-layout>
