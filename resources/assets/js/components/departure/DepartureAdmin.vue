@@ -92,7 +92,7 @@ export default {
     headers: [
       {
         text: "C.I.",
-        value: "contractemployee.identity_card",
+        value: "contract.employee.identity_card",
         align: "center"
       },
       {
@@ -122,12 +122,12 @@ export default {
       },
       {
         text: "Apobado",
-        value: "approved",
+        value: "contract.employee.mothers_last_name",
         align: "center"
       },
       {
         text: "Acciones",
-        value: "employee.first_name",
+        value: "contract.employee.first_name",
         align: "center",
         sortable: false
       }
@@ -177,13 +177,7 @@ export default {
       }
     },
     fullName(employee) {
-      let names = `${employee.last_name || ""} ${employee.mothers_last_name ||
-        ""} ${employee.surname_husband || ""} ${employee.first_name ||
-        ""} ${employee.second_name || ""} `;
-      names = names
-        .replace(/\s+/gi, " ")
-        .trim()
-        .toUpperCase();
+      let names = [employee.last_name, employee.mothers_last_name, employee.first_name, employee.second_name]. join(" ").toUpperCase();
       return names;
     },
     checkEnd(departure) {
