@@ -3,10 +3,7 @@ export default {
     {
       href: 'dashboard',
       title: 'Inicio',
-      icon: 'home',
-      params: {
-        options: []
-      }
+      icon: 'home'
     }, {
       href: 'employeeIndex',
       title: 'Personas',
@@ -83,10 +80,7 @@ export default {
     {
       href: 'dashboard',
       title: 'Inicio',
-      icon: 'home',
-      params: {
-        options: []
-      }
+      icon: 'home'
     }, {
       href: 'employeeIndex',
       title: 'Empleados',
@@ -149,7 +143,7 @@ export default {
       title: 'Salidas/Licencias',
       icon: 'directions_run',
       params: {
-        options: ['new', 'edit', 'delete', 'active', 'print']
+        options: []
       }
     }
   ],
@@ -157,10 +151,7 @@ export default {
     {
       href: 'dashboard',
       title: 'Inicio',
-      icon: 'home',
-      params: {
-        options: []
-      }
+      icon: 'home'
     }, {
       href: 'employeeIndex',
       title: 'Empleados',
@@ -199,7 +190,7 @@ export default {
       title: 'Salidas/Licencias',
       icon: 'directions_run',
       params: {
-        options: ['new', 'edit', 'delete', 'active', 'print']
+        options: []
       }
     }
   ],
@@ -207,10 +198,7 @@ export default {
     {
       href: 'dashboard',
       title: 'Inicio',
-      icon: 'home',
-      params: {
-        options: []
-      }
+      icon: 'home'
     }, {
       href: 'employeeIndex',
       title: 'Empleados',
@@ -266,16 +254,13 @@ export default {
     {
       href: 'dashboard',
       title: 'Inicio',
-      icon: 'home',
-      params: {
-        options: []
-      }
+      icon: 'home'
     }, {
       href: 'departureIndex',
       title: 'Salidas/Licencias',
       icon: 'directions_run',
       params: {
-        options: ['new', 'edit', 'delete', 'active', 'print']
+        options: []
       }
     }
   ],
