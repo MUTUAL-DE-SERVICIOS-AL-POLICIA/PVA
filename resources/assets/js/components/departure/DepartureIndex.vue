@@ -165,7 +165,7 @@ export default {
         let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
         // var hora = departure_used.data.total_hours_month_res / 60 ;
         this.hrsxMes = Math.trunc((departure_used.data.total_minutes_month_rest / 60)) + " hr. y " + (departure_used.data.total_minutes_month_rest % 60) + " min.";
-        this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest % 480) + " hr.";
+        this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest / 8) + " hr.";
       } catch (e) {
         console.log(e);
       }
