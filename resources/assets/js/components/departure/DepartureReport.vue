@@ -18,7 +18,7 @@
                       item-text="name"
                       item-value="id"
                       label="Dirección/Unidad"
-                      hint="Dejar en blanco para selecciona Todos"
+                      hint="Dejar en blanco para seleccionar Todos"
                       persistent-hint
                       @change="getEmployees"
                       clearable

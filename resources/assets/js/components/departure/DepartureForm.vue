@@ -25,7 +25,7 @@
                             v-validate="'required'"
                             name="Tipo"
                             :error-messages="errors.collect('Tipo')"
-                            height="1">
+                            >
                             <span v-for="departureType in departureTypes" :key="departureType.id">
                               <v-radio :label="departureType.name" :value="departureType.id" color="success" v-if="type_departures.includes(departureType.id)"></v-radio>
                             </span>

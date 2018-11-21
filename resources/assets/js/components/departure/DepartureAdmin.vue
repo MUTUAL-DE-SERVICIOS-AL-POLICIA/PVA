@@ -72,7 +72,7 @@
         <v-alert slot="no-results" :value="true" color="error">
           La búsqueda de "{{ search }}" no encontró resultados.
         </v-alert>
-    </v-data-table>
+    </v-data-table> 
   </v-container>
 </template>
 <script type="text/javascript">
