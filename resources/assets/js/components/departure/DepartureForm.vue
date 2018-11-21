@@ -381,17 +381,17 @@ export default {
         var rest_day = 0;
         var h1 = this.selectedItem.departure_time.split(":");
         var h2 = this.selectedItem.return_time.split(":");
-        if (h2[0] >= 14) {
+        if (h1[0] <= 12 && h2[0] >= 14) { 
           var rest_hour1 = (12 * 60 + 0) - (h1[0] * 60 + parseInt(h1[1]));
           var rest_hour2 = (h2[0] * 60 + parseInt(h2[1])) - (14 * 60 + 30);
           rest_hour = rest_hour1 + rest_hour2;
         } else {
           rest_hour = (h2[0] * 60 + parseInt(h2[1])) - (h1[0] * 60 + parseInt(h1[1]));
         } 
-        var f1 = this.$moment(this.dateDeparture);
-        var f2 = this.$moment(this.dateReturn);
+        var f1 = this.$moment(this.selectedItem.departure_date);
+        var f2 = this.$moment(this.selectedItem.return_date);
 
-        if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) {
+        if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) { console.log(f2.diff(f1, "day"));
           // if (this.on_vacation == false) {
             if (f2.diff(f1, "day") == 0) {
                rest_day = rest_hour;
@@ -401,11 +401,11 @@ export default {
               rest_day = rest_hour + 960;
             }
             if (rest_day > departure_used.data.total_minutes_year_rest) {
-              this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest % 60) + ' Horas.';
+              this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest / 8) + ' Horas.';
               this.valid = false;
             } 
           // }
-        } else if (this.departure_type_id == 1 && this.selectedItem.departure_reason_id == 1) {
+        } else if (this.departure_type_id == 1 && this.selectedItem.departure_reason_id == 1) { 
           if (rest_hour > departure_used.data.total_minutes_month_rest) {
             this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_month_rest / 60) + ' Horas y ' + parseInt(departure_used.data.total_minutes_month_rest % 60)+ ' Minutos.';
             this.valid = false;
