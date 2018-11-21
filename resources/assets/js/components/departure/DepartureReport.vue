@@ -76,7 +76,7 @@
                     >
                       <v-text-field
                         slot="activator"
-                        v-model="selectedItem.start_date"
+                        v-model="dateStart"
                         label="Desde"
                         prepend-icon="event"
                         v-validate="'required'"
@@ -85,7 +85,7 @@
                         autocomplete='cc-exp-month'
                         clearable
                       ></v-text-field>
-                      <v-date-picker v-model="dateStart" @input="menuDateStart=false" no-title locale="es-bo"></v-date-picker>
+                      <v-date-picker v-model="selectedItem.start_date" @input="menuDateStart=false" no-title locale="es-bo"></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <v-flex xs3>
@@ -102,7 +102,7 @@
                     >
                       <v-text-field
                         slot="activator"
-                        v-model="selectedItem.end_date"
+                        v-model="dateEnd"
                         label="Hasta"
                         prepend-icon="event"
                         v-validate="'required'"
@@ -111,7 +111,7 @@
                         autocomplete='cc-exp-month'
                         clearable
                       ></v-text-field>
-                      <v-date-picker v-model="dateEnd" @input="menuDateEnd=false" no-title locale="es-bo"></v-date-picker>
+                      <v-date-picker v-model="selectedItem.end_date" @input="menuDateEnd=false" no-title locale="es-bo"></v-date-picker>
                     </v-menu>
                   </v-flex>
                 </v-layout>
@@ -144,13 +144,15 @@ export default {
         employee_id: null,
         state: null,
         type: null,
-        start_date: this.$moment().format("DD/MM/YYYY"),
-        end_date: this.$moment().format("DD/MM/YYYY")
+        start_date: this.$moment().format("YYYY-MM-DD"),
+        end_date: this.$moment().format("YYYY-MM-DD")
+        // start_date: null,
+        // end_date: null,
       },
       menuDateStart: null,
-      dateStart: null,
+      dateStart: this.$moment().format("DD/MM/YYYY"),
       menuDateEnd: null,
-      dateEnd: null,
+      dateEnd: this.$moment().format("DD/MM/YYYY"),
       position_groups: [],
       employees: [],
       status: [
@@ -171,12 +173,12 @@ export default {
     }    
   },
   watch: {
-    dateStart(val) {
-      this.selectedItem.start_date = this.$moment(this.dateStart).format("DD/MM/YYYY");
-      this.selectedItem.end_date = this.$moment(this.dateStart).format("DD/MM/YYYY");
+    'selectedItem.start_date'(val) {
+      this.dateStart = this.$moment(this.selectedItem.start_date).format("DD/MM/YYYY");
+      this.dateEnd = this.$moment(this.selectedItem.start_date).format("DD/MM/YYYY");
     },
-    dateEnd(val) {
-      this.selectedItem.end_date = this.$moment(this.dateEnd).format("DD/MM/YYYY");
+    'selectedItem.end_date'(val) {
+      this.dateEnd = this.$moment(this.selectedItem.end_date).format("DD/MM/YYYY");
     }
   },
   methods: {    
@@ -199,9 +201,11 @@ export default {
         employee_id: null,
         state: null,
         type: null,
-        start_date: this.$moment().format("DD/MM/YYYY"),
-        end_date: this.$moment().format("DD/MM/YYYY")
-      };      
+        start_date: this.$moment().format("YYYY-MM-DD"),
+        end_date: this.$moment().format("YYYY-MM-DD")
+      };  
+      this.dateStart = this.$moment().format("DD/MM/YYYY");
+      this.dateEnd = this.$moment().format("DD/MM/YYYY");
     },    
     async getEmployees() {
       try{

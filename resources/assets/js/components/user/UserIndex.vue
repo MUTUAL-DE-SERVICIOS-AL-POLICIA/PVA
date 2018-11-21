@@ -108,7 +108,7 @@
         ></v-select>
       </v-flex>
     </v-toolbar>
-    <UserRegistered v-if="sourceSelected == 'Registrados'"/>
+    <UserRegistered v-if="sourceSelected == 'Registrados'" ref="UserRegistered"/>
     <UserLdap v-if="sourceSelected == 'LDAP'"/>
   </v-container>
 </template>
@@ -155,6 +155,7 @@ export default {
         let res = await axios.post(`/ldap`);
         this.message = res.data;
         this.loading = false;
+        this.$refs.UserRegistered.open = true
       } catch (e) {
         console.log(e);
       }
