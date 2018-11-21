@@ -111,7 +111,13 @@
                               autocomplete='cc-exp-month'                        
                               clearable
                             ></v-text-field>
-                            <v-date-picker v-model="selectedItem.return_date" input="menuDateReturn = false" no-title locale="es-bo" @change="checkMonthDayYear"></v-date-picker>
+                            <v-date-picker 
+                            v-model="selectedItem.return_date" 
+                            input="menuDateReturn = false"
+                            :min="selectedItem.departure_date"
+                            no-title 
+                            locale="es-bo" 
+                            @change="checkMonthDayYear"></v-date-picker>
                           </v-menu>                          
                         </v-flex>                      
                         <v-flex xs6>
@@ -413,7 +419,7 @@ export default {
             } 
           // }
         } else if (this.departure_type_id == 1 && this.selectedItem.departure_reason_id == 1) { 
-          if (rest_hour > departure_used.data.total_minutes_month_rest) {
+          if (rest_hour > departure_used.data.total_minutes_month_rest || f2.diff(f1, "day") != 0) {
             this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_month_rest / 60) + ' Horas y ' + parseInt(departure_used.data.total_minutes_month_rest % 60)+ ' Minutos.';
             this.valid = false;
           } 
@@ -424,8 +430,8 @@ export default {
               this.valid = false;
             }
           } else if (this.departureReason.hour != null) {
-            if (rest_hour > (this.departureReason.hour * 60)) {              
-              this.errorMessages = 'Solo puede utilizar '+ this.departureReason.hour + 'horas.';
+            if (rest_hour > (this.departureReason.hour * 60) || f2.diff(f1, "day") != 0) {              
+              this.errorMessages = 'Solo puede utilizar '+ this.departureReason.hour + ' horas.';
               this.valid = false;
             }
           }
