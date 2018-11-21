@@ -271,10 +271,14 @@ export default {
   },
   watch: {
     'selectedItem.departure_date'(val) {
-      this.dateDeparture = this.$moment(this.selectedItem.departure_date).format("DD/MM/YYYY");
+      if (this.selectedItem.departure_date) {
+        this.dateDeparture = this.$moment(this.selectedItem.departure_date).format("DD/MM/YYYY");
+      }
     },
     'selectedItem.return_date'(val) {
-      this.dateReturn = this.$moment(this.selectedItem.return_date).format("DD/MM/YYYY");
+      if (this.selectedItem.return_date) {
+        this.dateReturn = this.$moment(this.selectedItem.return_date).format("DD/MM/YYYY");
+      }
     }
   },
   methods: {
@@ -304,6 +308,8 @@ export default {
         on_vacation: false
       };
       this.errorMessages = null;
+      this.dateDeparture = null;
+      this.dateReturn = null;
     },
     async getUser() {
       try {
