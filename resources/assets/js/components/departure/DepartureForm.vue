@@ -142,7 +142,7 @@
                               format="24hr"
                               :min="start_time"
                               :max="end_time"
-                              no-title
+                              no-title full-width
                               @change="$refs.menu2.save(selectedItem.departure_time);checkMonthDayYear();"
                             ></v-time-picker>
                           </v-menu>
@@ -175,7 +175,7 @@
                               format="24hr"
                               :min="start_time"
                               :max="end_time"
-                              no-title
+                              no-title full-width
                               @change="$refs.menu3.save(selectedItem.return_time);checkMonthDayYear();"
                             ></v-time-picker>
                           </v-menu>
@@ -303,6 +303,7 @@ export default {
         return_time: null,
         on_vacation: false
       };
+      this.errorMessages = null;
     },
     async getUser() {
       try {
@@ -433,8 +434,12 @@ export default {
       this.selectedIndex = item;
       this.departure_type_id = item.departure_reason.departure_type_id;
       this.getDepartureReason();
-      this.selectedItem.departure_date = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
-      this.selectedItem.return_date = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
+      this.dateDeparture = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
+      this.dateReturn = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
+      this.selectedItem.departure_date = item.departure_date;
+      this.selectedItem.return_date = item.return_date;
+      this.selectedItem.departure_time = this.$moment.utc(item.departure_time, "HH:mm:ss").format("HH:mm");
+      this.selectedItem.return_time = this.$moment.utc(item.return_time, "HH:mm:ss").format("HH:mm");      
     });
     this.initialize();
   }
