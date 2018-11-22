@@ -310,7 +310,7 @@ export default {
       this.bus.$emit("closeDialog");
       this.selectedItem = {
         id: null,
-        contract_id: null,
+        contract_id: this.selectedItem.contract_id,
         departure_reason_id: null,
         certificate_id: null,
         destiny: null,
@@ -412,7 +412,7 @@ export default {
         var f1 = this.$moment(this.selectedItem.departure_date);
         var f2 = this.$moment(this.selectedItem.return_date);
 
-        if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) { console.log(f2.diff(f1, "day"));
+        if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) { 
           // if (this.on_vacation == false) {
             if (f2.diff(f1, "day") == 0) {
                rest_day = rest_hour;
@@ -422,7 +422,7 @@ export default {
               rest_day = rest_hour + 960;
             }
             if (rest_day > departure_used.data.total_minutes_year_rest) {
-              this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest / 8) + ' Horas.';
+              this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest % 480 / 60) + ' Horas.';
               this.valid = false;
             } 
           // }

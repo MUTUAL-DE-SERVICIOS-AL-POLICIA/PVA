@@ -126,7 +126,7 @@ export default {
       },
       {
         text: "Acciones",
-        value: "employee.first_name",
+        value: "",
         align: "center",
         sortable: false
       }
@@ -148,9 +148,6 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getDepartures();
     });
-    this.headers = this.headers.filter(el => {
-      return el.text != "Acciones";
-    });
   },
   methods: {
     async getDepartures() {
@@ -160,9 +157,8 @@ export default {
         this.departures = res.data;
 
         let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
-        // var hora = departure_used.data.total_hours_month_res / 60 ;
         this.hrsxMes = Math.trunc((departure_used.data.total_minutes_month_rest / 60)) + " hr. y " + (departure_used.data.total_minutes_month_rest % 60) + " min.";
-        this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest / 8) + " hr.";
+        this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest % 480 / 60) + " hr.";
       } catch (e) {
         console.log(e);
       }
