@@ -2,7 +2,7 @@
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
     <v-tooltip slot="activator" top>
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
-      <span>Nuevo Salida</span>
+      <span>Nueva Salida</span>
     </v-tooltip>
     <v-card>
       <v-toolbar dark color="secondary">
