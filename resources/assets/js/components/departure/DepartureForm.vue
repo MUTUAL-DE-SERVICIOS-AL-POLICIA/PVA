@@ -64,7 +64,7 @@
                       <v-layout row wrap>
                         <v-flex xs6>
                           <v-menu
-                            :close-on-content-click="true"
+                            :close-on-content-click="false"
                             v-model="menuDateDeparture"
                             :nudge-right="40"
                             lazy
@@ -85,12 +85,18 @@
                               autocomplete='cc-exp-month'
                               clearable
                             ></v-text-field>
-                            <v-date-picker v-model="selectedItem.departure_date" @input="menuDateDeparture = false" no-title locale="es-bo" @change="checkMonthDayYear"></v-date-picker>
+                            <v-date-picker 
+                            v-model="selectedItem.departure_date" 
+                            @input="menuDateDeparture = false" 
+                            no-title 
+                            locale="es-bo" 
+                            @change="checkMonthDayYear"
+                            ></v-date-picker>
                           </v-menu>
                         </v-flex>
                         <v-flex xs6>
                           <v-menu
-                            :close-on-content-click="true"
+                            :close-on-content-click="false"
                             v-model="menuDateReturn"
                             :nudge-right="40"
                             lazy
@@ -108,18 +114,18 @@
                               v-validate="'required'"
                               name="Fecha de retorno"
                               :error-messages="errors.collect('Fecha de retorno')"
-                              autocomplete='cc-exp-month'                        
+                              autocomplete='cc-exp-month'
                               clearable
                             ></v-text-field>
                             <v-date-picker 
                             v-model="selectedItem.return_date" 
-                            input="menuDateReturn = false"
+                            @input="menuDateReturn = false"
                             :min="selectedItem.departure_date"
                             no-title 
                             locale="es-bo" 
                             @change="checkMonthDayYear"></v-date-picker>
-                          </v-menu>                          
-                        </v-flex>                      
+                          </v-menu>
+                        </v-flex>
                         <v-flex xs6>
                           <v-menu
                             ref="menu2"
@@ -279,6 +285,8 @@ export default {
     'selectedItem.departure_date'(val) {
       if (this.selectedItem.departure_date) {
         this.dateDeparture = this.$moment(this.selectedItem.departure_date).format("DD/MM/YYYY");
+        this.selectedItem.return_date = this.selectedItem.departure_date;
+        this.dateReturn = this.$moment(this.selectedItem.return_date).format("DD/MM/YYYY");
       }
     },
     'selectedItem.return_date'(val) {
