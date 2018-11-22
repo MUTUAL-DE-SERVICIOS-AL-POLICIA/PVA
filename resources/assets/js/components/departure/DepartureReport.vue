@@ -111,7 +111,7 @@
                         autocomplete='cc-exp-month'
                         clearable
                       ></v-text-field>
-                      <v-date-picker v-model="selectedItem.end_date" @input="menuDateEnd=false" no-title locale="es-bo"></v-date-picker>
+                      <v-date-picker v-model="selectedItem.end_date" @input="menuDateEnd=false" :min="selectedItem.start_date" no-title locale="es-bo"></v-date-picker>
                     </v-menu>
                   </v-flex>
                 </v-layout>
