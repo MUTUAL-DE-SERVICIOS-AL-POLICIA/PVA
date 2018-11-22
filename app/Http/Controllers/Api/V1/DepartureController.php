@@ -95,9 +95,17 @@ class DepartureController extends Controller
             $departures = Departure::where('contract_id', $contract->id)->get();
             foreach ($departures as $departure) {
                 $e               = new EmployeeDeparture($departure);
-                $departure_month = Carbon::parse($departure->departure_date)->month;
+                $departure_days = Carbon::parse($departure->departure_date)->month;
+                
                 $departure_year  = Carbon::parse($departure->departure_date)->year;
-                if ($month == $departure_month) {
+                if ($departure_days <= 19) {
+                    $departure_month1 = Carbon::parse($departure->departure_date)->subMonth()->month;
+                    $departure_month2 = Carbon::parse($departure->departure_date)->month;
+                } else {
+                    $departure_month1 = Carbon::parse($departure->departure_date)->month;
+                    $departure_month2 = Carbon::parse($departure->departure_date)->addMonth()->month;
+                }
+                if ($departure->departure_date >= $departure_year.'-'.$departure_month1.'-20' && $departure->departure_date <= $departure_year.'-'.$departure_month2.'-19') {
                     if ($departure->departure_reason->departure_type_id == 1 && $departure->departure_reason->name == 'Personal' && $departure->approved == true) {
                         $total_minutes_month = $total_minutes_month + $e->departure_minutes;
                     }
