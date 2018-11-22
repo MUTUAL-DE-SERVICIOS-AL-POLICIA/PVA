@@ -4,6 +4,14 @@ Route::group([
 	'middleware' => 'api',
 	'prefix' => 'v1',
 ], function () {
+	// Bonus
+	Route::get('bonus/{year}', 'Api\V1\BonusController@show')->name('bonus');
+
+
+
+
+
+
 	// Login
 	Route::post('auth', 'Api\V1\AuthController@store')->name('login');
 	Route::get('date', 'Api\V1\DateController@show')->name('date_now');
