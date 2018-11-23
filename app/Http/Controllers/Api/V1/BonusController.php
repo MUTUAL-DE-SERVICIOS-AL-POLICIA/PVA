@@ -32,15 +32,24 @@ class BonusController extends Controller
         });
     })->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('start_date')->get()->groupBy('employee_id');
 
+    $total = 0;
     $employees = [];
     foreach ($grouped_contracts as $e => $contracts) {
-      $e = new EmployeeBonus($contracts, $year);
-      if ($e->valid) {
+      $e = new EmployeeBonus($contracts, $year, $request['pay_date']);
+      if ($e->worked_days->months >= 3) {
         $employees[] = $e;
+        $total += $e->bonus;
       }
     }
 
-    return $employees;
+    return response()->json((object)array(
+      "data" => [
+        'year' => $year,
+        'pay_date' => $request['pay_date'],
+        'total' => round($total, 2),
+        'employees' => $employees,
+      ]
+    ));
   }
 
   /**
