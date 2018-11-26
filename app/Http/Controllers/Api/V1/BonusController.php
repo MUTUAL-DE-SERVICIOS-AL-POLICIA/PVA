@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Company;
 use App\Contract;
 use App\EmployeeBonus;
 
@@ -38,18 +39,40 @@ class BonusController extends Controller
       $e = new EmployeeBonus($contracts, $year, $request['pay_date']);
       if ($e->worked_days->months >= 3) {
         $employees[] = $e;
-        $total += $e->bonus;
+        $total += round($e->bonus, 2);
       }
     }
 
-    return response()->json((object)array(
+    $response = (object)array(
       "data" => [
-        'year' => $year,
+        'company' => Company::select()->first(),
+        'title' => (object)[
+          'year' => $year,
+          'report_name' => 'GENERAL',
+          'order' => 'PRIMER AGUINALDO'
+        ],
         'pay_date' => $request['pay_date'],
-        'total' => round($total, 2),
+        'total' => $total,
         'employees' => $employees,
       ]
-    ));
+    );
+
+    $response->data['title']->name = 'PLANILLA DE AGUINALDOS';
+    $response->data['title']->subtitle = '';
+
+    $file_name = implode(" ", [$response->data['title']->name, $request['report_name'], $year]) . ".pdf";
+
+    return \PDF::loadView('payroll.bonus', $response->data)
+      ->setOption('page-width', '216')
+      ->setOption('page-height', '330')
+      ->setOption('margin-left', '26')
+      ->setOption('margin-right', '0')
+      ->setOrientation('landscape')
+      ->setOption('encoding', 'utf-8')
+      ->setOption('footer-font-size', 5)
+      ->setOption('footer-center', '[page] de [topage] - Impreso el ' . date('m/d/Y H:i'))
+      ->setOption('encoding', 'utf-8')
+      ->stream($file_name);
   }
 
   /**
