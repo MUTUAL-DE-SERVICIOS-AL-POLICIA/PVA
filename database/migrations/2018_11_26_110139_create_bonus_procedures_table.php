@@ -18,6 +18,7 @@ class CreateBonusProceduresTable extends Migration
       $table->unsignedSmallInteger('year');
       $table->foreign('year')->references('year')->on('bonus_years');
       $table->date('pay_date');
+      $table->string('name')->default('AGUINALDO DE NAVIDAD');
       $table->timestamps();
       $table->softDeletes();
     });

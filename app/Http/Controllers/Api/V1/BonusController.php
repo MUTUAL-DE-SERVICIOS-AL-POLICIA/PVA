@@ -7,17 +7,25 @@ use Illuminate\Http\Request;
 use App\Company;
 use App\Contract;
 use App\EmployeeBonus;
+use App\BonusProcedure;
 
 class BonusController extends Controller
 {
+
+
   /**
    * Display the specified resource.
    *
    * @param  \App\Contract  $contract
    * @return \Illuminate\Http\Response
    */
-  public function show(Request $request, $year)
+  public function show($id)
   {
+    $procedure = BonusProcedure::findOrFail($id);
+    $year = $procedure->year;
+    $pay_date = $procedure->pay_date;
+    $name = $procedure->name;
+
     $grouped_contracts = Contract::where(function ($query) use ($year) {
       $query
         ->orWhere(function ($q) use ($year) {
@@ -33,13 +41,11 @@ class BonusController extends Controller
         });
     })->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('start_date')->get()->groupBy('employee_id');
 
-    $total = 0;
     $employees = [];
     foreach ($grouped_contracts as $e => $contracts) {
-      $e = new EmployeeBonus($contracts, $year, $request['pay_date']);
+      $e = new EmployeeBonus($contracts, $year, $pay_date);
       if ($e->worked_days->months >= 3) {
         $employees[] = $e;
-        $total += round($e->bonus, 2);
       }
     }
 
@@ -47,20 +53,16 @@ class BonusController extends Controller
       "data" => [
         'company' => Company::select()->first(),
         'title' => (object)[
+          'name' => 'PLANILLA DE AGUINALDOS',
           'year' => $year,
-          'report_name' => 'GENERAL',
-          'order' => 'PRIMER AGUINALDO'
+          'subtitle' => $name
         ],
-        'pay_date' => $request['pay_date'],
-        'total' => $total,
+        'pay_date' => $pay_date,
         'employees' => $employees,
       ]
     );
 
-    $response->data['title']->name = 'PLANILLA DE AGUINALDOS';
-    $response->data['title']->subtitle = '';
-
-    $file_name = implode(" ", [$response->data['title']->name, $request['report_name'], $year]) . ".pdf";
+    $file_name = implode(" ", ['PLANILLA', $response->data['title']->subtitle, $year]) . ".pdf";
 
     return \PDF::loadView('payroll.bonus', $response->data)
       ->setOption('page-width', '216')
@@ -70,9 +72,21 @@ class BonusController extends Controller
       ->setOrientation('landscape')
       ->setOption('encoding', 'utf-8')
       ->setOption('footer-font-size', 5)
-      ->setOption('footer-center', '[page] de [topage] - Impreso el ' . date('m/d/Y H:i'))
+      ->setOption('footer-center', 'Impreso el ' . date('m/d/Y H:i'))
       ->setOption('encoding', 'utf-8')
       ->stream($file_name);
+  }
+
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  \App\Contract  $contract
+   * @return \Illuminate\Http\Response
+   */
+  public function store(Request $request)
+  {
+
   }
 
   /**

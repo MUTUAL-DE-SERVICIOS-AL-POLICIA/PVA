@@ -10,8 +10,8 @@ class BonusYear extends Model
   public $timestamps = true;
   protected $fillable = ['bonus'];
 
-  public function contracts()
+  public function procedures()
   {
-    return $this->hasMany(BonusProcedure::class);
+    return $this->hasMany(BonusProcedure::class, 'year');
   }
 }
