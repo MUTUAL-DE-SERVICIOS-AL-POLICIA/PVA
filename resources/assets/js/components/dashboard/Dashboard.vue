@@ -47,7 +47,52 @@
               </v-layout>
             </v-card>
           </v-flex>
+          <v-flex xs12 sm4 class="mt-3">
+            <v-card dark>
+              <v-layout row wrap>
+                <v-flex xs4 class="text-xs-center" mt-4>
+                  <v-icon size="80">attach_money</v-icon>
+                  <div class="text-xs-left mt-4 ml-3">
+                    <vue-json-to-csv
+                        v-if="procedures.length > 0"
+                        :json-data="procedures"
+                        :labels = "{
+                          month: { title: 'Nº' },
+                          name: { title: 'MES' },
+                          faults: { title: 'DESCUENTOS' }
+                        }"
+                        :csv-title="`fondo_social_a_${procedures[procedures.length - 1].name.toLowerCase()}_${$moment(this.$store.getters.dateNow).year()}`"
+                      >
+                      <v-tooltip right>
+                        <v-btn flat icon slot="activator">
+                          <v-icon>save</v-icon>
+                        </v-btn>
+                        <span>Descargar</span>
+                      </v-tooltip>
+                    </vue-json-to-csv>
+                  </div>
+                </v-flex>
+                <v-flex xs8>
+                  <v-card-text class="text-xs-center">
+                    <div class="display-3 font-weight-thin">{{ procedures.length == 0 ? '0' : procedures.map(item => item.faults).reduce((prev, next) => prev + next) }}</div>
+                    <div class="display-1 font-weight-light">Fondo Social</div>
+                    <v-tooltip bottom>
+                      <div slot="activator" class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
+                      <table>
+                        <tr v-for="item in procedures" :key="item.id">
+                          <td>{{ item.month }}.-</td>
+                          <td>{{ item.name }}</td>
+                          <td class="text-xs-right">{{ item.faults }}</td>
+                        </tr>
+                      </table>
+                    </v-tooltip>
+                  </v-card-text>
+                </v-flex>
+              </v-layout>
+            </v-card>
+          </v-flex>
         </v-layout>
+
         <v-layout row wrap v-else>
           <v-flex xs12 sm4>
             <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}">
@@ -78,12 +123,24 @@ export default {
   },
   data: () => ({
     employees: [],
-    filteredEmployees: []
+    filteredEmployees: [],
+    procedures: []
   }),
   created() {
     this.getEmployees()
+    this.getYearFaults()
   },
   methods: {
+    async getYearFaults() {
+      try {
+        let res = await axios.get(`/payroll/faults/${this.$moment(this.$store.getters.dateNow).year()}`)
+        this.procedures = res.data
+        console.log(this.procedures[this.procedures.length - 1]);
+        
+      } catch (e) {
+        console.log(e);
+      }
+    },
     printEmployeesData(data) {
       return data;
     },
@@ -166,7 +223,7 @@ export default {
           })
         }
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
   }

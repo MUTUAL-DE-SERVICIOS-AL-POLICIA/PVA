@@ -299,6 +299,11 @@ export default {
         link.href = window.URL.createObjectURL(blob);
         const contentDisposition = res.headers["content-disposition"];
         let fileName = `sueldos_${url.split('/').slice(-1)[0]}_${url.split('/').slice(-2)[0]}`;
+        if (res.headers['content-type'].includes('sheet')) {
+          fileName = `${fileName}.xlsx`
+        } else if (res.headers['content-type'].includes('csv')) {
+          fileName = `${fileName}.csv`
+        }
         if (contentDisposition) {
           const fileNameMatch = contentDisposition.match(/filename=(.+)/);
           if (fileNameMatch.length === 2) {
@@ -342,8 +347,13 @@ export default {
         });
         let link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
+        let fileName = `sueldos_${url.split('/').slice(-1)[0].split('?')[0]}_${url.split('/').slice(-2)[0]}`;
         const contentDisposition = res.headers["content-disposition"];
-        let fileName = `sueldos_${url.split('/').slice(-1)[0]}_${url.split('/').slice(-2)[0]}`;
+        if (res.headers['content-type'].includes('sheet')) {
+          fileName = `${fileName}.xlsx`
+        } else if (res.headers['content-type'].includes('csv')) {
+          fileName = `${fileName}.csv`
+        }
         if (contentDisposition) {
           const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
           if (fileNameMatch.length === 2) {

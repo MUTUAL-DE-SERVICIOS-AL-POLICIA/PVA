@@ -94,6 +94,27 @@ class PayrollController extends Controller
 	}
 
 	/**
+	 * get payroll faults report
+	 *
+	 * @param  int  $year
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getYearFaults($year)
+	{
+		$procedures = Procedure::where('year', $year)->leftjoin('months as m', 'm.id', '=', 'procedures.month_id')->orderBy('m.order')->select('procedures.id', 'm.name', 'm.order as month')->get();
+
+		if (count($procedures) == 0) {
+			abort(404);
+		}
+
+		foreach ($procedures as $i => $procedure) {
+			$procedure->faults = round(array_sum(Payroll::where('procedure_id', $procedure->id)->pluck('faults')->toArray()), 2);
+		}
+
+		return $procedures;
+	}
+
+	/**
 	 * get payroll especific contract
 	 *
 	 * @param  int  $contract_id
