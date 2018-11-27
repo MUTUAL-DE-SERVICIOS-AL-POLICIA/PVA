@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\BonusYear;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,6 @@ class BonusYearController extends Controller
   public function store(Request $request)
   {
     $bonus_year = BonusYear::create($request->all());
-    $bonus_year->procedures;
     return $bonus_year;
   }
 
@@ -38,7 +38,9 @@ class BonusYearController extends Controller
    */
   public function show($year)
   {
-    return BonusYear::findOrFail($year);
+    $bonus_year = BonusYear::findOrFail($year);
+    $bonus_year->procedures;
+    return $bonus_year;
   }
 
   /**
