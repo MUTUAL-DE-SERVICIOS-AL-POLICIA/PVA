@@ -4,14 +4,6 @@ Route::group([
 	'middleware' => 'api',
 	'prefix' => 'v1',
 ], function () {
-	// Bonus
-	Route::get('bonus/print/{year}', 'Api\V1\BonusController@print')->name('bonus_print');
-	Route::resource('bonus', 'Api\V1\BonusController')->only('index', 'show', 'store', 'update', 'destroy');
-	Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['index', 'store', 'show', 'update', 'delete']);
-
-
-
-
 	// Login
 	Route::post('auth', 'Api\V1\AuthController@store')->name('login');
 	Route::get('date', 'Api\V1\DateController@show')->name('date_now');
@@ -269,6 +261,10 @@ Route::group([
 		Route::group([
 			'middleware' => 'role:admin|rrhh|empleado',
 		], function () {
+			// Bonus
+			Route::get('bonus/print/{year}', 'Api\V1\BonusController@print')->name('bonus_print');
+			Route::resource('bonus', 'Api\V1\BonusController')->only('index', 'show', 'store', 'update', 'destroy');
+			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['index', 'store', 'show', 'update', 'delete']);
 			// Ticket
 			Route::get('ticket/print/{id}', 'Api\V1\TicketController@print')->name('ticket_print');
 			// Employee
