@@ -6,8 +6,7 @@ Route::group([
 ], function () {
 	// Bonus
 	Route::get('bonus/{year}', 'Api\V1\BonusController@show')->name('bonus');
-
-
+	Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['index', 'store', 'show', 'update', 'delete']);
 
 
 

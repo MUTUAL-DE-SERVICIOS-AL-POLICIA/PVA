@@ -52,7 +52,16 @@ class BonusYearController extends Controller
    */
   public function update(Request $request, $year)
   {
-    $bonus_year = BonusYear::findOrFail($year);
+    $bonus_year = BonusYear::find($year);
+
+    if (!$bonus_year) BonusYear::create([
+      'year' => $year
+    ]);
+
+    if ($request['bonus'] < count($bonus_year->procedures)) {
+      abort(403);
+    }
+
     $bonus_year->fill($request->all());
     $bonus_year->save();
     return $bonus_year;

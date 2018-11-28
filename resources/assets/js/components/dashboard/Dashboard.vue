@@ -135,8 +135,6 @@ export default {
       try {
         let res = await axios.get(`/payroll/faults/${this.$moment(this.$store.getters.dateNow).year()}`)
         this.procedures = res.data
-        console.log(this.procedures[this.procedures.length - 1]);
-        
       } catch (e) {
         console.log(e);
       }

@@ -8,7 +8,7 @@ class BonusYear extends Model
 {
   protected $primaryKey = 'year';
   public $timestamps = true;
-  protected $fillable = ['bonus'];
+  protected $fillable = ['year', 'bonus'];
 
   public function procedures()
   {

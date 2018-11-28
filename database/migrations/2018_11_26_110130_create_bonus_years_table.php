@@ -15,7 +15,7 @@ class CreateBonusYearsTable extends Migration
   {
     Schema::create('bonus_years', function (Blueprint $table) {
       $table->smallIncrements('year');
-      $table->unsignedTinyInteger('bonus')->default(1);
+      $table->unsignedTinyInteger('bonus')->default(0);
       $table->timestamps();
     });
   }
