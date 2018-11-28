@@ -2,7 +2,7 @@
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
     <v-tooltip slot="activator" top>
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
-      <span>Nuevo Salida</span>
+      <span>Nueva Salida</span>
     </v-tooltip>
     <v-card>
       <v-toolbar dark color="secondary">
@@ -25,7 +25,7 @@
                             v-validate="'required'"
                             name="Tipo"
                             :error-messages="errors.collect('Tipo')"
-                            height="1">
+                            >
                             <span v-for="departureType in departureTypes" :key="departureType.id">
                               <v-radio :label="departureType.name" :value="departureType.id" color="success" v-if="type_departures.includes(departureType.id)"></v-radio>
                             </span>
@@ -64,7 +64,7 @@
                       <v-layout row wrap>
                         <v-flex xs6>
                           <v-menu
-                            :close-on-content-click="true"
+                            :close-on-content-click="false"
                             v-model="menuDateDeparture"
                             :nudge-right="40"
                             lazy
@@ -85,12 +85,18 @@
                               autocomplete='cc-exp-month'
                               clearable
                             ></v-text-field>
-                            <v-date-picker v-model="selectedItem.departure_date" @input="menuDateDeparture = false" no-title locale="es-bo" @change="checkMonthDayYear"></v-date-picker>
+                            <v-date-picker 
+                            v-model="selectedItem.departure_date" 
+                            @input="menuDateDeparture = false" 
+                            no-title 
+                            locale="es-bo" 
+                            @change="checkMonthDayYear"
+                            ></v-date-picker>
                           </v-menu>
                         </v-flex>
                         <v-flex xs6>
                           <v-menu
-                            :close-on-content-click="true"
+                            :close-on-content-click="false"
                             v-model="menuDateReturn"
                             :nudge-right="40"
                             lazy
@@ -108,12 +114,18 @@
                               v-validate="'required'"
                               name="Fecha de retorno"
                               :error-messages="errors.collect('Fecha de retorno')"
-                              autocomplete='cc-exp-month'                        
+                              autocomplete='cc-exp-month'
                               clearable
                             ></v-text-field>
-                            <v-date-picker v-model="selectedItem.return_date" input="menuDateReturn = false" no-title locale="es-bo" @change="checkMonthDayYear"></v-date-picker>
-                          </v-menu>                          
-                        </v-flex>                      
+                            <v-date-picker 
+                            v-model="selectedItem.return_date" 
+                            @input="menuDateReturn = false"
+                            :min="selectedItem.departure_date"
+                            no-title 
+                            locale="es-bo" 
+                            @change="checkMonthDayYear"></v-date-picker>
+                          </v-menu>
+                        </v-flex>
                         <v-flex xs6>
                           <v-menu
                             ref="menu2"
@@ -142,7 +154,7 @@
                               format="24hr"
                               :min="start_time"
                               :max="end_time"
-                              no-title
+                              no-title full-width
                               @change="$refs.menu2.save(selectedItem.departure_time);checkMonthDayYear();"
                             ></v-time-picker>
                           </v-menu>
@@ -175,7 +187,7 @@
                               format="24hr"
                               :min="start_time"
                               :max="end_time"
-                              no-title
+                              no-title full-width
                               @change="$refs.menu3.save(selectedItem.return_time);checkMonthDayYear();"
                             ></v-time-picker>
                           </v-menu>
@@ -271,10 +283,16 @@ export default {
   },
   watch: {
     'selectedItem.departure_date'(val) {
-      this.dateDeparture = this.$moment(this.selectedItem.departure_date).format("DD/MM/YYYY");
+      if (this.selectedItem.departure_date) {
+        this.dateDeparture = this.$moment(this.selectedItem.departure_date).format("DD/MM/YYYY");
+        this.selectedItem.return_date = this.selectedItem.departure_date;
+        this.dateReturn = this.$moment(this.selectedItem.return_date).format("DD/MM/YYYY");
+      }
     },
     'selectedItem.return_date'(val) {
-      this.dateReturn = this.$moment(this.selectedItem.return_date).format("DD/MM/YYYY");
+      if (this.selectedItem.return_date) {
+        this.dateReturn = this.$moment(this.selectedItem.return_date).format("DD/MM/YYYY");
+      }
     }
   },
   methods: {
@@ -292,7 +310,7 @@ export default {
       this.bus.$emit("closeDialog");
       this.selectedItem = {
         id: null,
-        contract_id: null,
+        contract_id: this.selectedItem.contract_id,
         departure_reason_id: null,
         certificate_id: null,
         destiny: null,
@@ -303,6 +321,9 @@ export default {
         return_time: null,
         on_vacation: false
       };
+      this.errorMessages = null;
+      this.dateDeparture = null;
+      this.dateReturn = null;
     },
     async getUser() {
       try {
@@ -391,7 +412,7 @@ export default {
         var f1 = this.$moment(this.selectedItem.departure_date);
         var f2 = this.$moment(this.selectedItem.return_date);
 
-        if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) { console.log(f2.diff(f1, "day"));
+        if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) { 
           // if (this.on_vacation == false) {
             if (f2.diff(f1, "day") == 0) {
                rest_day = rest_hour;
@@ -401,12 +422,12 @@ export default {
               rest_day = rest_hour + 960;
             }
             if (rest_day > departure_used.data.total_minutes_year_rest) {
-              this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest / 8) + ' Horas.';
+              this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest % 480 / 60) + ' Horas.';
               this.valid = false;
             } 
           // }
         } else if (this.departure_type_id == 1 && this.selectedItem.departure_reason_id == 1) { 
-          if (rest_hour > departure_used.data.total_minutes_month_rest) {
+          if (rest_hour > departure_used.data.total_minutes_month_rest || f2.diff(f1, "day") != 0) {
             this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_month_rest / 60) + ' Horas y ' + parseInt(departure_used.data.total_minutes_month_rest % 60)+ ' Minutos.';
             this.valid = false;
           } 
@@ -417,8 +438,8 @@ export default {
               this.valid = false;
             }
           } else if (this.departureReason.hour != null) {
-            if (rest_hour > (this.departureReason.hour * 60)) {              
-              this.errorMessages = 'Solo puede utilizar '+ this.departureReason.hour + 'horas.';
+            if (rest_hour > (this.departureReason.hour * 60) || f2.diff(f1, "day") != 0) {              
+              this.errorMessages = 'Solo puede utilizar '+ this.departureReason.hour + ' horas.';
               this.valid = false;
             }
           }
@@ -433,8 +454,12 @@ export default {
       this.selectedIndex = item;
       this.departure_type_id = item.departure_reason.departure_type_id;
       this.getDepartureReason();
-      this.selectedItem.departure_date = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
-      this.selectedItem.return_date = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
+      this.dateDeparture = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
+      this.dateReturn = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
+      this.selectedItem.departure_date = item.departure_date;
+      this.selectedItem.return_date = item.return_date;
+      this.selectedItem.departure_time = this.$moment.utc(item.departure_time, "HH:mm:ss").format("HH:mm");
+      this.selectedItem.return_time = this.$moment.utc(item.return_time, "HH:mm:ss").format("HH:mm");      
     });
     this.initialize();
   }

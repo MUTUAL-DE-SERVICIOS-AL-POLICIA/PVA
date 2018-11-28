@@ -1,8 +1,14 @@
 <template>
   <v-container fluid>
     <v-toolbar>
-        <v-toolbar-title>Salidas, Comisiones y Licencias</v-toolbar-title>
-        <v-spacer></v-spacer>        
+        <v-toolbar-title>Salidas y Licencias</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn  @click="getDepartures(1)" :class="departureType == 1 ? 'primary white--text' : 'normal'" class="mr-0">
+          <div class="font-weight-regular subheading pa-2">SALIDAS</div>
+        </v-btn>
+        <v-btn  @click="getDepartures(2)" :class="departureType == 2 ? 'primary white--text' : 'normal'" class="ml-0">
+          <div class="font-weight-regular subheading pa-2">LICENCIAS</div>
+        </v-btn>
         <v-divider
           class="mx-2"
           inset
@@ -43,6 +49,7 @@
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr :class="checkEnd(props.item)">
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.certificate.correlative + '/' + props.item.certificate.year }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.departure_type.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ $moment(props.item.created_at).format('DD/MM/YYYY') }} </td>
@@ -73,10 +80,8 @@
           <v-card flat>
             <v-card-text>
               <v-list>
-                <v-list-tile-content><p><strong>Fecha de salida: </strong>{{ $moment(props.item.departure_date).format('DD/MM/YYYY') }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Fecha de retorno: </strong>{{ $moment(props.item.return_date).format('DD/MM/YYYY') }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Hora de salida: </strong>{{ $moment(props.item.departure_time, "HH:mm:ss").format("HH:mm") }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Hora de retorno: </strong>{{ $moment(props.item.return_time, "HH:mm:ss").format("HH:mm") }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Fecha de salida: </strong>{{ $moment(props.item.departure_date).format('DD/MM/YYYY') }} {{ $moment(props.item.departure_time, "HH:mm:ss").format("HH:mm") }} </p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Fecha de retorno: </strong>{{ $moment(props.item.return_date).format('DD/MM/YYYY') }} {{ $moment(props.item.return_time, "HH:mm:ss").format("HH:mm") }} </p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Destino: </strong>{{ props.item.destiny }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Descripción: </strong>{{ props.item.description }}</p></v-list-tile-content>
               </v-list>
@@ -101,9 +106,14 @@ export default {
     RemoveItem
   },
   data: () => ({
-    active: true,
+    departureType: 1,
     bus: new Vue(),
     headers: [
+      {
+        text: "No. Solicitud",
+        value: "certificate.correlative",
+        align: "center"
+      },
       {
         text: "Tipo",
         value: "departure_reason.departure_type.name",
@@ -126,14 +136,14 @@ export default {
       },
       {
         text: "Acciones",
-        value: "employee.first_name",
+        value: "",
         align: "center",
         sortable: false
       }
     ],
     departures: [],
-    contractsActive: [],
-    contractsInactive: [],
+    departureComision: [],
+    departureLicence: [],
     search: "",
     switch1: true,
     contracState: "vigentes",
@@ -148,21 +158,18 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getDepartures();
     });
-    this.headers = this.headers.filter(el => {
-      return el.text != "Acciones";
-    });
   },
   methods: {
-    async getDepartures() {
+    async getDepartures(departureType = this.departureType) {
       try {
         let contract = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);        
-        let res = await axios.get(`/departure/get_departures/${contract.data.id}`);        
-        this.departures = res.data;
+        let res = await axios.get(`/departure/get_departures/${contract.data.id}`);
+        this.departureType = departureType;
+        this.departures = res.data.filter(e => e.departure_reason.departure_type_id == departureType);
 
         let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
-        // var hora = departure_used.data.total_hours_month_res / 60 ;
         this.hrsxMes = Math.trunc((departure_used.data.total_minutes_month_rest / 60)) + " hr. y " + (departure_used.data.total_minutes_month_rest % 60) + " min.";
-        this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest / 8) + " hr.";
+        this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest % 480 / 60) + " hr.";
       } catch (e) {
         console.log(e);
       }

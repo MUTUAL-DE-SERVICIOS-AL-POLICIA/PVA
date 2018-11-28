@@ -1,8 +1,14 @@
 <template>
   <v-container fluid>
     <v-toolbar>
-        <v-toolbar-title>Administrador de Salidas, Comisiones y Licencias</v-toolbar-title>
-        <v-spacer></v-spacer>  
+        <v-toolbar-title>Administrador de Salidas y Licencias</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn  @click="getDepartures(1)" :class="departureType == 1 ? 'primary white--text' : 'normal'" class="mr-0">
+          <div class="font-weight-regular subheading pa-2">SALIDAS</div>
+        </v-btn>
+        <v-btn  @click="getDepartures(2)" :class="departureType == 2 ? 'primary white--text' : 'normal'" class="ml-0">
+          <div class="font-weight-regular subheading pa-2">LICENCIAS</div>
+        </v-btn>
          <DepartureReport :bus="bus"/>
         <v-divider
           class="mx-2"
@@ -31,6 +37,7 @@
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr :class="checkEnd(props.item)">
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.certificate.correlative + '/' + props.item.certificate.year }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.contract.employee.identity_card }} {{ props.item.contract.employee.city_identity_card.shortened }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ fullName(props.item.contract.employee) }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.contract.position.name }} </td>
@@ -59,10 +66,8 @@
           <v-card flat>
             <v-card-text>
               <v-list>
-                <v-list-tile-content><p><strong>Fecha de salida: </strong>{{ $moment(props.item.departure_date).format('DD/MM/YYYY') }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Fecha de retorno: </strong>{{ $moment(props.item.return_date).format('DD/MM/YYYY') }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Hora de salida: </strong>{{ $moment(props.item.departure_time, "HH:mm:ss").format("HH:mm") }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Hora de retorno: </strong>{{ $moment(props.item.return_time, "HH:mm:ss").format("HH:mm") }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Fecha de salida: </strong>{{ $moment(props.item.departure_date).format('DD/MM/YYYY') }} {{ $moment(props.item.departure_time, "HH:mm:ss").format("HH:mm") }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Fecha de retorno: </strong>{{ $moment(props.item.return_date).format('DD/MM/YYYY') }} {{ $moment(props.item.return_time, "HH:mm:ss").format("HH:mm") }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Destino: </strong>{{ props.item.destiny }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Descripción: </strong>{{ props.item.description }}</p></v-list-tile-content>
               </v-list>
@@ -72,7 +77,7 @@
         <v-alert slot="no-results" :value="true" color="error">
           La búsqueda de "{{ search }}" no encontró resultados.
         </v-alert>
-    </v-data-table>
+    </v-data-table> 
   </v-container>
 </template>
 <script type="text/javascript">
@@ -87,12 +92,17 @@ export default {
     RemoveItem
   },
   data: () => ({
-    active: true,
+    departureType: 1,
     bus: new Vue(),
     headers: [
       {
+        text: "No Solicitud",
+        value: "certificate.correlative",
+        align: "center"
+      },
+      {
         text: "C.I.",
-        value: "contractemployee.identity_card",
+        value: "contract.employee.identity_card",
         align: "center"
       },
       {
@@ -122,12 +132,12 @@ export default {
       },
       {
         text: "Apobado",
-        value: "approved",
+        value: "contract.employee.mothers_last_name",
         align: "center"
       },
       {
         text: "Acciones",
-        value: "employee.first_name",
+        value: "contract.employee.first_name",
         align: "center",
         sortable: false
       }
@@ -135,7 +145,8 @@ export default {
     departures: [],
     search: "",
     switch1: true,
-    contracState: "vigentes"
+    departureComision: [],
+    departureLicence: []
   }),
   computed: {    
     
@@ -153,10 +164,11 @@ export default {
     }
   },
   methods: {
-    async getDepartures() {
+    async getDepartures(departureType = this.departureType) {
       try {
         let res = await axios.get(`/departure`);
-        this.departures = res.data;
+        this.departureType = departureType;
+        this.departures = res.data.filter(e => e.departure_reason.departure_type_id == departureType);
       } catch (e) {
         console.log(e);
       }
@@ -165,7 +177,6 @@ export default {
       this.bus.$emit("openDialog", $.extend({}, item, { mode: mode }));
     },
     async removeItem(item) {
-      console.log(item);
       let departure = await axios.get("/departure/" + item.id
       );
       if (departure.data.approved == true) {
@@ -177,13 +188,7 @@ export default {
       }
     },
     fullName(employee) {
-      let names = `${employee.last_name || ""} ${employee.mothers_last_name ||
-        ""} ${employee.surname_husband || ""} ${employee.first_name ||
-        ""} ${employee.second_name || ""} `;
-      names = names
-        .replace(/\s+/gi, " ")
-        .trim()
-        .toUpperCase();
+      let names = [employee.last_name, employee.mothers_last_name, employee.first_name, employee.second_name]. join(" ").toUpperCase();
       return names;
     },
     checkEnd(departure) {
