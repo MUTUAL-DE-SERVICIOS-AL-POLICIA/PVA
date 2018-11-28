@@ -24,6 +24,7 @@
           @change="changeYear"
         ></v-select>
       </v-flex>
+      <RemoveItem :bus="bus"/>
       <ProcedureAdd v-if="$store.getters.currentUser.roles[0].name == 'admin'" :bus="bus" type="eventual"/>
     </v-toolbar>
     <div v-if="loading">
@@ -51,7 +52,7 @@
               <div>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y v-for="procedure in bonusYear.procedures" :key="procedure.id" class="mr-2">
+                  <v-menu offset-y v-for="procedure in bonusYear.procedures" :key="procedure.id" class="mr-2 ml-1">
                     <v-btn slot="activator" color="error">
                       <span>{{ procedure.name }}</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -72,20 +73,31 @@
                           </v-list-tile-content>
                         </v-list-tile>
                       </v-list>
+                      <v-list>
+                        <v-list-tile @click="bonusProcedure = procedure; bonusDialog = true" v-if="$store.getters.currentUser.roles[0].name == 'rrhh' || $store.getters.currentUser.roles[0].name == 'admin'">
+                          <v-list-tile-content>
+                            <div class="blue--text">EDITAR</div>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile @click="bus.$emit('openDialogRemove', `/bonus/${procedure.id}`)" v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                          <v-list-tile-content>
+                            <div class="red--text">ELIMINAR</div>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
                     </v-card>
                   </v-menu>
                   <v-dialog
-                    v-if="bonusYear.bonus > bonusYear.procedures.length"
                     v-model="bonusDialog"
                     width="600"
-                    @keydown.esc="bonusDialog = false"
+                    @keydown.esc="closeEditBonus"
                   >
-                    <v-btn color="error" slot="activator">
+                    <v-btn color="error" slot="activator" v-if="bonusYear.bonus > bonusYear.procedures.length">
                       Registrar
                     </v-btn>
                     <v-card>
                       <v-toolbar dark color="secondary">
-                        <v-toolbar-title class="white--text">Registrar Aguinaldo</v-toolbar-title>
+                        <v-toolbar-title class="white--text">{{ 'id' in bonusProcedure ? 'Editar Aguinaldo' : 'Registrar Aguinaldo' }}</v-toolbar-title>
                       </v-toolbar>
                       <v-card-text>
                         <v-select
@@ -93,11 +105,15 @@
                           v-model="bonusProcedure.name"
                           label="Nombre"
                         ></v-select>
+                        <div class="text-md-center">
+                          <div>Fecha de Pago</div>
+                          <v-date-picker locale="es-bo" v-model="bonusProcedure.pay_date"></v-date-picker>
+                        </div>
                       </v-card-text>
                       <v-divider></v-divider>
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="error" @click.native="bonusDialog = false"><v-icon>close</v-icon> Cancelar</v-btn>
+                        <v-btn color="error" @click.native="closeEditBonus"><v-icon>close</v-icon> Cancelar</v-btn>
                         <v-btn color="success" :disabled="this.errors.any()" @click.native="saveBonus"><v-icon>check</v-icon> Guardar</v-btn>
                       </v-card-actions>
                     </v-card>
@@ -304,11 +320,13 @@
 <script>
 import Vue from "vue";
 import ProcedureAdd from "./ProcedureAdd";
+import RemoveItem from "../RemoveItem";
 import Loading from "../Loading";
 export default {
   name: "ProcedureIndex",
   components: {
     ProcedureAdd,
+    RemoveItem,
     Loading
   },
   data() {
@@ -345,30 +363,49 @@ export default {
           name: 'OVT',
           type: 'csv'
         }
-      ]
+      ],
+      bonusProcedure: {}
     };
   },
-  computed: {
-    bonusProcedure() {
-      return {
-        name: this.bonusNames[0],
-        year: null,
-        pay_date: null
-      }
-    }
-  },
   mounted() {
-    this.getYears();
-    this.getManagementEntities();
-    this.getEmployerNumbers();
+    this.getYears()
+    this.getManagementEntities()
+    this.getEmployerNumbers()
     this.bus.$on("closeDialog", year => {
-      this.getYears(year);
-      this.changeYear();
-    });
+      this.getYears(year)
+      this.changeYear()
+    })
   },
   methods: {
+    closeEditBonus() {
+      this.bonusDialog = false
+      this.clearBonusProcedure()
+    },
+    clearBonusProcedure() {
+      this.bonusProcedure = {
+        name: this.bonusNames[this.bonusYear.procedures.length],
+        year: this.yearSelected,
+        pay_date: this.$store.getters.dateNow
+      }
+    },
+    async saveBonus() {
+      try {
+        if ('id' in this.bonusProcedure) {
+          let res = await axios.patch(`/bonus/${this.bonusProcedure.id}`, this.bonusProcedure)
+          this.getBonusYear(this.bonusYear.year)
+        } else {
+          let res = await axios.post(`/bonus`, this.bonusProcedure)
+          this.bonusYear.procedures.push(res.data)
+        }
+        this.clearBonusProcedure()
+        this.toastr.success('Guardado correctamente')
+        this.closeEditBonus();
+      } catch (e) {
+        console.log(e)
+      }
+    },
     bonusPrint(id, type) {
-      let url = `bonus/${id}?report_type=${type}`
+      let url = `/bonus/print/${id}?report_type=${type}`
       if (type == 'pdf') {
         this.print(url)
       } else {
@@ -558,6 +595,7 @@ export default {
         let res = await axios.get(`bonus_procedure/${year}`)
         this.bonusYear = res.data
         this.bonusProcedure.year = year
+        this.clearBonusProcedure()
       } catch (e) {
         console.log(e)
       }

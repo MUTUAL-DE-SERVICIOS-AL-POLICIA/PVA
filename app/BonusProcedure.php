@@ -11,7 +11,7 @@ class BonusProcedure extends Model
   protected $dates = ['deleted_at'];
   public $timestamps = true;
   public $guarded = ['id'];
-  protected $fillable = ['year', 'pay_date'];
+  protected $fillable = ['year', 'pay_date', 'name'];
 
   public function bonus_year()
   {

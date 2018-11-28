@@ -38,9 +38,11 @@ class BonusYearController extends Controller
    */
   public function show($year)
   {
-    $bonus_year = BonusYear::findOrFail($year);
-    $bonus_year->procedures;
-    return $bonus_year;
+    $bonus_year = BonusYear::where('year', $year)->with(['procedures' => function ($q) {
+      $q->orderBy('created_at');
+    }])->first();
+    if ($year) return $bonus_year;
+    abort(404);
   }
 
   /**

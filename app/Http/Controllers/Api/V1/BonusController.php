@@ -8,6 +8,7 @@ use App\Company;
 use App\Contract;
 use App\EmployeeBonus;
 use App\BonusProcedure;
+use App\BonusYear;
 use App\CompanyAccount;
 use App\Helpers\Util;
 use Carbon\Carbon;
@@ -16,12 +17,78 @@ use Response;
 class BonusController extends Controller
 {
   /**
+   * Display the list of all items.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index()
+  {
+    return BonusProcedure::get();
+  }
+
+  /**
    * Display the specified resource.
+   *
+   * @param  \App\BonusProcedure  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function show($id)
+  {
+    $bonus = BonusProcedure::findOrFail($id);
+    return $bonus;
+  }
+
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  \App\Contract  $contract
+   * @return \Illuminate\Http\Response
+   */
+  public function store(Request $request)
+  {
+    $year = BonusYear::where('year', $request['year'])->first();
+    if (!$year) abort(404);
+    $bonus = BonusProcedure::where('year', $request['year'])->count();
+    if ($bonus < $year->bonus) return BonusProcedure::create($request->all());
+    abort(403);
+  }
+
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  \App\Contract  $contract
+   * @return \Illuminate\Http\Response
+   */
+  public function update(Request $request, $id)
+  {
+    $bonus = BonusProcedure::findOrFail($id);
+    $bonus->fill($request->all());
+    $bonus->save();
+    return $bonus;
+  }
+
+  /**
+   * Remove the specified resource from storage.
    *
    * @param  \App\Contract  $contract
    * @return \Illuminate\Http\Response
    */
-  public function show(Request $request, $id)
+  public function destroy($id)
+  {
+    $bonus = BonusProcedure::findOrFail($id);
+    $bonus->delete();
+    return $bonus;
+  }
+
+  /**
+   * Print the specified resource.
+   *
+   * @param  \App\BonusProcedure  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function print(Request $request, $id)
   {
     $procedure = BonusProcedure::findOrFail($id);
     $year = $procedure->year;
@@ -127,40 +194,5 @@ class BonusController extends Controller
           ->setOption('encoding', 'utf-8')
           ->stream($file_name);
     }
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  \App\Contract  $contract
-   * @return \Illuminate\Http\Response
-   */
-  public function store(Request $request)
-  {
-
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  \App\Contract  $contract
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, $id)
-  {
-
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  \App\Contract  $contract
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy($id)
-  {
-
   }
 }

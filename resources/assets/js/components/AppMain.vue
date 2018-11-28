@@ -31,13 +31,11 @@
           <v-list-group
             v-else
             :value="false"
+            :prepend-icon="item.icon"
             @mouseover="miniVariant = false"
             @mouseout="miniVariant = true"
           >
             <v-list-tile slot="activator">
-              <v-list-tile-action>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-tile-action>
               <v-list-tile-title :class="miniVariant ? 'pl-3' : ''">{{ item.title }}</v-list-tile-title>
             </v-list-tile>
 
