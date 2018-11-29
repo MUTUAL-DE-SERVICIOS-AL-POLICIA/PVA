@@ -25,14 +25,13 @@
                             v-validate="'required'"
                             name="Tipo"
                             :error-messages="errors.collect('Tipo')"
+                            row
                             >
                             <span v-for="departureType in departureTypes" :key="departureType.id">
                               <v-radio :label="departureType.name" :value="departureType.id" color="success" v-if="type_departures.includes(departureType.id)"></v-radio>
                             </span>
                           </v-radio-group>
                           <v-checkbox label="A cuenta de vacación" v-model="selectedItem.on_vacation" v-if="departure_type_id==2 && contractType==1"></v-checkbox>
-                        </v-flex>
-                        <v-flex xs6>
                           <v-autocomplete
                             v-model="selectedItem.departure_reason_id"
                             :items="departureReasons"
@@ -41,12 +40,15 @@
                             label="Motivo"
                             :hint="descriptionReason"
                             persistent-hint
-                            @change="getDepartureReasonDesc"
+                            @change="getDepartureReasonDesc();checkMonthDayYear()"
                             v-validate="'required'"
                             name="Motivo"
                             :error-messages="errors.collect('Motivo')"
                             :disabled="disabledReason">
                           </v-autocomplete>
+                          
+                        </v-flex>
+                        <v-flex xs6>
                           <v-text-field
                             v-model="selectedItem.destiny"
                             label="Lugar de destino"
@@ -54,6 +56,11 @@
                             name="Destino"
                             :error-messages="errors.collect('Destino')"
                           ></v-text-field>
+                          <v-textarea
+                            v-model="selectedItem.description"
+                            label="Observaciones"
+                            rows="4"
+                          ></v-textarea>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -62,7 +69,7 @@
                     <legend>HORARIO:</legend>
                     <v-flex xs12>
                       <v-layout row wrap>
-                        <v-flex xs6>
+                        <v-flex xs3>
                           <v-menu
                             :close-on-content-click="false"
                             v-model="menuDateDeparture"
@@ -94,7 +101,17 @@
                             ></v-date-picker>
                           </v-menu>
                         </v-flex>
-                        <v-flex xs6>
+                        <v-flex xs3>
+                          <v-text-field
+                            v-model="selectedItem.departure_time" 
+                            label="Hora de salida"
+                            type="time"
+                            :min="start_time"
+                            :max="end_time"
+                            @change="checkMonthDayYear();"
+                          ></v-text-field>
+                        </v-flex>
+                        <v-flex xs3>
                           <v-menu
                             :close-on-content-click="false"
                             v-model="menuDateReturn"
@@ -126,82 +143,19 @@
                             @change="checkMonthDayYear"></v-date-picker>
                           </v-menu>
                         </v-flex>
-                        <v-flex xs6>
-                          <v-menu
-                            ref="menu2"
-                            :close-on-content-click="false"
-                            v-model="menuTimeDeparture"
-                            transition="scale-transition"
-                            full-width
-                            offset-y
-                          >
-                            <v-text-field
-                              slot="activator"
-                              v-model="selectedItem.departure_time"
-                              label="Hora de salida"
-                              prepend-icon="access_time"
-                              readonly
-                              clearable
-                              hint="Dejar en blanco si no tiene hora de salida"
-                              v-validate="'required'"
-                              name="Hora de salida"
-                              :error-messages="errors.collect('Hora de salida')"
-                              persistent-hint
-                            ></v-text-field>
-                            <v-time-picker
-                              v-if="menuTimeDeparture"
-                              v-model="selectedItem.departure_time"
-                              format="24hr"
-                              :min="start_time"
-                              :max="end_time"
-                              no-title full-width
-                              @change="$refs.menu2.save(selectedItem.departure_time);checkMonthDayYear();"
-                            ></v-time-picker>
-                          </v-menu>
-                        </v-flex>
-                        <v-flex xs6>
-                          <v-menu
-                            ref="menu3"
-                            :close-on-content-click="false"
-                            v-model="menuTimeReturn"
-                            transition="scale-transition"
-                            full-width
-                            offset-y
-                          >
-                            <v-text-field
-                              slot="activator"
-                              v-model="selectedItem.return_time"
-                              label="Hora de retorno"
-                              prepend-icon="access_time"
-                              readonly
-                              clearable
-                              hint="Dejar en blanco si no tiene hora de retorno"
-                              v-validate="'required'"
-                              name="Hora de retorno"
-                              :error-messages="errors.collect('Hora de retorno')"
-                              persistent-hint
-                            ></v-text-field>
-                            <v-time-picker
-                              v-if="menuTimeReturn"
-                              v-model="selectedItem.return_time"
-                              format="24hr"
-                              :min="start_time"
-                              :max="end_time"
-                              no-title full-width
-                              @change="$refs.menu3.save(selectedItem.return_time);checkMonthDayYear();"
-                            ></v-time-picker>
-                          </v-menu>
-                        </v-flex>
+                        <v-flex xs3>
+                          <v-text-field
+                            v-model="selectedItem.return_time" 
+                            label="Hora de retorno"
+                            type="time"
+                            :min="start_time"
+                            :max="end_time"
+                            @change="checkMonthDayYear();"
+                          ></v-text-field>
+                        </v-flex>                        
                       </v-layout>
                     </v-flex>
                   </fieldset>
-                  <v-flex xs12>
-                    <v-textarea
-                      v-model="selectedItem.description"
-                      label="Observaciones"
-                      rows="2"
-                    ></v-textarea>
-                  </v-flex>
               </v-form>
               <v-alert
                 v-model="alert"
@@ -307,7 +261,7 @@ export default {
     close() {
       this.dialog = false;
       this.$validator.reset();
-      this.bus.$emit("closeDialog");
+      this.bus.$emit("closeDialog", this.departure_type_id);
       this.selectedItem = {
         id: null,
         contract_id: this.selectedItem.contract_id,
@@ -393,7 +347,7 @@ export default {
       }
     },
     async checkMonthDayYear () {
-      if (this.dateDeparture && this.dateReturn && this.selectedItem.departure_time && this.selectedItem.return_time) {
+      if (this.dateDeparture && this.dateReturn && this.selectedItem.departure_time && this.selectedItem.return_time && this.selectedItem.departure_reason_id) {
         this.errorMessages = null;
         this.valid = true;
         let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
