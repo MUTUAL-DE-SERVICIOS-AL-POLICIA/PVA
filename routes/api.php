@@ -261,6 +261,10 @@ Route::group([
 		Route::group([
 			'middleware' => 'role:admin|rrhh|empleado',
 		], function () {
+			// Bonus
+			Route::get('bonus/print/{year}', 'Api\V1\BonusController@print')->name('bonus_print');
+			Route::resource('bonus', 'Api\V1\BonusController')->only('index', 'show', 'store', 'update', 'destroy');
+			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['index', 'store', 'show', 'update', 'delete']);
 			// Ticket
 			Route::get('ticket/print/{id}', 'Api\V1\TicketController@print')->name('ticket_print');
 			// Employee
@@ -284,6 +288,7 @@ Route::group([
 			Route::post('payroll', 'Api\V1\PayrollController@store')->name('payroll_store');
 			Route::patch('payroll/{id}', 'Api\V1\PayrollController@update')->name('payroll_update');
 			Route::delete('payroll/{id}', 'Api\V1\PayrollController@destroy')->name('payroll_delete');
+			Route::get('payroll/faults/{year}', 'Api\V1\PayrollController@getYearFaults')->name('payroll_year_faults');
 			// Consultant Payroll
 			Route::post('consultant_payroll', 'Api\V1\ConsultantPayrollController@store')->name('consultant_payroll_store');
 			Route::patch('consultant_payroll/{id}', 'Api\V1\ConsultantPayrollController@update')->name('consultant_payroll_update');
