@@ -3,19 +3,19 @@
     <v-toolbar>
         <v-toolbar-title>Salidas y Licencias</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-chip color="secondary white--text"> Hrs/mes: {{ hrsxMes }} </v-chip>
+        <v-chip color="secondary white--text"> dias/año: {{ dayxYear }} </v-chip>        
+        <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
         <v-btn  @click="getDepartures(1)" :class="departureType == 1 ? 'primary white--text' : 'normal'" class="mr-0">
           <div class="font-weight-regular subheading pa-2">SALIDAS</div>
         </v-btn>
         <v-btn  @click="getDepartures(2)" :class="departureType == 2 ? 'primary white--text' : 'normal'" class="ml-0">
           <div class="font-weight-regular subheading pa-2">LICENCIAS</div>
         </v-btn>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <v-chip color="secondary white--text"> Hrs/mes: {{ hrsxMes }} </v-chip>
-        <v-chip color="secondary white--text"> dias/año: {{ dayxYear }} </v-chip>
         <v-divider
           class="mx-2"
           inset
@@ -37,7 +37,7 @@
           inset
           vertical
         ></v-divider>
-        <DepartureForm :contract="{}" :bus="bus"/>
+        <DepartureForm :bus="bus"/>
         <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
@@ -149,14 +149,14 @@ export default {
     contracState: "vigentes",
     hrsxMes: null,
     dayxYear: null
-  }),
-  computed: {    
-    
-  },
-  async created() {
+  }),  
+  async mounted() {
     this.getDepartures();
-    this.bus.$on("closeDialog", () => {
-      this.getDepartures();
+    this.bus.$on("closeDialog", departureType => {
+      if (departureType == null) {
+        departureType = this.departureType;
+      } 
+      this.getDepartures(departureType);      
     });
   },
   methods: {

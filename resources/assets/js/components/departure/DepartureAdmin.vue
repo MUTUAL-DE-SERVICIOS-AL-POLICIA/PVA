@@ -2,14 +2,19 @@
   <v-container fluid>
     <v-toolbar>
         <v-toolbar-title>Administrador de Salidas y Licencias</v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>        
+         <DepartureReport :bus="bus"/>
+        <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
         <v-btn  @click="getDepartures(1)" :class="departureType == 1 ? 'primary white--text' : 'normal'" class="mr-0">
           <div class="font-weight-regular subheading pa-2">SALIDAS</div>
         </v-btn>
         <v-btn  @click="getDepartures(2)" :class="departureType == 2 ? 'primary white--text' : 'normal'" class="ml-0">
           <div class="font-weight-regular subheading pa-2">LICENCIAS</div>
         </v-btn>
-         <DepartureReport :bus="bus"/>
         <v-divider
           class="mx-2"
           inset
