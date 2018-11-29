@@ -97,6 +97,8 @@
                             @input="menuDateDeparture = false" 
                             no-title 
                             locale="es-bo" 
+                            :min="$moment().subtract(1, 'days').format('YYYY-MM-DD')"
+                            :max="$moment().add(2, 'days').format('YYYY-MM-DD')"
                             @change="checkMonthDayYear"
                             ></v-date-picker>
                           </v-menu>
@@ -137,9 +139,10 @@
                             <v-date-picker 
                             v-model="selectedItem.return_date" 
                             @input="menuDateReturn = false"
-                            :min="selectedItem.departure_date"
                             no-title 
-                            locale="es-bo" 
+                            locale="es-bo"
+                            :min="selectedItem.departure_date"
+                            :max="$moment().add(30, 'days').format('YYYY-MM-DD')"
                             @change="checkMonthDayYear"></v-date-picker>
                           </v-menu>
                         </v-flex>
