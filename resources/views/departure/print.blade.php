@@ -10,7 +10,7 @@
     <div class="page-break p-10" style="border-radius: 0.75em;border: 1px solid #22292f;">
         <table class="w-100 ">
             <tr>
-                <th class="w-20 text-left no-padding no-margins align-middle">
+                <th class="w-15 text-left no-padding no-margins align-middle">
                     <div class="text-center">
                         <img src="{{ public_path("/img/logo.png") }}" class="w-100">
                     </div>
@@ -83,7 +83,6 @@
                     </tr>
                 </thead>
                 <tbody class="table-striped">
-                    
                     <tr class="text-sm">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Motivo</td>
                         <td colspan='2' class="text-left uppercase px-5 py-3"> {{ $departure->departure_reason->name }} </td>
@@ -93,15 +92,24 @@
                         <td colspan='2' class="text-left uppercase px-5 py-3"> {{ $departure->destiny }} </td>
                     </tr>
                     <tr class="text-sm">
-                        <td class="text-left w-20 px-10 py-3 uppercase font-bold">Horario</td>
-                        <td class="text-left uppercase px-5 py-3">
-                            Salida: {{ Carbon::parse($departure->departure_date)->format('d/m/Y').' '.Carbon::parse($departure->departure_time)->format('H:i') }}
+                        <td class="text-left w-20 px-10 py-3 uppercase font-bold">Salida</td>
+                        <td class="text-left uppercase w-40 px-5 py-3">
+                            <span class="font-bold">Fecha: </span> {{ Carbon::parse($departure->departure_date)->format('d/m/Y') }}
                         </td>
                         <td class="text-left uppercase px-5 py-3">
-                            Retorno: {{ Carbon::parse($departure->return_date)->format('d/m/Y').' '.Carbon::parse($departure->return_time)->format('H:i') }}
+                            <span class="font-bold">Hora: </span> {{ Carbon::parse($departure->departure_time)->format('H:i') }}
                         </td>
                     </tr>
                     <tr class="text-sm">
+                        <td class="text-left w-20 px-10 py-3 uppercase font-bold">Retorno</td>
+                        <td class="text-left uppercase px-5 py-3">
+                            <span class="font-bold">Fecha: </span> {{ Carbon::parse($departure->return_date)->format('d/m/Y') }}
+                        </td>
+                        <td class="text-left uppercase px-5 py-3">
+                            <span class="font-bold">Hora: </span> {{ Carbon::parse($departure->return_time)->format('H:i') }}
+                        </td>
+                    </tr>
+                    <tr class="text-sm" style="height: 50px">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Observaciones</td>
                         <td colspan='2' class="text-left uppercase px-5 py-3"> {{ $departure->description }} </td>
                     </tr>
@@ -109,7 +117,7 @@
             </table>
             <table class="table-info w-100 m-b-1">
                 <tbody class="">
-                    <tr class="" style="height: 190px; vertical-align: bottom;">
+                    <tr class="" style="height: 160px; vertical-align: bottom;">
                         <td class="text-center w-30 font-bold">Solicitante</td>
                         <td class="text-center w-30 font-bold">Autorizado</td>
                         <td class="text-center w-30 font-bold">RRHH</td>
@@ -125,7 +133,7 @@
     <div class="page-break p-10" style="border-radius: 0.75em;border: 1px solid #22292f;">
         <table class="w-100 ">
             <tr>
-                <th class="w-20 text-left no-padding no-margins align-middle">
+                <th class="w-15 text-left no-padding no-margins align-middle">
                     <div class="text-center">
                         <img src="{{ public_path("/img/logo.png") }}" class="w-100">
                     </div>
@@ -198,7 +206,6 @@
                     </tr>
                 </thead>
                 <tbody class="table-striped">
-                    
                     <tr class="text-sm">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Motivo</td>
                         <td colspan='2' class="text-left uppercase px-5 py-3"> {{ $departure->departure_reason->name }} </td>
@@ -208,15 +215,24 @@
                         <td colspan='2' class="text-left uppercase px-5 py-3"> {{ $departure->destiny }} </td>
                     </tr>
                     <tr class="text-sm">
-                        <td class="text-left w-20 px-10 py-3 uppercase font-bold">Horario</td>
-                        <td class="text-left uppercase px-5 py-3">
-                            Salida: {{ Carbon::parse($departure->departure_date)->format('d/m/Y').' '.Carbon::parse($departure->departure_time)->format('H:i') }}
+                        <td class="text-left w-20 px-10 py-3 uppercase font-bold">Salida</td>
+                        <td class="text-left uppercase w-40 px-5 py-3">
+                            <span class="font-bold">Fecha: </span> {{ Carbon::parse($departure->departure_date)->format('d/m/Y') }}
                         </td>
                         <td class="text-left uppercase px-5 py-3">
-                            Retorno: {{ Carbon::parse($departure->return_date)->format('d/m/Y').' '.Carbon::parse($departure->return_time)->format('H:i') }}
+                            <span class="font-bold">Hora: </span> {{ Carbon::parse($departure->departure_time)->format('H:i') }}
                         </td>
                     </tr>
                     <tr class="text-sm">
+                        <td class="text-left w-20 px-10 py-3 uppercase font-bold">Retorno</td>
+                        <td class="text-left uppercase px-5 py-3">
+                            <span class="font-bold">Fecha: </span> {{ Carbon::parse($departure->return_date)->format('d/m/Y') }}
+                        </td>
+                        <td class="text-left uppercase px-5 py-3">
+                            <span class="font-bold">Hora: </span> {{ Carbon::parse($departure->return_time)->format('H:i') }}
+                        </td>
+                    </tr>
+                    <tr class="text-sm" style="height: 50px">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Observaciones</td>
                         <td colspan='2' class="text-left uppercase px-5 py-3"> {{ $departure->description }} </td>
                     </tr>
@@ -224,7 +240,7 @@
             </table>
             <table class="table-info w-100 m-b-1">
                 <tbody class="">
-                    <tr class="" style="height: 190px; vertical-align: bottom;">
+                    <tr class="" style="height: 160px; vertical-align: bottom;">
                         <td class="text-center w-30 font-bold">Solicitante</td>
                         <td class="text-center w-30 font-bold">Autorizado</td>
                         <td class="text-center w-30 font-bold">RRHH</td>
