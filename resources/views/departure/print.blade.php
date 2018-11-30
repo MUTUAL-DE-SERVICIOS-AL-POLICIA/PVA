@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>PLATAFORMA VIRTUAL - MUSERPOL </title>
-    {{-- <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" /> --}}
-    <link rel="stylesheet" href="{{ public_path("/css/report-print.css") }}" media="all" />
+    {{-- <link rel="stylesheet" href="{{ asset('css/materialicons.min.css') }}" media="all" /> --}}
+    <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all" />
 </head>
 <body style="border: 0;border-radius: 0;">
     <div class="page-break p-10" style="border-radius: 0.75em;border: 1px solid #22292f;">
