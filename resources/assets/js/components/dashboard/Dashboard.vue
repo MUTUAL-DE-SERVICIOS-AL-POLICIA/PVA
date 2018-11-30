@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-card>
       <v-container fluid grid-list-md>
-        <v-layout row wrap v-if="$store.getters.currentUser.roles[0].name != 'empleado'">
+        <v-layout row wrap>
           <v-flex xs12 sm4 v-for="filter in filteredEmployees" :key="filter.icon">
             <v-card :color="filter.color" dark>
               <v-layout row wrap>
@@ -17,8 +17,8 @@
                         mothers_last_name: { title: 'APELLIDO MATERNO' },
                         first_name: { title: 'PRIMER NOMBRE' },
                         second_name: { title: 'SEGUNDO NOMBRE' },
-                        identity_card: { title: 'CI' },
-                        birth_date: { title: 'FECHA DE NACIMIENTO'}
+                        position: { title: 'CARGO' },
+                        phone_number: { title: 'TELÉFONO'}
                       }"
                       :csv-title="`${filter.title}_${$store.getters.dateNow}`"
                     >
@@ -47,7 +47,7 @@
               </v-layout>
             </v-card>
           </v-flex>
-          <v-flex xs12 sm4 class="mt-3">
+          <v-flex xs12 sm4 class="mt-3" v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh'">
             <v-card dark>
               <v-layout row wrap>
                 <v-flex xs4 class="text-xs-center" mt-4>
@@ -74,7 +74,7 @@
                 </v-flex>
                 <v-flex xs8>
                   <v-card-text class="text-xs-center">
-                    <div class="display-3 font-weight-thin">{{ procedures.length == 0 ? '0' : procedures.map(item => item.faults).reduce((prev, next) => prev + next) }}</div>
+                    <div class="display-3 font-weight-thin">{{ procedures.length == 0 ? '0' : new Intl.NumberFormat('es-BO').format(procedures.map(item => item.faults).reduce((prev, next) => prev + next)) }}</div>
                     <div class="display-1 font-weight-light">Fondo Social</div>
                     <v-tooltip bottom>
                       <div slot="activator" class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
@@ -91,10 +91,50 @@
               </v-layout>
             </v-card>
           </v-flex>
-        </v-layout>
-
-        <v-layout row wrap v-else>
-          <v-flex xs12 sm4>
+          <v-flex xs12 sm4 class="mt-3">
+            <v-hover>
+              <v-card dark color="blue-grey darken-2" slot-scope="{ hover }">
+                <v-layout row wrap>
+                  <v-flex xs4 class="text-xs-center" mt-4>
+                    <v-icon size="80">cake</v-icon>
+                    <div class="text-xs-left mt-4 ml-3">
+                      <vue-json-to-csv
+                          :json-data="birthday"
+                          :labels = "{
+                            first_name: { title: 'PRIMER NOMBRE' },
+                            second_name: { title: 'SEGUNDO NOMBRE' },
+                            last_name: { title: 'APELLIDO PATERNO' },
+                            mothers_last_name: { title: 'APELLIDO MATERNO' }
+                          }"
+                          :csv-title="`cumpleañeros_${$moment($store.getters.dateNow).format('M_Y')}`"
+                        >
+                        <v-tooltip right>
+                          <v-btn flat icon slot="activator">
+                            <v-icon>save</v-icon>
+                          </v-btn>
+                          <span>Descargar</span>
+                        </v-tooltip>
+                      </vue-json-to-csv>
+                    </div>
+                  </v-flex>
+                  <v-flex xs8>
+                    <v-card-text class="text-xs-center">
+                      <div class="display-3 font-weight-thin">{{ birthday.length }}</div>
+                      <div class="display-1 font-weight-light">Cumpleañeros del Mes</div>
+                      <div class="title font-weight-light mb-2" v-if="hover">Felicidades !!!!</div>
+                      <table v-if="hover">
+                        <tr v-for="(e, i) in birthday" :key="e.id">
+                          <td class="text-xs-rigth">{{ ++i }}.</td>
+                          <td class="text-xs-left">{{ e.first_name }} {{ e.last_name }}</td>
+                        </tr>
+                      </table>
+                    </v-card-text>
+                  </v-flex>
+                </v-layout>
+              </v-card>
+            </v-hover>
+          </v-flex>
+          <v-flex xs12 sm4 class="mt-3" v-if="$store.getters.currentUser.roles[0].name != 'admin'">
             <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}">
               <v-layout row wrap>
                 <v-flex xs4 class="text-xs-center" mt-4>
@@ -126,6 +166,13 @@ export default {
     filteredEmployees: [],
     procedures: []
   }),
+  computed: {
+    birthday() {
+      return this.employees.filter(o => {
+        return (o.active == true && this.$moment(`${o.birth_date.split('/')[2]}-${o.birth_date.split('/')[1]}-${o.birth_date.split('/')[0]}`).month() == this.$moment(this.$store.getters.dateNow).month())
+      })
+    }
+  },
   created() {
     this.getEmployees()
     this.getYearFaults()
@@ -146,7 +193,6 @@ export default {
       try {
         let res = await axios.get(`/employee`)
         this.employees = res.data
-
         if (this.employees.length > 0) {
           this.employees.forEach(e => {
             e.identity_card += ` ${e.city_identity_card.shortened}`

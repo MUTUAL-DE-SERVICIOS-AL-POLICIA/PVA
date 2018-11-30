@@ -31,6 +31,16 @@ class EmployeeController extends Controller
 
 		foreach ($employees as $employee) {
 			$employee->consultant = $employee->consultant();
+
+			if ($employee->consultant === null) {
+				$employee->position = null;
+			} elseif ($employee->consultant === true) {
+				$employee->position = $employee->last_consultant_contract()->consultant_position->name;
+			} elseif ($employee->consultant === false) {
+				$employee->position = $employee->last_contract()->position->name;
+			}
+
+			dump($employee->position);
 		}
 
 		return $employees;
