@@ -39,8 +39,6 @@ class EmployeeController extends Controller
 			} elseif ($employee->consultant === false) {
 				$employee->position = $employee->last_contract()->position->name;
 			}
-
-			dump($employee->position);
 		}
 
 		return $employees;
