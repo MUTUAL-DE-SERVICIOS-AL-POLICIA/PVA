@@ -1,4 +1,5 @@
 let mix = require('laravel-mix')
+require('laravel-mix-purgecss')
 
 mix.js('resources/assets/js/app.js', 'public/js')
   .copy('resources/assets/css/payroll-print.css', 'public/css')
@@ -12,4 +13,13 @@ mix.js('resources/assets/js/app.js', 'public/js')
 
 if (mix.inProduction()) {
   mix.version()
+  .purgeCss({
+    enabled: true,
+    globs: [
+      path.join(__dirname, "resources/views/**/*.blade.php"),
+      path.join(__dirname, "resources/assets/js/**/*.vue")
+    ],
+    extensions: ["html", "js", "php", "vue"],
+    whitelistPatterns: [/language/, /hljs/]
+  })
 }
