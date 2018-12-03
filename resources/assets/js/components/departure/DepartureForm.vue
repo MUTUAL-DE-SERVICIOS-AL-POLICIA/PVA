@@ -12,7 +12,7 @@
         <v-container grid-list-md layout>
           <v-layout wrap>
             <v-flex xs12>
-              <v-form ref="form">                  
+              <v-form ref="form">
                   <fieldset class="field">
                     <legend>OPCIONES:</legend>
                     <v-flex xs12>
