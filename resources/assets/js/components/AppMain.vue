@@ -14,7 +14,7 @@
       <v-list>
         <div v-for="item in menuLeft" :key="item.title" class="mb-0 mt-0">
           <v-list-tile
-            @click.native="setOptions(item.params)"
+            @click="setOptions(item.params)"
             :to="{name: item.href, params: item.params}"
             v-if="!item.group"
             active-class="tertiary"
@@ -43,9 +43,9 @@
               <v-list-tile
                 v-for="group in item.group"
                 :key="group.href"
+                @click="setOptions(group.params)"
                 :to="{name: group.href, params: group.params}"
                 active-class="tertiary"
-                @click.native="setOptions(group.params)"
                 @click.stop="miniVariant = true"
                 @mouseover="miniVariant = false"
                 @mouseout="miniVariant = true"
