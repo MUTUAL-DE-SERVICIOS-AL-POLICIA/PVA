@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height id="background-page">
     <v-layout row align-center justify-center v-if="!this.$store.getters.currentUser">
-      <v-flex d-flex xs12 sm6 md4>
+      <v-flex d-flex xs12 lg4 md6>
         <v-card class="pa-5 ma-5">
           <v-img
             src="/img/logo.png"
