@@ -5,7 +5,7 @@ export default {
   state: {
     currentUser: localStorage.getItem('user') || null,    
     ldapAuth: JSON.parse(process.env.MIX_LDAP_AUTHENTICATION),
-    dateNow: moment().format('Y-M-D'),
+    dateNow: moment().format('Y-MM-DD'),
     token: {
       type: localStorage.getItem('token_type') || null,
       value: localStorage.getItem('token') || null
