@@ -2,9 +2,29 @@
 
 ---
 
+## From [1.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.0) to [1.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.4.0)
+
+```sh
+composer update
+php artisan vendor:publish
+php artisan migrate
+rm public/js/app.js
+yarn
+yarn prod && php artisan view:clear && php artisan config:cache
+```
+
+* Apply seeders
+
+```sh
+php artisan db:seed --class=DepartureTypeSeeder
+php artisan db:seed --class=DocumentTypeAdd2Seeder
+php artisan db:seed --class=DepartureTypeSeeder
+php artisan db:seed --class=DepartureReasonSeeder
+php artisan db:seed --class=ContractTypeDepartureReasonSeeder
+```
+
 ## From [1.3.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.0) to [1.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.1)
 
-* Remove cached files
 
 ```sh
 composer update

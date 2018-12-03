@@ -2,6 +2,24 @@
 
 ---
 
+## [1.4.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.4.0) - 2018-12-05
+
+### Added
+
+* Departures management
+* Year bonus procedures
+* Dashboard to watch and download basic reports
+* Consultant management and procedure's control
+
+### Fixed
+
+* Get filenames of csv and txt files within axios response headers
+
+### Changed
+
+* Menu left shows on hover
+* Splitted left menu into submenus to view contract and payrolls each for eventual and consultant
+
 ## [1.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.1) - 2018-10-24
 
 ### Added
