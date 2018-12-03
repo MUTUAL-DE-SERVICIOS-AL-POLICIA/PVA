@@ -3,7 +3,7 @@
     <v-card>
       <v-container fluid grid-list-md>
         <v-layout row wrap>
-          <v-flex xs12 sm4 v-for="filter in filteredEmployees" :key="filter.icon">
+          <v-flex xs12 sm4 v-for="filter in filteredEmployees" :key="filter.icon" v-if="$store.getters.currentUser.roles.length > 0">
             <v-card :color="filter.color" dark>
               <v-layout row wrap>
                 <v-flex xs4 class="text-xs-center" mt-4>
@@ -47,8 +47,8 @@
               </v-layout>
             </v-card>
           </v-flex>
-          <v-flex xs12 sm4 class="mt-3" v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh'">
-            <v-card dark>
+          <v-flex xs12 sm4 class="mt-3" v-if="$store.getters.currentUser.roles.length > 0">
+            <v-card dark v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh'">
               <v-layout row wrap>
                 <v-flex xs4 class="text-xs-center" mt-4>
                   <v-icon size="80">attach_money</v-icon>
@@ -134,7 +134,7 @@
               </v-card>
             </v-hover>
           </v-flex>
-          <v-flex xs12 sm4 class="mt-3" v-if="$store.getters.currentUser.roles[0].name != 'admin'">
+          <v-flex xs12 sm4 class="mt-3" v-if="$store.getters.currentUser.roles.length == 0">
             <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}">
               <v-layout row wrap>
                 <v-flex xs4 class="text-xs-center" mt-4>

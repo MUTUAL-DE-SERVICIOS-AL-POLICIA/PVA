@@ -7,6 +7,20 @@ Route::group([
 	// Login
 	Route::post('auth', 'Api\V1\AuthController@store')->name('login');
 	Route::get('date', 'Api\V1\DateController@show')->name('date_now');
+	// Public resource
+	Route::get('payroll/faults/{year}', 'Api\V1\PayrollController@getYearFaults')->name('payroll_year_faults');
+	Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
+	// Departure
+	Route::resource('departure_type', 'Api\V1\DepartureTypeController')->only(['index', 'show']);
+	Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
+	Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
+	Route::get('departure/get_departures/{id}', 'Api\V1\DepartureController@get_departures')->name('get_departures');
+	Route::get('departure/get_departures_used/{id}', 'Api\V1\DepartureController@get_departures_used')->name('get_departures_used');
+	Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
+	Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
+	Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
+	Route::resource('departure_schedule', 'Api\V1\DepartureScheduleController')->only(['index', 'show', 'store', 'update']);
+
 	Route::group([
 		'middleware' => 'jwt.auth'
 	], function () {
@@ -193,16 +207,7 @@ Route::group([
 		Route::get('document/{id}', 'Api\V1\DocumentController@show')->name('document_details');
 		Route::get('document_type', 'Api\V1\DocumentTypeController@index')->name('document_type_list');
 		Route::get('document_type/{id}', 'Api\V1\DocumentTypeController@show')->name('document_type_details');
-		// Departure
-		Route::resource('departure_type', 'Api\V1\DepartureTypeController')->only(['index', 'show']);
-		Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
-		Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
-		Route::get('departure/get_departures/{id}', 'Api\V1\DepartureController@get_departures')->name('get_departures');
-		Route::get('departure/get_departures_used/{id}', 'Api\V1\DepartureController@get_departures_used')->name('get_departures_used');
-		Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
-		Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
-		Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
-		Route::resource('departure_schedule', 'Api\V1\DepartureScheduleController')->only(['index', 'show', 'store', 'update']);
+		
 
 		// ADMIN routes
 		Route::group([
@@ -288,7 +293,7 @@ Route::group([
 			Route::post('payroll', 'Api\V1\PayrollController@store')->name('payroll_store');
 			Route::patch('payroll/{id}', 'Api\V1\PayrollController@update')->name('payroll_update');
 			Route::delete('payroll/{id}', 'Api\V1\PayrollController@destroy')->name('payroll_delete');
-			Route::get('payroll/faults/{year}', 'Api\V1\PayrollController@getYearFaults')->name('payroll_year_faults');
+			
 			// Consultant Payroll
 			Route::post('consultant_payroll', 'Api\V1\ConsultantPayrollController@store')->name('consultant_payroll_store');
 			Route::patch('consultant_payroll/{id}', 'Api\V1\ConsultantPayrollController@update')->name('consultant_payroll_update');
@@ -308,7 +313,7 @@ Route::group([
 			Route::post('contract', 'Api\V1\ContractController@store')->name('contract_store');
 			Route::delete('contract/{id}', 'Api\V1\ContractController@destroy')->name('contract_delete');
 			Route::get('contract/valid/{procedure_id}', 'Api\V1\ContractController@valid_date')->name('contract_valid');
-			Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
+			
 			Route::get('contract/contract_position_group/{contract_id}', 'Api\V1\ContractController@contract_position_group')->name('contract_position_group');
 			// Consultant Contract
 			Route::post('consultant_contract', 'Api\V1\ConsultantContractController@store')->name('consultant_contract_store');

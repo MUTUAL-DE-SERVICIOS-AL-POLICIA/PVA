@@ -4,7 +4,7 @@
         <v-toolbar-title>Salidas y Licencias</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-chip color="secondary white--text"> Hrs/mes: {{ hrsxMes }} </v-chip>
-        <v-chip color="secondary white--text"> dias/año: {{ dayxYear }} </v-chip>        
+        <v-chip color="secondary white--text"> dias/año: {{ dayxYear }} </v-chip>
         <v-divider
           class="mx-2"
           inset
@@ -162,7 +162,7 @@ export default {
   methods: {
     async getDepartures(departureType = this.departureType) {
       try {
-        let contract = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);        
+        let contract = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);
         let res = await axios.get(`/departure/get_departures/${contract.data.id}`);
         this.departureType = departureType;
         this.departures = res.data.filter(e => e.departure_reason.departure_type_id == departureType);

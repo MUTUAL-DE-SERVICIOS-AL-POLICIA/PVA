@@ -21,7 +21,12 @@ export default {
     },
     menuLeft(state) {
       if (state.currentUser) {
-        return menu[JSON.parse(state.currentUser).roles[0].name]
+        if (JSON.parse(state.currentUser).roles[0]) {
+          return menu[JSON.parse(state.currentUser).roles[0].name];
+        } else {
+          return menu['empleado'];
+        }
+        return 
       }
       return null
     },
