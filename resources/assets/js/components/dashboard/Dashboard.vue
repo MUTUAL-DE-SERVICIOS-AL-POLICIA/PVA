@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-card>
       <v-container fluid grid-list-md>
-        <v-layout row wrap v-if="$store.getters.currentUser.roles[0].name != 'empleado'">
+        <v-layout row wrap v-if="$store.getters.currentUser.roles[0]">
           <v-flex xs12 sm4 v-for="filter in filteredEmployees" :key="filter.icon">
             <v-card :color="filter.color" dark>
               <v-layout row wrap>
