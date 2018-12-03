@@ -12,6 +12,7 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "freeze-package": "^0.1.1",
+    "laravel-mix-purgecss": "^3.0.0",
     "material-design-icons-iconfont": "^3.0.3"
   },
   "dependencies": {

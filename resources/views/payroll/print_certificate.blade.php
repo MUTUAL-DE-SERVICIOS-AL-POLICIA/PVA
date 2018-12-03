@@ -12,7 +12,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Certificado de haberes y aportes laborales</title>
         <style>
-            <?php include public_path('css/payroll-print.css') ?>
+            <?php include public_path('css/payroll-print.min.css') ?>
         </style>
     </head>
 

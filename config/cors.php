@@ -10,14 +10,14 @@ return [
 		  | allowedOrigins, allowedHeaders and allowedMethods can be set to array('*')
 		  | to accept any value.
 		  |
-	*/
+ */
 
 	'supportsCredentials' => false,
 	'allowedOrigins' => ['*'],
 	'allowedOriginsPatterns' => [],
 	'allowedHeaders' => ['*'],
 	'allowedMethods' => ['*'],
-	'exposedHeaders' => [],
+	'exposedHeaders' => ['Content-type', 'Content-Disposition'],
 	'maxAge' => 0,
 
 ];

@@ -10,7 +10,7 @@ use \App\Helpers\Util;
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>{{ $title->name }} {{ $title->year }}</title>
         <style>
-            <?php include public_path('css/payroll-print.css') ?>
+            <?php include public_path('css/payroll-print.min.css') ?>
         </style>
     </head>
 
