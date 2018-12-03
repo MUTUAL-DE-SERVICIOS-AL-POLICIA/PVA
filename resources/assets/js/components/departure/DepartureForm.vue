@@ -108,6 +108,9 @@
                             v-model="selectedItem.departure_time" 
                             label="Hora de salida"
                             type="time"
+                            name="Hora de retorno"
+                            v-validate="'required'"
+                            :error-messages="errors.collect('Destino')"
                             :min="start_time"
                             :max="end_time"
                             @change="checkMonthDayYear();"
@@ -151,6 +154,9 @@
                             v-model="selectedItem.return_time" 
                             label="Hora de retorno"
                             type="time"
+                            name="Hora de retorno"
+                            v-validate="'required'"
+                            :error-messages="errors.collect('Destino')"
                             :min="start_time"
                             :max="end_time"
                             @change="checkMonthDayYear();"
@@ -220,7 +226,6 @@ export default {
       menuTimeDeparture: false,
       menuTimeReturn: false,
       alert: true,
-      valid: true,
       descriptionReason: null,
       departure_type_id: null,
       availableTime: null,
@@ -321,7 +326,8 @@ export default {
     async save() {
       try {
         let valid = await this.$validator.validateAll();
-        if (valid) {
+        this.checkMonthDayYear();
+        if (valid && this.valid) {
           if (this.selectedIndex === -1) {
             this.selectedCertificate.data = this.selectedItem;
             let certificate = await axios.post('/certificate', this.selectedCertificate);
