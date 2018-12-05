@@ -3,14 +3,14 @@ import moment from 'moment';
 
 export default {
   state: {
-    currentUser: localStorage.getItem('user') || null,
-    menuLeft: null,
+    currentUser: localStorage.getItem('user') || null,    
     ldapAuth: JSON.parse(process.env.MIX_LDAP_AUTHENTICATION),
-    dateNow: moment().format('Y-M-D'),
+    dateNow: moment().format('Y-MM-DD'),
     token: {
       type: localStorage.getItem('token_type') || null,
       value: localStorage.getItem('token') || null
-    }
+    },
+    options: localStorage.getItem('options'),
   },
   getters: {
     ldapAuth(state) {
@@ -21,7 +21,12 @@ export default {
     },
     menuLeft(state) {
       if (state.currentUser) {
-        return menu[JSON.parse(state.currentUser).roles[0].name]
+        if (JSON.parse(state.currentUser).roles[0]) {
+          return menu[JSON.parse(state.currentUser).roles[0].name];
+        } else {
+          return menu['empleado'];
+        }
+        return 
       }
       return null
     },
@@ -30,6 +35,9 @@ export default {
     },
     token(state) {
       return state.token
+    },
+    options(state) {
+      return state.options
     }
   },
   mutations: {
@@ -39,6 +47,7 @@ export default {
       localStorage.removeItem('token_type')
       state.currentUser = null
       state.menuLeft = null
+      state.options = null
     },
     'login': function (state, data) {
       localStorage.setItem("token", data.token);
@@ -53,6 +62,10 @@ export default {
     },
     'setDate': function(state, newValue) {
       state.dateNow = newValue;
+    },
+    'setOptions': function(state, data) {
+      localStorage.setItem("options", JSON.stringify(data));
+      state.options = localStorage.getItem('options');
     }
   },
   actions: {

@@ -3,7 +3,7 @@
 ## Requirements
 
 * (Optional) LDAP server to authenticate users
-* PHP 7.2.10 (with `LDAP, GD, PGSQL, PDO_PGSQL, ICONV` modules enabled)
+* PHP 7.1.22 (with `LDAP, GD, PGSQL, PDO_PGSQL, ICONV` modules enabled)
 * Node.js 8.12.0
 * NPM 6.4.1 or Yarn 1.9.4
 * PostgreSQL 10.4

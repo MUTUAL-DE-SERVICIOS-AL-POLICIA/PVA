@@ -6,7 +6,7 @@
     </v-tooltip>
     <v-card>
       <v-toolbar dark color="secondary">
-        <v-toolbar-title class="white--text">Nueva Planilla</v-toolbar-title>
+        <v-toolbar-title class="white--text">{{ title }}</v-toolbar-title>
       </v-toolbar>
       <v-card-text class="text-xs-center">
         <form>
@@ -32,15 +32,24 @@
 <script>
 export default {
   name: "ProcedureAdd",
-  props: ["bus"],
+  props: ["type", "bus"],
   data() {
     return {
       loading: false,
       dialog: false,
-      dateSelected: this.$moment().format("YYYY-MM")
+      dateSelected: this.$moment().format("YYYY-MM"),
+      url: 'procedure',
+      title: 'Nueva planilla'
     };
   },
   mounted() {
+    if (this.type == 'consultant') {
+      this.url = `${this.type}_${this.url}`
+      this.title = `${this.title} Consultores`
+    } else {
+      this.title = `${this.title} Eventuales`
+    }
+
     this.bus.$on("openDialog", () => {
       this.dialog = true;
       this.dateSelected = this.$store.getters.dateNow;
@@ -64,12 +73,12 @@ export default {
           active: true
         };
         let procedure = await axios.post(
-          `/procedure`,
+          `/${this.url}`,
           newProcedure
         );
         procedure = procedure.data;
         let payrolls = await axios.post(
-          `/procedure/${procedure.id}/payroll`
+          `/${this.url}/${procedure.id}/payroll`
         );
         payrolls = payrolls.data;
         this.toastr.success(

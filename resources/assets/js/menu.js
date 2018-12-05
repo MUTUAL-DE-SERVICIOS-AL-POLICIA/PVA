@@ -1,92 +1,267 @@
 export default {
   admin: [
     {
+      href: 'dashboard',
+      title: 'Inicio',
+      icon: 'home'
+    }, {
       href: 'employeeIndex',
-      title: 'Empleados',
-      icon: 'assignment_ind',
-      options: ['new', 'edit', 'delete', 'print']
-    }, {
-      href: 'contractIndex',
-      params: {},
-      title: 'Contratos',
-      icon: 'work',
-      options: ['new', 'edit', 'delete', 'renew', 'printInsurance', 'printContract']
-    }, {
-      href: 'procedureIndex',
+      title: 'Personas',
+      icon: 'group',
       params: {
-        active: true
-      },
-      title: 'Planillas',
-      icon: 'attach_file',
-      options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll']
+        options: ['new', 'edit', 'delete', 'print']
+      }
+    }, {
+      title: 'Eventuales',
+      icon: 'person',
+      group: [
+        {
+          href: 'contractIndex',
+          title: 'Contratos Eventuales',
+          icon: 'gavel',
+          params: {
+            options: ['new', 'edit', 'delete', 'renew', 'printInsurance', 'printContract']
+          }
+        }, {
+          href: 'procedureIndex',
+          title: 'Planillas Eventuales',
+          icon: 'storage',
+          params: {
+            active: true,
+            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'afp', 'payroll']
+          }
+        }
+      ]
+    }, {
+      title: 'Consultores',
+      icon: 'work',
+      group: [
+        {
+          href: 'consultantIndex',
+          title: 'Contratos Consultores',
+          icon: 'gavel',
+          params: {
+            options: ['new', 'edit', 'delete', 'renew']
+          }
+        }, {
+          href: 'consultantProcedureIndex',
+          title: 'Planillas Consultores',
+          icon: 'storage',
+          params: {
+            active: true,
+            options: ['new', 'edit', 'ticket', 'bank', 'payroll']
+          }
+        }
+      ]
     }, {
       href: 'userIndex',
       title: 'Usuarios',
-      icon: 'person',
-      options: ['edit']
+      icon: 'security',
+      params: {
+        options: ['edit']
+      }
     }, {
       href: 'userActionIndex',
       title: 'Actividad',
       icon: 'timeline',
-      options: ['edit']
-    }
+      params: {
+        options: ['edit']
+      }
+    }, {
+      href: 'departureAdmin',
+      title: 'Salidas y Licencias',
+      icon: 'directions_walk',
+      params: {
+        options: ['edit', 'active', 'print']
+      }
+    },
   ],
   rrhh: [
     {
+      href: 'dashboard',
+      title: 'Inicio',
+      icon: 'home'
+    }, {
       href: 'employeeIndex',
       title: 'Empleados',
       icon: 'assignment_ind',
-      options: ['new', 'edit', 'delete', 'print']
-    }, {
-      href: 'contractIndex',
-      params: {},
-      title: 'Contratos',
-      icon: 'work',
-      options: ['new', 'edit', 'delete', 'renew', 'printInsurance']
-    }, {
-      href: 'procedureIndex',
       params: {
-        active: true
-      },
-      title: 'Planillas',
-      icon: 'attach_file',
-      options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
+        options: ['new', 'edit', 'delete', 'print']
+      }
+    }, {
+      title: 'Eventuales',
+      icon: 'settings_backup_restore',
+      group: [
+        {
+          href: 'contractIndex',
+          title: 'Contratos Eventuales',
+          icon: 'work',
+          params: {
+            options: ['new', 'edit', 'delete', 'renew', 'printInsurance']
+          }
+        }, {
+          href: 'procedureIndex',
+          title: 'Planillas Eventuales',
+          icon: 'attach_file',
+          params: {
+            active: true,
+            options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
+          }
+        }
+      ]
+    }, {
+      title: 'Consultores',
+      icon: 'swap_horiz',
+      group: [
+        {
+          href: 'consultantIndex',
+          title: 'Contratos Consultores',
+          icon: 'work',
+          params: {
+            options: ['new', 'edit', 'delete', 'renew'],
+          }
+        }, {
+          href: 'consultantProcedureIndex',
+          title: 'Planillas Consultores',
+          icon: 'attach_file',
+          params: {
+            active: true,
+            options: ['new', 'edit', 'ticket', 'bank', 'payroll'],
+          }
+        }
+      ]
+    }, {
+      href: 'departureAdmin',
+      title: 'Administrador de Salidas y Licencias',
+      icon: 'directions_walk',
+      params: {
+        options: ['edit', 'active', 'print']
+      }
+    }, 
+    {
+      href: 'departureIndex',
+      title: 'Salidas/Licencias',
+      icon: 'directions_run',
+      params: {
+        options: []
+      }
     }
   ],
   juridica: [
     {
+      href: 'dashboard',
+      title: 'Inicio',
+      icon: 'home'
+    }, {
       href: 'employeeIndex',
       title: 'Empleados',
       icon: 'assignment_ind',
-      options: []
+      params: {
+        options: []
+      }
     }, {
-      href: 'contractIndex',
-      params: {},
-      title: 'Contratos',
-      icon: 'work',
-      options: ['printContract', 'edit']
+      title: 'Eventuales',
+      icon: 'settings_backup_restore',
+      group: [
+        {
+          href: 'contractIndex',
+          title: 'Contratos Eventuales',
+          icon: 'work',
+          params: {
+            options: ['printContract', 'edit']
+          }
+        }
+      ]
+    }, {
+      title: 'Consultores',
+      icon: 'swap_horiz',
+      group: [
+        {
+          href: 'consultantIndex',
+          title: 'Contratos Consultores',
+          icon: 'work',
+          params: {
+            options: ['printContract', 'edit']
+          }
+        }
+      ]
+    }, {
+      href: 'departureIndex',
+      title: 'Salidas/Licencias',
+      icon: 'directions_run',
+      params: {
+        options: []
+      }
     }
   ],
   financiera: [
     {
+      href: 'dashboard',
+      title: 'Inicio',
+      icon: 'home'
+    }, {
       href: 'employeeIndex',
       title: 'Empleados',
       icon: 'assignment_ind',
-      options: []
-    }, {
-      href: 'contractIndex',
-      params: {},
-      title: 'Contratos',
-      icon: 'work',
-      options: []
-    }, {
-      href: 'procedureIndex',
       params: {
-        active: true
-      },
-      title: 'Planillas',
-      icon: 'attach_file',
-      options: ['afp', 'payroll']
+        options: []
+      }
+    }, {
+      title: 'Eventuales',
+      icon: 'settings_backup_restore',
+      group: [
+        {
+          href: 'contractIndex',
+          title: 'Contratos Eventuales',
+          icon: 'work',
+          params: {
+            options: []
+          }
+        }, {
+          href: 'procedureIndex',
+          title: 'Planillas Eventuales',
+          icon: 'attach_file',
+          params: {
+            active: true,
+            options: ['afp', 'payroll']
+          }
+        }
+      ]
+    }, {
+      title: 'Consultores',
+      icon: 'swap_horiz',
+      group: [
+        {
+          href: 'consultantIndex',
+          title: 'Contratos Consultores',
+          icon: 'work',
+          params: {
+            options: []
+          }
+        }, {
+          href: 'consultantProcedureIndex',
+          title: 'Planillas Consultores',
+          icon: 'attach_file',
+          params: {
+            active: true,
+            options: ['afp', 'payroll']
+          }
+        }
+      ]
     }
-  ]
+  ],
+  empleado: [
+    {
+      href: 'dashboard',
+      title: 'Inicio',
+      icon: 'home'
+    }, {
+      href: 'departureIndex',
+      title: 'Salidas/Licencias',
+      icon: 'directions_run',
+      params: {
+        options: []
+      }
+    }
+  ],
 }

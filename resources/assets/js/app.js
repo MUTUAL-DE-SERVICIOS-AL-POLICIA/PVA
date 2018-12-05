@@ -3,7 +3,7 @@ require('./bootstrap')
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
-import VeeValidate from 'vee-validate'
+import VeeValidate, { Validator } from 'vee-validate'
 import { routes } from './routes'
 import StoreData from './store'
 import AppMain from './components/AppMain'
@@ -28,19 +28,15 @@ Vue.use(Vuetify, {
     primary: "#005D53",
     secondary: "#009686",
     tertiary: '#42B2A6',
-    accent: "#1043A0",
-    error: "#F46F0D",
-    danger: '#FA9347',
-    warning: "#FABB47",
+    accent: "#5381BD",
     info: "#0B347F",
+    error: "#FF5F00",
+    danger: '#FA9347',
+    warning: "#FFB339",
     success: "#006157",
     normal: '#F5F5F5'
   }
 })
-
-import { createSimpleTransition } from 'vuetify/es5/util/helpers'
-const myTransition = createSimpleTransition('my-transition')
-Vue.component('my-transition', myTransition)
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
@@ -50,7 +46,7 @@ import moment from 'moment'
 moment.updateLocale('es', require('moment/locale/es'))
 Vue.use(require('vue-moment'), {
   moment
-});
+})
 
 Vue.use(VeeValidate, {
   locale: 'es',
@@ -111,3 +107,5 @@ new Vue({
   },
   locale: 'es',
 })
+
+Validator.localize('es', es)

@@ -1,9 +1,16 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-toolbar>
-      <v-toolbar-title>{{ procedure.month.name }}</v-toolbar-title>
+      <v-toolbar-title>EVENTUALES {{ procedure.month.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-menu v-model="menuDate">
+      <v-menu 
+      v-model="menuDate"
+      :close-on-content-click="false"
+      :nudge-right="40"
+      lazy
+      transition="scale-transition"
+      offset-y
+      full-width>
         <v-text-field
           slot="activator"
           v-model="selectedDate"
@@ -11,7 +18,14 @@
           prepend-icon="event"
           readonly
         ></v-text-field>
-        <v-date-picker v-model="date" @input="menuDate = false" @change="updatePayDate(procedure.id, date)" locale="es-bo"></v-date-picker>
+        <v-date-picker 
+        v-model="date" 
+        @input="menuDate = false" 
+        @change="updatePayDate(procedure.id, date)"
+        locale="es-bo"
+        :min="minDatePay"
+        :max="maxDatePay"
+        no-title></v-date-picker>
       </v-menu>
       <v-dialog
         v-model="dialogDelete"
@@ -82,7 +96,7 @@
       disable-initial-sort
       expand
       :loading="loading"
-      :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
+      :rows-per-page-items="[{text:'TODO',value:-1},10,20,30]"
     >
       <template slot="headerCell" slot-scope="props">
         <v-tooltip top v-if="props.header.tooltip">
@@ -116,7 +130,7 @@
                 </span>
               </v-tooltip>
             </td>
-            <td class="text-md-center">
+            <td class="text-md-center font-weight-medium">
               {{ workedDays(props.item) }}
             </td>
             <td>
@@ -177,10 +191,10 @@
                 </v-flex>
               </v-layout>
             </td>
-            <td class="text-md-center">
+            <td class="text-md-center font-weight-bold">
               {{ total(props.item) }}
             </td>
-            <td class="text-md-center">
+            <td class="text-md-center font-weight-bold">
               {{ totalDiscounts(props.item).toFixed(2) }}
             </td>
             <td class="text-md-center">
@@ -257,7 +271,9 @@ export default {
       search: "",
       menuDate: null,
       date: null,
-      selectedDate: null
+      selectedDate: null,
+      minDatePay: null,
+      maxDatePay: null
     };
   },
   async created() {
@@ -369,7 +385,8 @@ export default {
             .toUpperCase()} de ${res.data.procedure.year}`
         );
         this.$router.push({
-          name: "procedureIndex"
+          name: "procedureIndex",
+          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Eventuales' }).group.find(obj => { return obj.href ==  'procedureIndex'}).params
         });
       } catch (e) {
         console.log(e);
@@ -396,6 +413,8 @@ export default {
           `/procedure/${this.$route.params.id}/discounts`
         );
         this.procedure = res.data;
+        this.minDatePay = this.procedure.year+'-'+this.procedure.month.order+'-20';
+        this.maxDatePay = this.procedure.year+'-'+(this.procedure.month.order+1)+'-05'; 
         if (res.data.pay_date){
           this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
         }
@@ -546,7 +565,8 @@ export default {
           `Planilla de mes de ${res.data.month.name} cerrada`
         );
         this.$router.push({
-          name: "procedureIndex"
+          name: "procedureIndex",
+          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Eventuales' }).group.find(obj => { return obj.href ==  'procedureIndex'}).params
         });
       } catch (e) {
         console.log(e);

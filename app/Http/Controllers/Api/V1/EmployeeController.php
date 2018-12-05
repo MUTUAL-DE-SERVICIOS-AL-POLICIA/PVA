@@ -23,11 +23,25 @@ class EmployeeController extends Controller
 	 */
 	public function index()
 	{
-		return Employee::with('city_identity_card')
+		$employees = Employee::with('city_identity_card')
 			->with('management_entity')
 			->with('city_birth')
 			->orderBy('last_name')
 			->get();
+
+		foreach ($employees as $employee) {
+			$employee->consultant = $employee->consultant();
+
+			if ($employee->consultant === null) {
+				$employee->position = null;
+			} elseif ($employee->consultant === true) {
+				$employee->position = $employee->last_consultant_contract()->consultant_position->name;
+			} elseif ($employee->consultant === false) {
+				$employee->position = $employee->last_contract()->position->name;
+			}
+		}
+
+		return $employees;
 	}
 
 	/**

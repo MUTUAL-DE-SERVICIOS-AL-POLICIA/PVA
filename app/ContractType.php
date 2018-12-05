@@ -12,4 +12,9 @@ class ContractType extends Model {
 	public function contract() {
 		return $this->hasMany(Contract::class);
 	}
+
+	public function departure_reasons()
+	{
+		return $this->belongsToMany(DepartureReason::class);
+	}
 }
