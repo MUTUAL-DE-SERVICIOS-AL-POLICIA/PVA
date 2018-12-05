@@ -49,6 +49,7 @@
                       name="Tipo de contratacion"
                       :error-messages="errors.collect('Tipo de contratacion')"
                       :disabled="juridica==true"
+                      @change="date2=null"
                     ></v-select>
                   </v-flex>
                   <v-flex xs6>
@@ -90,7 +91,11 @@
                         readonly :disabled="juridica==true"
                         autocomplete='cc-exp-month'
                       ></v-text-field>
-                      <v-date-picker v-model="date" no-title @input="menuDate = false" @change="monthSalaryCalc" :min="minDate" locale="es-bo"></v-date-picker>
+                      <v-date-picker v-model="date" no-title 
+                      @input="menuDate = false" 
+                      @change="monthSalaryCalc" 
+                      :min="minDate" 
+                      locale="es-bo"></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <v-flex xs6>
@@ -104,19 +109,26 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="juridica==true"
+                      :disabled="juridica==true||selectedItem.contract_type_id==1"
                     >
                       <v-text-field
                         slot="activator"
                         v-model="formatDateEnd"
                         label="Fecha de conclusión"
-                        prepend-icon="event" :disabled="juridica==true"
+                        prepend-icon="event" 
+                        :disabled="juridica==true||selectedItem.contract_type_id==1"
                         autocomplete='cc-exp-year'
                         readonly
                         clearable
                         @input="dateEndNull"
                       ></v-text-field>
-                      <v-date-picker v-model="date2" no-title @input="menuDate2 = false" @change="monthSalaryCalc" locale="es-bo"></v-date-picker>
+                      <v-date-picker 
+                      v-model="date2" no-title 
+                      :min="date"
+                      @input="menuDate2 = false" 
+                      @change="monthSalaryCalc"
+                      locale="es-bo">                        
+                      </v-date-picker>
                     </v-menu>
                   </v-flex>
                 </v-layout>                
@@ -451,15 +463,20 @@ export default {
         retirement_date: "",
         rrhh_cite_date: ""
       };
-      this.selectedSchedule = {},
-      this.tableEmployee = "",
-      this.tablePosition = "",
-      this.tablePositionFree = 0,
-      this.tableEmployeeFree = 0,
-      this.tableSalary = "",
-      this.tableSalaryTotal = 0,
-      this.tableData = [],
+      this.date = null;
+      this.date2 = null;
+      this.date3 = null;
+      this.date4 = null;
+      this.selectedSchedule = {};
+      this.tableEmployee = "";
+      this.tablePosition = "";
+      this.tablePositionFree = 0;
+      this.tableEmployeeFree = 0;
+      this.tableSalary = "";
+      this.tableSalaryTotal = 0;
+      this.tableData = [];
       this.recontract = false;
+      this.selectedIndex = -1;
     },
     async save() {
       try {
@@ -505,13 +522,20 @@ export default {
     async saveDate(date) {
       this.$refs.menu.save(date);
     },
-    async onSelectEmployee(v) {
+    async onSelectEmployee(v, item) {
       if (v) {
+        this.tableEmployeeFree = 0;
         let employee = await axios.get("/employee/" + v);
         this.tableEmployee = employee.data;
         let employeeFree = await axios.get("/contract/last_contract/" + v);        
         if (employeeFree.data.active == true) {
-          this.tableEmployeeFree = 1;
+          if (this.selectedIndex == -1) {
+            this.tableEmployeeFree = 1;
+          } else {
+            if (this.selectedItem.employee_id != this.selectedItem.employee.id) {
+              this.tableEmployeeFree = 1;
+            } 
+          }
         }
       }
     },
@@ -522,9 +546,13 @@ export default {
         let positionFree = await axios.get(
           "/contract/position_free/" + v
         );
-        if (positionFree.data) {
-          if (!this.selectedItem.id) {
+        if (positionFree.data) { 
+          if (this.selectedIndex == -1) {
             this.tablePositionFree = 1;
+          } else {
+            if (this.selectedItem.position_id != this.selectedItem.position.id) {
+              this.tablePositionFree = 1;
+            }
           }
         }
         this.tablePosition = position.data.name;
@@ -565,14 +593,11 @@ export default {
             .month() == d2.month()
         ) {
           if (d2.date() == 30 || d2.date() == endDay2 ) {
-            day = 30;
+            if (diff != 0) {
+              day = 30;
+            }
           } else {
             day = d2.date();
-          }
-        }
-        if (d2.diff(d1, "month") == 0) {
-          if (d2.date() - d1.date() < 27) {
-            obs = "Debe ser mayor a un mes";
           }
         }
         salary = salary_day * day;
@@ -615,15 +640,18 @@ export default {
       this.monthSalaryCalc();
       this.dialog = true;
       this.selectedIndex = item;
-      if (item.mode == "recontract") {
+      if (item.mode == "recontract") {        
         this.recontract = true;
         var end_date = this.$moment(item.end_date).add(1, 'days').calendar();
-        this.minDate = this.$moment(end_date).format('YYYY-MM-DD');
+        this.minDate = this.$moment(end_date, "DD/MM/YYYY").format('YYYY-MM-DD');
         this.date = this.minDate;
         this.date2 = '';
-        // this.formatDateStart();
+        this.tableSalary = "";
+        this.tableSalaryTotal = 0;
+        this.tableData = [];
       }
-      this.onSelectEmployee();
+      this.onSelectEmployee(item.employee_id);
+      this.onSelectPosition(item.position_id);
       if (item.job_schedules[0]) {
         this.selectedSchedule = item.job_schedules[0];
       }
