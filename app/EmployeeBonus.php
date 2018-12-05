@@ -68,6 +68,8 @@ class EmployeeBonus
       $q->orderBy('start_date', 'DESC');
     }])->where('m.order', '<', Carbon::parse($pay_date)->month)->select('payrolls.*', 'm.order')->limit(3)->get()->all();
 
+    if (count($payrolls) == 0) return [0];
+
     $this->set_actual_data($payrolls[0]);
 
     $payrolls = array_reverse($payrolls);

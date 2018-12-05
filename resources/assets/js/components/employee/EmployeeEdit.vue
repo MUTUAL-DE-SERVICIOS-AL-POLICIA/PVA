@@ -190,7 +190,7 @@
                 label="Número de puerta"
               ></v-text-field>
               <v-text-field
-                v-validate="'numeric'"
+                v-validate="'required|numeric'"
                 :error-messages="errors.collect('Teléfono')"
                 data-vv-name="Teléfono"
                 v-model="edit.phone_number"

@@ -470,7 +470,8 @@ export default {
           fileName = `${fileName}.csv`
         }
         if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename=(.+)/);
+          let fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+          if (!fileNameMatch) fileNameMatch = contentDisposition.match(/filename=(.+)/);
           if (fileNameMatch.length === 2) {
             fileName = fileNameMatch[1];
           }
