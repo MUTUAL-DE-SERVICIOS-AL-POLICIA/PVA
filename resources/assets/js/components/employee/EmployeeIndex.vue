@@ -67,7 +67,7 @@
           <td class="text-md-center" v-if="$store.getters.options.length > 0">
             <v-switch
               v-model="props.item.active"
-              @click.native="switchActive(props.item)"
+              @change="switchActive(props.item)"
               v-if="$store.getters.options.includes('edit')"
             ></v-switch>
           </td>
@@ -78,7 +78,7 @@
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top>
+            <v-tooltip top v-if="props.item.consultant == null">
               <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>

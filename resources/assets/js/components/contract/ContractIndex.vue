@@ -86,7 +86,7 @@
                 </v-btn>
                 <span>Editar</span>
               </v-tooltip>
-              <v-tooltip top v-if="$store.getters.options.includes('delete')">
+              <v-tooltip top v-if="$store.getters.options.includes('delete') && props.item.payrolls_count == 0">
                 <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                   <v-icon>delete</v-icon>
                 </v-btn>
@@ -207,18 +207,16 @@ export default {
   methods: {
     async getContracts(active = this.active) {
       try {
-        let res = await axios.get(`/contract`);
-        this.contractsActive = res.data.filter(obj => {
-          return obj.active === true;
-        });
         this.active = active;
-        this.contractsInactive = res.data.filter(obj => {
-          return obj.active === false;
-        });
+        let res = await axios.get(`/contract`);
         if (active) {
-          this.contracts = this.contractsActive;
+          this.contracts = res.data.filter(obj => {
+            return obj.active === true;
+          });
         } else {
-          this.contracts = this.contractsInactive.reverse();
+          this.contracts = res.data.filter(obj => {
+            return obj.active === false;
+          }).reverse();
         }
         this.loading = false
       } catch (e) {

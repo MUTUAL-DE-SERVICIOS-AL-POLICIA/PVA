@@ -21,9 +21,7 @@ class ContractController extends Controller
      */
     public function index()
     {
-        return Contract::with('job_schedules', 'employee', 'insurance_company', 'employee.city_identity_card', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')
-            ->orderBy('end_date', 'ASC')
-            ->get();
+        return Contract::with('job_schedules', 'employee', 'insurance_company', 'employee.city_identity_card', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')->withCount('payrolls')->orderBy('end_date', 'ASC')->get();
     }
 
     /**
