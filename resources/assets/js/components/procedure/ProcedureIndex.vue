@@ -37,7 +37,7 @@
       >
         <v-layout row wrap>
           <v-flex
-            xs12 sm4
+            md6 lg4
             v-if="bonusYear.bonus > 0"
           >
             <v-card color="info" height="100%" dark>
@@ -125,7 +125,7 @@
           <v-flex
             v-for="procedure in procedures"
             :key="procedure.id"
-            xs12 sm4
+            md6 lg4
           >
             <v-card :color="procedure.active ? 'warning' : 'green lighten-4'" height="100%">
               <v-card-title>
@@ -598,6 +598,9 @@ export default {
         this.clearBonusProcedure()
       } catch (e) {
         console.log(e)
+        this.bonusYear.year = year
+        this.bonusProcedure.year = year
+        this.clearBonusProcedure()
       }
     },
     async storeProcedure() {

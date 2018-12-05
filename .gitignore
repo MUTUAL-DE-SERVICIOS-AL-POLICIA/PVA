@@ -27,9 +27,6 @@ Homestead.json
 
 # Lock files
 .phpfmt.ini
-composer.lock
-package-lock.json
-yarn.lock
 
 # Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
 .rocketeer/
