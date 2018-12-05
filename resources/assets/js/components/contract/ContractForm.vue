@@ -49,6 +49,7 @@
                       name="Tipo de contratacion"
                       :error-messages="errors.collect('Tipo de contratacion')"
                       :disabled="juridica==true"
+                      @change="date2=null"
                     ></v-select>
                   </v-flex>
                   <v-flex xs6>
@@ -108,13 +109,14 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="juridica==true"
+                      :disabled="juridica==true||selectedItem.contract_type_id==1"
                     >
                       <v-text-field
                         slot="activator"
                         v-model="formatDateEnd"
                         label="Fecha de conclusión"
-                        prepend-icon="event" :disabled="juridica==true"
+                        prepend-icon="event" 
+                        :disabled="juridica==true||selectedItem.contract_type_id==1"
                         autocomplete='cc-exp-year'
                         readonly
                         clearable
@@ -520,13 +522,20 @@ export default {
     async saveDate(date) {
       this.$refs.menu.save(date);
     },
-    async onSelectEmployee(v) {
+    async onSelectEmployee(v, item) {
       if (v) {
+        this.tableEmployeeFree = 0;
         let employee = await axios.get("/employee/" + v);
         this.tableEmployee = employee.data;
         let employeeFree = await axios.get("/contract/last_contract/" + v);        
         if (employeeFree.data.active == true) {
-          this.tableEmployeeFree = 1;
+          if (this.selectedIndex == -1) {
+            this.tableEmployeeFree = 1;
+          } else {
+            if (this.selectedItem.employee_id != this.selectedItem.employee.id) {
+              this.tableEmployeeFree = 1;
+            } 
+          }
         }
       }
     },
@@ -537,9 +546,13 @@ export default {
         let positionFree = await axios.get(
           "/contract/position_free/" + v
         );
-        if (positionFree.data) {
-          if (!this.selectedItem.id) {
+        if (positionFree.data) { 
+          if (this.selectedIndex == -1) {
             this.tablePositionFree = 1;
+          } else {
+            if (this.selectedItem.position_id != this.selectedItem.position.id) {
+              this.tablePositionFree = 1;
+            }
           }
         }
         this.tablePosition = position.data.name;
