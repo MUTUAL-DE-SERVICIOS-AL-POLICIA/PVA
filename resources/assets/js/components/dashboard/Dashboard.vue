@@ -139,7 +139,7 @@
                     <v-card-text class="text-xs-center">
                       <div class="display-3 font-weight-thin">{{ birthday.length }}</div>
                       <div class="display-1 font-weight-light">Cumpleañeros de {{ $moment($store.getters.dateNow).format('MMMM') }}</div>
-                      <div class="title font-weight-light mt-2 mb-2">Felicidades !!!!</div>
+                      <div class="title font-weight-light mt-2 mb-2" v-if="birthday.length > 0">Felicidades !!!!</div>
                     </v-card-text>
                   </v-flex>
                 </v-layout>
