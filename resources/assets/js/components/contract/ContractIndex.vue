@@ -53,7 +53,7 @@
       disable-initial-sort
       class="elevation-1">
       <template slot="items" slot-scope="props">
-        <tr :class="checkEnd(props.item) == 'error' ? `white--text ${color=checkEnd(props.item)}` : checkEnd(props.item)" class="bordered">
+        <tr :class="checkEnd(props.item) == 'error' ? `white--text ${color=checkEnd(props.item)}` : checkEnd(props.item)">
           <td :class="(checkEnd(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.employee.identity_card }} {{ props.item.employee.city_identity_card.shortened }} </td>
           <td :class="(checkEnd(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-xs-left pl-2" @click="props.expanded = !props.expanded"> {{ fullName(props.item.employee) }} </td>
           <td :class="(checkEnd(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-xs-left pl-2" @click="props.expanded = !props.expanded"> {{ props.item.position.name }}</td>
