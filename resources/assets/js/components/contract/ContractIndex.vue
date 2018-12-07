@@ -2,12 +2,20 @@
   <v-container fluid>
     <v-toolbar>
         <v-toolbar-title>Contratos Eventuales</v-toolbar-title>
+        <v-tooltip color="white" role="button" bottom>
+        <v-icon slot="activator" class="ml-4">info</v-icon>
+        <div>
+          <v-alert :value="true" type="error">CONTRATOS VIGENTES QUE CULMINAN ESTE MES</v-alert>
+          <v-alert :value="true" type="warning" class="black--text">CONTRATOS NO VIGENTES QUE DEBIAN CULMINAR ESTE MES</v-alert>
+          <v-alert color="danger" :value="true" type="info" class="black--text">CONTRATOS NO VIGENTES QUE CULMINAN ESTE MES</v-alert>
+        </div>
+      </v-tooltip>
         <v-spacer></v-spacer>
         <v-btn  @click="getContracts(true)" :class="active ? 'primary white--text' : 'normal'" class="mr-0">
-          <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
+          <div class="font-weight-regular subheading pa-2">VIGENTES</div>
         </v-btn>
         <v-btn  @click="getContracts(false)" :class="!active ? 'primary white--text' : 'normal'" class="ml-0">
-          <div class="font-weight-regular subheading pa-2">INACTIVOS</div>
+          <div class="font-weight-regular subheading pa-2">TODOS</div>
         </v-btn>
         <v-divider
           class="mx-2"
@@ -59,7 +67,7 @@
                   {{ $moment(props.item.retirement_date).format('DD/MM/YYYY') }}
                 </span>
                 <span>
-                  Fecha de conclusión: {{ $moment(props.item.end_date).format('DD/MM/YYYY') }}
+                  Fecha de conclusión: {{ props.item.end_date ? $moment(props.item.end_date).format('DD/MM/YYYY') : $moment(props.item.retirement_date).format('DD/MM/YYYY') }}
                 </span>
               </v-tooltip>
             </td>
@@ -144,30 +152,25 @@ export default {
         text: "C.I.",
         value: "employee.identity_card",
         align: "center"
-      },
-      {
+      }, {
         text: "Nombres",
         value: "employee.last_name",
         align: "center"
-      },
-      {
+      }, {
         text: "Puesto",
         value: "position.name",
         align: "center"
-      },
-      {
+      }, {
         text: "Fecha de Inicio",
         value: "employee.mothers_last_name",
         align: "center",
         sortable: false
-      },
-      {
+      }, {
         text: "Fecha de Conclusión",
-        value: "end_date",
+        value: this.active ? "end_date" : "retirement_date",
         align: "center",
         sortable: true
-      },
-      {
+      }, {
         text: "Acciones",
         value: "employee.first_name",
         align: "center",
@@ -175,8 +178,6 @@ export default {
       }
     ],
     contracts: [],
-    contractsActive: [],
-    contractsInactive: [],
     search: "",
     switch1: true,
     contracState: "vigentes",
@@ -209,14 +210,11 @@ export default {
       try {
         this.active = active;
         let res = await axios.get(`/contract`);
+        this.contracts = res.data
         if (active) {
-          this.contracts = res.data.filter(obj => {
+          this.contracts = this.contracts.filter(obj => {
             return obj.active === true;
           });
-        } else {
-          this.contracts = res.data.filter(obj => {
-            return obj.active === false;
-          }).reverse();
         }
         this.loading = false
       } catch (e) {
