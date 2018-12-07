@@ -134,6 +134,9 @@ class EmployeeBonus
     $this->start_date = $result->start ? $result->start->toDateString() : $result->start;
     $this->end_date = $result->end ? $result->end->toDateString() : $result->end;
 
+    $this->start_date = Carbon::parse($this->start_date)->format('d/m/Y');
+    $this->end_date = Carbon::parse($this->end_date)->format('d/m/Y');
+
     $this->worked_days = (object)[
       'months' => $result->months,
       'days' => $result->days,

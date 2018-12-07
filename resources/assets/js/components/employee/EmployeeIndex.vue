@@ -60,7 +60,7 @@
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'EVENTUAL') }} </td>
-          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center pl-2">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
@@ -194,18 +194,17 @@ export default {
         {
           align: "center",
           text: "Activo",
-          class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "account_number",
+          class: ["ml-0", "mr-0", "pl-0", "pr-0"],
+          value: "account_number",
           sortable: false
         },
         {
           align: "left",
           text: "Acciones",
-          class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "second_name",
+          class: ["ml-0", "mr-0", "pl-0", "pr-0"],
+          value: "second_name",
           sortable: false
         }
-      ],
-      subHeaders: [
-        { align: "center", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "name", text: "Name", sortable: false }
       ],
       employeeType: 'Todos los Empleados'
     };
