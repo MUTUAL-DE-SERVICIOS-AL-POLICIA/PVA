@@ -51,45 +51,53 @@
       :headers="headers"
       :items="filteredEmployees"
       :search="search"
-      :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
+      :rows-per-page-items="[10,20,30,{text:'TODO', value:-1}]"
       disable-initial-sort
       expand
     >
       <template slot="items" slot-scope="props">
         <tr :class="rowColor(props.item)">
-          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
-          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
-          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'EVENTUAL') }} </td>
-          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
-          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
-          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
-          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" class="text-md-center" v-if="$store.getters.options.length > 0">
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'EVENTUAL') }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center" v-if="$store.getters.options.length > 0">
             <v-switch
               v-model="props.item.active"
               @change="switchActive(props.item)"
               v-if="$store.getters.options.includes('edit')"
             ></v-switch>
           </td>
-          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" class="justify-center layout" v-if="$store.getters.options.includes('edit')">
-            <v-tooltip top>
-              <v-btn medium slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <span>Editar</span>
-            </v-tooltip>
-            <v-tooltip top v-if="props.item.consultant == null">
-              <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-              <span>Eliminar</span>
-            </v-tooltip>
-            <v-tooltip top v-if="props.item.consultant != null">
-              <v-btn medium slot="activator" flat icon color="info" @click="certificateItem(props.item)">
-                <v-icon>timelapse</v-icon>
-              </v-btn>
-              <span>Certificado de trabajo</span>
-            </v-tooltip>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center" v-if="$store.getters.options.includes('edit')">
+            <table>
+              <td :class="withoutBorders">
+                <v-tooltip top :class="withoutBorders">
+                  <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                  <span>Editar</span>
+                </v-tooltip>
+              </td>
+              <td v-if="props.item.consultant == null" :class="withoutBorders">
+                <v-tooltip top :class="withoutBorders">
+                  <v-btn medium :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                  <span>Eliminar</span>
+                </v-tooltip>
+              </td>
+              <td v-if="props.item.consultant != null" :class="withoutBorders">
+                <v-tooltip top :class="withoutBorders">
+                  <v-btn medium :class="withoutBorders" slot="activator" flat icon color="info" @click="certificateItem(props.item)">
+                    <v-icon>timelapse</v-icon>
+                  </v-btn>
+                  <span>Certificado de trabajo</span>
+                </v-tooltip>
+              </td>
+            </table>
           </td>
         </tr>
       </template>
@@ -165,6 +173,7 @@ export default {
   },
   data() {
     return {
+      withoutBorders: ' ml-0 mr-0 pl-0 pr-0',
       loading: true,
       bus: new Vue(),
       startIndex: 0,
@@ -175,28 +184,28 @@ export default {
       employees: [],
       search: "",
       headers: [
-        { align: "center", text: "C.I.", value: "identity_card" },
-        { text: "Funcionario", value: "last_name" },
-        { align: "center", text: "Tipo Contrato", value: "mothers_last_name", sortable: false },
-        { align: "center", text: "Fecha de Nacimiento", value: "birth_date" },
-        { text: "# Cuenta", value: "account_number" },
-        { text: "AFP", value: "first_name" },
-        { text: "CUA/NUA", value: "nua_cua" },
+        { align: "center", text: "C.I.", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "identity_card" },
+        { text: "Funcionario", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "last_name" },
+        { align: "center", text: "Contrato", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "mothers_last_name", sortable: false },
+        { align: "center", text: "Nacimiento", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "birth_date" },
+        { text: "# Cuenta", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "account_number" },
+        { text: "AFP", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "first_name" },
+        { text: "CUA/NUA", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "nua_cua" },
         {
           align: "center",
           text: "Activo",
-          value: "account_number",
+          class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "account_number",
           sortable: false
         },
         {
-          align: "center",
+          align: "left",
           text: "Acciones",
-          value: "second_name",
+          class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "second_name",
           sortable: false
         }
       ],
       subHeaders: [
-        { align: "center", value: "name", text: "Name", sortable: false }
+        { align: "center", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "name", text: "Name", sortable: false }
       ],
       employeeType: 'Todos los Empleados'
     };
