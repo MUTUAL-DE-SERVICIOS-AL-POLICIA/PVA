@@ -45,15 +45,15 @@
         disable-initial-sort
         class="elevation-1">
         <template slot="items" slot-scope="props">
-          <tr :class="checkEnd(props.item)">
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.employee.identity_card }} {{ props.item.employee.city_identity_card.shortened }} </td>
-            <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ fullName(props.item.employee) }} </td>
-            <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.position.name }}</td>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.start_date | moment("DD/MM/YYYY") }} </td>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded" v-if="props.item.retirement_date == null">
+          <tr :class="checkEnd(props.item) == 'error' ? `white--text ${color=checkEnd(props.item)}` : checkEnd(props.item)" class="bordered">
+            <td :class="checkEnd(props.item) != '' ? 'bordered' : ''" class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.employee.identity_card }} {{ props.item.employee.city_identity_card.shortened }} </td>
+            <td :class="checkEnd(props.item) != '' ? 'bordered' : ''" class="text-xs-left" @click="props.expanded = !props.expanded"> {{ fullName(props.item.employee) }} </td>
+            <td :class="checkEnd(props.item) != '' ? 'bordered' : ''" class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.position.name }}</td>
+            <td :class="checkEnd(props.item) != '' ? 'bordered' : ''" class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.start_date | moment("DD/MM/YYYY") }} </td>
+            <td :class="checkEnd(props.item) != '' ? 'bordered' : ''" class="text-xs-center" @click="props.expanded = !props.expanded" v-if="props.item.retirement_date == null">
               {{ (props.item.end_date == null) ? 'Indefinido' : $moment(props.item.end_date).format('DD/MM/YYYY') }}
             </td>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded" v-else>
+            <td :class="checkEnd(props.item) != '' ? 'bordered' : ''" class="text-xs-center" @click="props.expanded = !props.expanded" v-else>
               <v-tooltip top>
                 <span slot="activator">
                   {{ $moment(props.item.retirement_date).format('DD/MM/YYYY') }}
@@ -63,7 +63,7 @@
                 </span>
               </v-tooltip>
             </td>
-            <td class="justify-center layout" v-if="$store.getters.options.length > 0">
+            <td :class="checkEnd(props.item) != '' ? 'bordered' : ''" class="justify-center layout" v-if="$store.getters.options.length > 0">
               <v-menu offset-y>
                 <v-btn slot="activator" flat icon color="info">
                   <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
@@ -81,7 +81,7 @@
                 <span>Recontratar</span>
               </v-tooltip>
               <v-tooltip top v-if="$store.getters.options.includes('edit')">
-                <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
+                <v-btn slot="activator" flat icon @click="editItem(props.item, 'edit')" color="info">
                   <v-icon>edit</v-icon>
                 </v-btn>
                 <span>Editar</span>
@@ -289,3 +289,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.bordered {
+  border-bottom: 0.2pt solid #212121;
+}
+</style>

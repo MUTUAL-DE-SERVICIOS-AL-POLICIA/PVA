@@ -38,11 +38,15 @@
                         <div class="display-3 font-weight-thin">{{ filter.total.active }}</div>
                         <div class="display-1 font-weight-light">{{ filter.title }}</div>
                         <v-tooltip bottom v-if="'new' in filter && filter.new.length > 0">
-                          <div slot="activator" class="subheading font-weight-light">Nuevos este mes: {{ filter.new.length }}</div>
+                          <div slot="activator" class="subheading font-weight-light">Nuevos {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.new.length }}</div>
                           <div v-for="(item, index) in filter.new" :key="item.id">{{ `${++index}.- ${item.last_name} ${item.mothers_last_name} ${item.first_name} ${item.second_name}` }}</div>
                         </v-tooltip>
-                        <div v-else-if="'new' in filter && filter.new.length == 0" slot="activator" class="subheading font-weight-light">Nuevos este mes: {{ filter.new.length }}</div>
-                        <div v-if="'inactive' in filter.total" class="subheading font-weight-light">Inactivos: {{ filter.total.inactive }}</div>
+                        <div v-else-if="'new' in filter && filter.new.length == 0" slot="activator" class="subheading font-weight-light">Nuevos {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.new.length }}</div>
+                        <v-tooltip bottom v-if="'old' in filter && filter.old.length > 0">
+                          <div slot="activator" class="subheading font-weight-light">Bajas {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.old.length }}</div>
+                          <div v-for="(item, index) in filter.old" :key="item.id">{{ `${++index}.- ${item.last_name} ${item.mothers_last_name} ${item.first_name} ${item.second_name}` }}</div>
+                        </v-tooltip>
+                        <div v-else-if="'old' in filter && filter.old.length == 0" slot="activator" class="subheading font-weight-light">Bajas {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.old.length }}</div>
                       </v-card-text>
                     </v-flex>
                   </v-layout>
@@ -76,7 +80,7 @@
                     <v-flex xs8>
                       <v-card-text class="text-xs-center">
                         <div class="display-3 font-weight-thin">{{ procedures.length == 0 ? '0' : new Intl.NumberFormat('es-BO').format(procedures.map(item => item.faults).reduce((prev, next) => prev + next)) }}</div>
-                        <div class="display-1 font-weight-light">Fondo Social</div>
+                        <div class="display-1 font-weight-light">Fondo Social {{ $moment(this.$store.getters.dateNow).year() }}</div>
                         <v-tooltip bottom>
                           <div slot="activator" class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
                           <table>
@@ -114,26 +118,6 @@
                 <v-layout row wrap>
                   <v-flex xs4 class="text-xs-center" mt-4>
                     <v-icon size="80">cake</v-icon>
-                    <div class="text-xs-left mt-4 ml-3">
-                      <vue-json-to-csv
-                          :json-data="birthday"
-                          :labels = "{
-                            first_name: { title: 'PRIMER NOMBRE' },
-                            second_name: { title: 'SEGUNDO NOMBRE' },
-                            last_name: { title: 'APELLIDO PATERNO' },
-                            mothers_last_name: { title: 'APELLIDO MATERNO' },
-                            birthDate: { title: 'CUMPLEAÑOS' }
-                          }"
-                          :csv-title="`cumpleañeros_${$moment($store.getters.dateNow).format('M_Y')}`"
-                        >
-                        <v-tooltip right>
-                          <v-btn flat icon slot="activator">
-                            <v-icon>save</v-icon>
-                          </v-btn>
-                          <span>Descargar</span>
-                        </v-tooltip>
-                      </vue-json-to-csv>
-                    </div>
                   </v-flex>
                   <v-flex xs8>
                     <v-card-text class="text-xs-center">
@@ -148,6 +132,26 @@
                   <v-flex md2 lg6 class="text-xs-left">{{ e.first_name }} {{ e.last_name }}</v-flex>
                   <v-flex md2 lg2 class="text-xs-right">Día {{ e.birth_date.split('/')[0] }}</v-flex>
                 </v-layout>
+                <div class="text-xs-left ml-3">
+                  <vue-json-to-csv
+                      :json-data="birthday"
+                      :labels = "{
+                        first_name: { title: 'PRIMER NOMBRE' },
+                        second_name: { title: 'SEGUNDO NOMBRE' },
+                        last_name: { title: 'APELLIDO PATERNO' },
+                        mothers_last_name: { title: 'APELLIDO MATERNO' },
+                        birthDate: { title: 'CUMPLEAÑOS' }
+                      }"
+                      :csv-title="`cumpleañeros_${$moment($store.getters.dateNow).format('M_Y')}`"
+                    >
+                    <v-tooltip right>
+                      <v-btn flat icon slot="activator">
+                        <v-icon>save</v-icon>
+                      </v-btn>
+                      <span>Descargar</span>
+                    </v-tooltip>
+                  </vue-json-to-csv>
+                </div>
               </v-card>
             </v-card>
           </v-flex>
@@ -171,7 +175,7 @@ export default {
   }),
   computed: {
     birthday() {
-      return this.employees.filter(o => {
+      return this.employees.sort((a, b) => { if (a.birth_date < b.birth_date) return -1; if (a.birth_date > b.birth_date) return 1; return 0 }).filter(o => {
         o.birthDate = `Día ${ o.birth_date.split('/')[0] }`
         return (o.active == true && this.$moment(`${o.birth_date.split('/')[2]}-${o.birth_date.split('/')[1]}-${o.birth_date.split('/')[0]}`).month() == this.$moment(this.$store.getters.dateNow).month())
       })
@@ -245,6 +249,9 @@ export default {
                 if (o.created_at) {
                   return this.$moment(o.created_at.replace(" ", "T")).isSame(this.$moment(this.$store.getters.dateNow), 'month')
                 }
+              })
+              obj.old = obj.data.filter(o => {
+                return (o.active == false && o.updated_at && this.$moment(o.updated_at.replace(" ", "T")).isSame(this.$moment(this.$store.getters.dateNow), 'month'))
               })
               obj.total = {
                 active: obj.data.filter(o => {

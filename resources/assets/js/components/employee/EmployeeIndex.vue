@@ -57,21 +57,21 @@
     >
       <template slot="items" slot-scope="props">
         <tr :class="rowColor(props.item)">
-          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
-          <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
-          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'EVENTUAL') }} </td>
-          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
-          <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
-          <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
-          <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-          <td class="text-md-center" v-if="$store.getters.options.length > 0">
+          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
+          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
+          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'EVENTUAL') }} </td>
+          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
+          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
+          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
+          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
+          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" class="text-md-center" v-if="$store.getters.options.length > 0">
             <v-switch
               v-model="props.item.active"
               @change="switchActive(props.item)"
               v-if="$store.getters.options.includes('edit')"
             ></v-switch>
           </td>
-          <td class="justify-center layout" v-if="$store.getters.options.includes('edit')">
+          <td :class="rowColor(props.item) != '' ? 'bordered' : ''" class="justify-center layout" v-if="$store.getters.options.includes('edit')">
             <v-tooltip top>
               <v-btn medium slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
                 <v-icon>edit</v-icon>
@@ -300,3 +300,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.bordered {
+  border-bottom: 0.2pt solid #212121;
+}
+</style>
