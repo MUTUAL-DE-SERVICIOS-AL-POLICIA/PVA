@@ -86,5 +86,9 @@ class DatabaseSeeder extends Seeder
 		$this->call(ConsultantProcedureSeeder::class);
 		$this->call(ConsultantPayrollSeeder::class);
 		$this->call(UserActionSeeder::class);
+		$this->call(DocumentTypeAdd2Seeder::class);
+		$this->call(DepartureTypeSeeder::class);
+		$this->call(DepartureReasonSeeder::class);
+		$this->call(ContractTypeDepartureReasonSeeder::class);
 	}
 }

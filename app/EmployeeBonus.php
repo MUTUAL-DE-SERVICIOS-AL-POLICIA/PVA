@@ -68,6 +68,8 @@ class EmployeeBonus
       $q->orderBy('start_date', 'DESC');
     }])->where('m.order', '<', Carbon::parse($pay_date)->month)->select('payrolls.*', 'm.order')->limit(3)->get()->all();
 
+    if (count($payrolls) == 0) return [0];
+
     $this->set_actual_data($payrolls[0]);
 
     $payrolls = array_reverse($payrolls);
@@ -131,6 +133,9 @@ class EmployeeBonus
 
     $this->start_date = $result->start ? $result->start->toDateString() : $result->start;
     $this->end_date = $result->end ? $result->end->toDateString() : $result->end;
+
+    $this->start_date = Carbon::parse($this->start_date)->format('d/m/Y');
+    $this->end_date = Carbon::parse($this->end_date)->format('d/m/Y');
 
     $this->worked_days = (object)[
       'months' => $result->months,

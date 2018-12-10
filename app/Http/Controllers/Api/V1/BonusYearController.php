@@ -41,7 +41,8 @@ class BonusYearController extends Controller
     $bonus_year = BonusYear::where('year', $year)->with(['procedures' => function ($q) {
       $q->orderBy('created_at');
     }])->first();
-    if ($year) return $bonus_year;
+
+    if ($bonus_year) return $bonus_year;
     abort(404);
   }
 
@@ -57,7 +58,8 @@ class BonusYearController extends Controller
     $bonus_year = BonusYear::find($year);
 
     if (!$bonus_year) BonusYear::create([
-      'year' => $year
+      'year' => $year,
+      'bonus' => $request['bonus'] ? $request['bonus'] : 0
     ]);
 
     if ($request['bonus'] < count($bonus_year->procedures)) {

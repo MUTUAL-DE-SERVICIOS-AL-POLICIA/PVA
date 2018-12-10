@@ -1,172 +1,210 @@
 # MANUAL DE USUARIO SISTEMA DE RECURSOS HUMANOS - MUSERPOL
-1. INGRESO AL SISTEMA.
+
+## INGRESO AL SISTEMA.
+
 Este sistema es compatible con los navegadores Firefox y Chrome, para acceder al sistema se debe acceder al enlace:
 [http://rrhh.muserpol.gob.bo](http://rrhh.muserpol.gob.bo).
 Una vez dentro se deben ingresar las credenciales en los campos de usuario y contraseña adquiridas por el responsable de la Unidad de Sistemas y Soporte Técnico.
 
-![login](./img/login.png)
+![IMAGE](./img/login.png)
 
-* CAMBIO DE CONTRASEÑA.
-La primera acción a tomar es cambiar la contraseña, para ello debe hacer click en el botón llamado ADMIN ubicado en la parte superior derecha de la ventana, esta acción abrirá el menú lateral:
+#### CAMBIO DE CONTRASEÑA
 
-![login](./img/menu_top.png)
+La primera acción a tomar es cambiar la contraseña proporcionada por el responsable de la Unidad de Sistemas y Soporte Técnico, esta acción se debe ejecutar en la [Intranet de la institución](intranet.muserpol.gob.bo):
+
+![IMAGE](./img/intranet.png)
+
+A continuación debe hacer click en la opción de *CAMBIAR CONTRASEÑA* y llenar los campos requeridos.
+
+![IMAGE](./img/cambiar_password.png)
+
+Debe llenar el formulario que anterior, de la siguiente manera:
+
+- **1)** Nombre de usuario, por ejemplo para Juan Pérez el usuario será jperez (este nombre de usuario es otorgado por el responsable de la Unidad de Sistemas y Soporte Técnico)
+- **2)** Contraseña otorgada por el responsable de la Unidad de Sistemas y Soporte Técnico
+- **3)** Nueva contraseña
+- **4)** Confirmación de la nueva contraseña
+
+#### CAMBIO DE CONTRASEÑA PARA EL ADMINISTRADOR
+
+Después del login, debe hacer click en el botón ubicado en la parte superior derecha de la ventana con el nombre de usuario ADMIN, esta acción abrirá el menú lateral:
+
+![IMAGE](./img/menu_top.png)
 
 A continuación debe hacer click en la opción de Perfil que se muestra a continuación.
 
-![menu](./img/perfil.png)
+![IMAGE](./img/perfil.png)
 
 Debe llenar el formulario que aparecerá en la nueva ventana, con lo cual, tras Guardar tendrá cambiada su contraseña.
 
-* CERRAR SESION. Para salir de la sesión actual bastará con hacer click en la opción Cerrar Sesión.
+#### CERRAR SESION
 
-![menu](./img/menu_top.png)
+Para salir de la sesión actual bastará con hacer click en la opción Cerrar Sesión del menú superior derecho.
 
-2. GESTION DE EMPLEADOS. Para la gestión de empleados deberá hacer clic en la siguiente opción.
+![IMAGE](./img/menu_top.png)
 
-![menu](./img/menu_empleado.png)
+## ESTADÍSTICAS
 
-* LISTADO DE EMPLEADOS. Luego podrá ver un listado de todos los empleados como se ve a continuació
+![IMAGE](./img/estadisticas.png)
 
-![list](./img/list_employee.png)
+Esta primera ventana muestra el resumen de:
 
-* CREAR UN NUEVO EMPLEADO. Para crear un nuevo empleado debe hacer clic en el botón ubicado en la esquina superior derecha como se muestra a continuación.
+* Personal eventual activo e inactivo, y nuevos ingresos del mes
+* Consultores activos e inactivos, y nuevos ingresos del mes
+* Personal sin contrato actual
+* Recaudación del fondo social hasta la fecha de acuerdo a las planillas generadas
+* Cumpleañeros del mes
 
-![add](./img/add_employee.png)
+Cada resumen tiene la opción de descarga en formato CSV editable como hoja de cálculo.
 
-Luego el sistema desplegará un formulario con todos los campos correspondientes los cuales deberán ser llenados por el usuario:
+## GESTIÓN DE PERSONAL
 
-![form](./img/form_employee.png)
+![IMAGE](./img/list_employee.png)
 
-* VER DETALLES DE EMPLEADO. Cada registro de empleado cuenta con múltiples opciones, una de ellas es poder VER el detalle su información solanmente haciendo click en la fila correspondiente, como se muestra a continuación.
+Esta vista contiene las siguientes opciones:
 
-![show](./img/show_employee.png)
+- **1)** Filtro de empleados según contrato, eventuales, consultores y sin contrato actual.
 
+![IMAGE](./img/filter_employee.png)
 
-* EDITAR REGISTRO DE EMPLEADO. Otra de las funcionalidades del sistema es poder editar la información registrada de los empleados y se realiza haciendo clic en el botón editar ubicado en la parte final derecha de cada registro.
+- **2)** Filtro de empleados activos e inactivos
+- **3)** Caja de búsqueda de acuerdo a los campos mostrados en la lista
+- **4)** Opción para registrar una nueva persona
 
-![options](./img/options.png)
+![IMAGE](./img/form_employee.png)
 
-Una vez presionado el botón se desplegará el formulario con los campos correspondientes habilitados para su edición como se muestra a continuación.
+Cada registro de empleado cuenta con múltiples opciones, una de ellas es poder VER el detalle la información con solo hacer click en la fila correspondiente, como se muestra a continuación.
 
-![edit](./img/form_edit_employee.png)
+![IMAGE](./img/show_employee.png)
 
-Una vez realizados los cambios necesarios a los datos del empleado respectivo se procede a  guardar haciendo clic en el botón guardar ubicado en la esquina inferior derecha.
+Por otra parte, cada registro cuenta con 4 opciones:
 
-* CAMBIAR ESTADO DEL EMPLEADO. Cuando un empleado es dado de baja o ya no forma parte de la relación laboral se procede a “desactivarlo” simplemente cambiando el switch de ON(Estado activo) a OFF(Estado inactivo) como vemos a continuación.
+![IMAGE](./img/options_employee.png)
 
-![status](./img/status_employee.png)
+- **1)** Dar de baja a un funcionario, éste registro será visible en la pestaña de *INACTIVOS*
+- **2)** Editar los datos del funcionario
+- **3)** Eliminar registro (siempre y cuando no se encuentre registrado en planillas ni contratos)
+- **4)** Imprimir el Certificado de Haberes y Aportes Laborales
 
-* BUSQUEDA
+![IMAGE](./img/print_certificate.png)
 
-El sistema también otorga al usuario una funcionalidad de búsqueda o filtrado de información para poder encontrar datos de forma rápida, la barra de búsqueda se encuentra ubicada en la esquina superior derecha de cada tabla como se ve a continuación.
+La lista de empleados cuenta con un código de 4 colores que ayuda a completar el llenado de datos en los casos faltantes:
 
-![add](./img/add_employee.png)
+![IMAGE](./img/colors_employee.png)
 
-Puede introducir cualquier parametro de busqueda ya sea nombre, carnet, cuenta, etc.
+- **AZUL**: EL funcionario no tiene contratos registrados en el sistema, solo en este caso el registro puede ser eliminado
+- **AMARILLO**: EL funcionario no tiene los datos adicionales registrados
+- **ROJO**: El funcionario no tiene cuenta bancaria o número NUA/CUA registrados
+- **BLANCO**: el funcionario cuenta con todos los datos registrados
 
-3. CONTRATOS. Para ingresar a la ventana de contratos debe hacer click en el siguiente ícono de la barra lateral izquierda:
+## GESTIÓN DE PERSONAL EVENTUAL
 
-![menu](./img/menu_contract.png)
+### GESTIÓN DE CONTRATOS DE PERSONAL EVENTUAL
 
-* CREAR UN CONTRATO. Para esta operación es necesario tener registrado correctamente al empleado, como se mencionó en el punto 2.2.
+![IMAGE](./img/employee_contract_menu.png)
 
-![ad](./img/add_employee.png)
+![IMAGE](./img/list_contract.png)
 
-Esta operación abrirá la ventana de Crear Contrato:
+En la pestaña de contratos eventuales se despliegan 4 opciones:
 
-![form](./img/form_contract.png)
+- **1)** Filtro para mostrar contratos activos o inactivos
+- **2)** Búsqueda de acuerdo a los parámetros mostrados en pantalla
+- **3)** Crear nuevo contrato
 
-Debe ingresar todos los campos obligatorios. Al lado derecho se observan algunos datos útiles para verificar la correcta generación del contrato.
+![IMAGE](./img/form_contract.png)
 
-* RENOVAR CONTRATOS. 
+- **4)** Acciones que contemplan:
 
-![options](./img/contract_options.png)
+  * Impresión de contrato, alta y baja del seguro
+  * Recontratar personal
+  * Editar contrato
+  * Eliminar, válido solo en caso de que el contrato no figure en ninguna planilla
 
-La opción de renovar contratos aplica cuando se desea renovar un contrato caducado o pronto a caducar.
+### GESTIÓN DE PLANILLAS DE PERSONAL EVENTUAL
 
-![recontract](./img/re_contract.png)
+![IMAGE](./img/list_procedure.png)
 
-Se pueden seleccionar los contratos a renovar, a los cuales se asignarán nuevos contratos de acuerdo a la Fecha de Inicio y Fecha de Conclusión ingresadas, para guardar los cambios se debe hacer click en el botón Registra.
+Esta pestaña cuenta con las siguientes opciones:
 
-* IMPRIMIR REGISTROS
+- **1)** Gestión actual
+- **2)** Número de aguinaldos de la gestión
+- **3)** Añadir una planilla manualmente (opción habilitada solo para el rol de administrador)
 
-La opción abre el submenú de Impresión
+Por defecto las planillas están habilitadas para registrarse cada nuevo mes, siempre y cuando las planillas anteriores se encuentren cerradas.
 
-![print](./img/print_contract.png) 
+A continuación se muestra la lista de planillas de cada mes de la gestión seleccionada. Esta vista cuenta con un código de colores para identificar de manera óptima el estado de las planillas:
 
-Afiliación al seguro: Imprime la boleta de afiliación al seguro de la C.N.S. (Para esta opción es necesario contar con los formularios de alta proporcionados por la propia caja aseguradora)
-Baja del asegurado: Imprime la boleta de baja del seguro de la C.N.S. (Para esta opción es necesario contar con los formularios de alta proporcionados por la propia caja aseguradora)
-Contrato: Imprime el contrato generado de acuerdo a los datos ingresados en el punto 3.1.
+* <span style="color:blue">**AZUL**</span>: Planilla(s) de aguinaldos, solo se muestra si se registraron el número de aguinaldos para la gestión actual.
+* <span style="color:yellow">**AMARILLO**</span>: Planilla abierta o lista para registrar.
+* <span style="color:green">**VERDE**</span>: Planilla generada y cerrada, la edición ya no es posible una vez que la planilla ha sido cerrada.
 
+Las planillas mensuales cuentan con las opciones de:
 
-* VER DETALLES DE CONTRATO. Simplemente hacer click sobre el contrato
+* Editar Planilla
+* Imprimir boletas de pago
+* Descargar archivo TXT para débito automático en Banco
+* Descargar archivo CSV para declaración en la ![Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
+* Descargar registro de novedades para las AFPs
+* Imprimir planillas filtradas de acuerdo a los formatos establecidos en MUSERPOL
 
-![show](./img/show_contract.png) 
+![IMAGE](./img/bonus_print.png)
 
-* EDITAR CONTRATO
+Las planillas de aguinaldo cuentan con las opciones de:
 
-![options](./img/contract_options.png)
+* Imprimir planillas
+* Descargar archivo TXT para débito automático en Banco
+* Descargar archivo CSV para declaración en la ![Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
+* Editar fecha de pago y nombre de Planilla
+* Eliminar Planilla (opción solo disponible para el rol administrador)
 
-Esta ventana tiene los mismos campos de edición que el formulario de creación de contrato.
+#### EDICIÓN DE PLANILLAS
 
-* ELIMINAR CONTRATO.
+![IMAGE](./img/edit_procedure.png)
 
-![options](./img/contract_options.png)
+La edición de planillas contempla el registro de:
 
-Al ejecutar esta acción se abrirá una ventana de confirmación.
+* Días NO trabajados
+* RC-IVA
+* Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes
+* Saldo tributario del mes anterior (para formulario A-3)
 
-![delete](./img/confirm_delete.png)
+Al registrar cualquiera de estos valores bastará con pulsar la tecla *ENTER* para que sean guardados. Alternativamente se puede llenar toda una fila y pulsar el botón *GUARDAR*.
 
-Una vez confirmada la acción no tiene retorno, por lo cual el usuario debe estar totalmente seguro de eliminar el contrato seleccionado.
+Las opciones de Eliminar Planilla, Eliminar Registro y Añadir un Nuevo Registro están habilitadas solo para el rol de administrador. La última de estas opciones abre un formulario
 
-4. PLANILLAS. La opción de añadir un nuevo mes estará habilitada para meses no generados o para el mes anterior, es decir si actualmente se encuentra en el mes de Agosto, este botón generará un nuevo registro para las planillas del mes de Julio.
+![IMAGE](./img/form_edit_procedure.png)
 
-![list](./img/list_procedure.png)
-
-![form](./img/form_procedure.png)
-
-Una vez generado el mes, se deben registrar las planillas mediante el botón Registra.
-
-* EDITAR LA NUEVA PLANILLA
-
-![form](./img/form_edit_procedure.png)
-
-Los campos que se pueden editar en esta ventana son:
-de dias NO Trabajados
-RC-IVA 13%
-Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes
-Saldo mes anterior (Form A-3 Tributario)
-Al cambiar estos valores, todas las columnas dependientes de cada uno serán actualizadas y recalculadas automáticamente. Para finalizar se debe presionar el botón de Guardar
-
-* EDICION DE LAS PLANILLAS. Solo se pueden editar las planillas registradas, para ello se debe utilizar la opción Editar.
-
-Al igual que en el paso anterior, esta ventana solo tiene habilitados para su edición los campos de:
-
-de dias NO Trabajados.
-
-RC-IVA 13%.
-
-Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes.
-
-Saldo mes anterior (Form A-3 Tributario).
-
-* DESCARGAR PLANILLAS
-
-Hoja de cálculos de Excel: Descarga la planilla de haberes en formato XLS.
-
-Imprimir boletas de pago: Imprime las boletas de pago del mes.
-
-TXT: Descarga el archivo TXT que se utiliza para el pago de haberes en el banco.
-
-OVT: Descarga el archivo CSV requerido para el registro en el sistema del Ministerio de trabajo https://ovt.mintrabajo.gob.bo.
-
-Planillas: Genera los diferentes PDFs que se listan a continuación.
+La impresión de Planillas incluye las Planillas de Haberes (H.) y las Planillas Patronales (P.) agrupadas de acuerdo al criterio actual de MUSERPOL.
 
 ![print](./img/print_procedure.png)
 
-Esta lista incluye las Planillas de Haberes (H.) y las Planillas Patronales (P.) en diferentes listas.
+## GESTIÓN DE CONSULTORES
 
+### GESTIÓN DE CONTRATOS DE CONSULTORES
 
-5. REPORTES.
+![IMAGE](./img/consultant_contract_menu.png)
 
-![print](./img/print_form_procedure.png)
+![IMAGE](./img/list_contract_consultant.png)
+
+El listado de contratos de consultores cuenta con las siguientes opciones:
+
+- **1)** Filtro para listar los contratos activos o inactivos
+- **2)** Caja de búsqueda de acuerdo a los parámetros mostrados en pantalla
+- **3)** Botón para añadir nuevos contratos
+
+![IMAGE](./img/form_consultant_contract.png)
+
+Este formulario contiene los siguientes campos:
+
+* CI de empleado
+* Puesto que puede ser reutilizado o en caso de no existir el puesto para la consultoría este campo es editable a fin de generar un nuevo cargo
+* Haber básico de acuerdo a la escala salarial vigente en MUSERPOL
+* Unidad que requiere la consultoría
+* Fecha de inicio de la consultoría
+* Fecha de conclusión de la consultoría
+* Cite o número de contrato
+* Cite y fecha de cite de recursos humanos
+* Horario de trabajo
+
+En el panel derecho de la ventana se puede ver un resumen del total ganado y la suma de días trabajados por cada mes del tiempo de contrato.
+
