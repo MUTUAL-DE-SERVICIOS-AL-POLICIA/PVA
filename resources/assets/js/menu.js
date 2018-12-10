@@ -9,7 +9,7 @@ export default {
       title: 'Personas',
       icon: 'group',
       params: {
-        options: ['new', 'edit', 'delete', 'print']
+        options: ['new', 'edit', 'inactiveEdit', 'delete', 'print']
       }
     }, {
       title: 'Eventuales',
@@ -20,7 +20,7 @@ export default {
           title: 'Contratos Eventuales',
           icon: 'gavel',
           params: {
-            options: ['new', 'edit', 'delete', 'renew', 'printInsurance', 'printContract']
+            options: ['new', 'edit', 'inactiveEdit', 'delete', 'renew', 'printInsurance', 'printContract']
           }
         }, {
           href: 'procedureIndex',
@@ -83,8 +83,8 @@ export default {
       icon: 'home'
     }, {
       href: 'employeeIndex',
-      title: 'Empleados',
-      icon: 'assignment_ind',
+      title: 'Personas',
+      icon: 'group',
       params: {
         options: ['new', 'edit', 'delete', 'print']
       }

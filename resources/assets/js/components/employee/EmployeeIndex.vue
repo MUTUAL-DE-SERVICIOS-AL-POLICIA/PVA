@@ -71,9 +71,9 @@
               v-if="$store.getters.options.includes('edit')"
             ></v-switch>
           </td>
-          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center" v-if="$store.getters.options.includes('edit')">
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center">
             <table>
-              <td :class="withoutBorders">
+              <td :class="withoutBorders" v-if="(!active && $store.getters.options.includes('edit')) || (active && $store.getters.options.includes('inactiveEdit'))">
                 <v-tooltip top :class="withoutBorders">
                   <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
                     <v-icon>edit</v-icon>
@@ -126,15 +126,15 @@
                   <v-list-tile-content class="font-weight-bold">Calle:</v-list-tile-content>
                 </td>
                 <td>
-                  <v-list-tile-content>{{ item.street }}</v-list-tile-content>
+                  <v-list-tile-content>{{ item.street }} {{ item.address_number }}</v-list-tile-content>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <v-list-tile-content class="font-weight-bold">Número:</v-list-tile-content>
+                  <v-list-tile-content class="font-weight-bold">Celular:</v-list-tile-content>
                 </td>
                 <td>
-                  <v-list-tile-content>{{ item.address_number }}</v-list-tile-content>
+                  <v-list-tile-content>{{ item.phone_number }}</v-list-tile-content>
                 </td>
               </tr>
               <tr>
@@ -142,7 +142,7 @@
                   <v-list-tile-content class="font-weight-bold">Teléfono:</v-list-tile-content>
                 </td>
                 <td>
-                  <v-list-tile-content>{{ item.phone_number }}</v-list-tile-content>
+                  <v-list-tile-content>{{ item.landline_number }}</v-list-tile-content>
                 </td>
               </tr>
             </table>

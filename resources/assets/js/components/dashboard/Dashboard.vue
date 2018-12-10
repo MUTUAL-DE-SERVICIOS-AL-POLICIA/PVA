@@ -20,7 +20,8 @@
                             first_name: { title: 'PRIMER NOMBRE' },
                             second_name: { title: 'SEGUNDO NOMBRE' },
                             position: { title: 'CARGO' },
-                            phone_number: { title: 'TELÉFONO'}
+                            phone_number: { title: 'CELULAR'},
+                            landline_number: { title: 'TELÉFONO'}
                           }"
                           :csv-title="`${filter.title}_${$store.getters.dateNow}`"
                         >
