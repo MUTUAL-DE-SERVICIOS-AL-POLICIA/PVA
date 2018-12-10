@@ -71,33 +71,25 @@
               v-if="$store.getters.options.includes('edit')"
             ></v-switch>
           </td>
-          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center" v-if="$store.getters.options.includes('edit')">
-            <table>
-              <td :class="withoutBorders">
-                <v-tooltip top :class="withoutBorders">
-                  <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
-                    <v-icon>edit</v-icon>
-                  </v-btn>
-                  <span>Editar</span>
-                </v-tooltip>
-              </td>
-              <td v-if="props.item.consultant == null" :class="withoutBorders">
-                <v-tooltip top :class="withoutBorders">
-                  <v-btn medium :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
-                    <v-icon>delete</v-icon>
-                  </v-btn>
-                  <span>Eliminar</span>
-                </v-tooltip>
-              </td>
-              <td v-if="props.item.consultant != null" :class="withoutBorders">
-                <v-tooltip top :class="withoutBorders">
-                  <v-btn medium :class="withoutBorders" slot="activator" flat icon color="info" @click="certificateItem(props.item)">
-                    <v-icon>timelapse</v-icon>
-                  </v-btn>
-                  <span>Certificado de trabajo</span>
-                </v-tooltip>
-              </td>
-            </table>
+          <td class="justify-center layout" v-if="$store.getters.options.includes('edit')">
+            <v-tooltip top>
+              <v-btn medium slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>Editar</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+              <span>Eliminar</span>
+            </v-tooltip>
+            <v-tooltip top v-if="props.item.consultant != null">
+              <v-btn medium slot="activator" flat icon color="info" @click="certificateItem(props.item)">
+                <v-icon>timeline</v-icon>
+              </v-btn>
+              <span>Certificado de trabajo</span>
+            </v-tooltip>            
           </td>
         </tr>
       </template>
