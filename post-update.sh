@@ -11,8 +11,6 @@ php artisan config:clear
 php artisan clear-compiled
 
 # Update notification
-
-if ! [ -x "$(notify-send 'PVA RRHH MODULE' 'Updated')" ]; then
-  echo 'Error: notify-send is not allowed.' >&2
-  exit 1
+if type "notify-send" > /dev/null; then
+  notify-send 'PVA RRHH MODULE' 'Updated'
 fi
