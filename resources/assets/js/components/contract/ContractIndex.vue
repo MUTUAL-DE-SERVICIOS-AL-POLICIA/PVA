@@ -82,7 +82,7 @@
                 <v-list-tile @click="print(props.item, 'printLow')" v-if="$store.getters.options.includes('printInsurance')"> Baja del seguro</v-list-tile>
               </v-list>
             </v-menu>
-            <v-tooltip top v-if="$store.getters.options.includes('renew') && checkEnd(props.item) != ''">
+            <v-tooltip top v-if="$store.getters.options.includes('renew') && checkEnd(props.item) != '' && props.item.active == true">
               <v-btn :class="withoutBorders" slot="activator" flat icon color="info" @click="editItem(props.item, 'recontract')">
                 <v-icon>autorenew</v-icon>
               </v-btn>
@@ -276,6 +276,17 @@ export default {
         return "error";
       } else {
         return "";
+      }
+    },
+    checkEdit(item) {
+      if (item.active == false) {
+        if (this.$store.getters.currentUser.roles[0].name == 'admin') {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
       }
     },
     async print(item, type) {
