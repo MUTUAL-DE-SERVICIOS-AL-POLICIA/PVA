@@ -92,7 +92,7 @@
               <td v-if="props.item.consultant != null" :class="withoutBorders">
                 <v-tooltip top :class="withoutBorders">
                   <v-btn medium :class="withoutBorders" slot="activator" flat icon color="info" @click="certificateItem(props.item)">
-                    <v-icon>timelapse</v-icon>
+                    <v-icon>timeline</v-icon>
                   </v-btn>
                   <span>Certificado de trabajo</span>
                 </v-tooltip>
