@@ -88,7 +88,7 @@
               </v-btn>
               <span>Recontratar</span>
             </v-tooltip>
-            <v-tooltip top v-if="$store.getters.options.includes('edit')&&checkEdit(props.item)">
+            <v-tooltip top v-if="(active && $store.getters.options.includes('edit')) || (!active && $store.getters.options.includes('inactiveEdit'))">
               <v-btn :class="withoutBorders" slot="activator" flat icon @click="editItem(props.item, 'edit')" color="info">
                 <v-icon>edit</v-icon>
               </v-btn>
