@@ -49,7 +49,7 @@
                 <div class="camp" style="width: 5.9cm;height: 1cm;"> {{ Util::getMonthEs(date('m', strtotime($contract->date_end))) }} </div>
                 <div class="camp" style="width: 2.5cm;height: 1cm;"> {{ date('Y', strtotime($contract->date_end)) }} </div>
             </div>
-            <div class="camp" style="width: 5.4cm;height: 1.5cm;"> {{ $contract->retirement_reason }} </div>
+            <div class="camp" style="width: 5.4cm;height: 1.5cm;"> {{ $contract->retirement_reason->name }} </div>
         </div>
         <div style="height: 0.8cm;">&nbsp</div>
         <div>

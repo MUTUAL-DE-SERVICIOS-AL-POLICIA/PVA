@@ -86,7 +86,7 @@
             </v-tooltip>
             <v-tooltip top v-if="props.item.consultant != null">
               <v-btn medium slot="activator" flat icon color="info" @click="certificateItem(props.item)">
-                <v-icon>timelapse</v-icon>
+                <v-icon>timeline</v-icon>
               </v-btn>
               <span>Certificado de trabajo</span>
             </v-tooltip>
