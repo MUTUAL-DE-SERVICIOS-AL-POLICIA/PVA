@@ -126,7 +126,7 @@
             slot-scope="{ hover }"
             :class="(props.item.contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : ((props.item.created_at != props.item.updated_at) ? `light-green lighten-3 elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`)"
           >
-            <td :class="withoutBorders" class="bordered">
+            <td :class="withoutBorders" class="bordered pl-3">
               <v-tooltip right>
                 <span slot="activator">
                   {{ `${props.item.contract.employee.last_name} ${props.item.contract.employee.mothers_last_name} ${props.item.contract.employee.first_name} ${(props.item.contract.employee.second_name) ? props.item.contract.employee.second_name : ''}` }}
