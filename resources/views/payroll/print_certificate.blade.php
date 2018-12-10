@@ -19,7 +19,7 @@
     <body>
         <br><br><br><br><br><br>
         <div style="font-size: 8pt;" align="right">
-            <p>DIRECCION DE ASUNTOS ADMINISTRATIVOS</p>
+            <p>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</p>
             <p>UNINDAD DE RECURSOS HUMANOS</p>
             <p>Certificado RR.HH. No. {{ $certificate->correlative }}/{{ $certificate->year }}</p>
             <p>Fecha {{ date('d') }} de {{ Carbon::now()->formatLocalized('%B') }} de {{ date('Y') }}</p>

@@ -2,36 +2,35 @@
   <v-dialog persistent v-model="dialog" max-width="1100px" @keydown.esc="close" scrollable>
     <v-card>
       <v-toolbar dark color="secondary">
-        <v-toolbar-title class="white--text">Certificado de haberes y aportes laborales</v-toolbar-title>
+        <v-toolbar-title class="white--text">Haberes y aportes laborales - {{ fullName }}</v-toolbar-title>
       </v-toolbar>
       <v-card-text>        
-        <p v-if="contract.employee" style="font-weight: bold;" align="center">{{ contract.employee.last_name }} {{ contract.employee.mothers_last_name }} {{ contract.employee.first_name }} con C.I. {{ contract.employee.identity_card }} {{ contract.employee.city_identity_card.shortened }},
-          <span v-if="contract.act==false" color=""> ocupó </span>
-          <span v-if="contract.act==true" color=""> actualmente ocupa </span>
-          el cargo de {{ contract.position.name }}
+        <p v-if="contract.employee" style="font-weight: bold;" align="center">
+          <span v-if="contract.act==false" color="">  </span>
+          <span v-if="contract.act==true" color=""> </span>          
         </p>
-        <p>Detalle de haberes y descuentos:</p>
         <v-data-table
         :headers="headers"
         :items="payrolls"
-        :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
+        :rows-per-page-items="[12,24,36,{text:'TODO',value:-1}]"
         disable-initial-sort
-        class="elevation-1">
+        class="elevation-1"
+        style="width:2500px;height:500px;">
           <template slot="items" slot-scope="props">
-            <tr>
-              <td class="text-xs-left"> {{ props.item.month_shortened }}-{{ props.item.year }} </td>
-              <td class="text-xs-left"> {{ props.item.position }} </td>
-              <td class="text-xs-left"> {{ props.item.worked_days }} </td>
-              <td class="text-xs-left"> {{ props.item.base_wage.toFixed(2) }} </td>
-              <td class="text-xs-left"> {{ props.item.quotable.toFixed(2) }} </td>
-              <td class="text-xs-left"> {{ props.item.discount_old.toFixed(2) }} </td>
-              <td class="text-xs-left"> {{ props.item.discount_common_risk.toFixed(2) }} </td>
-              <td class="text-xs-left"> {{ props.item.discount_commission.toFixed(2) }} </td>
-              <td class="text-xs-left"> {{ props.item.discount_solidary.toFixed(2) }} </td>
-              <td class="text-xs-left"> {{ props.item.discount_national.toFixed(2) }} </td>
-              <td class="text-xs-left">  </td>
-              <td class="text-xs-left"> {{ props.item.total_amount_discount_law.toFixed(2) }} </td>
-              <td class="text-xs-left"> {{ props.item.net_salary.toFixed(2) }} </td>
+            <tr v-model="props.selected">
+              <td class="cell text-xs-center"> {{ props.item.month_shortened }}-{{ props.item.year }} </td>
+              <td class="cell text-xs-left"> {{ props.item.position }} </td>
+              <td class="cell text-xs-center"> {{ props.item.worked_days }} </td>
+              <td class="cell text-xs-right"> {{ props.item.base_wage.toFixed(2) }} </td>
+              <td class="cell text-xs-right"> {{ props.item.quotable.toFixed(2) }} </td>
+              <td class="cell text-xs-right"> {{ props.item.discount_old.toFixed(2) }} </td>
+              <td class="cell text-xs-right"> {{ props.item.discount_common_risk.toFixed(2) }} </td>
+              <td class="cell text-xs-right"> {{ props.item.discount_commission.toFixed(2) }} </td>
+              <td class="cell text-xs-right"> {{ props.item.discount_solidary.toFixed(2) }} </td>
+              <td class="cell text-xs-right"> {{ props.item.discount_national.toFixed(2) }} </td>
+              <td class="cell text-xs-right"> - </td>
+              <td class="cell text-xs-right"> {{ props.item.total_amount_discount_law.toFixed(2) }} </td>
+              <td class="text-xs-right"> {{ props.item.net_salary.toFixed(2) }} </td>
             </tr>
           </template>
         </v-data-table>
@@ -51,74 +50,76 @@ export default {
   props: ["employee", "bus"],
   data() {
     return {
+      fullName: null,
       payrolls: [],
       contract: [],
       dialog: false,
+      selected: [],
       headers: [
         {
-          text: "MES Y AÑO",
-          value: "",
-          align: "center"
+          text: "MES-AÑO",
+          align: "center",
+          class: "cell"         
         },
         {
           text: "CARGO",
-          value: "",
-          align: "center"
+          align: "center",
+          class: "cell"
         },
         {
-          text: "DIAS TRABAJADOS",
-          value: "",
-          align: "center"
+          text: "DIAS TRAB.",
+          align: "center",
+          class: "cell"
         },
         {
           text: "HABER BASICO",
-          value: "",
-          align: "center"
+          align: "center",
+          class: "cell"
         },
         {
           text: "TOTAL GANADO",
-          value: "",
-          align: "center"
+          align: "center",
+          class: "cell"
         },
         {
           text: "RENTA VEJEZ 10%",
-          value: "",
-          align: "center"
+          align: "center",
+          class: "cell"
         },
         {
           text: "RIESGO COMUN 1.71%",
-          value: "",
-          align: "center"
+          align: "center",
+          class: "cell"
         },
         {
           text: "COMISION 0.5%",
-          value: "",
-          align: "center"
+          align: "center",
+          class: "cell"
         },
         {
-          text: "APORTE SOLIDARIO DEL ASEGURADO 0.5%",
-          value: "",
-          align: "center"
+          text: "AP. SOL. DEL ASEGURADO 0.5%",
+          align: "center",
+          class: "cell"
         },
         {
-          text: "APORTE NACIONAL SOLIDARIO 1% 5% 10%",
-          value: "",
-          align: "center"
+          text: "AP. NAL. SOL. 1% 5% 10%",
+          align: "center",
+          class: "cell"
         },
         {
           text: "OTROS DESC.",
-          value: "",
-          align: "center"
+          align: "center",
+          class: "cell"
         },
         {
           text: "TOTAL DESC.",
-          value: "",
-          align: "center"
+          align: "center",
+          class: "cell"
         },
         {
-          text: "LIQUIDO PAGABLE",
-          value: "",
-          align: "center"
+          text: "LIQ. PAGABLE",
+          align: "center",
+          class: "cell"
         }
       ],
     };
@@ -137,7 +138,6 @@ export default {
     async getContract(id){
       let res = await axios.get('/contract/last_contract/'+id);
       this.contract = res.data;
-      console.log(this.contract);
     },
     async print(url) {
       try {
@@ -166,9 +166,16 @@ export default {
       this.newEmployee = false;
       this.getPayrolls(employee.id);
       this.getContract(employee.id);
+      this.fullName = [employee.last_name, employee.mothers_last_name, employee.first_name, employee.second_name].join(" ");
     });    
   },
   watch: {
   }
 };
 </script>
+<style type="text/css">
+  .cell {
+    margin: -5px !important;
+    padding: -15px !important;
+  }
+</style>

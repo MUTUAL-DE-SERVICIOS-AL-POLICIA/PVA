@@ -34,6 +34,7 @@ class EmployeeStoreForm extends FormRequest
 			'zone' => 'required',
 			'street' => 'required',
 			'address_number' => 'required',
+			'phone_number' => 'required',
 		];
 	}
 
