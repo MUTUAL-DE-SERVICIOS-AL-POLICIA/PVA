@@ -33,7 +33,7 @@
                     item-text="name" 
                     item-value="id"
                     label="Puesto"
-                    v-on:change="onSelectPosition"
+                    @change="onSelectPosition"
                     v-validate="'required'"
                     name="Puesto"
                     :error-messages="errors.collect('Puesto')"
@@ -578,6 +578,9 @@ export default {
       let data = {};
       let month = "";
       let total = 0;
+      let day = 0;
+      let salary = 0;
+      let salary_day = 0;
 
       var d1 = this.$moment(this.date);
       var d2 = this.$moment(this.date2);
@@ -608,7 +611,7 @@ export default {
               day = 30;
             }
           } else {
-            day = d2.date();
+            day = (d2.date() + 1) - d1.date();
           }
         }
         salary = salary_day * day;
