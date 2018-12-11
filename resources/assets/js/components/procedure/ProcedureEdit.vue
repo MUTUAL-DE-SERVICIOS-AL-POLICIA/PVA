@@ -64,6 +64,7 @@
         v-model="dialog"
         width="500"
         @keydown.esc="dialog = false"
+        v-if="this.procedure.pay_date"
       >
         <v-btn
           slot="activator"
@@ -126,7 +127,7 @@
             slot-scope="{ hover }"
             :class="(props.item.contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : ((props.item.created_at != props.item.updated_at) ? `light-green lighten-3 elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`)"
           >
-            <td :class="withoutBorders" class="bordered">
+            <td :class="withoutBorders" class="bordered pl-3">
               <v-tooltip right>
                 <span slot="activator">
                   {{ `${props.item.contract.employee.last_name} ${props.item.contract.employee.mothers_last_name} ${props.item.contract.employee.first_name} ${(props.item.contract.employee.second_name) ? props.item.contract.employee.second_name : ''}` }}
@@ -438,8 +439,8 @@ export default {
           `/procedure/${this.$route.params.id}/discounts`
         );
         this.procedure = res.data;
-        this.minDatePay = this.procedure.year+'-'+this.procedure.month.order+'-20';
-        this.maxDatePay = this.procedure.year+'-'+(this.procedure.month.order+1)+'-05'; 
+        this.minDatePay = this.$moment().year(this.procedure.year).month(this.procedure.month.order - 1).date(20).toISOString().split('T')[0]
+        this.maxDatePay = this.$moment().year(this.procedure.year).month(this.procedure.month.order).date(20).toISOString().split('T')[0]
         if (res.data.pay_date){
           this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
         }
@@ -599,7 +600,9 @@ export default {
     },
     async updatePayDate(id, date) {
       try{
-        await axios.get('/procedure/pay_date/'+ id +'/' + date);
+        let res = await axios.get(`/procedure/pay_date/${id}/${date}`)
+        this.procedure.pay_date = res.data.pay_date
+        this.procedure.ufv = res.data.ufv
         this.toastr.success(
           `Registrado correctamente`
         );
