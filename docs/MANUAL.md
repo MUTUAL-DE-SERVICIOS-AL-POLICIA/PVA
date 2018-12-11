@@ -168,7 +168,7 @@ La edición de planillas contempla el registro de:
 * Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes
 * Saldo tributario del mes anterior (para formulario A-3)
 
-Al registrar cualquiera de estos valores basta con pulsar la tecla *ENTER* para ser guardados. También se puede llenar toda una fila y pulsar el botón *GUARDAR*.
+Al registrar cualquiera de estos valores bastará con pulsar la tecla *ENTER* para que sean guardados. Alternativamente se puede llenar toda una fila y pulsar el botón *GUARDAR*.
 
 Las opciones de Eliminar Planilla, Eliminar Registro y Añadir un Nuevo Registro están habilitadas solo para el rol de administrador. La última de estas opciones abre un formulario
 
@@ -177,4 +177,34 @@ Las opciones de Eliminar Planilla, Eliminar Registro y Añadir un Nuevo Registro
 La impresión de Planillas incluye las Planillas de Haberes (H.) y las Planillas Patronales (P.) agrupadas de acuerdo al criterio actual de MUSERPOL.
 
 ![print](./img/print_procedure.png)
+
+## GESTIÓN DE CONSULTORES
+
+### GESTIÓN DE CONTRATOS DE CONSULTORES
+
+![IMAGE](./img/consultant_contract_menu.png)
+
+![IMAGE](./img/list_contract_consultant.png)
+
+El listado de contratos de consultores cuenta con las siguientes opciones:
+
+- **1)** Filtro para listar los contratos activos o inactivos
+- **2)** Caja de búsqueda de acuerdo a los parámetros mostrados en pantalla
+- **3)** Botón para añadir nuevos contratos
+
+![IMAGE](./img/form_consultant_contract.png)
+
+Este formulario contiene los siguientes campos:
+
+* CI de empleado
+* Puesto que puede ser reutilizado o en caso de no existir el puesto para la consultoría este campo es editable a fin de generar un nuevo cargo
+* Haber básico de acuerdo a la escala salarial vigente en MUSERPOL
+* Unidad que requiere la consultoría
+* Fecha de inicio de la consultoría
+* Fecha de conclusión de la consultoría
+* Cite o número de contrato
+* Cite y fecha de cite de recursos humanos
+* Horario de trabajo
+
+En el panel derecho de la ventana se puede ver un resumen del total ganado y la suma de días trabajados por cada mes del tiempo de contrato.
 

@@ -13,7 +13,7 @@
           <v-layout wrap>
             <v-flex xs12 sm6 md6>
               <v-layout wrap>
-                <v-flex xs8 sm8 md8>
+                <v-flex xs5 sm5 md5 pr-2>
                   <v-text-field
                     v-validate="'required'"
                     :error-messages="errors.collect('Carnet de Identidad')"
@@ -23,7 +23,7 @@
                   ></v-text-field>
                 </v-flex>
                 <v-spacer></v-spacer>
-                <v-flex xs3 sm3 md3>
+                <v-flex xs3 sm3 md3 pl-2 pr-2>
                   <v-select
                     v-validate="'required'"
                     :error-messages="errors.collect('Ciudad de Expedición')"
@@ -37,53 +37,67 @@
                     :menu-props="{ auto: true, overflowY: true }"
                   ></v-select>
                 </v-flex>
+                <v-flex xs4 sm4 md4 pl-2>
+                  <v-select
+                    v-validate="'required'"
+                    :error-messages="errors.collect('Género')"
+                    data-vv-name="Género"
+                    :items="genders"
+                    item-text="name"
+                    item-value="value"
+                    label="Género"
+                    v-model="edit.gender"
+                    single-line
+                    :menu-props="{ auto: true, overflowY: true }"
+                  ></v-select>
+                </v-flex>
               </v-layout>
-              <v-select
-                v-validate="'required'"
-                :error-messages="errors.collect('Género')"
-                data-vv-name="Género"
-                :items="genders"
-                item-text="name"
-                item-value="value"
-                label="Género"
-                v-model="edit.gender"
-                single-line
-                :menu-props="{ auto: true, overflowY: true }"
-              ></v-select>
-              <v-text-field
-                v-validate="'required|alpha_spaces'"
-                :error-messages="errors.collect('Primer nombre')"
-                data-vv-name="Primer nombre"
-                v-model="edit.first_name"
-                label="Primer nombre"
-                autocomplete='given-name'
-              ></v-text-field>
-              <v-text-field
-                v-validate="'alpha_spaces'"
-                :error-messages="errors.collect('Segundo nombre')"
-                data-vv-name="Segundo nombre"
-                v-model="edit.second_name"
-                label="Segundo nombre"
-                autocomplete='given-name'
-              ></v-text-field>
-              <v-text-field
-                v-validate="'required|alpha_spaces'"
-                :error-messages="errors.collect('Apellido Paterno')"
-                data-vv-name="Apellido Paterno"
-                v-model="edit.last_name"
-                label="Apellido Paterno"
-                autocomplete='last-name'
-              ></v-text-field>
-              <v-text-field
-                v-validate="'required|alpha_spaces'"
-                :error-messages="errors.collect('Apellido Materno')"
-                data-vv-name="Apellido Materno"
-                v-model="edit.mothers_last_name"
-                label="Apellido Materno"
-                autocomplete='family-name'
-              ></v-text-field>
               <v-layout wrap>
-                <v-flex xs6 sm6 md6>
+                <v-flex xs12 sm6 md6 lg6 pr-2>
+                  <v-text-field
+                    v-validate="'required|alpha_spaces'"
+                    :error-messages="errors.collect('Apellido Paterno')"
+                    data-vv-name="Apellido Paterno"
+                    v-model="edit.last_name"
+                    label="Apellido Paterno"
+                    autocomplete='last-name'
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md6 lg6 pl-2>
+                  <v-text-field
+                    v-validate="'required|alpha_spaces'"
+                    :error-messages="errors.collect('Apellido Materno')"
+                    data-vv-name="Apellido Materno"
+                    v-model="edit.mothers_last_name"
+                    label="Apellido Materno"
+                    autocomplete='family-name'
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout wrap>
+                <v-flex xs12 sm6 md6 lg6 pr-2>
+                  <v-text-field
+                    v-validate="'required|alpha_spaces'"
+                    :error-messages="errors.collect('Primer nombre')"
+                    data-vv-name="Primer nombre"
+                    v-model="edit.first_name"
+                    label="Primer nombre"
+                    autocomplete='given-name'
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md6 lg6 pl-2>
+                  <v-text-field
+                    v-validate="'alpha_spaces'"
+                    :error-messages="errors.collect('Segundo nombre')"
+                    data-vv-name="Segundo nombre"
+                    v-model="edit.second_name"
+                    label="Segundo nombre"
+                    autocomplete='given-name'
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout wrap>
+                <v-flex xs6 sm6 md6 pr-2>
                   <v-menu
                     ref="menu"
                     :close-on-content-click="false"
@@ -115,8 +129,7 @@
                     ></v-date-picker>
                   </v-menu>
                 </v-flex>
-                <v-spacer></v-spacer>
-                <v-flex xs5 sm5 md5>
+                <v-flex xs6 sm6 md6 pl-2>
                   <v-select
                     v-validate="'required'"
                     :error-messages="errors.collect('Lugar de Nacimiento')"
@@ -141,25 +154,31 @@
             </v-flex>
             <v-spacer></v-spacer>
             <v-flex xs12 sm5 md5>
-              <v-text-field
-                v-validate="'numeric'"
-                :error-messages="errors.collect('NUA/CUA')"
-                data-vv-name="NUA/CUA"
-                v-model="edit.nua_cua"
-                label="NUA/CUA"
-              ></v-text-field>
-              <v-select
-                :items="managementEntities"
-                item-text="name"
-                item-value="id"
-                label="AFP"
-                v-model="edit.management_entity_id"
-                single-line
-                :menu-props="{ auto: true, overflowY: true }"
-                v-validate="'required'"
-                :error-messages="errors.collect('AFP')"
-                data-vv-name="AFP"
-              ></v-select>
+              <v-layout wrap>
+                <v-flex xs12 sm8 md8 lg8 pr-2>
+                  <v-text-field
+                    v-validate="'numeric'"
+                    :error-messages="errors.collect('NUA/CUA')"
+                    data-vv-name="NUA/CUA"
+                    v-model="edit.nua_cua"
+                    label="NUA/CUA"
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm4 md4 lg4 pl-2>
+                  <v-select
+                    :items="managementEntities"
+                    item-text="name"
+                    item-value="id"
+                    label="AFP"
+                    v-model="edit.management_entity_id"
+                    single-line
+                    :menu-props="{ auto: true, overflowY: true }"
+                    v-validate="'required'"
+                    :error-messages="errors.collect('AFP')"
+                    data-vv-name="AFP"
+                  ></v-select>
+                </v-flex>
+              </v-layout>
               <v-text-field
                 v-validate="'required'"
                 :error-messages="errors.collect('Ciudad')"
@@ -175,28 +194,48 @@
                 v-model="edit.zone"
                 label="Zona"
               ></v-text-field>
-              <v-text-field
-                v-validate="'required'"
-                :error-messages="errors.collect('Calle')"
-                data-vv-name="Calle"
-                v-model="edit.street"
-                label="Calle"
-              ></v-text-field>
-              <v-text-field
-                v-validate="'required'"
-                :error-messages="errors.collect('Número de puerta')"
-                data-vv-name="Número de puerta"
-                v-model="edit.address_number"
-                label="Número de puerta"
-              ></v-text-field>
-              <v-text-field
-                v-validate="'required|numeric'"
-                :error-messages="errors.collect('Teléfono')"
-                data-vv-name="Teléfono"
-                v-model="edit.phone_number"
-                label="Teléfono"
-                autocomplete='tel'
-              ></v-text-field>
+              <v-layout wrap>
+                <v-flex xs12 sm8 md8 lg8 pr-2>
+                  <v-text-field
+                    v-validate="'required'"
+                    :error-messages="errors.collect('Calle')"
+                    data-vv-name="Calle"
+                    v-model="edit.street"
+                    label="Calle"
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm4 md4 lg4 pl-2>
+                  <v-text-field
+                    v-validate="'required'"
+                    :error-messages="errors.collect('Número de puerta')"
+                    data-vv-name="Número de puerta"
+                    v-model="edit.address_number"
+                    label="# de puerta"
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout wrap>
+                <v-flex xs12 sm6 md6 lg6 pr-2>
+                  <v-text-field
+                    v-validate="'required|numeric'"
+                    :error-messages="errors.collect('Celular')"
+                    data-vv-name="Celular"
+                    v-model="edit.phone_number"
+                    label="Celular"
+                    autocomplete='tel'
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md6 lg6 pr-2>
+                  <v-text-field
+                    v-validate="'numeric'"
+                    :error-messages="errors.collect('Teléfono')"
+                    data-vv-name="Teléfono"
+                    v-model="edit.landline_number"
+                    label="Teléfono"
+                    autocomplete='tel'
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
             </v-flex>
           </v-layout>
         </form>

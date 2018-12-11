@@ -11,4 +11,6 @@ php artisan config:clear
 php artisan clear-compiled
 
 # Update notification
-notify-send "PVA RRHH MODULE" "Updated"
+if type "notify-send" > /dev/null; then
+  notify-send 'PVA RRHH MODULE' 'Updated'
+fi

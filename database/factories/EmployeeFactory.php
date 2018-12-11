@@ -32,5 +32,6 @@ $factory->define(App\Employee::class, function (Faker $faker) {
 		'street' => $faker->streetName(),
 		'address_number' => $faker->postcode(),
 		'phone_number' => $faker->bankRoutingNumber(),
+		'landline_number' => $faker->bankRoutingNumber(),
 	];
 });

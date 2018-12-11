@@ -2,8 +2,15 @@
   <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>EVENTUALES {{ procedure.month.name }}</v-toolbar-title>
+      <v-tooltip color="white" role="button" bottom>
+        <v-icon slot="activator" class="ml-4">info</v-icon>
+        <div>
+          <v-alert :value="true" type="warning" class="black--text">RETIROS DE ESTE MES</v-alert>
+          <v-alert :value="true" type="info" color="light-green lighten-3" class="black--text">REGISTROS EDITADOS</v-alert>
+        </div>
+      </v-tooltip>
       <v-spacer></v-spacer>
-      <v-menu 
+      <v-menu
       v-model="menuDate"
       :close-on-content-click="false"
       :nudge-right="40"
@@ -12,15 +19,16 @@
       offset-y
       full-width>
         <v-text-field
+          class="pl-2 pr-2 ml-1 mr-1"
           slot="activator"
           v-model="selectedDate"
           label="Fecha de Pago"
           prepend-icon="event"
           readonly
         ></v-text-field>
-        <v-date-picker 
-        v-model="date" 
-        @input="menuDate = false" 
+        <v-date-picker
+        v-model="date"
+        @input="menuDate = false"
         @change="updatePayDate(procedure.id, date)"
         locale="es-bo"
         :min="minDatePay"
@@ -56,6 +64,7 @@
         v-model="dialog"
         width="500"
         @keydown.esc="dialog = false"
+        v-if="this.procedure.pay_date"
       >
         <v-btn
           slot="activator"
@@ -78,6 +87,7 @@
       </v-dialog>
       <v-flex xs2>
         <v-text-field
+          class="pl-2 pr-2 ml-1 mr-1"
           v-model="search"
           append-icon="search"
           label="Buscar"
@@ -115,9 +125,9 @@
         <v-hover v-if="props.item.contract.employee" close-delay="0" open-delay="150">
           <tr
             slot-scope="{ hover }"
-            :class="(props.item.contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`"
+            :class="(props.item.contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : ((props.item.created_at != props.item.updated_at) ? `light-green lighten-3 elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`)"
           >
-            <td>
+            <td :class="withoutBorders" class="bordered pl-3">
               <v-tooltip right>
                 <span slot="activator">
                   {{ `${props.item.contract.employee.last_name} ${props.item.contract.employee.mothers_last_name} ${props.item.contract.employee.first_name} ${(props.item.contract.employee.second_name) ? props.item.contract.employee.second_name : ''}` }}
@@ -130,16 +140,15 @@
                 </span>
               </v-tooltip>
             </td>
-            <td class="text-md-center font-weight-medium">
+            <td class="text-md-center font-weight-medium bordered" :class="withoutBorders">
               {{ workedDays(props.item) }}
             </td>
-            <td>
+            <td class="text-md-center font-weight-medium bordered">
               <v-text-field
                 v-validate="'required'"
                 :error-messages="errors.collect('Días NO Trab.')"
                 data-vv-name='Días NO Trab.'
                 v-model="props.item.unworked_days"
-                class="body-1"
                 type="number"
                 step="1"
                 min="0"
@@ -147,66 +156,72 @@
                 @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
             </td>
-            <td>
+            <td :class="withoutBorders" class="bordered">
               <v-text-field
+                class="pl-2 pr-2 ml-1 mr-1"
                 v-validate="'required'"
                 :error-messages="errors.collect('RC-IVA')"
                 data-vv-name="RC-IVA"
                 v-model="props.item.rc_iva"
-                class="body-1"
                 @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
             </td>
-            <td>
+            <td :class="withoutBorders" class="bordered">
               <v-text-field
+                class="pl-2 pr-2 ml-1 mr-1"
                 v-validate="'required'"
                 :error-messages="errors.collect('Descuentos')"
                 data-vv-name="Descuentos"
                 v-model="props.item.faults"
-                class="body-1"
                 @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
             </td>
-            <td>
+            <td :class="withoutBorders" class="bordered">
               <v-text-field
+                class="pl-2 pr-2 ml-1 mr-1"
                 v-validate="'required'"
                 :error-messages="errors.collect('Descuentos')"
                 data-vv-name="Descuentos"
                 v-model="props.item.previous_month_balance"
-                class="body-1"
                 @keyup.enter.native="savePayroll(props.item)"
               ></v-text-field>
             </td>
-            <td>
+            <td :class="withoutBorders" class="bordered">
               <v-layout wrap>
                 <v-flex xs6>
-                  <v-btn small class="accent" @click="savePayroll(props.item)">
-                    Guardar
-                  </v-btn>
+                  <v-tooltip top>
+                    <v-btn slot="activator" flat icon color="primary" @click="savePayroll(props.item)">
+                      <v-icon>check</v-icon>
+                    </v-btn>
+                    <span>Validar</span>
+                  </v-tooltip>
                 </v-flex>
-                <v-flex xs6 pl-4 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
-                  <v-btn small class="error" @click="deletePayroll(props.item)">
-                    Eliminar
-                  </v-btn>
+                <v-flex xs6 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                  <v-tooltip top>
+                    <v-btn slot="activator" flat icon color="error" @click="deletePayroll(props.item)">
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                    <span>Eliminar</span>
+                  </v-tooltip>
                 </v-flex>
               </v-layout>
             </td>
-            <td class="text-md-center font-weight-bold">
+            <td class="text-md-center font-weight-bold bordered" :class="withoutBorders">
               {{ total(props.item) }}
             </td>
-            <td class="text-md-center font-weight-bold">
+            <td class="text-md-center font-weight-bold bordered" :class="withoutBorders">
               {{ totalDiscounts(props.item).toFixed(2) }}
             </td>
-            <td class="text-md-center">
+            <td class="text-md-center bordered" :class="withoutBorders">
               {{ $moment(props.item.contract.start_date).format('DD/MM/YYYY') }}
             </td>
-            <td class="text-md-center" v-if="props.item.contract.end_date == null">
+            <td class="text-md-center bordered" :class="withoutBorders" v-if="props.item.contract.end_date == null">
               Indefinido
             </td>
-            <td class="text-md-center" v-else-if="props.item.contract.retirement_date == null">
+            <td class="text-md-center bordered" :class="withoutBorders" v-else-if="props.item.contract.retirement_date == null">
               {{ $moment(props.item.contract.end_date).format('DD/MM/YYYY') }}
             </td>
-            <td class="text-md-center" v-else>
+            <td class="text-md-center bordered" :class="withoutBorders" v-else>
               <v-tooltip top>
                 <span slot="activator">
                   {{ $moment(props.item.contract.retirement_date).format('DD/MM/YYYY') }}
@@ -252,6 +267,7 @@ export default {
   },
   data() {
     return {
+      withoutBorders: ' ml-2 mr-2 pl-0 pr-0',
       bus: new Vue(),
       loading: true,
       dialog: false,
@@ -298,50 +314,54 @@ export default {
       return [
         {
           text: "Funcionario",
-          value: "contract.employee.last_name"
-        },
-        {
+          value: "contract.employee.last_name",
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }, {
           text: "Días Trab.",
           tooltip: "Días trabajados",
           align: "center",
           sortable: false,
-          value: "contract.employee.mothers_last_name"
-        },
-        {
-          text: "Días NO Trab.",
+          value: "contract.employee.mothers_last_name",
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }, {
+          text: "NO Trab.",
           tooltip: "Días NO trabajados",
           align: "center",
           sortable: false,
           value: "contract.employee.first_name"
-        },
-        {
+        }, {
           text: `RC-IVA ${this.procedure.employee_discount.rc_iva * 100}%`,
           align: "center",
           sortable: false,
-          value: "contract.employee.identity_card"
-        },
-        {
+          value: "contract.employee.identity_card",
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }, {
           text: `Descuentos`,
           tooltip:
             "Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes",
           align: "center",
-          sortable: false
-        },
-        {
+          sortable: false,
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }, {
           text: `Saldo tributario`,
           tooltip:
             "Saldo tributario del mes anterior (Planilla tributaria. A-3)",
           align: "center",
-          sortable: false
-        },
-        { text: `Acciones`, align: "center", value: "", sortable: false },
-        {
+          sortable: false,
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }, {
+          text: `Acciones`,
+          align: "center",
+          value: "",
+          sortable: false,
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }, {
           text: `Líquido pagable`,
           align: "center",
           value: "",
-          sortable: false
-        },
-        {
+          sortable: false,
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }, {
           text: `Total descuentos`,
           tooltip: `Renta vejez ${this.procedure.employee_discount.elderly *
             100}%, Riesgo común ${this.procedure.employee_discount.common_risk *
@@ -353,14 +373,19 @@ export default {
             100}% y Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes`,
           align: "center",
           value: "",
-          sortable: false
-        },
-        {
+          sortable: false,
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }, {
           text: `Inicio contrato`,
           align: "center",
-          value: "contract.start_date"
-        },
-        { text: `Fin contrato`, align: "center", value: "contract.end_date" }
+          value: "contract.start_date",
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }, {
+          text: `Fin contrato`,
+          align: "center",
+          value: "contract.end_date",
+          class: ["ml-2", "mr-2", "pl-2", "pr-2"]
+        }
       ];
     }
   },
@@ -401,6 +426,7 @@ export default {
           faults: Number(payroll.faults),
           previous_month_balance: Number(payroll.previous_month_balance)
         });
+        payroll.updated_at = null
         this.toastr.success("Guardado");
       } catch (e) {
         console.log(e);
@@ -413,8 +439,8 @@ export default {
           `/procedure/${this.$route.params.id}/discounts`
         );
         this.procedure = res.data;
-        this.minDatePay = this.procedure.year+'-'+this.procedure.month.order+'-20';
-        this.maxDatePay = this.procedure.year+'-'+(this.procedure.month.order+1)+'-05'; 
+        this.minDatePay = this.$moment().year(this.procedure.year).month(this.procedure.month.order - 1).date(20).toISOString().split('T')[0]
+        this.maxDatePay = this.$moment().year(this.procedure.year).month(this.procedure.month.order).date(20).toISOString().split('T')[0]
         if (res.data.pay_date){
           this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
         }
@@ -574,7 +600,9 @@ export default {
     },
     async updatePayDate(id, date) {
       try{
-        await axios.get('/procedure/pay_date/'+ id +'/' + date);
+        let res = await axios.get(`/procedure/pay_date/${id}/${date}`)
+        this.procedure.pay_date = res.data.pay_date
+        this.procedure.ufv = res.data.ufv
         this.toastr.success(
           `Registrado correctamente`
         );
@@ -586,3 +614,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.bordered {
+  border-bottom: 0.2pt solid #212121;
+}
+</style>
