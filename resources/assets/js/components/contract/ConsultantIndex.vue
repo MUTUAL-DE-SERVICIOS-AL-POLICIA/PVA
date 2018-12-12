@@ -93,7 +93,7 @@
               <v-list-tile-content><p><strong>Cargo: </strong>{{ props.item.consultant_position.charge.name }}</p></v-list-tile-content>
               <v-list-tile-content><p><strong>Lugar: </strong>{{ props.item.consultant_position.position_group.name }}</p></v-list-tile-content>
               <v-list-tile-content><p><strong>Número de contrato: </strong>{{ props.item.contract_number }}</p></v-list-tile-content>
-              <v-list-tile-content><p><strong>Cite de Recursos Humanos: </strong>{{ props.item.rrhh_cite }}</p></v-list-tile-content>
+              <v-list-tile-content><p><strong>Certificado de equivalencia RRHH: </strong>{{ props.item.rrhh_cite }}</p></v-list-tile-content>
               <v-list-tile-content><p><strong>Fecha de cite de recursos Humanos: </strong>{{ props.item.rrhh_cite_date }}</p></v-list-tile-content>
               <v-list-tile-content v-if="props.item.retirement_reason"><p><strong>Motivo de retiro: </strong> {{ props.item.retirement_reason.name }} </p></v-list-tile-content>
               <v-list-tile-content v-if="props.item.retirement_reason"><p><strong>Fecha de retiro: </strong> {{ props.item.retirement_date }} </p></v-list-tile-content>
