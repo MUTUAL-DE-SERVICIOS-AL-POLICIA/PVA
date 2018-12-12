@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\Util;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -54,7 +55,7 @@ class Employee extends Model
 		$contract = $this->last_contract();
 		$consultant_contract = $this->last_consultant_contract();
 		if ($contract && $consultant_contract) {
-			if ($contract->start_date->greaterThan($consultant_contract->start_date)) {
+			if (Carbon::parse($contract->start_date)->greaterThan(Carbon::parse($consultant_contract->start_date))) {
 				return false;
 			} else {
 				return true;
