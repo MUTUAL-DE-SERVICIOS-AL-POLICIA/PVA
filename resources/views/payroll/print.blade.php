@@ -4,8 +4,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="initial-scale=1.0">
