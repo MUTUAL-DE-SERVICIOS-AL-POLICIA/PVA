@@ -124,7 +124,7 @@
                   <v-flex xs12 sm6 md6>
                     <v-text-field
                       v-model="selectedItem.rrhh_cite"
-                      label="Cite de RRHH"
+                      label="Cert. de Equivalencia RRHH"
                       clearable
                     ></v-text-field>
                   </v-flex>
@@ -150,6 +150,11 @@
                     </v-menu>
                   </v-flex>
                 </v-layout>
+                <v-textarea
+                  v-model="selectedItem.description"
+                  label="Descripción/Observaciones"
+                  rows="2"
+                ></v-textarea>
                 <v-radio-group
                   v-model="selectedItem.schedules"
                   v-validate="'required'"
@@ -317,7 +322,8 @@ export default {
           base_wage: ''
         },
         months: []
-      }
+      },
+      position_id: null,
     }
   },
   created() {
@@ -337,6 +343,7 @@ export default {
         this.onSelectEmployee(this.selectedItem.employee.id)
         this.onSelectPosition(this.selectedItem.consultant_position)
         this.selectedItem.schedules = item.job_schedules.map(o => o.id)
+        this.position_id = item.consultant_position_id
 
         if (!item.edit) {
           this.selectedItem.start_date = this.onlyWeekdays(this.$moment(item.retirement_date ? item.retirement_date : item.end_date)).startOf('day').toISOString().split('T')[0]
@@ -344,6 +351,7 @@ export default {
           this.selectedItem.rrhh_cite = null
           this.selectedItem.rrhh_cite_date = null
           this.selectedItem.contract_number = null
+          this.position_id = null
         }
       }
     })
@@ -359,7 +367,7 @@ export default {
           this.datePicker.end.min = date.add(1, 'month').subtract(1, 'days').toISOString().split('T')[0]
         }
 
-        if (this.$moment(this.selectedItem.end_date).diff(this.$moment(this.datePicker.start), 'days') < 30) {
+        if (this.$moment(this.selectedItem.end_date).diff(this.$moment(this.selectedItem.start_date), 'days') < 30) {
           this.selectedItem.end_date = this.datePicker.end.min
         }
         this.monthSalaryCalc()
@@ -499,8 +507,12 @@ export default {
             this.selectedItem.charge_id = search.charge_id
             this.selectedItem.position_group_id = search.position_group_id
             this.onSelectCharge(search.charge.id)
-            let res = await axios.get(`/consultant_contract/position_free/${position.id}`)
-            this.table.position.free = res.data.free
+            let res = await axios.get(`/consultant_contract/position_free/${position.id}`)            
+            if (this.position_id == position.id) {
+              this.table.position.free = true
+            } else {
+              this.table.position.free = res.data.free
+            }
           } else {
             this.table.position.free = true
           }
