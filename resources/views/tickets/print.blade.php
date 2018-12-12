@@ -9,7 +9,6 @@
     <style>
         <?php include public_path('css/ticket-print.min.css') ?>
     </style>
-
 </head>
 
 <body>
