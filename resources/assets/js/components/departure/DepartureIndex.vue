@@ -130,7 +130,7 @@ export default {
         align: "center"
       },
       {
-        text: "Apobado",
+        text: "Estado",
         value: "approved",
         align: "center"
       },
