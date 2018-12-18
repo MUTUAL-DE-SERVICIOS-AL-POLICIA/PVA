@@ -208,3 +208,54 @@ Este formulario contiene los siguientes campos:
 
 En el panel derecho de la ventana se puede ver un resumen del total ganado y la suma de días trabajados por cada mes del tiempo de contrato.
 
+## SALIDAS Y LICENCIAS
+
+### SOLICITUD DE SALIDAS Y LICIENCIAS
+Seleccione la opción de salidas y licencias como se muestra en la siguiente imagen:
+
+![IMAGE](./img/menu_departure.png)
+
+Seleccione la opción de nueva solicitud, aparecera el siguiente formulario donde deberá llenar la informacion correspondeinte a la solicitud:
+
+![IMAGE](./img/departure.png)
+
+- **1)** Horas por mes restantes.
+- **2)** Días por año restantes.
+- **3)** Selección de salida o licencias.
+- **4)** Busqueda.
+- **5)** Solicitar salida o licencia.
+- **6)** Lista de solicitudes.
+Para solicitar una salida o licencia llenar el siguiente formulario.
+
+![IMAGE](./img/form_departure.png)
+
+- **1)** Seleccione el tipo de solicitud.
+- **2)** Seleccione el motivo de su salida.
+- **3)** Escriba el destino (puede escribir particular).
+- **4)** Escriba alguna observación o descripcion si corresponde.
+- **5)** Fecha y hora de salida (si no realizará marcado debe registrar hora de salida 8:00 por la mañana o 14:30 por la tarde).
+- **6)** Fecha y hora de retorno (si no realizará marcado debe registrar hora de retorno 12:00 por la mañana o 18:30 por la tarde).
+
+Proceda a imprimir la solicitud.
+
+![IMAGE](./img/print_departure.png)
+
+Una vez solicitado debe dirigirse a Recursos humanos con la documentación correspondiente para que la solicitud sea aprobada.
+
+### ADMINISTRACIÓN DE SALIDAS Y LICIENCIAS
+Seleccione la opción de "Administración de salidas y liciencias" el cual le mostrara la siguiente vista:
+
+![IMAGE](./img/admin_departure.png)
+
+- **1)** Reportes.
+- **2)** Selección de salida o licencias.
+- **3)** Busqueda.
+- **4)** Lista de solicitudes.
+
+![IMAGE](./img/report_departure.png)
+
+- **1)** Seleccione Direccion o unidad.
+- **2)** Seleccione al empleado.
+- **3)** Seleccione tipo de solicitud (salida, licencia).
+- **4)** Seleccione estado de solicitud.
+- **5)** Seleccione rango de fechas de solicitud.

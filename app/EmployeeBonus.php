@@ -53,6 +53,7 @@ class EmployeeBonus
     $this->base_wages = $this->get_latest_payrolls($employee->id, $year, $pay_date);
     $this->average = 0;
     $this->bonus = $this->calc_bonus($contracts, $year, $pay_date);
+    $this->retirement_reason = "";
   }
 
   private function calc_bonus($contracts, $year, $pay_date)
@@ -97,6 +98,7 @@ class EmployeeBonus
     $results = [];
     foreach ($contracts as $i => $contract) {
       $results[] = $this->calc_months_days($contract, $year);
+      $this->retirement_reason = $contract->retirement_reason ? $contract->retirement_reason->ovt_id : "";
     }
 
     $result = (object)[
