@@ -34,6 +34,7 @@ class EmployeeBonus
     $this->position = null;
     $this->start_date = null;
     $this->end_date = null;
+    $this->retirement_reason = "";
     $this->management_entity = $employee->management_entity->name;
     $this->management_entity_id = $employee->management_entity->id;
     $this->worked_days = (object)[
@@ -53,7 +54,6 @@ class EmployeeBonus
     $this->base_wages = $this->get_latest_payrolls($employee->id, $year, $pay_date);
     $this->average = 0;
     $this->bonus = $this->calc_bonus($contracts, $year, $pay_date);
-    $this->retirement_reason = "";
   }
 
   private function calc_bonus($contracts, $year, $pay_date)
@@ -173,7 +173,7 @@ class EmployeeBonus
 
     return (object)[
       'start' => $start,
-      'end' => $end,
+      'end' => (!$contract->retirement_date && !$contract->end_date) ? "" : $end,
       'months' => $months,
       'days' => $days
     ];
