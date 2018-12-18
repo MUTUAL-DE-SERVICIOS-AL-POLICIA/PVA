@@ -155,7 +155,7 @@ class BonusController extends Controller
         foreach ($employees as $i => $e) {
           $e->name = (is_null($e->second_name)) ? $e->first_name : implode(' ', [$e->first_name, $e->second_name]);
 
-          $content .= implode(',', [++$i, "CI", $e->ci, $e->id_ext, $e->birth_date, $e->last_name, $e->mothers_last_name, $e->name, "BOLIVIA", $e->gender, "0", "1", "0", "0", $e->start_date, $e->end_date, $e->retirement_reason, $e->ovt->insurance_company_id, $e->ovt->management_entity_id, $e->nua_cua, "1", "", mb_strtoupper(str_replace(",", " ", $e->position)), $e->ovt->contract_type, round($e->average, 2), 0, 0, 0, 0, 0, 0, round($e->average, 2), round(($e->worked_days->months + $e->worked_days->days / 30), 2), round(($e->average / 12), 2)]);
+          $content .= implode(',', [++$i, "CI", $e->ci, $e->id_ext, $e->birth_date, $e->last_name, $e->mothers_last_name, $e->name, "BOLIVIA", $e->gender, "0", "1", "0", "0", $e->start_date, $e->end_date, $e->retirement_reason, $e->ovt->insurance_company_id, $e->ovt->management_entity_id, $e->nua_cua, "1", "", mb_strtoupper(str_replace(",", " ", $e->position)), $e->ovt->contract_type, round($e->average, 2), 0, 0, 0, 0, 0, 0, round($e->average, 2), round(($e->worked_days->months + $e->worked_days->days / 30), 2), round($e->bonus, 2)]);
 
           if ($i < count($employees)) {
             $content .= "\r\n";
