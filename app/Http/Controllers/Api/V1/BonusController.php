@@ -149,10 +149,14 @@ class BonusController extends Controller
         break;
       case 'csv':
         $content = "";
-        $content .= implode(',', ["Nº", "Tipo de documento de identidad", "Número de documento de identidad", "Extensión del documento de identidad", "AFP a la que aporta", "NUA/CUA", "Apellido Paterno", "Apellido Materno", "Apellido de casada", "Primer nombre", "Otros nombres", "País de nacionalidad", "Fecha de nacimiento", "Sexo", "Jubilado", "Clasificación laboral", "Cargo", "Fecha de ingreso", "Modalidad de contrato", "Fecha de retiro", "Promedio haber básico", "Promedio bono de antigüedad", "Promedio bono de producción", "Promedio subsidio de frontera", "Promedio trabajo extraordinario y nocturno", "Promedio pago dominical y domingo trabajado", "Promedio otros bonos", "Promedio total ganado", "Meses trabajados", "Total ganado después de duodécimas", "Sucursal o ubicación adicional", "\r\n"]);
+
+        $content .= implode(',', ["Nro", "Tipo de documento de identidad", "Número de documento de identidad", "Lugar de expedición", "Fecha de nacimiento", "Apellido Paterno", "Apellido Materno", "Nombres", "País de nacionalidad", "Sexo", "Jubilado", "¿Aporta a la AFP?", "¿Persona con discapacidad?", "Tutor de persona con discapacidad", "Fecha de ingreso", "Fecha de retiro", "Motivo retiro", "Caja de salud", "AFP a la que aporta", "NUA/CUA", "Sucursal o ubicación adicional", "Clasificación laboral", "Cargo", "Modalidad de contrato", "Promedio haber básico", "Promedio bono de antigüedad", "Promedio bono producción", "Promedio subsidio frontera", "Promedio trabajo extraordinario y nocturno", "Promedio pago dominical trabajado", "Promedio otros bonos", "Promedio total ganado", "Meses trabajados", "Total ganado después de duodécimas", "\r\n"]);
 
         foreach ($employees as $i => $e) {
-          $content .= implode(',', [++$i, "CI", $e->ci, $e->id_ext, $e->ovt->management_entity_id, $e->nua_cua, $e->last_name, $e->mothers_last_name, "", $e->first_name, $e->second_name, "BOLIVIA", $e->birth_date, $e->gender == 'F' ? "0" : "1", "0", "", mb_strtoupper(str_replace(",", " ", $e->position)), $e->start_date, $e->ovt->contract_type, $e->end_date, $e->average, 0, 0, 0, 0, 0, 0, round($e->average, 2), round(($e->worked_days->months + $e->worked_days->days / 30), 2), round(($e->average / 12), 2), "1"]);
+          $e->name = (is_null($e->second_name)) ? $e->first_name : implode(' ', [$e->first_name, $e->second_name]);
+
+          $content .= implode(',', [++$i, "CI", $e->ci, $e->id_ext, $e->birth_date, $e->last_name, $e->mothers_last_name, $e->name, "BOLIVIA", $e->gender, "0", "1", "0", "0", $e->start_date, $e->end_date, $e->retirement_reason, $e->ovt->insurance_company_id, $e->ovt->management_entity_id, $e->nua_cua, "1", "", mb_strtoupper(str_replace(",", " ", $e->position)), $e->ovt->contract_type, round($e->average, 2), 0, 0, 0, 0, 0, 0, round($e->average, 2), round(($e->worked_days->months + $e->worked_days->days / 30), 2), round(($e->average / 12), 2)]);
+
           if ($i < count($employees)) {
             $content .= "\r\n";
           }
