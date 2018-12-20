@@ -144,11 +144,11 @@
                   ></v-select>
                 </v-flex>
                 <v-text-field
-                  v-validate="'numeric'"
+                  v-validate="'numeric|min:14|max:14'"
                   :error-messages="errors.collect('Cuenta bancaria')"
                   data-vv-name="Cuenta bancaria"
                   v-model="edit.account_number"
-                  label="Cuenta bancaria"
+                  :label="`Cuenta bancaria [${edit.account_number ? edit.account_number.length : 0} dígitos]`"
                 ></v-text-field>
               </v-layout>
             </v-flex>
@@ -217,7 +217,7 @@
               <v-layout wrap>
                 <v-flex xs12 sm6 md6 lg6 pr-2>
                   <v-text-field
-                    v-validate="'required|numeric'"
+                    v-validate="'required|numeric|min:8|max:8'"
                     :error-messages="errors.collect('Celular')"
                     data-vv-name="Celular"
                     v-model="edit.phone_number"
