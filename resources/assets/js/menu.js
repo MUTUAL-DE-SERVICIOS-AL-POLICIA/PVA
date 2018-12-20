@@ -90,19 +90,19 @@ export default {
       }
     }, {
       title: 'Eventuales',
-      icon: 'settings_backup_restore',
+      icon: 'person',
       group: [
         {
           href: 'contractIndex',
           title: 'Contratos Eventuales',
-          icon: 'work',
+          icon: 'gavel',
           params: {
             options: ['new', 'edit', 'delete', 'renew', 'printInsurance']
           }
         }, {
           href: 'procedureIndex',
           title: 'Planillas Eventuales',
-          icon: 'attach_file',
+          icon: 'storage',
           params: {
             active: true,
             options: ['new', 'edit', 'ticket', 'bank', 'ovt', 'payroll']
@@ -111,19 +111,19 @@ export default {
       ]
     }, {
       title: 'Consultores',
-      icon: 'swap_horiz',
+      icon: 'work',
       group: [
         {
           href: 'consultantIndex',
           title: 'Contratos Consultores',
-          icon: 'work',
+          icon: 'gavel',
           params: {
             options: ['new', 'edit', 'delete', 'renew'],
           }
         }, {
           href: 'consultantProcedureIndex',
           title: 'Planillas Consultores',
-          icon: 'attach_file',
+          icon: 'storage',
           params: {
             active: true,
             options: ['new', 'edit', 'ticket', 'bank', 'payroll'],
@@ -155,18 +155,18 @@ export default {
     }, {
       href: 'employeeIndex',
       title: 'Empleados',
-      icon: 'assignment_ind',
+      icon: 'group',
       params: {
         options: []
       }
     }, {
       title: 'Eventuales',
-      icon: 'settings_backup_restore',
+      icon: 'person',
       group: [
         {
           href: 'contractIndex',
           title: 'Contratos Eventuales',
-          icon: 'work',
+          icon: 'gavel',
           params: {
             options: ['printContract', 'edit']
           }
@@ -174,12 +174,12 @@ export default {
       ]
     }, {
       title: 'Consultores',
-      icon: 'swap_horiz',
+      icon: 'worj',
       group: [
         {
           href: 'consultantIndex',
           title: 'Contratos Consultores',
-          icon: 'work',
+          icon: 'gavel',
           params: {
             options: ['printContract', 'edit']
           }
@@ -202,25 +202,25 @@ export default {
     }, {
       href: 'employeeIndex',
       title: 'Empleados',
-      icon: 'assignment_ind',
+      icon: 'group',
       params: {
         options: []
       }
     }, {
       title: 'Eventuales',
-      icon: 'settings_backup_restore',
+      icon: 'person',
       group: [
         {
           href: 'contractIndex',
           title: 'Contratos Eventuales',
-          icon: 'work',
+          icon: 'gavel',
           params: {
             options: []
           }
         }, {
           href: 'procedureIndex',
           title: 'Planillas Eventuales',
-          icon: 'attach_file',
+          icon: 'storage',
           params: {
             active: true,
             options: ['afp', 'payroll']
@@ -229,19 +229,19 @@ export default {
       ]
     }, {
       title: 'Consultores',
-      icon: 'swap_horiz',
+      icon: 'work',
       group: [
         {
           href: 'consultantIndex',
           title: 'Contratos Consultores',
-          icon: 'work',
+          icon: 'gavel',
           params: {
             options: []
           }
         }, {
           href: 'consultantProcedureIndex',
           title: 'Planillas Consultores',
-          icon: 'attach_file',
+          icon: 'storage',
           params: {
             active: true,
             options: ['afp', 'payroll']
