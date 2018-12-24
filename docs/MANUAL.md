@@ -208,6 +208,28 @@ Este formulario contiene los siguientes campos:
 
 En el panel derecho de la ventana se puede ver un resumen del total ganado y la suma de días trabajados por cada mes del tiempo de contrato.
 
+### GESTIÓN DE CONTRATOS DE CONSULTORES
+
+Esta pestaña cuenta con las mismas opciones que el módulo de planillas de personal eventual pero con la diferencia de que tan solo se pueden descargar:
+
+- **1)** Archivo TXT para débito automático en banco
+- **2)** Detalle de planilla en formato PDF con listado de personal que disponde de cuenta bancaria
+- **3)** Detealle de planilla en formato PDF con listado de todos los consultores
+
+![IMAGE](./img/consultant_payroll_index.png)
+
+## ADMINISTRACIÓN DE USUARIOS
+
+Gestión de roles para cada cuenta de usuario con acceso al sistema, esta lista es generada mediante la lista de usuarios disponible en el servidor de identificación centralizada LDAP.
+
+![IMAGE](./img/users.png)
+
+## REGISTRO DE ACTIVIDADES
+
+Cada acción generada por los usuarios es guardada como respaldo de la actividad en caso de ser necesaria la evidencia de los cambios que realizó algún usuario.
+
+![IMAGE](./img/activities.png)
+
 ## SALIDAS Y LICENCIAS
 
 ### SOLICITUD DE SALIDAS Y LICIENCIAS

@@ -114,11 +114,13 @@ class BonusController extends Controller
 
     $employees = [];
     foreach ($grouped_contracts as $e => $contracts) {
-      $e = new EmployeeBonus($contracts, $year, $pay_date);
+      $e = new EmployeeBonus($contracts, $year, $pay_date, $procedure);
       if ($e->worked_days->months >= 3) {
         $employees[] = $e;
       }
     }
+
+    // return response()->json($employees);
 
     switch ($request['report_type']) {
       case 'txt':
@@ -181,6 +183,8 @@ class BonusController extends Controller
             ],
             'pay_date' => $pay_date,
             'employees' => $employees,
+            'split_percentage' => $procedure->split_percentage,
+            'limit_wage' => $procedure->limit_wage
           ]
         );
 
