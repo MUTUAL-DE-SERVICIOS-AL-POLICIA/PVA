@@ -114,11 +114,13 @@ class BonusController extends Controller
 
     $employees = [];
     foreach ($grouped_contracts as $e => $contracts) {
-      $e = new EmployeeBonus($contracts, $year, $pay_date);
+      $e = new EmployeeBonus($contracts, $year, $pay_date, $procedure);
       if ($e->worked_days->months >= 3) {
         $employees[] = $e;
       }
     }
+
+    // return response()->json($employees);
 
     switch ($request['report_type']) {
       case 'txt':
@@ -127,7 +129,11 @@ class BonusController extends Controller
         foreach ($employees as $i => $employee) {
           if ($employee->account_number) {
             $with_account[] = $employee;
-            $total += round($employee->bonus, 2);
+            if ($procedure->split_percentage) {
+              $total += round($employee->bonus_percentage->first_split->value, 2);
+            } else {
+              $total += round($employee->bonus, 2);
+            }
           }
         }
         $employees = $with_account;
@@ -135,7 +141,7 @@ class BonusController extends Controller
         $content .= strtolower($name) . " " . $year . " " . Util::fillZerosLeft(strval(count($employees)), 4) . Carbon::now()->format('dmY') . "\r\n";
         $content .= CompanyAccount::where('active', true)->first()->account . Util::fillZerosLeft(strval(Util::format_number($total, 2, '', '.')), 12) . "\r\n";
         foreach ($employees as $i => $employee) {
-          $content .= $employee->account_number . Util::fillZerosLeft(strval(Util::format_number($employee->bonus, 2, '', '.')), 12) . "1";
+          $content .= $employee->account_number . Util::fillZerosLeft(strval(Util::format_number($procedure->split_percentage ? $employee->bonus_percentage->first_split->value : $employee->bonus, 2, '', '.')), 12) . "1";
           if ($i < (count($employees) - 1)) {
             $content .= "\r\n";
           }
@@ -181,6 +187,8 @@ class BonusController extends Controller
             ],
             'pay_date' => $pay_date,
             'employees' => $employees,
+            'split_percentage' => $procedure->split_percentage,
+            'limit_wage' => $procedure->limit_wage
           ]
         );
 

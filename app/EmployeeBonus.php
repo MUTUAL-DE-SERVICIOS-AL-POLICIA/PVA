@@ -8,7 +8,7 @@ use \Milon\Barcode\DNS2D;
 
 class EmployeeBonus
 {
-  function __construct($contracts, $year, $pay_date)
+  function __construct($contracts, $year, $pay_date, $procedure)
   {
     $employee = $contracts[0]->employee;
 
@@ -51,9 +51,22 @@ class EmployeeBonus
     // Extra data
     $this->position_group = null;
     $this->position_group_id = null;
-    $this->base_wages = $this->get_latest_payrolls($employee->id, $year, $pay_date);
+    $this->base_wages = $this->get_latest_payrolls($employee->id, $year, $pay_date, $procedure);
     $this->average = 0;
     $this->bonus = $this->calc_bonus($contracts, $year, $pay_date);
+
+    if ($procedure->split_percentage) {
+      $this->bonus_percentage = (object)[
+        'first_split' => (object)[
+          'percentage' => (100 - $procedure->split_percentage),
+          'value' => $this->bonus * (100 - $procedure->split_percentage) / 100
+        ],
+        'second_split' => (object)[
+          'percentage' => $procedure->split_percentage,
+          'value' => $this->bonus * $procedure->split_percentage / 100
+        ]
+      ];
+    }
   }
 
   private function calc_bonus($contracts, $year, $pay_date)
@@ -63,11 +76,20 @@ class EmployeeBonus
     return (($this->average * ($this->worked_days->months * 30 + $this->worked_days->days)) / 360);
   }
 
-  private function get_latest_payrolls($employee_id, $year, $pay_date)
+  private function get_latest_payrolls($employee_id, $year, $pay_date, $procedure)
   {
     $payrolls = Payroll::where('employee_id', $employee_id)->leftjoin('procedures as p', 'p.id', '=', 'payrolls.procedure_id')->where('p.year', $year)->leftjoin('months as m', 'm.id', '=', 'p.month_id')->orderBy('m.order', 'DESC')->with(['contract' => function ($q) {
       $q->orderBy('start_date', 'DESC');
-    }])->where('m.order', '<', Carbon::parse($pay_date)->month)->select('payrolls.*', 'm.order')->limit(3)->get()->all();
+    }])->where('m.order', '<', Carbon::parse($pay_date)->month)->select('payrolls.*', 'm.order');
+
+    if ($procedure->limit_wage) {
+      $limit_wage = $procedure->limit_wage;
+      $payrolls = $payrolls->with(['charge' => function ($q) use ($limit_wage) {
+        $q->where('base_wage', '<=', $limit_wage);
+      }]);
+    }
+
+    $payrolls = $payrolls->limit(3)->get()->all();
 
     if (count($payrolls) == 0) return [0];
 
