@@ -8,6 +8,8 @@ $factory->define(App\BonusProcedure::class, function (Faker $faker) {
 
   return [
     'year' => $year,
-    'pay_date' => Carbon::create($year, 12, $faker->numberBetween(5, 20))->toDateString()
+    'pay_date' => Carbon::create($year, 12, $faker->numberBetween(5, 20))->toDateString(),
+    'split_percentage' => $faker->numberBetween(5, 20),
+    'limit_wage' => $faker->numberBetween(15000, 20000)
   ];
 });
