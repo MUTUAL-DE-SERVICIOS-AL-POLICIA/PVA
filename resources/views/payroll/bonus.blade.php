@@ -37,12 +37,12 @@ use \App\Helpers\Util;
                 <h2>
                     {{ $title->name }}
                 </h2>
+                <h3>PERSONAL EVENTUAL - {{ $title->subtitle }} {{ $title->year }}</h3>
                 @if ($split_percentage)
-                    <h3>PERSONAL EVENTUAL (100%) - {{ $title->subtitle }} {{ $title->year }}</h3>
+                    <h3>CÁLCULO SOBRE EL 100% (EXPRESADO EN BOLIVIANOS)</h3>
                 @else
-                    <h3>PERSONAL EVENTUAL - {{ $title->subtitle }} {{ $title->year }}</h3>
+                    <h3>(EXPRESADO EN BOLIVIANOS)</h3>
                 @endif
-                <h3>(EXPRESADO EN BOLIVIANOS)</h3>
             </div>
 
             <div class="header-left">
@@ -143,8 +143,8 @@ use \App\Helpers\Util;
                     <h2>
                         {{ $title->name }}
                     </h2>
-                    <h3>PERSONAL EVENTUAL ({{ $percentage }}%) - {{ $title->subtitle }} {{ $title->year }}</h3>
-                    <h3>(EXPRESADO EN BOLIVIANOS)</h3>
+                    <h3>PERSONAL EVENTUAL - {{ $title->subtitle }} {{ $title->year }}</h3>
+                    <h3>CÁLCULO SOBRE EL {{ $percentage }}% (EXPRESADO EN BOLIVIANOS)</h3>
                 </div>
 
                 <div class="header-left">

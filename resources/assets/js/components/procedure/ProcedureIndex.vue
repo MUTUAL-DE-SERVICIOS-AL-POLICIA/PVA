@@ -105,6 +105,26 @@
                           v-model="bonusProcedure.name"
                           label="Nombre"
                         ></v-select>
+                        <v-layout row wrap>
+                          <v-flex xs6 pr-2>
+                            <v-text-field
+                              v-validate="'min:0'"
+                              v-model="bonusProcedure.limit_wage"
+                              label="Salario límite"
+                              name="salario límite"
+                              :error-messages="errors.collect('salario límite')"
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs6 pl-2>
+                            <v-text-field
+                              v-validate="'min:0|max:99'"
+                              v-model="bonusProcedure.split_percentage"
+                              label="Porcentage de descuento"
+                              name="porcentage de descuento"
+                              :error-messages="errors.collect('porcentage de descuento')"
+                            ></v-text-field>
+                          </v-flex>
+                        </v-layout>
                         <div class="text-md-center">
                           <div>Fecha de Pago</div>
                           <v-date-picker :min="$moment(this.$store.getters.dateNow).month(11).date(4).toISOString()" locale="es-bo" v-model="bonusProcedure.pay_date"></v-date-picker>
@@ -390,6 +410,12 @@ export default {
     },
     async saveBonus() {
       try {
+        if (this.bonusProcedure.limit_wage == 0 || this.bonusProcedure.limit_wage == "") {
+          this.bonusProcedure.limit_wage = null
+        }
+        if (this.bonusProcedure.split_percentage == 0 || this.bonusProcedure.split_percentage == "") {
+          this.bonusProcedure.split_percentage = null
+        }
         if ('id' in this.bonusProcedure) {
           let res = await axios.patch(`/bonus/${this.bonusProcedure.id}`, this.bonusProcedure)
           this.getBonusYear(this.bonusYear.year)

@@ -129,7 +129,11 @@ class BonusController extends Controller
         foreach ($employees as $i => $employee) {
           if ($employee->account_number) {
             $with_account[] = $employee;
-            $total += round($employee->bonus, 2);
+            if ($procedure->split_percentage) {
+              $total += round($employee->bonus_percentage->first_split->value, 2);
+            } else {
+              $total += round($employee->bonus, 2);
+            }
           }
         }
         $employees = $with_account;
@@ -137,7 +141,7 @@ class BonusController extends Controller
         $content .= strtolower($name) . " " . $year . " " . Util::fillZerosLeft(strval(count($employees)), 4) . Carbon::now()->format('dmY') . "\r\n";
         $content .= CompanyAccount::where('active', true)->first()->account . Util::fillZerosLeft(strval(Util::format_number($total, 2, '', '.')), 12) . "\r\n";
         foreach ($employees as $i => $employee) {
-          $content .= $employee->account_number . Util::fillZerosLeft(strval(Util::format_number($employee->bonus, 2, '', '.')), 12) . "1";
+          $content .= $employee->account_number . Util::fillZerosLeft(strval(Util::format_number($procedure->split_percentage ? $employee->bonus_percentage->first_split->value : $employee->bonus, 2, '', '.')), 12) . "1";
           if ($i < (count($employees) - 1)) {
             $content .= "\r\n";
           }
