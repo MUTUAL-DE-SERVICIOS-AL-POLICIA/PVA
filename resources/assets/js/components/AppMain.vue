@@ -62,7 +62,7 @@
     </v-navigation-drawer>
 
     <v-toolbar
-      class="primary white--text"
+      :class="bar.color"
       app
       :clipped-left="clipped"
       v-if="this.$store.getters.currentUser"
@@ -70,7 +70,7 @@
       <v-btn icon @click.stop="drawer = !drawer; miniVariant = false">
         <v-icon v-html="miniVariant ? 'more_vert' : 'menu'" class="white--text"></v-icon>
       </v-btn>
-      <v-toolbar-title v-text="`SISTEMA DE RECURSOS HUMANOS`"></v-toolbar-title>
+      <v-toolbar-title v-text="bar.text"></v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-menu offset-y>
@@ -116,6 +116,21 @@ export default {
       menuLeft: null,
       miniVariant: true
     };
+  },
+  computed: {
+    bar() {
+      if (process.env.NODE_ENV == 'production') {
+        return {
+          color: `primary white--text`,
+          text: `SISTEMA DE RECURSOS HUMANOS`
+        }
+      } else {
+        return {
+          color: `error white--text`,
+          text: `SISTEMA DE RECURSOS HUMANOS (VERSIÓN DE PRUEBA)`
+        }
+      }
+    }
   },
   name: "app-header",
   methods: {
