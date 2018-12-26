@@ -9,9 +9,6 @@ use \App\Helpers\Util;
         <meta name="viewport" content="initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>{{ $title->name }} {{ $title->year }}</title>
-        <style>
-            <?php include public_path('css/payroll-print.min.css') ?>
-        </style>
     </head>
 
     <body>
