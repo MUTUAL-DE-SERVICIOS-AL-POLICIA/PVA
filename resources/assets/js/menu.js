@@ -74,7 +74,14 @@ export default {
       params: {
         options: ['edit', 'active', 'print']
       }
-    },
+    }, {
+      href: 'phonebookIndex',
+      title: 'Agenda Telefonica',
+      icon: 'contact_phone',
+      params: {
+        options: ['new', 'edit', 'delete', 'print']
+      }
+    }
   ],
   rrhh: [
     {

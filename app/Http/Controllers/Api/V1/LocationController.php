@@ -18,7 +18,7 @@ class LocationController extends Controller
    */
   public function index()
   {
-    return PositionGroup::with('locations')->has('locations', '>', 0)->get();
+    return Location::with('position_group')->orderBy('position_group_id')->get();
   }
 
   /**
