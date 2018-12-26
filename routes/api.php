@@ -265,8 +265,8 @@ Route::group([
 			Route::delete('consultant_payroll/drop/{procedure_id}', 'Api\V1\ConsultantProcedurePayrollController@delete_payrolls')->name('consultant_payrolls_delete');
 			// Location
 			Route::post('location', 'Api\V1\LocationController@store')->name('location_store');
-			Route::patch('location', 'Api\V1\LocationController@update')->name('location_update');
-			Route::delete('location', 'Api\V1\LocationController@destroy')->name('location_delete');
+			Route::patch('location/{id}', 'Api\V1\LocationController@update')->name('location_update');
+			Route::delete('location/{id}', 'Api\V1\LocationController@destroy')->name('location_delete');
 		});
 
 		// RRHH routes

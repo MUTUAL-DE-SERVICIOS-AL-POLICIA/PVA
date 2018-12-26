@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Location;
 use App\PositionGroup;
 use Illuminate\Http\Request;
+use App\Http\Requests\LocationForm;
 
 class LocationController extends Controller
 {
@@ -26,7 +27,7 @@ class LocationController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(LocationForm $request)
   {
     $location = new Location($request->all());
     $location->save();
@@ -51,7 +52,7 @@ class LocationController extends Controller
    * @param  \App\Location  $location
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, Location $location)
+  public function update(LocationForm $request, $id)
   {
     $location = Location::findOrFail($id);
     $location->fill($request->all());
@@ -65,7 +66,7 @@ class LocationController extends Controller
    * @param  \App\Location  $location
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Location $location)
+  public function destroy($id)
   {
     $location = Location::findOrFail($id);
     $location->delete();
