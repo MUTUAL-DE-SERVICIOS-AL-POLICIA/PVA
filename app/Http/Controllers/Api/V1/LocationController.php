@@ -22,6 +22,16 @@ class LocationController extends Controller
   }
 
   /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function position_group()
+  {
+    return PositionGroup::with('locations')->has('locations', '>', 0)->get();
+  }
+
+  /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
