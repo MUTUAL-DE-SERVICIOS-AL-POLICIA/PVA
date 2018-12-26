@@ -20,7 +20,10 @@ Route::group([
 	Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
 	Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
 	Route::resource('departure_schedule', 'Api\V1\DepartureScheduleController')->only(['index', 'show', 'store', 'update']);
-
+	// Location
+	Route::get('location', 'Api\V1\LocationController@index')->name('location_active_list');
+	Route::get('location/{id}', 'Api\V1\LocationController@show')->name('location_details');
+	// With credentials
 	Route::group([
 		'middleware' => 'jwt.auth'
 	], function () {
@@ -211,7 +214,7 @@ Route::group([
 
 		// ADMIN routes
 		Route::group([
-			'middleware' => 'role:admin|empleado',
+			'middleware' => 'role:admin',
 		], function () {
 			// User
 			Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update']);
@@ -260,11 +263,15 @@ Route::group([
 			Route::delete('payroll/drop/{procedure_id}', 'Api\V1\ProcedurePayrollController@delete_payrolls')->name('payrolls_delete');
 			// Remove Consultant Payrolls
 			Route::delete('consultant_payroll/drop/{procedure_id}', 'Api\V1\ConsultantProcedurePayrollController@delete_payrolls')->name('consultant_payrolls_delete');
+			// Location
+			Route::post('location', 'Api\V1\LocationController@store')->name('location_store');
+			Route::patch('location', 'Api\V1\LocationController@update')->name('location_update');
+			Route::delete('location', 'Api\V1\LocationController@destroy')->name('location_delete');
 		});
 
 		// RRHH routes
 		Route::group([
-			'middleware' => 'role:admin|rrhh|empleado',
+			'middleware' => 'role:admin|rrhh',
 		], function () {
 			// Bonus
 			Route::get('bonus/print/{year}', 'Api\V1\BonusController@print')->name('bonus_print');
@@ -313,7 +320,7 @@ Route::group([
 			Route::post('contract', 'Api\V1\ContractController@store')->name('contract_store');
 			Route::delete('contract/{id}', 'Api\V1\ContractController@destroy')->name('contract_delete');
 			Route::get('contract/valid/{procedure_id}', 'Api\V1\ContractController@valid_date')->name('contract_valid');
-			
+
 			Route::get('contract/contract_position_group/{contract_id}', 'Api\V1\ContractController@contract_position_group')->name('contract_position_group');
 			// Consultant Contract
 			Route::post('consultant_contract', 'Api\V1\ConsultantContractController@store')->name('consultant_contract_store');
@@ -401,7 +408,7 @@ Route::group([
 
 		// JURIDICA-RRHH routes
 		Route::group([
-			'middleware' => 'role:admin|rrhh|juridica|empleado',
+			'middleware' => 'role:admin|rrhh|juridica',
 		], function () {
 			Route::patch('contract/{id}', 'Api\V1\ContractController@update')->name('contract_update');
 			Route::patch('consultant_contract/{id}', 'Api\V1\ConsultantContractController@update')->name('consultant_contract_update');

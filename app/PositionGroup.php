@@ -5,34 +5,46 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PositionGroup extends Model {
+class PositionGroup extends Model
+{
 	use SoftDeletes;
 	protected $dates = ['deleted_at'];
 	public $timestamps = true;
 	public $guarded = ['id'];
 	protected $fillable = ['name', 'shortened', 'active', 'document_id', 'company_address_id'];
 
-	public function depends_from() {
+	public function depends_from()
+	{
 		return $this->belongsToMany(PositionGroup::class, 'dependency_position_group', 'dependent_id', 'superior_id');
 	}
 
-	public function dependents() {
+	public function dependents()
+	{
 		return $this->belongsToMany(PositionGroup::class, 'dependency_position_group', 'superior_id', 'dependent_id');
 	}
 
-	public function company_address() {
+	public function company_address()
+	{
 		return $this->belongsTo(CompanyAddress::class);
 	}
 
-	public function positions() {
+	public function positions()
+	{
 		return $this->hasMany(Position::class);
 	}
 
-	public function payrolls() {
+	public function payrolls()
+	{
 		return $this->hasMany(Payroll::class);
 	}
 
-	public function document() {
+	public function document()
+	{
 		return $this->belongsTo(Document::class);
+	}
+
+	public function locations()
+	{
+		return $this->hasMany(Location::class);
 	}
 }
