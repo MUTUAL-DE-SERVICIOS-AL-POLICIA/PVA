@@ -11,14 +11,16 @@ use Illuminate\Http\Request;
  *
  * Resource to retrieve, store and update position groups data
  */
-class PositionGroupController extends Controller {
+class PositionGroupController extends Controller
+{
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
-		return PositionGroup::with('document', 'company_address')->get();
+	public function index()
+	{
+		return PositionGroup::with('document', 'company_address', 'locations')->get();
 	}
 
 	/**
@@ -27,7 +29,8 @@ class PositionGroupController extends Controller {
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(PositionGroupForm $request) {
+	public function store(Request $request)
+	{
 		$position_group = PositionGroup::create($request->all());
 		return $position_group;
 	}
@@ -38,7 +41,8 @@ class PositionGroupController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id) {
+	public function show($id)
+	{
 		return PositionGroup::findOrFail($id);
 	}
 
@@ -49,7 +53,8 @@ class PositionGroupController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(PositionGroupForm $request, $id) {
+	public function update(Request $request, $id)
+	{
 		$position_group = PositionGroup::findOrFail($id);
 		$position_group->fill($request->all());
 		$position_group->save();
@@ -62,7 +67,8 @@ class PositionGroupController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
+	public function destroy($id)
+	{
 		$position_group = PositionGroup::findOrFail($id);
 		$position_group->delete();
 		return $position_group;
