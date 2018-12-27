@@ -138,17 +138,23 @@ class ConsultantPayrollPrintController extends Controller
 
 		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]) . ".pdf";
 
-		return \PDF::loadView('payroll.consultant', $response->data)
-			->setOption('page-width', '216')
-			->setOption('page-height', '330')
-			->setOption('margin-left', '26')
-			->setOption('margin-right', '0')
-			->setOrientation('landscape')
-			->setOption('encoding', 'utf-8')
-			->setOption('footer-font-size', 5)
-			->setOption('footer-center', '[page] de [topage] - Impreso el ' . date('m/d/Y H:i'))
-			->setOption('encoding', 'utf-8')
-			->stream($file_name);
+		$footerHtml = view()->make('partials.footer')->with(array('paginator' => true))->render();
+
+		$options = [
+			'orientation' => 'landscape',
+			'page-width' => '216',
+			'page-height' => '330',
+			'margin-left' => '26',
+			'margin-right' => '0',
+			'encoding' => 'UTF-8',
+			'footer-html' => $footerHtml,
+			'user-style-sheet' => public_path('css/payroll-print.min.css')
+		];
+
+		$pdf = \PDF::loadView('payroll.consultant', $response->data);
+		$pdf->setOptions($options);
+
+		return $pdf->stream($file_name);
 	}
 
 	/**

@@ -1,5 +1,72 @@
 <template>
   <v-container fluid>
+    <v-dialog
+      v-model="phoneDialog"
+      @keydown.esc="phoneDialog = false"
+      max-width="900"
+    >
+      <v-card>
+        <v-data-iterator
+          :items="positionGroups"
+          content-tag="v-layout"
+          :rows-per-page-items="rowsPerPageItems"
+          :pagination.sync="pagination"
+          row
+          wrap
+        >
+          <v-toolbar
+            slot="header"
+            class="mb-2"
+            color="green darken-4"
+            dark
+            flat
+          >
+            <v-toolbar-title>NÚMEROS DE TELÉFONOS INTERNOS</v-toolbar-title>
+          </v-toolbar>
+
+          <v-flex
+            slot="item"
+            slot-scope="props"
+            xs12
+            sm6
+            md4
+            lg3
+          >
+            <v-card class="mb-3 mr-1 ml-1">
+              <v-card-title class="blue-grey lighten-4 subheading font-weight-bold">{{ props.item.name }}</v-card-title>
+
+              <v-list dense>
+                <v-list-tile v-for="location in props.item.locations" :key="location.id">
+                  <v-list-tile-content>{{ location.name }}</v-list-tile-content>
+                  <v-list-tile-content class="pl-4 align-end">{{ location.phone_number }}</v-list-tile-content>
+                </v-list-tile>
+              </v-list>
+            </v-card>
+          </v-flex>
+        </v-data-iterator>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            dark
+            color="info"
+            @click="phoneDialog = false"
+          >
+            Imprimir
+          </v-btn>
+
+          <v-btn
+            dark
+            color="error"
+            @click="phoneDialog = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-card>
       <v-container fluid grid-list-md>
         <v-layout row wrap>
@@ -97,8 +164,22 @@
                   </v-layout>
                 </v-card>
               </v-flex>
-              <v-flex xs12 sm6 class="mt-3" v-if="$store.getters.currentUser.roles.length == 0">
-                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}">
+              <v-flex xs12 sm6>
+                <v-card color="teal darken-4" dark @click="phoneDialog = true" style="cursor: pointer">
+                  <v-layout row wrap>
+                    <v-flex xs4 class="text-xs-center" mt-4>
+                      <v-icon size="80">phone</v-icon>
+                    </v-flex>
+                    <v-flex xs8>
+                      <v-card-text class="text-xs-center">
+                        <div class="display-3 font-weight-thin">Teléfonos Internos</div>
+                      </v-card-text>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </v-flex>
+              <v-flex xs12 sm6 v-if="$store.getters.currentUser.roles.length == 0">
+                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}" style="cursor: pointer">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
                       <v-icon size="80">directions_run</v-icon>
@@ -170,9 +251,15 @@ export default {
     VueJsonToCsv
   },
   data: () => ({
+    rowsPerPageItems: [2, 4, 8],
+    pagination: {
+      rowsPerPage: 2
+    },
+    phoneDialog: false,
     employees: [],
     filteredEmployees: [],
-    procedures: []
+    procedures: [],
+    positionGroups: []
   }),
   computed: {
     birthday() {
@@ -185,8 +272,17 @@ export default {
   created() {
     this.getEmployees()
     this.getYearFaults()
+    this.getLocations()
   },
   methods: {
+    async getLocations() {
+      try {
+        let res = await axios.get(`/location`)
+        this.positionGroups = res.data
+      } catch (e) {
+        console.log(e);
+      }
+    },
     async getYearFaults() {
       try {
         let res = await axios.get(`/payroll/faults/${this.$moment(this.$store.getters.dateNow).year()}`)

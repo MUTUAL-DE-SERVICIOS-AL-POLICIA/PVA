@@ -10,9 +10,6 @@ use \App\Helpers\Util;
         <meta name="viewport" content="initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>{{ $title->name }} {{ $title->year }}</title>
-        <style>
-            <?php include public_path('css/payroll-print.min.css') ?>
-        </style>
     </head>
 
     <body>
@@ -116,8 +113,8 @@ use \App\Helpers\Util;
                 @endforeach
                 @if (count($employees) > 0)
                     <tr>
-                        <td class="footer" colspan="19">TOTAL PLANILLA ({{ $index }} {{ ($index == 1) ? 'FUNCIONARIO' : 'FUNCIONARIOS'}})</td>
-                        <td class="footer">{{ Util::format_number($total) }}</td>
+                        <td class="footer total" colspan="19">TOTAL PLANILLA ({{ $index }} {{ ($index == 1) ? 'FUNCIONARIO' : 'FUNCIONARIOS'}})</td>
+                        <td class="footer total">{{ Util::format_number($total) }}</td>
                     </tr>
                 @endif
                 </tbody>
@@ -217,7 +214,7 @@ use \App\Helpers\Util;
                         @endif
                     @endforeach
                     @if (count($employees) > 0)
-                        <tr>
+                        <tr class="total">
                             <td class="footer" colspan="19">TOTAL PLANILLA ({{ $index }} {{ ($index == 1) ? 'FUNCIONARIO' : 'FUNCIONARIOS'}})</td>
                             <td class="footer">{{ Util::format_number($total) }}</td>
                         </tr>
