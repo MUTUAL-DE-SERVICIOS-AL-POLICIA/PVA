@@ -82,7 +82,7 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="juridica"
+                      :disabled="selectedItem.id && $store.getters.currentUser.roles[0].name != 'admin'"
                     >
                       <v-text-field
                         slot="activator"
@@ -92,7 +92,8 @@
                         v-validate="'required'"
                         name="Fecha de inicio"
                         :error-messages="errors.collect('Fecha de inicio')"
-                        readonly :disabled="juridica"
+                        readonly
+                        :disabled="selectedItem.id && $store.getters.currentUser.roles[0].name != 'admin'"
                         autocomplete='cc-exp-month'
                       ></v-text-field>
                       <v-date-picker v-model="date" no-title 
@@ -113,14 +114,14 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="juridica||selectedItem.contract_type_id==1"
+                      :disabled="selectedItem.id && $store.getters.currentUser.roles[0].name != 'admin'"
                     >
                       <v-text-field
                         slot="activator"
                         v-model="formatDateEnd"
                         label="Fecha de conclusión"
                         prepend-icon="event" 
-                        :disabled="juridica||selectedItem.contract_type_id==1"
+                        :disabled="selectedItem.id && $store.getters.currentUser.roles[0].name != 'admin'"
                         autocomplete='cc-exp-year'
                         readonly
                         clearable
