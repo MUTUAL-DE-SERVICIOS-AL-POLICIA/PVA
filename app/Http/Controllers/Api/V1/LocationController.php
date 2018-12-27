@@ -11,13 +11,23 @@ use App\Http\Requests\LocationForm;
 class LocationController extends Controller
 {
   /**
-   * Display a listing of the resource.
+   * Display a listing of the resource Position.
    *
    * @return \Illuminate\Http\Response
    */
   public function index()
   {
     return PositionGroup::with('locations')->has('locations', '>', 0)->get();
+  }
+
+  /**
+   * Display a listing of the resource Location.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function list()
+  {
+    return Location::with('position_group')->orderBy('position_group_id')->get();
   }
 
   /**
