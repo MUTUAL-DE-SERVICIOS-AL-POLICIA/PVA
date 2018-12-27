@@ -20,6 +20,7 @@ Route::group([
 	Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
 	Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
 	// Location
+	Route::get('location/list', 'Api\V1\LocationController@list')->name('location_lists');
 	Route::get('location', 'Api\V1\LocationController@index')->name('location_list');
 	Route::get('location/{id}', 'Api\V1\LocationController@show')->name('location_details');
 	// With credentials
