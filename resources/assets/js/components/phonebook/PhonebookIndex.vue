@@ -141,7 +141,7 @@ export default {
     async getPhones() {
       try {        
         let res = await axios.get(`/location`);
-        this.phones = res.data        
+        this.phones = res.data      
         this.loading = false
       } catch (e) {
         console.log(e);

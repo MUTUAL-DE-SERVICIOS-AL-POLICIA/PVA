@@ -19,7 +19,6 @@ Route::group([
 	Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
 	Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
 	Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
-	Route::resource('departure_schedule', 'Api\V1\DepartureScheduleController')->only(['index', 'show', 'store', 'update']);
 	// Location
 	Route::get('location', 'Api\V1\LocationController@index')->name('location_list');
 	Route::get('location/{id}', 'Api\V1\LocationController@show')->name('location_details');
