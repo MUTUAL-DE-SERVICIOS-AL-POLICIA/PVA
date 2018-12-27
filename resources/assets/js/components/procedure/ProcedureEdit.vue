@@ -557,7 +557,7 @@ export default {
         dateEnd.year() >= payrollDate.year() &&
         dateEnd.month() == payrollDate.month()
       ) {
-        workedDays = dateEnd.date();
+        workedDays = dateEnd.date() > 30 ? 30 : dateEnd.date();
       } else if (
         (dateStart.year() <= payrollDate.year() &&
           dateStart.month() < payrollDate.month()) ||

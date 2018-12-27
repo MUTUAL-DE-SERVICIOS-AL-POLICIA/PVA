@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-
 use App\Http\Controllers\Controller;
 use App\Location;
 use App\PositionGroup;
@@ -18,7 +17,7 @@ class LocationController extends Controller
    */
   public function index()
   {
-    return Location::with('position_group')->orderBy('position_group_id')->get();
+    return PositionGroup::with('locations')->has('locations', '>', 0)->get();
   }
 
   /**

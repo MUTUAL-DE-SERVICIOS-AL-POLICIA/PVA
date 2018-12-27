@@ -21,7 +21,7 @@ Route::group([
 	Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
 	Route::resource('departure_schedule', 'Api\V1\DepartureScheduleController')->only(['index', 'show', 'store', 'update']);
 	// Location
-	Route::get('location', 'Api\V1\LocationController@index')->name('location_active_list');
+	Route::get('location', 'Api\V1\LocationController@index')->name('location_list');
 	Route::get('location/{id}', 'Api\V1\LocationController@show')->name('location_details');
 	// With credentials
 	Route::group([
