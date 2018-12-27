@@ -23,6 +23,8 @@ class LocationForm extends FormRequest
    */
   public function rules()
   {
+    $this->sanitize();
+
     switch ($this->method()) {
       case 'POST':
         {
