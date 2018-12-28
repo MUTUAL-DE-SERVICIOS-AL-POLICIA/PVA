@@ -3,6 +3,9 @@
 namespace App\Observers;
 
 use App\Employee;
+use App\City;
+use App\ManagementEntity;
+use App\Helpers\Util;
 
 class EmployeeObserver
 {
@@ -14,7 +17,7 @@ class EmployeeObserver
    */
   public function created(Employee $employee)
   {
-    //
+    Util::save_action('Registrado empleado: ' . Util::fullName($employee));
   }
 
   /**
@@ -23,22 +26,22 @@ class EmployeeObserver
    * @param  \App\Employee  $employee
    * @return void
    */
-  public function updating(Employee $employee)
+  public function updating(Employee $changed)
   {
-    // dump($employee->isDirty());
-    // dump($employee->getDirty());
-    // dump($employee->getOriginal());
-  }
-
-  /**
-   * Handle the employee "updated" event.
-   *
-   * @param  \App\Employee  $employee
-   * @return void
-   */
-  public function updated(Employee $employee)
-  {
-    //
+    if ($changed->isDirty()) {
+      $old = $changed->getOriginal();
+      $changes = 'Cambiados datos de empleado ' . Util::fullName((object)$old) . ' :';
+      foreach ($changed->getDirty() as $key => $value) {
+        if ($key == 'city_identity_card_id' || $key == 'city_birth_id') {
+          $changes .= (' [' . $key . '] ' . City::find($old[$key])->name . ' => ' . City::find($value)->name . ',');
+        } elseif ($key == 'management_entity_id') {
+          $changes .= (' [' . $key . '] ' . ManagementEntity::find($old[$key])->name . ' => ' . ManagementEntity::find($value)->name . ',');
+        } else {
+          $changes .= (' [' . $key . '] ' . $old[$key] . ' => ' . $value . ',');
+        }
+      }
+      Util::save_action($changes);
+    }
   }
 
   /**
@@ -49,28 +52,6 @@ class EmployeeObserver
    */
   public function deleted(Employee $employee)
   {
-    //
-  }
-
-  /**
-   * Handle the employee "restored" event.
-   *
-   * @param  \App\Employee  $employee
-   * @return void
-   */
-  public function restored(Employee $employee)
-  {
-    //
-  }
-
-  /**
-   * Handle the employee "force deleted" event.
-   *
-   * @param  \App\Employee  $employee
-   * @return void
-   */
-  public function forceDeleted(Employee $employee)
-  {
-    //
+    Util::save_action('Eliminado empleado: ' . Util::fullName($employee));
   }
 }
