@@ -15,7 +15,8 @@ class AddBonusDiscountPercentage extends Migration
   {
     Schema::table('bonus_procedures', function (Blueprint $table) {
       $table->unsignedTinyInteger('split_percentage')->nullable();
-      $table->integer('limit_wage')->nullable();
+      $table->integer('upper_limit_wage')->nullable();
+      $table->integer('lower_limit_wage')->nullable();
     });
   }
 

@@ -37,7 +37,14 @@ use \App\Helpers\Util;
                 </h2>
                 <h3>PERSONAL EVENTUAL - {{ $title->subtitle }} {{ $title->year }}</h3>
                 @if ($split_percentage)
-                    <h3>CÁLCULO SOBRE EL 100% (EXPRESADO EN BOLIVIANOS)</h3>
+                    <h3>CÁLCULO SOBRE EL 100%
+                    @if ($lower_limit_wage)
+                        PARA SALARIOS MAYORES A {{ $lower_limit_wage }}
+                    @endif
+                    @if ($lower_limit_wage && $upper_limit_wage)
+                        Y MENORES A {{ $upper_limit_wage }}
+                    @endif
+                    (EXPRESADO EN BOLIVIANOS)</h3>
                 @else
                     <h3>(EXPRESADO EN BOLIVIANOS)</h3>
                 @endif
@@ -142,7 +149,15 @@ use \App\Helpers\Util;
                         {{ $title->name }}
                     </h2>
                     <h3>PERSONAL EVENTUAL - {{ $title->subtitle }} {{ $title->year }}</h3>
-                    <h3>CÁLCULO SOBRE EL {{ $percentage }}% (EXPRESADO EN BOLIVIANOS)</h3>
+                    <h3>CÁLCULO SOBRE EL {{ $percentage }}%
+                        @if ($lower_limit_wage)
+                            PARA SALARIOS MAYORES A {{ $lower_limit_wage }}
+                        @endif
+                        @if ($lower_limit_wage && $upper_limit_wage)
+                            Y MENORES A {{ $upper_limit_wage }}
+                        @endif
+                        (EXPRESADO EN BOLIVIANOS)
+                    </h3>
                 </div>
 
                 <div class="header-left">

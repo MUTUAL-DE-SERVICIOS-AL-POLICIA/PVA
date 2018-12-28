@@ -247,12 +247,12 @@ export default {
   data: () => ({
     phoneHeaders: [
       {
-        text: "Dirección",
-        value: "position_group.name",
-        align: "center"
-      }, {
         text: "Ubicación",
         value: "name",
+        align: "center"
+      }, {
+        text: "Dirección",
+        value: "position_group.name",
         align: "center"
       }, {
         text: "No. Interno",

@@ -188,13 +188,14 @@ class BonusController extends Controller
             'pay_date' => $pay_date,
             'employees' => $employees,
             'split_percentage' => $procedure->split_percentage,
-            'limit_wage' => $procedure->limit_wage
+            'lower_limit_wage' => $procedure->lower_limit_wage,
+            'upper_limit_wage' => $procedure->upper_limit_wage
           ]
         );
 
         $file_name = implode(" ", ['PLANILLA', $response->data['title']->subtitle, $year]) . ".pdf";
 
-        $footerHtml = view()->make('partials.footer')->with(array('paginator'=>false))->render();
+        $footerHtml = view()->make('partials.footer')->with(array('paginator' => false))->render();
 
         $options = [
           'orientation' => 'landscape',
