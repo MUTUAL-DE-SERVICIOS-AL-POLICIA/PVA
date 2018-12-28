@@ -53,27 +53,46 @@ class EmployeeBonus
     $this->position_group_id = null;
     $this->base_wages = $this->get_latest_payrolls($employee->id, $year, $pay_date, $procedure);
     $this->average = 0;
-    $this->bonus = $this->calc_bonus($contracts, $year, $pay_date);
+    $this->bonus_percentage = (object)[];
+    $this->bonus = $this->calc_bonus($contracts, $year, $pay_date, $procedure);
+  }
+
+  private function calc_bonus($contracts, $year, $pay_date, $procedure)
+  {
+    $this->calc_worked_moths($contracts, $year, $pay_date);
+
+    $worked_days = ($this->worked_days->months * 30 + $this->worked_days->days) / 360;
 
     if ($procedure->split_percentage) {
+      $bonus_percentage = (object)[
+        'first_split' => 0,
+        'second_split' => 0,
+      ];
+
+      foreach ($this->base_wages as $wage) {
+        if ($procedure->lower_limit_wage && $wage <= $procedure->lower_limit_wage) {
+          $bonus_percentage->first_split += $wage;
+          $bonus_percentage->second_split += $bonus_percentage->first_split;
+        } else {
+          $bonus_percentage->first_split += $wage * (100 - $procedure->split_percentage) / 100;
+          $bonus_percentage->second_split += $wage * $procedure->split_percentage / 100;
+        }
+      }
+
       $this->bonus_percentage = (object)[
         'first_split' => (object)[
           'percentage' => (100 - $procedure->split_percentage),
-          'value' => $this->bonus * (100 - $procedure->split_percentage) / 100
+          'value' => ($bonus_percentage->first_split / 3) * $worked_days
         ],
         'second_split' => (object)[
           'percentage' => $procedure->split_percentage,
-          'value' => $this->bonus * $procedure->split_percentage / 100
+          'value' => ($bonus_percentage->second_split / 3) * $worked_days
         ]
       ];
     }
-  }
 
-  private function calc_bonus($contracts, $year, $pay_date)
-  {
-    $this->calc_worked_moths($contracts, $year, $pay_date);
     $this->average = array_sum($this->base_wages) / 3;
-    return (($this->average * ($this->worked_days->months * 30 + $this->worked_days->days)) / 360);
+    return ($this->average * $worked_days);
   }
 
   private function get_latest_payrolls($employee_id, $year, $pay_date, $procedure)
@@ -82,10 +101,10 @@ class EmployeeBonus
       $q->orderBy('start_date', 'DESC');
     }])->where('m.order', '<', Carbon::parse($pay_date)->month)->select('payrolls.*', 'm.order');
 
-    if ($procedure->limit_wage) {
-      $limit_wage = $procedure->limit_wage;
-      $payrolls = $payrolls->with(['charge' => function ($q) use ($limit_wage) {
-        $q->where('base_wage', '<=', $limit_wage);
+    if ($procedure->upper_limit_wage) {
+      $upper_limit_wage = $procedure->upper_limit_wage;
+      $payrolls = $payrolls->with(['charge' => function ($q) use ($upper_limit_wage) {
+        $q->where('base_wage', '<=', $upper_limit_wage);
       }]);
     }
 

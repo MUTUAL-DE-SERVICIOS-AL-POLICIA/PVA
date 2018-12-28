@@ -4,66 +4,60 @@
       v-model="phoneDialog"
       @keydown.esc="phoneDialog = false"
       max-width="900"
+      scrollable
+      persistent
     >
       <v-card>
-        <v-data-iterator
-          :items="positionGroups"
-          content-tag="v-layout"
-          :rows-per-page-items="rowsPerPageItems"
-          :pagination.sync="pagination"
-          row
-          wrap
-        >
-          <v-toolbar
-            slot="header"
-            class="mb-2"
-            color="green darken-4"
-            dark
-            flat
+        <v-toolbar dark color="primary">
+          <v-toolbar-title>NÚMEROS DE TELÉFONOS INTERNOS</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon dark @click="dialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <v-layout row>
+            <v-flex xs9>
+
+            </v-flex>
+            <v-flex xs3>
+              <v-text-field
+                v-model="phoneSearch"
+                append-icon="search"
+                label="Buscar"
+                clearable
+                single-line
+                hide-details
+                width="20px"
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <v-data-table
+            :headers="phoneHeaders"
+            :items="positionGroups"
+            :search="phoneSearch"
+            :rows-per-page-items="[{text:'TODO',value:-1}, 10, 20, 30]"
+            disable-initial-sort
+            class="elevation-1"
           >
-            <v-toolbar-title>NÚMEROS DE TELÉFONOS INTERNOS</v-toolbar-title>
-          </v-toolbar>
-
-          <v-flex
-            slot="item"
-            slot-scope="props"
-            xs12
-            sm6
-            md4
-            lg3
-          >
-            <v-card class="mb-3 mr-1 ml-1">
-              <v-card-title class="blue-grey lighten-4 subheading font-weight-bold">{{ props.item.name }}</v-card-title>
-
-              <v-list dense>
-                <v-list-tile v-for="location in props.item.locations" :key="location.id">
-                  <v-list-tile-content>{{ location.name }}</v-list-tile-content>
-                  <v-list-tile-content class="pl-4 align-end">{{ location.phone_number }}</v-list-tile-content>
-                </v-list-tile>
-              </v-list>
-            </v-card>
-          </v-flex>
-        </v-data-iterator>
-
+            <template slot="items" slot-scope="props">
+              <tr>
+                <td class="text-xs-left"> {{ props.item.position_group.name }} </td>
+                <td class="text-xs-left"> {{ props.item.name }} </td>
+                <td class="text-xs-center"> {{ props.item.phone_number }} </td>
+              </tr>
+            </template>
+            <v-alert slot="no-results" :value="true" color="error">
+              La búsqueda de "{{ phoneSearch }}" no encontró resultados.
+            </v-alert>
+          </v-data-table>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-
-          <v-btn
-            dark
-            color="info"
-            @click="phoneDialog = false"
-          >
-            Imprimir
-          </v-btn>
-
-          <v-btn
-            dark
-            color="error"
-            @click="phoneDialog = false"
-          >
-            Cerrar
-          </v-btn>
+          <v-btn color="error" @click="phoneDialog=false"><v-icon>clear</v-icon> Cerrar</v-btn>
         </v-card-actions>
+        <v-divider></v-divider>
       </v-card>
     </v-dialog>
 
@@ -251,10 +245,22 @@ export default {
     VueJsonToCsv
   },
   data: () => ({
-    rowsPerPageItems: [2, 4, 8],
-    pagination: {
-      rowsPerPage: 2
-    },
+    phoneHeaders: [
+      {
+        text: "Ubicación",
+        value: "name",
+        align: "center"
+      }, {
+        text: "Dirección",
+        value: "position_group.name",
+        align: "center"
+      }, {
+        text: "No. Interno",
+        value: "phone_number",
+        align: "center"
+      },
+    ],
+    phoneSearch: "",
     phoneDialog: false,
     employees: [],
     filteredEmployees: [],
@@ -277,7 +283,7 @@ export default {
   methods: {
     async getLocations() {
       try {
-        let res = await axios.get(`/location`)
+        let res = await axios.get(`/location/list`)
         this.positionGroups = res.data
       } catch (e) {
         console.log(e);
