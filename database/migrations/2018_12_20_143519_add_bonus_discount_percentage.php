@@ -28,7 +28,7 @@ class AddBonusDiscountPercentage extends Migration
   public function down()
   {
     Schema::table('bonus_procedures', function (Blueprint $table) {
-      $table->dropColumn(['split_percentage', 'limit_wage']);
+      $table->dropColumn(['split_percentage', 'upper_limit_wage', 'lower_limit_wage']);
     });
   }
 }
