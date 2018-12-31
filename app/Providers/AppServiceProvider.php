@@ -7,9 +7,11 @@ use Carbon\Carbon;
 use App\Employee;
 use App\Contract;
 use App\Procedure;
+use App\Payroll;
 use App\Observers\EmployeeObserver;
 use App\Observers\ContractObserver;
 use App\Observers\ProcedureObserver;
+use App\Observers\PayrollObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     Employee::observe(EmployeeObserver::class);
     Contract::observe(ContractObserver::class);
     Procedure::observe(ProcedureObserver::class);
+    Payroll::observe(PayrollObserver::class);
   }
 
   /**

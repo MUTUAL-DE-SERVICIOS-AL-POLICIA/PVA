@@ -43,6 +43,8 @@ class ContractObserver
           $changes .= (' [' . $key . '] ' . $old->retirement_reason->name . ' => ' . $changed->retirement_reason->name . ',');
         } elseif ($key == 'insurance_company_id') {
           $changes .= (' [' . $key . '] ' . $old->insurance_company->name . ' => ' . $changed->insurance_company->name . ',');
+        } elseif ($key == 'active') {
+          $changes .= (' [' . $key . '] ' . json_encode($old->active) . ' => ' . json_encode($value) . ',');
         } else {
           $changes .= (' [' . $key . '] ' . $old[$key] . ' => ' . $value . ',');
         }

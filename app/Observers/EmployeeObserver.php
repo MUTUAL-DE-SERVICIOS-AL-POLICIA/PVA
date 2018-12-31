@@ -37,6 +37,8 @@ class EmployeeObserver
           $changes .= (' [' . $key . '] ' . $old->city_birth->name . ' => ' . $changed->city_birth->name . ',');
         } elseif ($key == 'management_entity_id') {
           $changes .= (' [' . $key . '] ' . $old->management_entity->name . ' => ' . $changed->management_entity->name . ',');
+        } elseif ($key == 'active') {
+          $changes .= (' [' . $key . '] ' . json_encode($old->active) . ' => ' . json_encode($value) . ',');
         } else {
           $changes .= (' [' . $key . '] ' . $old[$key] . ' => ' . $value . ',');
         }
