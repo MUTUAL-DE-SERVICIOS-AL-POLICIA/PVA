@@ -3,8 +3,6 @@
 namespace App\Observers;
 
 use App\Employee;
-use App\City;
-use App\ManagementEntity;
 use App\Helpers\Util;
 
 class EmployeeObserver
@@ -17,7 +15,7 @@ class EmployeeObserver
    */
   public function created(Employee $employee)
   {
-    Util::save_action('Registrado empleado: ' . Util::fullName($employee));
+    Util::save_action('Registrado empleado: ' . $employee->fullName());
   }
 
   /**
@@ -29,13 +27,16 @@ class EmployeeObserver
   public function updating(Employee $changed)
   {
     if ($changed->isDirty()) {
-      $old = $changed->getOriginal();
-      $changes = 'Cambiados datos de empleado ' . Util::fullName((object)$old) . ' :';
+      $old = new Employee();
+      $old->fill($changed->getOriginal());
+      $changes = 'Cambiados datos de empleado ' . $changed->fullName() . ' :';
       foreach ($changed->getDirty() as $key => $value) {
-        if ($key == 'city_identity_card_id' || $key == 'city_birth_id') {
-          $changes .= (' [' . $key . '] ' . City::find($old[$key])->name . ' => ' . City::find($value)->name . ',');
+        if ($key == 'city_identity_card_id') {
+          $changes .= (' [' . $key . '] ' . $old->city_identity_card->name . ' => ' . $changed->city_identity_card->name . ',');
+        } elseif ($key == 'city_birth_id') {
+          $changes .= (' [' . $key . '] ' . $old->city_birth->name . ' => ' . $changed->city_birth->name . ',');
         } elseif ($key == 'management_entity_id') {
-          $changes .= (' [' . $key . '] ' . ManagementEntity::find($old[$key])->name . ' => ' . ManagementEntity::find($value)->name . ',');
+          $changes .= (' [' . $key . '] ' . $old->management_entity->name . ' => ' . $changed->management_entity->name . ',');
         } else {
           $changes .= (' [' . $key . '] ' . $old[$key] . ' => ' . $value . ',');
         }
@@ -52,6 +53,6 @@ class EmployeeObserver
    */
   public function deleted(Employee $employee)
   {
-    Util::save_action('Eliminado empleado: ' . Util::fullName($employee));
+    Util::save_action('Eliminado empleado: ' . $employee->fullName());
   }
 }
