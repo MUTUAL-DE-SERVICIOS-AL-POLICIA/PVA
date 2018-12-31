@@ -52,9 +52,9 @@ class ContractObserver
   }
 
   /**
-   * Handle the employee "deleted" event.
+   * Handle the contract "deleted" event.
    *
-   * @param  \App\Employee  $employee
+   * @param  \App\Contract  $contract
    * @return void
    */
   public function deleted(Contract $contract)
