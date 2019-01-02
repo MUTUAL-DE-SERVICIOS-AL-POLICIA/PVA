@@ -416,7 +416,7 @@ export default {
     },
     clearBonusProcedure() {
       this.bonusProcedure = {
-        name: this.bonusNames[this.bonusYear.procedures.length],
+        name: this.bonusYear.procedures ? this.bonusNames[this.bonusYear.procedures.length] : this.bonusNames[0],
         year: this.yearSelected,
         pay_date: this.$store.getters.dateNow
       }
@@ -476,6 +476,9 @@ export default {
             res = await axios.get(`/month/order/${newDate.month() + 1}`);
             this.newProcedure.month_id = res.data.id;
             this.newProcedure.month = res.data.order - 1;
+            if (this.newProcedure.year > this.$moment(this.$store.getters.dateNow).year()) {
+              this.years.unshift(this.newProcedure.year)
+            }
           }
         }
         this.loading = false

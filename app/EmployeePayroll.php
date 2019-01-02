@@ -187,7 +187,7 @@ class EmployeePayroll
 
 		$start_date = Carbon::parse($contract->start_date . 'T0:0:0');
 
-		$end_date = Carbon::parse($contract->end_date . 'T23:59:59.999999');
+		$end_date = ($contract->end_date == null && $contract->retirement_date == null) ? $payroll_date->endOfMonth() : Carbon::parse($contract->end_date . 'T23:59:59.999999');
 
 		if ($this->retirement_date != null) {
 			$retirement_date = Carbon::parse($contract->retirement_date . 'T23:59:59.999999');

@@ -65,7 +65,7 @@ export default {
       title: 'Actividad',
       icon: 'timeline',
       params: {
-        options: ['edit']
+        options: ['delete']
       }
     }, {
       href: 'departureAdmin',
@@ -138,6 +138,13 @@ export default {
         }
       ]
     }, {
+      href: 'userActionIndex',
+      title: 'Actividad',
+      icon: 'timeline',
+      params: {
+        options: []
+      }
+    }, {
       href: 'departureAdmin',
       title: 'Administrador de Salidas y Licencias',
       icon: 'directions_walk',
@@ -192,6 +199,13 @@ export default {
           }
         }
       ]
+    }, {
+      href: 'userActionIndex',
+      title: 'Actividad',
+      icon: 'timeline',
+      params: {
+        options: []
+      }
     }, {
       href: 'departureIndex',
       title: 'Salidas/Licencias',
@@ -255,20 +269,13 @@ export default {
           }
         }
       ]
-    }
-  ],
-  empleado: [
-    {
-      href: 'dashboard',
-      title: 'Inicio',
-      icon: 'home'
     }, {
-      href: 'departureIndex',
-      title: 'Salidas/Licencias',
-      icon: 'directions_run',
+      href: 'userActionIndex',
+      title: 'Actividad',
+      icon: 'timeline',
       params: {
         options: []
       }
-    }
-  ],
+    },
+  ]
 }

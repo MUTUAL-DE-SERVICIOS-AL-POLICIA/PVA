@@ -210,7 +210,8 @@ Route::group([
 		Route::get('document/{id}', 'Api\V1\DocumentController@show')->name('document_details');
 		Route::get('document_type', 'Api\V1\DocumentTypeController@index')->name('document_type_list');
 		Route::get('document_type/{id}', 'Api\V1\DocumentTypeController@show')->name('document_type_details');
-		
+		// User Actions
+		Route::get('user_action', 'Api\V1\UserActionController@index')->name('user_actions_list');
 
 		// ADMIN routes
 		Route::group([
@@ -248,7 +249,7 @@ Route::group([
 				});
 			});
 			// User-Actions
-			Route::resource('user_action', 'Api\V1\UserActionController')->only(['index', 'show', 'destroy']);
+			Route::resource('user_action', 'Api\V1\UserActionController')->only(['show', 'destroy']);
 			// Company
 			Route::post('company', 'Api\V1\CompanyController@store')->name('company_store');
 			Route::patch('company/{id}', 'Api\V1\CompanyController@update')->name('company_update');

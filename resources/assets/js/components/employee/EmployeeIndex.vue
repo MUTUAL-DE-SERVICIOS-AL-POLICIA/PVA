@@ -189,13 +189,13 @@ export default {
         { align: "center", text: "Contrato", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "mothers_last_name", sortable: false },
         { align: "center", text: "Nacimiento", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "birth_date" },
         { text: "# Cuenta", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "account_number" },
-        { text: "AFP", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "first_name" },
+        { text: "AFP", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "management_entity.name" },
         { text: "CUA/NUA", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "nua_cua" },
         {
           align: "center",
           text: "Activo",
           class: ["ml-0", "mr-0", "pl-0", "pr-0"],
-          value: "account_number",
+          value: "first_name",
           sortable: false
         },
         {
