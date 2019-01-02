@@ -66,8 +66,8 @@
     "amend-cmd": [
       "@php artisan migrate:rollback"
     ],
-    "post-update-cmd": [
-      "COMPOSER_PROCESS_TIMEOUT=600 ./post-update.sh"
+    "post-install-cmd": [
+      "COMPOSER_PROCESS_TIMEOUT=600 ./post-install.sh"
     ],
     "version-seeder": [
       "COMPOSER_PROCESS_TIMEOUT=600 ./version-seeder.sh"
