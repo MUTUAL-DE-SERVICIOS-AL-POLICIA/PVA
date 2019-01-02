@@ -8,10 +8,14 @@ use App\Employee;
 use App\Contract;
 use App\Procedure;
 use App\Payroll;
+use App\ConsultantContract;
+use App\ConsultantPosition;
 use App\Observers\EmployeeObserver;
 use App\Observers\ContractObserver;
 use App\Observers\ProcedureObserver;
 use App\Observers\PayrollObserver;
+use App\Observers\ConsultantContractObserver;
+use App\Observers\ConsultantPositionObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
     Contract::observe(ContractObserver::class);
     Procedure::observe(ProcedureObserver::class);
     Payroll::observe(PayrollObserver::class);
+    ConsultantContract::observe(ConsultantContractObserver::class);
+    ConsultantPosition::observe(ConsultantPositionObserver::class);
   }
 
   /**
