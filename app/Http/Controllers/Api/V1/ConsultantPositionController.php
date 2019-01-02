@@ -27,7 +27,10 @@ class ConsultantPositionController extends Controller
    */
   public function store(ConsultantPositionForm $request)
   {
-    $position = ConsultantPosition::create($request->all());
+    $position = ConsultantPosition::where('name', $request['name'])->where('charge_id', $request['charge_id'])->where('position_group_id', $request['position_group_id'])->first();
+    if (!$position) {
+      $position = ConsultantPosition::create($request->all());
+    }
     return $position;
   }
 
@@ -53,7 +56,7 @@ class ConsultantPositionController extends Controller
    * @param  \App\ConsultantPosition  $consultantPosition
    * @return \Illuminate\Http\Response
    */
-  public function update(PositionForm $request, $id)
+  public function update(ConsultantPositionForm $request, $id)
   {
     $position = ConsultantPosition::findOrFail($id);
     $position->fill($request->all());

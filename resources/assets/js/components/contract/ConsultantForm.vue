@@ -563,11 +563,16 @@ export default {
         if (valid) {
           if (Number.isInteger(this.selectedItem.consultant_position.id)) {
             let position = this.positions.find(o => o.id == this.selectedItem.consultant_position_id)
-            if (position.charge.id != this.selectedItem.charge_id && position.position_group.id != this.selectedItem.position_group_id) {
+            if (position.charge.id != this.selectedItem.charge_id || position.position_group.id != this.selectedItem.position_group_id) {
               this.selectedItem.name = position.name
               let res = await axios.post(`/consultant_position`, this.selectedItem)
+              this.selectedItem.charge_id = res.data.charge_id
+              this.selectedItem.position_group_id = res.data.position_group_id
+              this.selectedItem.consultant_position_id = res.data.id
               this.toastr.success('Cargo creado exitosamente')
             }
+            let res = await axios.patch(`/consultant_contract/${this.selectedItem.id}`, this.selectedItem)
+            this.toastr.success('Contrato actualizado exitosamente')
           } else {
             let res = await axios.post(`/consultant_position`, {
               name: this.selectedItem.consultant_position,
@@ -592,7 +597,6 @@ export default {
             }
             await axios.patch(`/consultant_contract/${this.selectedItem.id}`, this.selectedItem)
           }
-          this.toastr.success('Consultor agregado exitosamente')
           this.closeDialog()
         }
       } catch (e) {

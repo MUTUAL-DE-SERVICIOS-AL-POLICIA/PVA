@@ -29,6 +29,7 @@ class ConsultantPositionForm extends FormRequest
       'position_group_id' => 'required'
     ];
   }
+
   public function messages()
   {
     return [
