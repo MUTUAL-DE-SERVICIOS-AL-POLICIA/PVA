@@ -38,7 +38,7 @@
           <td class="text-md-center">{{ props.item.action }}</td>
           <td class="text-md-center">{{ props.item.created_at | moment('LL') }}</td>
           <td class="text-md-center">{{ props.item.created_at | moment('hh:mm a') }}</td>
-          <td class="text-md-center">
+          <td class="text-md-center" v-if="$store.getters.options.includes('delete')">
             <v-tooltip top>
               <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item.id)">
                 <v-icon>delete</v-icon>
@@ -70,10 +70,9 @@ export default {
       actions: [],
       headers: [
         { align: "center", text: "Usuario", value: "user.username" },
-        { align: "center", text: "Detalle", value: "method" },
+        { align: "center", text: "Detalle", value: "action" },
         { align: "center", text: "Fecha", value: "created_at" },
-        { align: "center", text: "Hora", value: "data" },
-        { align: "center", text: "Acciones", sortable: false }
+        { align: "center", text: "Hora", value: "data" }
       ],
       search: ""
     };
@@ -83,6 +82,9 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getActions();
     });
+    if (this.$store.getters.options.includes('delete')) {
+      this.headers.push({ align: "center", text: "Acciones", sortable: false })
+    }
   },
   methods: {
     async getActions() {
