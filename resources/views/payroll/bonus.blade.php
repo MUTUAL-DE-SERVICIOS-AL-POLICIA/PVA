@@ -5,13 +5,11 @@ use \App\Helpers\Util;
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <meta charset="UTF-8">
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
         <meta name="viewport" content="initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>{{ $title->name }} {{ $title->year }}</title>
-        <style>
-            <?php include public_path('css/payroll-print.min.css') ?>
-        </style>
     </head>
 
     <body>
@@ -39,7 +37,14 @@ use \App\Helpers\Util;
                 </h2>
                 <h3>PERSONAL EVENTUAL - {{ $title->subtitle }} {{ $title->year }}</h3>
                 @if ($split_percentage)
-                    <h3>CÁLCULO SOBRE EL 100% (EXPRESADO EN BOLIVIANOS)</h3>
+                    <h3>CÁLCULO SOBRE EL 100%
+                    @if ($lower_limit_wage)
+                        PARA SALARIOS MAYORES A {{ $lower_limit_wage }}
+                    @endif
+                    @if ($lower_limit_wage && $upper_limit_wage)
+                        Y MENORES A {{ $upper_limit_wage }}
+                    @endif
+                    (EXPRESADO EN BOLIVIANOS)</h3>
                 @else
                     <h3>(EXPRESADO EN BOLIVIANOS)</h3>
                 @endif
@@ -115,8 +120,8 @@ use \App\Helpers\Util;
                 @endforeach
                 @if (count($employees) > 0)
                     <tr>
-                        <td class="footer" colspan="19">TOTAL PLANILLA ({{ $index }} {{ ($index == 1) ? 'FUNCIONARIO' : 'FUNCIONARIOS'}})</td>
-                        <td class="footer">{{ Util::format_number($total) }}</td>
+                        <td class="footer total" colspan="19">TOTAL PLANILLA ({{ $index }} {{ ($index == 1) ? 'FUNCIONARIO' : 'FUNCIONARIOS'}})</td>
+                        <td class="footer total">{{ Util::format_number($total) }}</td>
                     </tr>
                 @endif
                 </tbody>
@@ -144,7 +149,15 @@ use \App\Helpers\Util;
                         {{ $title->name }}
                     </h2>
                     <h3>PERSONAL EVENTUAL - {{ $title->subtitle }} {{ $title->year }}</h3>
-                    <h3>CÁLCULO SOBRE EL {{ $percentage }}% (EXPRESADO EN BOLIVIANOS)</h3>
+                    <h3>CÁLCULO SOBRE EL {{ $percentage }}%
+                        @if ($lower_limit_wage)
+                            PARA SALARIOS MAYORES A {{ $lower_limit_wage }}
+                        @endif
+                        @if ($lower_limit_wage && $upper_limit_wage)
+                            Y MENORES A {{ $upper_limit_wage }}
+                        @endif
+                        (EXPRESADO EN BOLIVIANOS)
+                    </h3>
                 </div>
 
                 <div class="header-left">
@@ -216,7 +229,7 @@ use \App\Helpers\Util;
                         @endif
                     @endforeach
                     @if (count($employees) > 0)
-                        <tr>
+                        <tr class="total">
                             <td class="footer" colspan="19">TOTAL PLANILLA ({{ $index }} {{ ($index == 1) ? 'FUNCIONARIO' : 'FUNCIONARIOS'}})</td>
                             <td class="footer">{{ Util::format_number($total) }}</td>
                         </tr>

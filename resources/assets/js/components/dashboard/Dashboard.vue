@@ -1,5 +1,66 @@
 <template>
   <v-container fluid>
+    <v-dialog
+      v-model="phoneDialog"
+      @keydown.esc="phoneDialog = false"
+      max-width="900"
+      scrollable
+      persistent
+    >
+      <v-card>
+        <v-toolbar dark color="primary">
+          <v-toolbar-title>NÚMEROS DE TELÉFONOS INTERNOS</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon dark @click="dialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <v-layout row>
+            <v-flex xs9>
+
+            </v-flex>
+            <v-flex xs3>
+              <v-text-field
+                v-model="phoneSearch"
+                append-icon="search"
+                label="Buscar"
+                clearable
+                single-line
+                hide-details
+                width="20px"
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <v-data-table
+            :headers="phoneHeaders"
+            :items="positionGroups"
+            :search="phoneSearch"
+            :rows-per-page-items="[{text:'TODO',value:-1}, 10, 20, 30]"
+            disable-initial-sort
+            class="elevation-1"
+          >
+            <template slot="items" slot-scope="props">
+              <tr>
+                <td class="text-xs-left"> {{ props.item.position_group.name }} </td>
+                <td class="text-xs-left"> {{ props.item.name }} </td>
+                <td class="text-xs-center"> {{ props.item.phone_number }} </td>
+              </tr>
+            </template>
+            <v-alert slot="no-results" :value="true" color="error">
+              La búsqueda de "{{ phoneSearch }}" no encontró resultados.
+            </v-alert>
+          </v-data-table>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" @click="phoneDialog=false"><v-icon>clear</v-icon> Cerrar</v-btn>
+        </v-card-actions>
+        <v-divider></v-divider>
+      </v-card>
+    </v-dialog>
+
     <v-card>
       <v-container fluid grid-list-md>
         <v-layout row wrap>
@@ -97,8 +158,22 @@
                   </v-layout>
                 </v-card>
               </v-flex>
-              <v-flex xs12 sm6 class="mt-3" v-if="$store.getters.currentUser.roles.length == 0">
-                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}">
+              <v-flex xs12 sm6>
+                <v-card color="teal darken-4" dark @click="phoneDialog = true" style="cursor: pointer">
+                  <v-layout row wrap>
+                    <v-flex xs4 class="text-xs-center" mt-4>
+                      <v-icon size="80">phone</v-icon>
+                    </v-flex>
+                    <v-flex xs8>
+                      <v-card-text class="text-xs-center">
+                        <div class="display-3 font-weight-thin">Teléfonos Internos</div>
+                      </v-card-text>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </v-flex>
+              <v-flex xs12 sm6 v-if="$store.getters.currentUser.roles.length == 0">
+                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}" style="cursor: pointer">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
                       <v-icon size="80">directions_run</v-icon>
@@ -170,9 +245,27 @@ export default {
     VueJsonToCsv
   },
   data: () => ({
+    phoneHeaders: [
+      {
+        text: "Ubicación",
+        value: "name",
+        align: "center"
+      }, {
+        text: "Dirección",
+        value: "position_group.name",
+        align: "center"
+      }, {
+        text: "No. Interno",
+        value: "phone_number",
+        align: "center"
+      },
+    ],
+    phoneSearch: "",
+    phoneDialog: false,
     employees: [],
     filteredEmployees: [],
-    procedures: []
+    procedures: [],
+    positionGroups: []
   }),
   computed: {
     birthday() {
@@ -185,8 +278,17 @@ export default {
   created() {
     this.getEmployees()
     this.getYearFaults()
+    this.getLocations()
   },
   methods: {
+    async getLocations() {
+      try {
+        let res = await axios.get(`/location/list`)
+        this.positionGroups = res.data
+      } catch (e) {
+        console.log(e);
+      }
+    },
     async getYearFaults() {
       try {
         let res = await axios.get(`/payroll/faults/${this.$moment(this.$store.getters.dateNow).year()}`)

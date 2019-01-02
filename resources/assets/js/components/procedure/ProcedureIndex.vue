@@ -100,28 +100,41 @@
                         <v-toolbar-title class="white--text">{{ 'id' in bonusProcedure ? 'Editar Aguinaldo' : 'Registrar Aguinaldo' }}</v-toolbar-title>
                       </v-toolbar>
                       <v-card-text>
-                        <v-select
-                          :items="bonusNames"
-                          v-model="bonusProcedure.name"
-                          label="Nombre"
-                        ></v-select>
+                        <v-layout row wrap>
+                          <v-flex xs7 pr-2>
+                            <v-select
+                              :items="bonusNames"
+                              v-model="bonusProcedure.name"
+                              label="Nombre"
+                            ></v-select>
+                          </v-flex>
+                          <v-flex xs5 pl-2>
+                            <v-text-field
+                              v-validate="'min:0|max:99'"
+                              v-model="bonusProcedure.split_percentage"
+                              label="Porcentage de Descuento"
+                              name="porcentage de descuento"
+                              :error-messages="errors.collect('porcentage de descuento')"
+                            ></v-text-field>
+                          </v-flex>
+                        </v-layout>
                         <v-layout row wrap>
                           <v-flex xs6 pr-2>
                             <v-text-field
                               v-validate="'min:0'"
-                              v-model="bonusProcedure.limit_wage"
-                              label="Salario límite"
-                              name="salario límite"
-                              :error-messages="errors.collect('salario límite')"
+                              v-model="bonusProcedure.lower_limit_wage"
+                              label="Salario Límite Inferior"
+                              name="salario límite inferior"
+                              :error-messages="errors.collect('salario límite inferior')"
                             ></v-text-field>
                           </v-flex>
-                          <v-flex xs6 pl-2>
+                          <v-flex xs6 pr-2>
                             <v-text-field
-                              v-validate="'min:0|max:99'"
-                              v-model="bonusProcedure.split_percentage"
-                              label="Porcentage de descuento"
-                              name="porcentage de descuento"
-                              :error-messages="errors.collect('porcentage de descuento')"
+                              v-validate="'min:0'"
+                              v-model="bonusProcedure.upper_limit_wage"
+                              label="Salario Límite Superior"
+                              name="salario límite superior"
+                              :error-messages="errors.collect('salario límite superior')"
                             ></v-text-field>
                           </v-flex>
                         </v-layout>
@@ -403,15 +416,18 @@ export default {
     },
     clearBonusProcedure() {
       this.bonusProcedure = {
-        name: this.bonusNames[this.bonusYear.procedures.length],
+        name: this.bonusYear.procedures ? this.bonusNames[this.bonusYear.procedures.length] : this.bonusNames[0],
         year: this.yearSelected,
         pay_date: this.$store.getters.dateNow
       }
     },
     async saveBonus() {
       try {
-        if (this.bonusProcedure.limit_wage == 0 || this.bonusProcedure.limit_wage == "") {
-          this.bonusProcedure.limit_wage = null
+        if (this.bonusProcedure.lower_limit_wage == 0 || this.bonusProcedure.lower_limit_wage == "") {
+          this.bonusProcedure.lower_limit_wage = null
+        }
+        if (this.bonusProcedure.upper_limit_wage == 0 || this.bonusProcedure.upper_limit_wage == "") {
+          this.bonusProcedure.upper_limit_wage = null
         }
         if (this.bonusProcedure.split_percentage == 0 || this.bonusProcedure.split_percentage == "") {
           this.bonusProcedure.split_percentage = null
@@ -460,6 +476,9 @@ export default {
             res = await axios.get(`/month/order/${newDate.month() + 1}`);
             this.newProcedure.month_id = res.data.id;
             this.newProcedure.month = res.data.order - 1;
+            if (this.newProcedure.year > this.$moment(this.$store.getters.dateNow).year()) {
+              this.years.unshift(this.newProcedure.year)
+            }
           }
         }
         this.loading = false

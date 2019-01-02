@@ -515,14 +515,14 @@ export default {
     },
     workedDays(payroll) {
       let payrollDate = this.$moment(
-        `${this.procedure.year}${this.procedure.month.order}01`
+        `${this.procedure.year}${this.procedure.month.order.toString().padStart(2, '0')}01`
       );
 
       let lastDayOfMonth = payrollDate.endOf("month").date();
 
       let dateStart = this.$moment(payroll.contract.start_date);
 
-      let dateEnd = this.$moment(payroll.contract.end_date);
+      let dateEnd = (payroll.contract.end_date == null && payroll.contract.retirement_date == null) ? this.$moment(`${this.procedure.year}${this.procedure.month.order.toString().padStart(2, '0')}01`).endOf("month") : this.$moment(payroll.contract.end_date);
 
       let workedDays = 0;
 
@@ -557,7 +557,7 @@ export default {
         dateEnd.year() >= payrollDate.year() &&
         dateEnd.month() == payrollDate.month()
       ) {
-        workedDays = dateEnd.date();
+        workedDays = dateEnd.date() > 30 ? 30 : dateEnd.date();
       } else if (
         (dateStart.year() <= payrollDate.year() &&
           dateStart.month() < payrollDate.month()) ||

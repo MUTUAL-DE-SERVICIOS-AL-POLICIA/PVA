@@ -22,11 +22,10 @@
       :search="search"
       :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
       disable-initial-sort
-      expand
     >
       <template slot="items" slot-scope="props">
         <tr>
-          <td class="text-md-center" @click="props.expanded = !props.expanded">
+          <td class="text-md-center">
             <span v-if="!props.item.user_id">{{ JSON.parse(props.item.data).username }}</span>
             <div v-else>
               <span v-if="!props.item.user.employee_id">{{ props.item.user.username }}</span>
@@ -36,11 +35,10 @@
               </v-tooltip>
             </div>
           </td>
-          <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.method }}</td>
-          <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.path }}</td>
-          <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.created_at | moment('LL') }}</td>
-          <td class="text-md-center" @click="props.expanded = !props.expanded">{{ props.item.created_at | moment('hh:mm a') }}</td>
-          <td class="text-md-center">
+          <td class="text-md-center">{{ props.item.action }}</td>
+          <td class="text-md-center">{{ props.item.created_at | moment('LL') }}</td>
+          <td class="text-md-center">{{ props.item.created_at | moment('hh:mm a') }}</td>
+          <td class="text-md-center" v-if="$store.getters.options.includes('delete')">
             <v-tooltip top>
               <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item.id)">
                 <v-icon>delete</v-icon>
@@ -49,24 +47,6 @@
             </v-tooltip>
           </td>
         </tr>
-      </template>
-      <template slot="expand" slot-scope="{ item }">
-        <v-card>
-          <v-card-text>
-            <table>
-              <tr>
-                <td>
-                  <v-list-tile-content class="font-weight-bold">Datos:</v-list-tile-content>
-                </td>
-                <td>
-                  <v-list-tile-content>
-                    <pre>{{ JSON.stringify(JSON.parse(item.data.toString()), null, 2) }}</pre>
-                  </v-list-tile-content>
-                </td>
-              </tr>
-            </table>
-          </v-card-text>
-        </v-card>
       </template>
       <v-alert slot="no-results" :value="true" color="error">
         La búsqueda de "{{ search }}" no encontró resultados.
@@ -90,11 +70,9 @@ export default {
       actions: [],
       headers: [
         { align: "center", text: "Usuario", value: "user.username" },
-        { align: "center", text: "Acción", value: "method" },
-        { align: "center", text: "Ruta", value: "path" },
+        { align: "center", text: "Detalle", value: "action" },
         { align: "center", text: "Fecha", value: "created_at" },
-        { align: "center", text: "Hora", value: "data" },
-        { align: "center", text: "Acciones", sortable: false }
+        { align: "center", text: "Hora", value: "data" }
       ],
       search: ""
     };
@@ -104,6 +82,9 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getActions();
     });
+    if (this.$store.getters.options.includes('delete')) {
+      this.headers.push({ align: "center", text: "Acciones", sortable: false })
+    }
   },
   methods: {
     async getActions() {

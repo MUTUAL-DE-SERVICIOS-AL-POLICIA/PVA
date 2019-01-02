@@ -64,7 +64,7 @@ class ContractController extends Controller
   public function update(Request $request, $id)
   {
     $contract = Contract::findOrFail($id);
-    if ($this->contract_between_dates($contract->employee_id, $request['start_date'], $request['end_date'], $id) == 0) {
+    // if ($this->contract_between_dates($contract->employee_id, $request['start_date'], $request['end_date'], $id) == 0) {
       $contract->fill($request->all());
       $contract->save();
       if ($request->schedule['id']) {
@@ -75,8 +75,8 @@ class ContractController extends Controller
         }
       }
       return $contract;
-    }
-    abort(403);
+    // }
+    // abort(403);
   }
 
   /**

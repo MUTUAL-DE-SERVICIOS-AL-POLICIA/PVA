@@ -13,7 +13,7 @@ import UserIndex from './components/user/UserIndex'
 import DepartureIndex from './components/departure/DepartureIndex'
 import DepartureAdmin from './components/departure/DepartureAdmin'
 import Dashboard from './components/dashboard/Dashboard'
-
+import PhonebookIndex from './components/phonebook/PhonebookIndex'
 
 export const routes = [
   {
@@ -126,6 +126,13 @@ export const routes = [
     path: '/dashboard',
     component: Dashboard,
     name: 'dashboard',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/phonebook',
+    component: PhonebookIndex,
+    name: 'phonebookIndex',
     meta: {
       requiresAuth: true
     }

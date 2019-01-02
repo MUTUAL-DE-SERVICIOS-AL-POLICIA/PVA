@@ -42,8 +42,12 @@ class BonusYearController extends Controller
       $q->orderBy('created_at');
     }])->first();
 
-    if ($bonus_year) return $bonus_year;
-    abort(404);
+    if ($bonus_year) {
+      return $bonus_year;
+    } else {
+      $bonus = BonusYear::create(['year' => $year]);
+      return $bonus;
+    }
   }
 
   /**
