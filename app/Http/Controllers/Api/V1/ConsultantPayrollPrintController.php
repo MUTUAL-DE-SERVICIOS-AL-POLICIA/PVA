@@ -189,7 +189,7 @@ class ConsultantPayrollPrintController extends Controller
 			}
 		}
 
-		$filename = implode('_', ["sueldos", strtolower($month->name), $year]) . ".txt";
+		$filename = implode('_', ['sueldos', 'consultores', strtolower($month->name), $year]) . '.txt';
 
 		$headers = [
 			'Content-type' => 'text/plain',

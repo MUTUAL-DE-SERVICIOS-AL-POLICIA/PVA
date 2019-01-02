@@ -476,7 +476,7 @@ export default {
             res = await axios.get(`/month/order/${newDate.month() + 1}`);
             this.newProcedure.month_id = res.data.id;
             this.newProcedure.month = res.data.order - 1;
-            if (this.newProcedure.year > this.$moment(this.$store.getters.dateNow).year()) {
+            if (this.newProcedure.year > this.$moment(this.$store.getters.dateNow).year() || (this.newProcedure.month == 0 && this.newProcedure.year == this.$moment(this.$store.getters.dateNow).year())) {
               this.years.unshift(this.newProcedure.year)
             }
           }
