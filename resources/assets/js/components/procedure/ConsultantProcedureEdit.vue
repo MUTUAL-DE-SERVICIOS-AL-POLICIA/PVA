@@ -2,16 +2,38 @@
   <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>CONSULTORES {{ procedure.month.name }}</v-toolbar-title>
+      <v-tooltip color="white" role="button" bottom>
+        <v-icon slot="activator" class="ml-4">info</v-icon>
+        <div>
+          <v-alert :value="true" type="warning" class="black--text">RETIROS DE ESTE MES</v-alert>
+          <v-alert :value="true" type="info" color="light-green lighten-3" class="black--text">REGISTROS EDITADOS</v-alert>
+        </div>
+      </v-tooltip>
       <v-spacer></v-spacer>
-      <v-menu v-model="menuDate">
+      <v-menu
+      v-model="menuDate"
+      :close-on-content-click="false"
+      :nudge-right="40"
+      lazy
+      transition="scale-transition"
+      offset-y
+      full-width>
         <v-text-field
+          class="pl-2 pr-2 ml-1 mr-1"
           slot="activator"
           v-model="selectedDate"
           label="Fecha de Pago"
           prepend-icon="event"
           readonly
         ></v-text-field>
-        <v-date-picker v-model="date" @input="menuDate = false" @change="updatePayDate(procedure.id, date)" locale="es-bo"></v-date-picker>
+        <v-date-picker
+        v-model="date"
+        @input="menuDate = false"
+        @change="updatePayDate(procedure.id, date)"
+        locale="es-bo"
+        :min="minDatePay"
+        :max="maxDatePay"
+        no-title></v-date-picker>
       </v-menu>
       <v-dialog
         v-model="dialogDelete"
@@ -64,6 +86,7 @@
       </v-dialog>
       <v-flex xs2>
         <v-text-field
+          class="pl-2 pr-2 ml-1 mr-1"
           v-model="search"
           append-icon="search"
           label="Buscar"
@@ -101,7 +124,7 @@
         <v-hover v-if="props.item.consultant_contract.employee" close-delay="0" open-delay="150">
           <tr
             slot-scope="{ hover }"
-            :class="(props.item.consultant_contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`"
+            :class="(props.item.consultant_contract.retirement_date != null) ? `warning elevation-${hover ? 15 : 0}` : ((props.item.created_at != props.item.updated_at) ? `light-green lighten-3 elevation-${hover ? 15 : 0}` : `elevation-${hover ? 5 : 0}`)"
           >
             <td>
               <v-tooltip right>
@@ -231,7 +254,9 @@ export default {
       search: "",
       menuDate: null,
       date: null,
-      selectedDate: null
+      selectedDate: null,
+      minDatePay: null,
+      maxDatePay: null
     };
   },
   async created() {
@@ -342,6 +367,8 @@ export default {
           `/consultant_procedure/${this.$route.params.id}`
         );
         this.procedure = res.data;
+        this.minDatePay = this.$moment().year(this.procedure.year).month(this.procedure.month.order - 1).date(20).toISOString().split('T')[0]
+        this.maxDatePay = this.$moment().year(this.procedure.year).month(this.procedure.month.order).date(20).toISOString().split('T')[0]
         if (res.data.pay_date){
           this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
         }
@@ -383,14 +410,14 @@ export default {
     },
     workedDays(payroll) {
       let payrollDate = this.$moment(
-        `${this.procedure.year}${this.procedure.month.order}01`
+        `${this.procedure.year}${this.procedure.month.order.toString().padStart(2, '0')}01`
       );
 
       let lastDayOfMonth = payrollDate.endOf("month").date();
 
       let dateStart = this.$moment(payroll.consultant_contract.start_date);
 
-      let dateEnd = this.$moment(payroll.consultant_contract.end_date);
+      let dateEnd = (payroll.consultant_contract.end_date == null && payroll.consultant_contract.retirement_date == null) ? this.$moment(`${this.procedure.year}${this.procedure.month.order.toString().padStart(2, '0')}01`).endOf("month") : this.$moment(payroll.consultant_contract.end_date);
 
       let workedDays = 0;
 
@@ -425,7 +452,7 @@ export default {
         dateEnd.year() >= payrollDate.year() &&
         dateEnd.month() == payrollDate.month()
       ) {
-        workedDays = dateEnd.date();
+        workedDays = dateEnd.date() > 30 ? 30 : dateEnd.date();
       } else if (
         (dateStart.year() <= payrollDate.year() &&
           dateStart.month() < payrollDate.month()) ||
