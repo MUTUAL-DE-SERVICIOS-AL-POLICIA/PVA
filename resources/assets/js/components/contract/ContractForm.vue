@@ -231,24 +231,27 @@
                   v-model="selectedSchedule.id"
                   v-validate="'required'"
                   name="Horario"
-                  :error-messages="errors.collect('Horario')">
-                  <v-radio
-                    v-for="n in jobSchedules"
-                    label="Horario  (08:00-12:00 | 14:30-18:30)"
-                    :key="n.id"
-                    :value="n.id"
-                    color="primary"
-                    v-if="n.id==1"
-                  ></v-radio>
-                  <v-radio 
-                    v-for="n in jobSchedules"
-                    :label="`Horario (${n.start_hour}:${n.start_minutes}0 - ${n.end_hour}:${n.end_minutes}0)`"
-                    :key="n.id"
-                    :value="n.id"
-                    color="primary"
-                    v-if="n.id!=1 && n.id!=2"
-                  ></v-radio>
-                </v-radio-group>                
+                  :error-messages="errors.collect('Horario')"
+                >
+                  <template v-for="n in jobSchedules">
+                    <v-radio
+                      label="Horario  (08:00-12:00 | 14:30-18:30)"
+                      :key="n.id"
+                      :value="n.id"
+                      color="primary"
+                      v-if="n.id==1"
+                    ></v-radio>
+                  </template>
+                  <template v-for="n in jobSchedules">
+                    <v-radio
+                      :label="`Horario (${n.start_hour}:${n.start_minutes}0 - ${n.end_hour}:${n.end_minutes}0)`"
+                      :key="n.id"
+                      :value="n.id"
+                      color="primary"
+                      v-if="n.id!=1 && n.id!=2"
+                    ></v-radio>
+                  </template>
+                </v-radio-group>
                 <v-layout row wrap>
                   <v-flex xs6>
                     <v-select v-if="edit"

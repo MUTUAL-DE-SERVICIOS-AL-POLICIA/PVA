@@ -159,23 +159,26 @@
                   v-model="selectedItem.schedules"
                   v-validate="'required'"
                   name="Horario"
-                  :error-messages="errors.collect('Horario')">
-                  <v-radio
-                    v-for="schedule in jobSchedules"
-                    label="Horario  (08:00-12:00 | 14:30-18:30)"
-                    :key="schedule.id"
-                    :value="[1,2]"
-                    color="primary"
-                    v-if="schedule.id==1"
-                  ></v-radio>
-                  <v-radio
-                    v-for="schedule in jobSchedules"
-                    :label="`Horario (${schedule.start_hour}:${schedule.start_minutes}0 - ${schedule.end_hour}:${schedule.end_minutes}0)`"
-                    :key="schedule.id"
-                    :value="[schedule.id]"
-                    color="primary"
-                    v-if="schedule.id!=1 && schedule.id!=2"
-                  ></v-radio>
+                  :error-messages="errors.collect('Horario')"
+                >
+                  <template v-for="schedule in jobSchedules">
+                    <v-radio
+                      label="Horario  (08:00-12:00 | 14:30-18:30)"
+                      :key="schedule.id"
+                      :value="[1,2]"
+                      color="primary"
+                      v-if="schedule.id==1"
+                    ></v-radio>
+                  </template>
+                  <template v-for="schedule in jobSchedules">
+                    <v-radio
+                      :label="`Horario (${schedule.start_hour}:${schedule.start_minutes}0 - ${schedule.end_hour}:${schedule.end_minutes}0)`"
+                      :key="schedule.id"
+                      :value="[schedule.id]"
+                      color="primary"
+                      v-if="schedule.id!=1 && schedule.id!=2"
+                    ></v-radio>
+                  </template>
                 </v-radio-group>
               </v-form>
               <v-divider class="mb-3"></v-divider>
