@@ -43,7 +43,7 @@ use \Milon\Barcode\DNS2D;
 </head>
 
 <body onload="substitutePdfVariables()">
-    <div class="parent">
+    <div class="parent" style="padding-top: 1cm;">
         <div class="child" align="left">
         @if (env("APP_ENV") == "production")
             @if ($print_date)
