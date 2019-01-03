@@ -106,7 +106,7 @@ class ContractController extends Controller
       'employer_number' => EmployerNumber::where('insurance_company_id', '1')->first(),
     ];
 
-    $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_date' => false, 'date' => $data['contract']->start_date))->render();
+    $footerHtml = view()->make('partials.footer')->with(array('footer_margin' => '1cm', 'paginator' => true, 'print_date' => false, 'date' => $data['contract']->start_date))->render();
 
     $headerHtml = view()->make('partials.head')->render();
 

@@ -195,7 +195,7 @@ class BonusController extends Controller
 
         $file_name = implode(" ", ['PLANILLA', $response->data['title']->subtitle, $year]) . ".pdf";
 
-        $footerHtml = view()->make('partials.footer')->with(array('paginator' => false, 'print_date' => true, 'date' => Carbon::now()->format('d/m/Y H:i')))->render();
+        $footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => false, 'print_date' => true, 'date' => Carbon::now()->format('d/m/Y H:i')))->render();
 
         $options = [
           'orientation' => 'landscape',
