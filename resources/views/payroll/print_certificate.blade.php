@@ -12,14 +12,14 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Certificado de haberes y aportes laborales</title>
         <style>
-            <?php include public_path('css/payroll-print.css') ?>
+            <?php include public_path('css/payroll-print.min.css') ?>
         </style>
     </head>
 
     <body>
         <br><br><br><br><br><br>
         <div style="font-size: 8pt;" align="right">
-            <p>DIRECCION DE ASUNTOS ADMINISTRATIVOS</p>
+            <p>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</p>
             <p>UNINDAD DE RECURSOS HUMANOS</p>
             <p>Certificado RR.HH. No. {{ $certificate->correlative }}/{{ $certificate->year }}</p>
             <p>Fecha {{ date('d') }} de {{ Carbon::now()->formatLocalized('%B') }} de {{ date('Y') }}</p>

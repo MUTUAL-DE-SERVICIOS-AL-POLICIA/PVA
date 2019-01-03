@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>Usuarios</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -7,7 +7,7 @@
         persistent
         v-model="dialog"
         width="500"
-        @keydown.esc="$router.go({name:'userIndex'})"
+        @keydown.esc="$router.go({name:'userIndex', params: $store.getters.options})"
         :fullscreen="loading"
       >
         <v-btn
@@ -94,7 +94,7 @@
             <v-divider></v-divider>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="success" small @click.native="$router.go({name:'userIndex'})"><v-icon small>check</v-icon> Cerrar</v-btn>
+              <v-btn color="success" small @click.native="$router.go({name:'userIndex', params: $store.getters.options})"><v-icon small>check</v-icon> Cerrar</v-btn>
             </v-card-actions>
           </div>
         </v-card>
@@ -108,7 +108,7 @@
         ></v-select>
       </v-flex>
     </v-toolbar>
-    <UserRegistered v-if="sourceSelected == 'Registrados'"/>
+    <UserRegistered v-if="sourceSelected == 'Registrados'" ref="UserRegistered"/>
     <UserLdap v-if="sourceSelected == 'LDAP'"/>
   </v-container>
 </template>
@@ -155,6 +155,7 @@ export default {
         let res = await axios.post(`/ldap`);
         this.message = res.data;
         this.loading = false;
+        this.$refs.UserRegistered.open = true
       } catch (e) {
         console.log(e);
       }

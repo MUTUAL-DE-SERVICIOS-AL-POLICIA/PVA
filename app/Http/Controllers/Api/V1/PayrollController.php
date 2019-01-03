@@ -35,7 +35,7 @@ class PayrollController extends Controller
 		$procedure = Procedure::findOrFail($request['procedure_id']);
 		$year_shortened = substr(strval($procedure->year), -2);
 		if (Payroll::where('code', 'LIKE', "%-$year_shortened")->count() == 0) {
-			$code = implode([str_pad(1, 3, '0', STR_PAD_LEFT), $year_shortened], '-');
+			$code = implode([str_pad(1, 4, '0', STR_PAD_LEFT), $year_shortened], '-');
 		} else {
 			$payroll = Payroll::where('procedure_id', $request['procedure_id'])->where('charge_id', $request['charge_id'])->where('position_group_id', $request['position_group_id'])->where('position_id', $request['position_id'])->where('employee_id', $request['employee_id'])->first();
 			if ($payroll) {
@@ -43,12 +43,12 @@ class PayrollController extends Controller
 			} else {
 				$last_code = Payroll::where('procedure_id', $procedure->id)->orderBy('code', 'DESC')->select('code')->first();
 				if ($last_code) {
-					$last_code = intval(substr($last_code->code, 0, 3));
+					$last_code = intval(substr($last_code->code, 0, 4));
 				} else {
 					$last_code = Payroll::orderBy('code', 'DESC')->select('code')->first();
-					$last_code = intval(substr($last_code->code, 0, 3));
+					$last_code = intval(substr($last_code->code, 0, 4));
 				}
-				$code = implode([str_pad($last_code + 1, 3, '0', STR_PAD_LEFT), $year_shortened], '-');
+				$code = implode([str_pad($last_code + 1, 4, '0', STR_PAD_LEFT), $year_shortened], '-');
 			}
 		}
 		return Payroll::create($request->all() + ['code' => $code]);
@@ -91,6 +91,27 @@ class PayrollController extends Controller
 		$payroll = Payroll::findOrFail($id);
 		$payroll->delete();
 		return $payroll;
+	}
+
+	/**
+	 * get payroll faults report
+	 *
+	 * @param  int  $year
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getYearFaults($year)
+	{
+		$procedures = Procedure::where('year', $year)->leftjoin('months as m', 'm.id', '=', 'procedures.month_id')->orderBy('m.order')->select('procedures.id', 'm.name', 'm.order as month')->get();
+
+		if (count($procedures) == 0) {
+			abort(404);
+		}
+
+		foreach ($procedures as $i => $procedure) {
+			$procedure->faults = round(array_sum(Payroll::where('procedure_id', $procedure->id)->pluck('faults')->toArray()), 2);
+		}
+
+		return $procedures;
 	}
 
 	/**

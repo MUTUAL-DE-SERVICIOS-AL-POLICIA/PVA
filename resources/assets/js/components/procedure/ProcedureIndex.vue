@@ -1,8 +1,20 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-toolbar>
-      <v-toolbar-title>Planillas</v-toolbar-title>
+      <v-toolbar-title>Planillas Eventuales</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-flex xs2>
+        <v-select
+          :disabled="!$store.getters.currentUser.roles[0].name == 'admin' || !$store.getters.currentUser.roles[0].name == 'rrhh'"
+          :items="[1, 2]"
+          label="# de Aguinaldos"
+          class="mr-3"
+          :flat="true"
+          v-if="procedures.find((o) => { return (o.month_order == 11 && o.active == false) }) ? true : false"
+          v-model="bonusYear.bonus"
+          v-on:change="updateBonusYear"
+        ></v-select>
+      </v-flex>
       <v-flex xs2>
         <v-select
           :items="years"
@@ -12,18 +24,141 @@
           @change="changeYear"
         ></v-select>
       </v-flex>
-      <ProcedureAdd v-if="$store.getters.currentUser.roles[0].name == 'admin'" :bus="bus"/>
+      <RemoveItem :bus="bus"/>
+      <ProcedureAdd v-if="$store.getters.currentUser.roles[0].name == 'admin'" :bus="bus" type="eventual"/>
     </v-toolbar>
-    <v-card>
+    <div v-if="loading">
+      <Loading/>
+    </div>
+    <v-card v-else>
       <v-container
         fluid
         grid-list-md
       >
         <v-layout row wrap>
           <v-flex
+            md6 lg4
+            v-if="bonusYear.bonus > 0"
+          >
+            <v-card color="info" height="100%" dark>
+              <v-card-title>
+                <v-flex xs6>
+                  <div class="font-weight-light display-1">AGUINALDO</div>
+                </v-flex>
+                <v-flex xs6>
+                  <v-text-field flat disabled></v-text-field>
+                </v-flex>
+              </v-card-title>
+              <div>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-menu offset-y v-for="procedure in bonusYear.procedures" :key="procedure.id" class="mr-2 ml-1">
+                    <v-btn slot="activator" color="error">
+                      <span>{{ procedure.name }}</span>
+                      <v-icon small>arrow_drop_down</v-icon>
+                    </v-btn>
+                    <v-card
+                      style="max-height: 360px"
+                      class="scroll-y"
+                    >
+                      <v-list
+                        v-for="(item, index) in bonusPrintTypes"
+                        v-bind:item="item"
+                        v-bind:index="index"
+                        v-bind:key="item.type"
+                      >
+                        <v-list-tile @click="bonusPrint(procedure.id, item.type)">
+                          <v-list-tile-content>
+                            {{ item.name }}
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                      <v-list>
+                        <v-list-tile @click="bonusProcedure = procedure; bonusDialog = true" v-if="$store.getters.currentUser.roles[0].name == 'rrhh' || $store.getters.currentUser.roles[0].name == 'admin'">
+                          <v-list-tile-content>
+                            <div class="blue--text">EDITAR</div>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile @click="bus.$emit('openDialogRemove', `/bonus/${procedure.id}`)" v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                          <v-list-tile-content>
+                            <div class="red--text">ELIMINAR</div>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-card>
+                  </v-menu>
+                  <v-dialog
+                    v-model="bonusDialog"
+                    width="600"
+                    @keydown.esc="closeEditBonus"
+                  >
+                    <v-btn color="error" slot="activator" v-if="bonusYear.bonus > bonusYear.procedures.length">
+                      Registrar
+                    </v-btn>
+                    <v-card>
+                      <v-toolbar dark color="secondary">
+                        <v-toolbar-title class="white--text">{{ 'id' in bonusProcedure ? 'Editar Aguinaldo' : 'Registrar Aguinaldo' }}</v-toolbar-title>
+                      </v-toolbar>
+                      <v-card-text>
+                        <v-layout row wrap>
+                          <v-flex xs7 pr-2>
+                            <v-select
+                              :items="bonusNames"
+                              v-model="bonusProcedure.name"
+                              label="Nombre"
+                            ></v-select>
+                          </v-flex>
+                          <v-flex xs5 pl-2>
+                            <v-text-field
+                              v-validate="'min:0|max:99'"
+                              v-model="bonusProcedure.split_percentage"
+                              label="Porcentage de Descuento"
+                              name="porcentage de descuento"
+                              :error-messages="errors.collect('porcentage de descuento')"
+                            ></v-text-field>
+                          </v-flex>
+                        </v-layout>
+                        <v-layout row wrap>
+                          <v-flex xs6 pr-2>
+                            <v-text-field
+                              v-validate="'min:0'"
+                              v-model="bonusProcedure.lower_limit_wage"
+                              label="Salario Límite Inferior"
+                              name="salario límite inferior"
+                              :error-messages="errors.collect('salario límite inferior')"
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs6 pr-2>
+                            <v-text-field
+                              v-validate="'min:0'"
+                              v-model="bonusProcedure.upper_limit_wage"
+                              label="Salario Límite Superior"
+                              name="salario límite superior"
+                              :error-messages="errors.collect('salario límite superior')"
+                            ></v-text-field>
+                          </v-flex>
+                        </v-layout>
+                        <div class="text-md-center">
+                          <div>Fecha de Pago</div>
+                          <v-date-picker :min="$moment(this.$store.getters.dateNow).month(11).date(4).toISOString()" locale="es-bo" v-model="bonusProcedure.pay_date"></v-date-picker>
+                        </div>
+                      </v-card-text>
+                      <v-divider></v-divider>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="error" @click.native="closeEditBonus"><v-icon>close</v-icon> Cancelar</v-btn>
+                        <v-btn color="success" :disabled="this.errors.any()" @click.native="saveBonus"><v-icon>check</v-icon> Guardar</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-card-actions>
+              </div>
+            </v-card>
+          </v-flex>
+          <v-flex
             v-for="procedure in procedures"
             :key="procedure.id"
-            xs12 sm4
+            md6 lg4
           >
             <v-card :color="procedure.active ? 'warning' : 'green lighten-4'" height="100%">
               <v-card-title>
@@ -40,7 +175,7 @@
                     v-if="procedure.pay_date"
                   ></v-text-field>
                   <v-text-field
-                    slot="activator"                    
+                    slot="activator"
                     label="Fecha de Pago"
                     prepend-icon="event"
                     disabled
@@ -48,17 +183,16 @@
                   ></v-text-field>
                 </v-flex>
               </v-card-title>
-              <v-progress-linear :indeterminate="true" v-if="loading"></v-progress-linear>
-              <div v-else>
+              <div>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="(procedure.active && options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="(procedure.active && $store.getters.options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                       <span>Editar</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon v-if="options.includes('ticket')">
+                  <v-btn icon v-if="$store.getters.options.includes('ticket')">
                     <v-tooltip top>
                       <v-btn slot="activator" icon flat @click.prevent="print(`/ticket/print/${procedure.id}`)">
                         <v-icon :color="procedure.active ? 'info' : 'primary'">print</v-icon>
@@ -66,20 +200,20 @@
                       <span>Imprimir boletas</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="options.includes('bank')">
+                  <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$store.getters.options.includes('bank')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                       <span>TXT Banco</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="options.includes('ovt')">
+                  <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="$store.getters.options.includes('ovt')">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">work</v-icon>
                       <span>CSV OVT</span>
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y class="mr-2" v-if="options.includes('afp')">
+                  <v-menu offset-y class="mr-2" v-if="$store.getters.options.includes('afp')">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>AFP</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -101,7 +235,7 @@
                       </v-list>
                     </v-card>
                   </v-menu>
-                  <v-menu offset-y v-if="options.includes('payroll')">
+                  <v-menu offset-y v-if="$store.getters.options.includes('payroll')">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>Planillas</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -202,7 +336,7 @@
                   <v-btn
                     color="info"
                     @click="storeProcedure"
-                    v-if="options.includes('new')"
+                    v-if="$store.getters.options.includes('new')"
                   >
                     Registrar
                   </v-btn>
@@ -219,15 +353,19 @@
 <script>
 import Vue from "vue";
 import ProcedureAdd from "./ProcedureAdd";
+import RemoveItem from "../RemoveItem";
+import Loading from "../Loading";
 export default {
   name: "ProcedureIndex",
   components: {
-    ProcedureAdd
+    ProcedureAdd,
+    RemoveItem,
+    Loading
   },
   data() {
     return {
       bus: new Vue(),
-      loading: false,
+      loading: true,
       years: [],
       procedures: [],
       newProcedure: {
@@ -241,26 +379,92 @@ export default {
       templateTypes: ["H", "P"],
       managementEntities: [],
       employerNumbers: [],
-      options: []
+      bonusYear: {
+        bonus: 0,
+        procedures: []
+      },
+      bonusDialog: false,
+      bonusNames: ['AGUINALDO DE NAVIDAD', 'ESFUERZO POR BOLIVIA'],
+      bonusPrintTypes: [
+        {
+          name: 'PLANILLA',
+          type: 'pdf'
+        }, {
+          name: 'BANCO',
+          type: 'txt'
+        }, {
+          name: 'OVT',
+          type: 'csv'
+        }
+      ],
+      bonusProcedure: {}
     };
   },
   mounted() {
-    this.getYears();
-    this.getManagementEntities();
-    this.getEmployerNumbers();
+    this.getYears()
+    this.getManagementEntities()
+    this.getEmployerNumbers()
     this.bus.$on("closeDialog", year => {
-      this.getYears(year);
-      this.changeYear();
-    });
-  },
-  created() {
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "procedureIndex") {
-        this.options = this.$store.getters.menuLeft[i].options;
-      }
-    }
+      this.getYears(year)
+      this.changeYear()
+    })
   },
   methods: {
+    closeEditBonus() {
+      this.bonusDialog = false
+      this.clearBonusProcedure()
+    },
+    clearBonusProcedure() {
+      this.bonusProcedure = {
+        name: this.bonusYear.procedures ? this.bonusNames[this.bonusYear.procedures.length] : this.bonusNames[0],
+        year: this.yearSelected,
+        pay_date: this.$store.getters.dateNow
+      }
+    },
+    async saveBonus() {
+      try {
+        if (this.bonusProcedure.lower_limit_wage == 0 || this.bonusProcedure.lower_limit_wage == "") {
+          this.bonusProcedure.lower_limit_wage = null
+        }
+        if (this.bonusProcedure.upper_limit_wage == 0 || this.bonusProcedure.upper_limit_wage == "") {
+          this.bonusProcedure.upper_limit_wage = null
+        }
+        if (this.bonusProcedure.split_percentage == 0 || this.bonusProcedure.split_percentage == "") {
+          this.bonusProcedure.split_percentage = null
+        }
+        if ('id' in this.bonusProcedure) {
+          let res = await axios.patch(`/bonus/${this.bonusProcedure.id}`, this.bonusProcedure)
+          this.getBonusYear(this.bonusYear.year)
+        } else {
+          let res = await axios.post(`/bonus`, this.bonusProcedure)
+          this.bonusYear.procedures.push(res.data)
+        }
+        this.clearBonusProcedure()
+        this.toastr.success('Guardado correctamente')
+        this.closeEditBonus();
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    bonusPrint(id, type) {
+      let url = `/bonus/print/${id}?report_type=${type}`
+      if (type == 'pdf') {
+        this.print(url)
+      } else {
+        this.download(url)
+      }
+    },
+    async updateBonusYear() {
+      try {
+        let res = await axios.patch(`/bonus_procedure/${this.bonusYear.year}`, this.bonusYear)
+        this.bonusYear = res.data
+        this.toastr.success('Actualizado correctamente')
+      } catch (e) {
+        console.log(e)
+        this.toastr.error(`Ya están registrados ${this.bonusYear.procedures.length} aguinaldos`)
+        this.getBonusYear(this.bonusYear.year)
+      }
+    },
     async getLastProcedure() {
       try {
         let res = await axios.get(`/procedure/order/last`);
@@ -272,8 +476,12 @@ export default {
             res = await axios.get(`/month/order/${newDate.month() + 1}`);
             this.newProcedure.month_id = res.data.id;
             this.newProcedure.month = res.data.order - 1;
+            if (this.newProcedure.year > this.$moment(this.$store.getters.dateNow).year() || (this.newProcedure.month == 0 && this.newProcedure.year == this.$moment(this.$store.getters.dateNow).year())) {
+              this.years.unshift(this.newProcedure.year)
+            }
           }
         }
+        this.loading = false
         return Promise.resolve();
       } catch (e) {
         console.log(e);
@@ -300,9 +508,15 @@ export default {
         let link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
         const contentDisposition = res.headers["content-disposition"];
-        let fileName = "unknown";
+        let fileName = `sueldos_${url.split('/').slice(-1)[0]}_${url.split('/').slice(-2)[0]}`;
+        if (res.headers['content-type'].includes('sheet')) {
+          fileName = `${fileName}.xlsx`
+        } else if (res.headers['content-type'].includes('csv')) {
+          fileName = `${fileName}.csv`
+        }
         if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename=(.+)/);
+          let fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+          if (!fileNameMatch) fileNameMatch = contentDisposition.match(/filename=(.+)/);
           if (fileNameMatch.length === 2) {
             fileName = fileNameMatch[1];
           }
@@ -344,8 +558,13 @@ export default {
         });
         let link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
+        let fileName = `sueldos_${url.split('/').slice(-1)[0].split('?')[0]}_${url.split('/').slice(-2)[0]}`;
         const contentDisposition = res.headers["content-disposition"];
-        let fileName = "unknown";
+        if (res.headers['content-type'].includes('sheet')) {
+          fileName = `${fileName}.xlsx`
+        } else if (res.headers['content-type'].includes('csv')) {
+          fileName = `${fileName}.csv`
+        }
         if (contentDisposition) {
           const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
           if (fileNameMatch.length === 2) {
@@ -410,11 +629,24 @@ export default {
       }
     },
     changeYear() {
-      if (this.years.length > 0) {
-        this.getProcedures(this.yearSelected);
-      } else {
+      if (this.years.length == 0) {
         this.years.unshift(this.newProcedure.year);
         this.yearSelected = this.newProcedure.year;
+      }
+      this.getProcedures(this.yearSelected);
+      this.getBonusYear(this.yearSelected);
+    },
+    async getBonusYear(year) {
+      try {
+        let res = await axios.get(`bonus_procedure/${year}`)
+        this.bonusYear = res.data
+        this.bonusProcedure.year = year
+        this.clearBonusProcedure()
+      } catch (e) {
+        console.log(e)
+        this.bonusYear.year = year
+        this.bonusProcedure.year = year
+        this.clearBonusProcedure()
       }
     },
     async storeProcedure() {

@@ -1,19 +1,15 @@
 <?php
-    use \App\Helpers\Util;
-    use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
+use \App\Helpers\Util;
+use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>{{ $title->name }} {{ $title->year }}</title>
-        <style>
-            <?php include public_path('css/payroll-print.css') ?>
-        </style>
     </head>
 
     <body>

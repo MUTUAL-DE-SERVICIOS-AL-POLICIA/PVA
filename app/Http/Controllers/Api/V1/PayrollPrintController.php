@@ -33,7 +33,7 @@ class PayrollPrintController extends Controller
 
 		$previous_month = $month - 1;
 		$previous_year = $year;
-		if($previous_month == 0) {
+		if ($previous_month == 0) {
 			$previous_month = 12;
 			$previous_year = $year - 1;
 		}
@@ -52,7 +52,7 @@ class PayrollPrintController extends Controller
 				$employee = $contract->employee;
 
 				$rehired = true;
-				$employee_contracts = $payroll->contract->employee->contracts;
+				$employee_contracts = $employee->contracts;
 
 				$e = new EmployeePayroll($payroll);
 
@@ -210,17 +210,23 @@ class PayrollPrintController extends Controller
 
 		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]) . ".pdf";
 
-		return \PDF::loadView('payroll.print', $response->data)
-			->setOption('page-width', '216')
-			->setOption('page-height', '330')
-			->setOption('margin-left', '26')
-			->setOption('margin-right', '0')
-			->setOrientation('landscape')
-			->setOption('encoding', 'utf-8')
-			->setOption('footer-font-size', 5)
-			->setOption('footer-center', '[page] de [topage] - Impreso el ' . date('m/d/Y H:i'))
-			->setOption('encoding', 'utf-8')
-			->stream($file_name);
+		$footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => true, 'date' => Carbon::now()->format('d/m/Y H:i')))->render();
+
+		$options = [
+			'orientation' => 'landscape',
+			'page-width' => '216',
+			'page-height' => '330',
+			'margin-left' => '26',
+			'margin-right' => '0',
+			'encoding' => 'UTF-8',
+			'footer-html' => $footerHtml,
+			'user-style-sheet' => public_path('css/payroll-print.min.css')
+		];
+
+		$pdf = \PDF::loadView('payroll.print', $response->data);
+		$pdf->setOptions($options);
+
+		return $pdf->stream($file_name);
 	}
 
 	/**

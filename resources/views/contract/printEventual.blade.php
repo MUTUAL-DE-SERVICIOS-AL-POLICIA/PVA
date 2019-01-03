@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,38 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Aviso de afiliacion y reingreso del trabajador</title>
-    <style>
-        html,
-        body {
-            
-        }
-        .doc{
-            font: 14pt "Times New Roman", "Times";
-            text-align: justify;
-        }
-        .head{
-            font-weight: bold;
-            text-decoration: underline;            
-        }
-        .title-text{
-            font-weight: bold;
-        }
-        .up{
-            text-transform: uppercase;
-        }
-        .cap{
-            text-transform: capitalize;
-        }
-        .center{
-            text-align: center;
-        }
-        .firma{
-            width: 900px;
-            height: 150px;
-            display: table-cell;
-            vertical-align: bottom;
-        }
-    </style>
 </head>
 <body>
     <br>

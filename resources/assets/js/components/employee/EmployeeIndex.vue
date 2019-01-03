@@ -1,7 +1,21 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-toolbar>
-      <v-toolbar-title>Empleados</v-toolbar-title>
+      <v-toolbar-title>
+        <v-select
+          :items="['Todos los Empleados', 'Eventuales', 'Consultores', 'Sin contratos']"
+          v-model="employeeType"
+          class="title font-weight-medium"
+        ></v-select>
+      </v-toolbar-title>
+      <v-tooltip color="white" role="button" bottom>
+        <v-icon slot="activator" class="ml-4">info</v-icon>
+        <div>
+          <v-alert :value="true" type="info">SIN CONTRATOS</v-alert>
+          <v-alert :value="true" type="warning" class="black--text">SIN DATOS PERSONALES</v-alert>
+          <v-alert :value="true" type="error">SIN CUENTA BANCARIA O AFP</v-alert>
+        </div>
+      </v-tooltip>
       <v-spacer></v-spacer>
       <v-btn  @click="getEmployees(false)" :class="!this.active ? 'primary white--text' : 'normal'" class="mr-0">
         <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
@@ -29,48 +43,61 @@
       <RemoveItem :bus="bus"/>
       <EmployeeCertificate :employee="{}" :bus="bus"/>
     </v-toolbar>
+    <div v-if="loading">
+      <Loading/>
+    </div>
     <v-data-table
+      v-else
       :headers="headers"
-      :items="employees"
+      :items="filteredEmployees"
       :search="search"
-      :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
+      :rows-per-page-items="[10,20,30,{text:'TODO', value:-1}]"
       disable-initial-sort
       expand
     >
       <template slot="items" slot-scope="props">
         <tr :class="rowColor(props.item)">
-          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
-          <td @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
-          <td @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
-          <td @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
-          <td @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
-          <td @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-          <td class="text-md-center" v-if="options.length > 0">
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'EVENTUAL') }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center pl-2">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center" v-if="$store.getters.options.length > 0">
             <v-switch
               v-model="props.item.active"
-              @click.native="switchActive(props.item)"
-              v-if="options.includes('edit')"
+              @change="switchActive(props.item)"
+              v-if="$store.getters.options.includes('edit')"
             ></v-switch>
           </td>
-          <td class="justify-center layout" v-if="options.includes('edit')">
-            <v-tooltip top>
-              <v-btn medium slot="activator" flat icon color="info" @click="editItem(props.item)">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <span>Editar</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-              <span>Eliminar</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <v-btn medium slot="activator" flat icon color="info" @click="certificateItem(props.item)">
-                <v-icon>timelapse</v-icon>
-              </v-btn>
-              <span>Certificado de trabajo</span>
-            </v-tooltip>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center">
+            <table>
+              <td :class="withoutBorders" v-if="(!active && $store.getters.options.includes('edit')) || (active && $store.getters.options.includes('inactiveEdit'))">
+                <v-tooltip top :class="withoutBorders">
+                  <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                  <span>Editar</span>
+                </v-tooltip>
+              </td>
+              <td v-if="props.item.consultant == null" :class="withoutBorders">
+                <v-tooltip top :class="withoutBorders">
+                  <v-btn medium :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                  <span>Eliminar</span>
+                </v-tooltip>
+              </td>
+              <td v-if="props.item.consultant != null" :class="withoutBorders">
+                <v-tooltip top :class="withoutBorders">
+                  <v-btn medium :class="withoutBorders" slot="activator" flat icon color="info" @click="certificateItem(props.item)">
+                    <v-icon>timeline</v-icon>
+                  </v-btn>
+                  <span>Certificado de trabajo</span>
+                </v-tooltip>
+              </td>
+            </table>
           </td>
         </tr>
       </template>
@@ -99,15 +126,15 @@
                   <v-list-tile-content class="font-weight-bold">Calle:</v-list-tile-content>
                 </td>
                 <td>
-                  <v-list-tile-content>{{ item.street }}</v-list-tile-content>
+                  <v-list-tile-content>{{ item.street }} {{ item.address_number }}</v-list-tile-content>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <v-list-tile-content class="font-weight-bold">Número:</v-list-tile-content>
+                  <v-list-tile-content class="font-weight-bold">Celular:</v-list-tile-content>
                 </td>
                 <td>
-                  <v-list-tile-content>{{ item.address_number }}</v-list-tile-content>
+                  <v-list-tile-content>{{ item.phone_number }}</v-list-tile-content>
                 </td>
               </tr>
               <tr>
@@ -115,7 +142,7 @@
                   <v-list-tile-content class="font-weight-bold">Teléfono:</v-list-tile-content>
                 </td>
                 <td>
-                  <v-list-tile-content>{{ item.phone_number }}</v-list-tile-content>
+                  <v-list-tile-content>{{ item.landline_number }}</v-list-tile-content>
                 </td>
               </tr>
             </table>
@@ -133,6 +160,7 @@
 import Vue from "vue";
 import EmployeeEdit from "./EmployeeEdit";
 import RemoveItem from "../RemoveItem";
+import Loading from "../Loading";
 import EmployeeCertificate from "./EmployeeCertificate";
 
 export default {
@@ -140,10 +168,13 @@ export default {
   components: {
     EmployeeEdit,
     RemoveItem,
-    EmployeeCertificate
+    EmployeeCertificate,
+    Loading
   },
   data() {
     return {
+      withoutBorders: ' ml-0 mr-0 pl-0 pr-0',
+      loading: true,
       bus: new Vue(),
       startIndex: 0,
       dialog: false,
@@ -153,43 +184,52 @@ export default {
       employees: [],
       search: "",
       headers: [
-        { align: "center", text: "C.I.", value: "identity_card" },
-        { text: "Funcionario", value: "last_name" },
-        { align: "center", text: "Fecha de Nacimiento", value: "birth_date" },
-        { text: "# Cuenta", value: "mothers_last_name" },
-        { text: "AFP", value: "first_name" },
-        { text: "CUA/NUA", value: "nua_cua" },
+        { align: "center", text: "C.I.", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "identity_card" },
+        { text: "Funcionario", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "last_name" },
+        { align: "center", text: "Contrato", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "mothers_last_name", sortable: false },
+        { align: "center", text: "Nacimiento", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "birth_date" },
+        { text: "# Cuenta", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "account_number" },
+        { text: "AFP", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "management_entity.name" },
+        { text: "CUA/NUA", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "nua_cua" },
         {
           align: "center",
           text: "Activo",
-          value: "account_number",
+          class: ["ml-0", "mr-0", "pl-0", "pr-0"],
+          value: "first_name",
           sortable: false
         },
         {
-          align: "center",
+          align: "left",
           text: "Acciones",
+          class: ["ml-0", "mr-0", "pl-0", "pr-0"],
           value: "second_name",
           sortable: false
         }
       ],
-      subHeaders: [
-        { align: "center", value: "name", text: "Name", sortable: false }
-      ]
+      employeeType: 'Todos los Empleados'
     };
   },
-  async mounted() {
-    this.getEmployees(this.active);
-    this.bus.$on("closeDialog", () => {
-      this.getEmployees(this.active);
-    });
-  },
-  created() {
-    for (var i = 0; i < this.$store.getters.menuLeft.length; i++) {
-      if (this.$store.getters.menuLeft[i].href == "employeeIndex") {
-        this.options = this.$store.getters.menuLeft[i].options;
+  computed: {
+    filteredEmployees() {
+      if (this.employeeType == 'Todos los Empleados') {
+        return this.employees
+      } else if (this.employeeType == 'Eventuales') {
+        return this.employees.filter(o => {
+          return o.consultant == false
+        })
+      } else if (this.employeeType == 'Consultores') {
+        return this.employees.filter(o => {
+          return o.consultant == true
+        })
+      } else if (this.employeeType == 'Sin contratos') {
+        return this.employees.filter(o => {
+          return o.consultant == null
+        })
       }
     }
-    if (!this.options.includes("edit")) {
+  },
+  mounted() {
+    if (!this.$store.getters.options.includes("edit")) {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Activo";
@@ -198,6 +238,10 @@ export default {
           return el.text != "Acciones";
         });
     }
+    this.getEmployees(this.active);
+    this.bus.$on("closeDialog", () => {
+      this.getEmployees(this.active);
+    });
   },
   methods: {
     async getEmployees(active = this.active) {
@@ -215,6 +259,7 @@ export default {
         } else {
           this.employees = this.employeesActive;
         }
+        this.loading = false
       } catch (e) {
         console.log(e);
       }
@@ -238,20 +283,24 @@ export default {
     certificateItem(item) {
       this.bus.$emit("openDialogCertificate", item);      
     },
-    rowColor(payroll) {
+    rowColor(employee) {
       if (
-        payroll.birth_date == null ||
-        payroll.nua_cua == null ||
-        payroll.account_number == null
+        employee.birth_date == null ||
+        employee.nua_cua == null ||
+        employee.account_number == null
       ) {
-        return "error";
+        return "error white--text";
       } else if (
-        payroll.location == null ||
-        payroll.zone == null ||
-        payroll.street == null ||
-        payroll.address_number == null
+        employee.location == null ||
+        employee.zone == null ||
+        employee.street == null ||
+        employee.address_number == null
       ) {
         return "warning";
+      } else if (
+        employee.consultant == null
+      ) {
+        return "info white--text";
       } else {
         return "";
       }
@@ -259,3 +308,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.bordered {
+  border-bottom: 0.2pt solid #212121;
+}
+</style>

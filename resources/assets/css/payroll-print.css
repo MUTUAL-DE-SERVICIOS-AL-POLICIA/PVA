@@ -1,80 +1,90 @@
 body {
-    font-size: 0.5em;
-    font-family: sans-serif;
-    font-family: 'Arial', sans-serif;
+  font-size: 0.5em;
+  font-family: sans-serif;
+  font-family: 'Arial', sans-serif;
 }
 
 table {
-    border-collapse: collapse;
-    table-layout: fixed;
-    clear: both;
+  border-collapse: collapse;
+  table-layout: fixed;
+  clear: both;
 }
 
-table, th, td {
-    border: 1px solid black;
-    text-align: center;
+th, td {
+  border: 1px solid black;
+  text-align: center;
 }
 
 .total {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .header-left {
-    float: left;
-    width: 20em;
+  float: left;
+  width: 20em;
 }
 
 .header-right {
-    width: 50%;
-    float: right;
-    text-align: right;
+  width: 50%;
+  float: right;
+  text-align: right;
 }
 
 .header-center {
-    padding-top: 1%;
-    margin-bottom: 1%;
-    text-align: center;
-    align-content: center;
-    float: center;
-    clear: both;
+  padding-top: 1%;
+  margin-bottom: 1%;
+  text-align: center;
+  align-content: center;
+  float: center;
+  clear: both;
 }
 
 #header-image {
-    float: left;
-    clear: both;
-    margin-top: -35%;
-    margin-left: 15%;
-    width: 20em;
-    height: 6em;
+  float: left;
+  clear: both;
+  margin-top: -35%;
+  margin-left: 15%;
+  width: 20em;
+  height: 6em;
 }
 
 th {
-    word-wrap: break-word;
-    background-color: lightgray;
+  word-wrap: break-word;
+  background-color: lightgray;
 }
 
 .footer {
-    border-left: 1px solid white;
-    border-right: 1px solid white;
-    border-bottom: 1px solid white;
+  border: none;
 }
 
 h1, h2, h3 {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 p, h1, h2, h3 {
-    padding-top: 0;
-    padding-bottom: 0;
-    margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin: 0;
 }
 
 .name {
-    text-align: left;
-    padding-left: 0.5%;
+  text-align: left;
+  padding-left: 0.5%;
 }
 
 /* Fix snappy header */
-thead { display: table-header-group }
-tfoot { display: table-row-group }
-tr { page-break-inside: avoid }
+thead {
+  display: table-header-group
+}
+tfoot {
+  display: table-row-group
+}
+tr {
+  page-break-inside: avoid
+}
+
+@media print{
+  body {
+    margin-top:0 !important;
+  }
+}

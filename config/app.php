@@ -243,7 +243,7 @@ return [
 
 		// Util
 		'Util' => App\Helpers\Util::class,
-		// Util
+		// LDAP
 		'Ldap' => App\Helpers\Ldap::class,
 
 		// Carbon

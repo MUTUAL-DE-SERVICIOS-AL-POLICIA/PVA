@@ -187,7 +187,7 @@ class EmployeePayroll
 
 		$start_date = Carbon::parse($contract->start_date . 'T0:0:0');
 
-		$end_date = Carbon::parse($contract->end_date . 'T23:59:59.999999');
+		$end_date = ($contract->end_date == null && $contract->retirement_date == null) ? $payroll_date->endOfMonth() : Carbon::parse($contract->end_date . 'T23:59:59.999999');
 
 		if ($this->retirement_date != null) {
 			$retirement_date = Carbon::parse($contract->retirement_date . 'T23:59:59.999999');
@@ -211,7 +211,7 @@ class EmployeePayroll
 		} elseif ($start_date->year <= $payroll_date->year && $start_date->month == $payroll_date->month) {
 			$worked_days = 30 - $start_date->day + 1;
 		} elseif ($end_date->year >= $payroll_date->year && $end_date->month == $payroll_date->month) {
-			$worked_days = $end_date->day;
+			$worked_days = $end_date->day > 30 ? 30 : $end_date->day;
 		} elseif (($start_date->year <= $payroll_date->year && $start_date->month < $payroll_date->month) || ($end_date->year >= $payroll_date->year && $end_date->month > $payroll_date->month)) {
 			$worked_days = 30;
 		} else {
