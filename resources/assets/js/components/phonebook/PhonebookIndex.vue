@@ -2,9 +2,8 @@
   <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>Agenda Telefonica</v-toolbar-title>
-      <v-tooltip color="white" role="button" bottom>      
-    </v-tooltip>
-      <v-spacer></v-spacer>      
+      <v-tooltip color="white" role="button" bottom></v-tooltip>
+      <v-spacer></v-spacer>
       <v-divider
         class="mx-2"
         inset

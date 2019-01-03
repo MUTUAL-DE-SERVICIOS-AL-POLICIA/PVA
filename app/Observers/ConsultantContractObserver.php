@@ -36,7 +36,7 @@ class ConsultantContractObserver
         } elseif ($key == 'consultant_position_id') {
           $changes .= (' [' . $key . '] ' . $this->get_position_title($old->consultant_position) . ' => ' . $this->get_position_title($changed->consultant_position) . ',');
         } elseif ($key == 'retirement_reason_id') {
-          $changes .= (' [' . $key . '] ' . $old->retirement_reason->name . ' => ' . $changed->retirement_reason->name . ',');
+          $changes .= (' [' . $key . '] ' . ' => ' . $changed->retirement_reason->name . ',');
         } else {
           $changes .= (' [' . $key . '] ' . $old[$key] . ' => ' . $value . ',');
         }
