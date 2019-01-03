@@ -116,7 +116,7 @@ class ContractController extends Controller
       'page-height' => '310',
       'margin-top' => '30',
       'margin-right' => '25',
-      'margin-left' => '40',
+      'margin-left' => '35',
       'margin-bottom' => '15',
       'encoding' => 'UTF-8',
       'header-html' => $headerHtml,
