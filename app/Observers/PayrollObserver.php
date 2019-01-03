@@ -8,17 +8,6 @@ use App\Helpers\Util;
 class PayrollObserver
 {
   /**
-   * Handle the payroll "created" event.
-   *
-   * @param  \App\Payroll  $payroll
-   * @return void
-   */
-  public function created(Payroll $payroll)
-  {
-    Util::save_action('Registrada boleta: ' . $this->get_title($payroll));
-  }
-
-  /**
    * Handle the payroll "updated" event.
    *
    * @param  \App\Payroll  $payroll

@@ -187,19 +187,6 @@ export default {
         }
       ]
     }, {
-      title: 'Consultores',
-      icon: 'worj',
-      group: [
-        {
-          href: 'consultantIndex',
-          title: 'Contratos Consultores',
-          icon: 'gavel',
-          params: {
-            options: ['printContract', 'edit']
-          }
-        }
-      ]
-    }, {
       href: 'userActionIndex',
       title: 'Actividad',
       icon: 'timeline',

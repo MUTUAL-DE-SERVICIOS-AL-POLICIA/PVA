@@ -138,7 +138,7 @@ class ConsultantPayrollPrintController extends Controller
 
 		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]) . ".pdf";
 
-		$footerHtml = view()->make('partials.footer')->with(array('paginator' => true))->render();
+		$footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => true, 'date' => Carbon::now()->format('d/m/Y H:i')))->render();
 
 		$options = [
 			'orientation' => 'landscape',
@@ -189,7 +189,7 @@ class ConsultantPayrollPrintController extends Controller
 			}
 		}
 
-		$filename = implode('_', ["sueldos", strtolower($month->name), $year]) . ".txt";
+		$filename = implode('_', ['sueldos', 'consultores', strtolower($month->name), $year]) . '.txt';
 
 		$headers = [
 			'Content-type' => 'text/plain',

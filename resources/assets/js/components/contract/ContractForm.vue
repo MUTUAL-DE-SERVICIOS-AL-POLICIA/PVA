@@ -148,10 +148,10 @@
                     <v-text-field
                       v-model="selectedItem.rrhh_cite"
                       label="Cite de Recursos Humanos"
-                      :outline="juridica"
                       v-validate="'required'"
                       name="Cite de Recursos Humanos"
                       :error-messages="errors.collect('Cite de Recursos Humanos')"
+                      :disabled="$store.getters.currentUser.roles[0].name != 'admin' || $store.getters.currentUser.roles[0].name != 'rrhh'"
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs6>
@@ -165,19 +165,20 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
+                      :disabled="$store.getters.currentUser.roles[0].name != 'admin' || $store.getters.currentUser.roles[0].name != 'rrhh'"
                     >
                       <v-text-field
                         slot="activator"
                         v-model="formatDateCite"
                         label="Fecha de cite de Recursos Humanos"
                         prepend-icon="event"
-                        readonly 
-                        :outline="juridica"                    
+                        readonly
                         clearable
                         v-validate="'required'"
                         name="Fecha de cite de Recursos Humanos"
                         :error-messages="errors.collect('Fecha de cite de Recursos Humanos')"
                         @input="dateCiteNull"
+                        :disabled="$store.getters.currentUser.roles[0].name != 'admin' || $store.getters.currentUser.roles[0].name != 'rrhh'"
                       ></v-text-field>
                       <v-date-picker v-model="date4" no-title @input="menuDate4 = false" locale="es-bo"></v-date-picker>
                     </v-menu>
@@ -231,24 +232,28 @@
                   v-model="selectedSchedule.id"
                   v-validate="'required'"
                   name="Horario"
-                  :error-messages="errors.collect('Horario')">
-                  <v-radio
-                    v-for="n in jobSchedules"
-                    label="Horario  (08:00-12:00 | 14:30-18:30)"
-                    :key="n.id"
-                    :value="n.id"
-                    color="primary"
-                    v-if="n.id==1"
-                  ></v-radio>
-                  <v-radio 
-                    v-for="n in jobSchedules"
-                    :label="`Horario (${n.start_hour}:${n.start_minutes}0 - ${n.end_hour}:${n.end_minutes}0)`"
-                    :key="n.id"
-                    :value="n.id"
-                    color="primary"
-                    v-if="n.id!=1 && n.id!=2"
-                  ></v-radio>
-                </v-radio-group>                
+                  :error-messages="errors.collect('Horario')"
+                  v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh' || $store.getters.currentUser.roles[0].name == 'juridica'"
+                >
+                  <template v-for="n in jobSchedules">
+                    <v-radio
+                      label="Horario  (08:00-12:00 | 14:30-18:30)"
+                      :key="n.id"
+                      :value="n.id"
+                      color="primary"
+                      v-if="n.id==1"
+                    ></v-radio>
+                  </template>
+                  <template v-for="n in jobSchedules">
+                    <v-radio
+                      :label="`Horario (${n.start_hour}:${n.start_minutes}0 - ${n.end_hour}:${n.end_minutes}0)`"
+                      :key="n.id"
+                      :value="n.id"
+                      color="primary"
+                      v-if="n.id!=1 && n.id!=2"
+                    ></v-radio>
+                  </template>
+                </v-radio-group>
                 <v-layout row wrap>
                   <v-flex xs6>
                     <v-select v-if="edit"
@@ -321,7 +326,7 @@
                     <tfoot style="font-weight: bold;">
                         <tr>
                             <td colspan="2"><span>Total </span></td>
-                            <td class="column sortable text-xs-right"> Bs.{{ tableSalaryTotal }} </td>
+                            <td class="column sortable text-xs-right"> Bs.{{ tableData.reduce((total, o) => parseFloat(o.salary) + total,0).toFixed(2) }} </td>
                         </tr>
                     </tfoot>
                   </table>
@@ -373,7 +378,6 @@ export default {
       tablePositionFree: 0,
       tableEmployeeFree: 0,
       tableSalary: "",
-      tableSalaryTotal: 0,
       tableData: [],
       selectedItem: {
         start_date: "",
@@ -425,6 +429,8 @@ export default {
   watch: {
     date(val) {
       this.selectedItem.start_date = this.date;
+      this.date2 = this.$moment(this.date).add(6, 'months').subtract(1, 'days').format('YYYY-MM-DD')
+      this.monthSalaryCalc()
     },
     date2(val) {
       this.selectedItem.end_date = this.date2;
@@ -480,11 +486,11 @@ export default {
       this.tablePositionFree = 0;
       this.tableEmployeeFree = 0;
       this.tableSalary = "";
-      this.tableSalaryTotal = 0;
       this.tableData = [];
       this.recontract = false;
       this.edit = false;
       this.selectedIndex = -1;
+      this.last_end_date = null;
     },
     async save() {
       try {
@@ -516,17 +522,19 @@ export default {
     },
     async saveRecontract() {
       try {
-        await this.$validator.validateAll();
-        let newres = await axios.post(
-          "/contract",
-          $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
-        );
-        let editres = await axios.patch(
-          "/contract/" + this.selectedItem.id,
-          { active: false }
-        );
-        this.close();
-        this.toastr.success("Recontratado correctamente");
+        let valid = await this.$validator.validateAll();
+        if (valid) {
+          let newres = await axios.post(
+            "/contract",
+            $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+          );
+          let editres = await axios.patch(
+            "/contract/" + this.selectedItem.id,
+            { active: false }
+          );
+          this.close();
+          this.toastr.success("Recontratado correctamente");
+        }
       } catch (e) {
         console.log(e);
       }
@@ -575,56 +583,45 @@ export default {
       }
     },
     monthSalaryCalc() {
-      
-      let data = {};
-      let month = "";
-      let total = 0;
-      let day = 0;
-      let salary = 0;
-      let salary_day = 0;
+      if (this.date && this.date2 && this.tableSalary) {
+        let months = []
 
-      var d1 = this.$moment(this.date);
-      var d2 = this.$moment(this.date2);
-      var endDay2 = this.$moment(this.date2).endOf('month').format('DD');
-      var diff = d2.diff(d1, "month");
-      if (d2.date() < d1.date()) {
-        diff++;
-      }
-      for (var i = 0; i <= diff; i++) {
-        let day = 30;
-        let salary = this.tableSalary;
-        let salary_day = this.tableSalary / 30;
-        let obs = "";
-        if (d1.month() + i == d1.month()) {
-          if (d1.date() >= 30) {
-            day = 1;
+        let startDate = this.$moment(this.date)
+        let endDate = this.$moment(this.date2)
+        let diary = this.tableSalary / 30
+
+        let count = 30 - startDate.format('D') + 1
+        months.push({
+          month: startDate.format('MMMM'),
+          day: count,
+          salary: (diary * count).toFixed(2)
+        })
+
+        while (!endDate.isSame(startDate, 'month', 'year')) {
+          if (!endDate.isSame(startDate.add(1, 'month'), 'month', 'year')) {
+            months.push({
+              month: startDate.format('MMMM'),
+              day: 30,
+              salary: Number(this.tableSalary).toFixed(2)
+            })
           } else {
-            day = 30 - d1.date() + 1;
-          }
-        }
-        if (
-          this.$moment()
-            .month(d1.month() + i)
-            .month() == d2.month()
-        ) {
-          if (d2.date() == 30 || d2.date() == endDay2 ) {
-            if (diff != 0) {
-              day = 30;
+            count = Number(endDate.format('D'))
+
+            let lastDayOfMonth = Number(endDate.endOf('month').format('D'))
+            if (lastDayOfMonth != 30 && count == lastDayOfMonth) {
+              count = 30
             }
-          } else {
-            day = (d2.date() + 1) - d1.date();
+
+            months.push({
+              month: endDate.format('MMMM'),
+              day: count,
+              salary: (diary * count).toFixed(2)
+            })
           }
         }
-        salary = salary_day * day;
-        salary = (Math.round(salary * 100) / 100).toFixed(2);
-        total = total + parseInt(salary);
-        month = this.$moment()
-          .month(d1.month() + i)
-          .format("MMMM");
-        data[i] = { month: month, day: day, salary: salary, obs: obs };
+
+        this.tableData = months;
       }
-      this.tableSalaryTotal = (Math.round(total * 100) / 100).toFixed(2);
-      this.tableData = data;
     },
     fullName(employee) {
       let names = `${employee.last_name || ""} ${employee.mothers_last_name ||
@@ -655,14 +652,12 @@ export default {
       this.monthSalaryCalc();
       this.dialog = true;
       this.selectedIndex = item;
-      if (item.mode == "recontract") {        
+      if (item.mode == "recontract") {
         this.recontract = true;
-        var end_date = this.$moment(item.end_date).add(1, 'days').calendar();
-        this.minDate = this.$moment(end_date, "DD/MM/YYYY").format('YYYY-MM-DD');
-        this.date = this.minDate;
+        this.last_end_date = item.end_date;
+        this.date = this.$moment(item.end_date).add(1, 'days').format('YYYY-MM-DD');
         this.date2 = '';
         this.tableSalary = "";
-        this.tableSalaryTotal = 0;
         this.tableData = [];
         this.selectedItem.contract_number = null;
         this.selectedItem.rrhh_cite = null;

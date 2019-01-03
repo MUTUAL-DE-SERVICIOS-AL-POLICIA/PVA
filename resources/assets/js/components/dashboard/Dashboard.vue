@@ -11,7 +11,7 @@
         <v-toolbar dark color="primary">
           <v-toolbar-title>NÚMEROS DE TELÉFONOS INTERNOS</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn icon dark @click="dialog = false">
+          <v-btn icon dark @click.native="phoneDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
         </v-toolbar>
@@ -66,56 +66,58 @@
         <v-layout row wrap>
           <v-flex md12 lg8>
             <v-layout row wrap>
-              <v-flex xs12 sm6 v-for="filter in filteredEmployees" :key="filter.icon" v-if="$store.getters.currentUser.roles.length > 0">
-                <v-card :color="filter.color" dark height="190px" class="mb-2">
-                  <v-layout row wrap>
-                    <v-flex xs4 class="text-xs-center" mt-4>
-                      <v-icon size="80">{{ filter.icon }}</v-icon>
-                      <div class="text-xs-left mt-4 ml-3">
-                        <vue-json-to-csv
-                          v-if="filter.downloadable"
-                          :json-data="filter.data.filter(o => { return o.active == true })"
-                          :labels = "{
-                            last_name: { title: 'APELLIDO PATERNO' },
-                            mothers_last_name: { title: 'APELLIDO MATERNO' },
-                            first_name: { title: 'PRIMER NOMBRE' },
-                            second_name: { title: 'SEGUNDO NOMBRE' },
-                            position: { title: 'CARGO' },
-                            phone_number: { title: 'CELULAR'},
-                            landline_number: { title: 'TELÉFONO'}
-                          }"
-                          :csv-title="`${filter.title}_${$store.getters.dateNow}`"
-                        >
-                          <v-tooltip right>
-                            <v-btn flat icon slot="activator">
-                              <v-icon>save</v-icon>
-                            </v-btn>
-                            <span>Descargar</span>
+              <template v-if="$store.getters.currentUser.roles.length > 0">
+                <v-flex xs12 sm6 v-for="filter in filteredEmployees" :key="filter.icon">
+                  <v-card :color="filter.color" dark height="190px" class="mb-2">
+                    <v-layout row wrap>
+                      <v-flex xs4 class="text-xs-center" mt-4>
+                        <v-icon size="80">{{ filter.icon }}</v-icon>
+                        <div class="text-xs-left mt-4 ml-3">
+                          <vue-json-to-csv
+                            v-if="filter.downloadable"
+                            :json-data="filter.data.filter(o => { return o.active == true })"
+                            :labels = "{
+                              last_name: { title: 'APELLIDO PATERNO' },
+                              mothers_last_name: { title: 'APELLIDO MATERNO' },
+                              first_name: { title: 'PRIMER NOMBRE' },
+                              second_name: { title: 'SEGUNDO NOMBRE' },
+                              position: { title: 'CARGO' },
+                              phone_number: { title: 'CELULAR'},
+                              landline_number: { title: 'TELÉFONO'}
+                            }"
+                            :csv-title="`${filter.title}_${$store.getters.dateNow}`"
+                          >
+                            <v-tooltip right>
+                              <v-btn flat icon slot="activator">
+                                <v-icon>save</v-icon>
+                              </v-btn>
+                              <span>Descargar</span>
+                            </v-tooltip>
+                          </vue-json-to-csv>
+                        </div>
+                      </v-flex>
+                      <v-flex xs8>
+                        <v-card-text class="text-xs-center">
+                          <div class="display-3 font-weight-thin">{{ filter.total.active }}</div>
+                          <div class="display-1 font-weight-light">{{ filter.title }}</div>
+                          <v-tooltip bottom v-if="'new' in filter && filter.new.length > 0">
+                            <div slot="activator" class="subheading font-weight-light">Nuevos {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.new.length }}</div>
+                            <div v-for="(item, index) in filter.new" :key="item.id">{{ `${++index}.- ${item.last_name} ${item.mothers_last_name} ${item.first_name} ${item.second_name}` }}</div>
                           </v-tooltip>
-                        </vue-json-to-csv>
-                      </div>
-                    </v-flex>
-                    <v-flex xs8>
-                      <v-card-text class="text-xs-center">
-                        <div class="display-3 font-weight-thin">{{ filter.total.active }}</div>
-                        <div class="display-1 font-weight-light">{{ filter.title }}</div>
-                        <v-tooltip bottom v-if="'new' in filter && filter.new.length > 0">
-                          <div slot="activator" class="subheading font-weight-light">Nuevos {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.new.length }}</div>
-                          <div v-for="(item, index) in filter.new" :key="item.id">{{ `${++index}.- ${item.last_name} ${item.mothers_last_name} ${item.first_name} ${item.second_name}` }}</div>
-                        </v-tooltip>
-                        <div v-else-if="'new' in filter && filter.new.length == 0" slot="activator" class="subheading font-weight-light">Nuevos {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.new.length }}</div>
-                        <v-tooltip bottom v-if="'old' in filter && filter.old.length > 0">
-                          <div slot="activator" class="subheading font-weight-light">Bajas {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.old.length }}</div>
-                          <div v-for="(item, index) in filter.old" :key="item.id">{{ `${++index}.- ${item.last_name} ${item.mothers_last_name} ${item.first_name} ${item.second_name}` }}</div>
-                        </v-tooltip>
-                        <div v-else-if="'old' in filter && filter.old.length == 0" slot="activator" class="subheading font-weight-light">Bajas {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.old.length }}</div>
-                      </v-card-text>
-                    </v-flex>
-                  </v-layout>
-                </v-card>
-              </v-flex>
-              <v-flex xs12 sm6 v-if="$store.getters.currentUser.roles.length > 0">
-                <v-card dark v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh'" height="190px" class="mb-2">
+                          <div v-else-if="'new' in filter && filter.new.length == 0" slot="activator" class="subheading font-weight-light">Nuevos {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.new.length }}</div>
+                          <v-tooltip bottom v-if="'old' in filter && filter.old.length > 0">
+                            <div slot="activator" class="subheading font-weight-light">Bajas {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.old.length }}</div>
+                            <div v-for="(item, index) in filter.old" :key="item.id">{{ `${++index}.- ${item.last_name} ${item.mothers_last_name} ${item.first_name} ${item.second_name}` }}</div>
+                          </v-tooltip>
+                          <div v-else-if="'old' in filter && filter.old.length == 0" slot="activator" class="subheading font-weight-light">Bajas {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.old.length }}</div>
+                        </v-card-text>
+                      </v-flex>
+                    </v-layout>
+                  </v-card>
+                </v-flex>
+              </template>
+              <v-flex xs12 sm6 v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh'">
+                <v-card dark height="190px" class="mb-2">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
                       <v-icon size="80">attach_money</v-icon>

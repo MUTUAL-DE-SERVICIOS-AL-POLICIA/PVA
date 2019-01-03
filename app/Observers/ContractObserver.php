@@ -40,7 +40,7 @@ class ContractObserver
         } elseif ($key == 'contract_mode_id') {
           $changes .= (' [' . $key . '] ' . $old->contract_mode->name . ' => ' . $changed->contract_mode->name . ',');
         } elseif ($key == 'retirement_reason_id') {
-          $changes .= (' [' . $key . '] ' . $old->retirement_reason->name . ' => ' . $changed->retirement_reason->name . ',');
+          $changes .= (' [' . $key . '] ' . ' => ' . $changed->retirement_reason->name . ',');
         } elseif ($key == 'insurance_company_id') {
           $changes .= (' [' . $key . '] ' . $old->insurance_company->name . ' => ' . $changed->insurance_company->name . ',');
         } elseif ($key == 'active') {

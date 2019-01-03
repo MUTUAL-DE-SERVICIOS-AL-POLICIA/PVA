@@ -65,16 +65,16 @@ class ContractController extends Controller
   {
     $contract = Contract::findOrFail($id);
     // if ($this->contract_between_dates($contract->employee_id, $request['start_date'], $request['end_date'], $id) == 0) {
-      $contract->fill($request->all());
-      $contract->save();
-      if ($request->schedule['id']) {
-        $contract->job_schedules()->detach();
-        $contract->job_schedules()->attach($request->schedule['id']);
-        if ($request->schedule['id'] == 1) {
-          $contract->job_schedules()->attach(2);
-        }
+    $contract->fill($request->all());
+    $contract->save();
+    if ($request->schedule['id']) {
+      $contract->job_schedules()->detach();
+      $contract->job_schedules()->attach($request->schedule['id']);
+      if ($request->schedule['id'] == 1) {
+        $contract->job_schedules()->attach(2);
       }
-      return $contract;
+    }
+    return $contract;
     // }
     // abort(403);
   }
@@ -100,33 +100,48 @@ class ContractController extends Controller
    */
   function print($id, $type)
   {
-    $headerHtml = view()->make('partials.head')->render();
-    $pageWidth = '216';
-    $pageHeight = '330';
-    $pageMargins = [30, 25, 40, 30];
-    $pageName = 'contrato.pdf';
     $data = [
       'contract' => Contract::findOrFail($id),
       'mae' => Contract::where([['position_id', '1'], ['active', 'true']])->first(),
       'employer_number' => EmployerNumber::where('insurance_company_id', '1')->first(),
     ];
+
+    $footerHtml = view()->make('partials.footer')->with(array('footer_margin' => '1cm', 'paginator' => true, 'print_date' => false, 'date' => $data['contract']->start_date))->render();
+
+    $headerHtml = view()->make('partials.head')->render();
+
+    $options = [
+      'orientation' => 'portrait',
+      'page-width' => '216',
+      'page-height' => '310',
+      'margin-top' => '30',
+      'margin-right' => '25',
+      'margin-left' => '40',
+      'margin-bottom' => '15',
+      'encoding' => 'UTF-8',
+      'header-html' => $headerHtml,
+      'footer-html' => $footerHtml,
+      'user-style-sheet' => public_path('css/contract-print.min.css')
+    ];
+
+    $file_name = 'contrato.pdf';
+
     if ($type != 'printEventual') {
-      $headerHtml = '';
-      $pageWidth = '202';
-      $pageHeight = '130';
-      $pageMargins = [10, 11, 12, 11];
-      $pageName = 'seguro.pdf';
+      $options['header-html'] = '';
+      $options['footer-html'] = '';
+      $options['page-width'] = '202';
+      $options['page-height'] = '130';
+      $options['margin-top'] = '30';
+      $options['margin-right'] = '25';
+      $options['margin-left'] = '40';
+      $options['margin-bottom'] = '30';
+      $file_name = 'seguro.pdf';
     }
-    return \PDF::loadView('contract.' . $type, $data)
-      ->setOption('header-html', $headerHtml)
-      ->setOption('page-width', $pageWidth)
-      ->setOption('page-height', $pageHeight)
-      ->setOption('margin-top', $pageMargins[0])
-      ->setOption('margin-right', $pageMargins[1])
-      ->setOption('margin-bottom', $pageMargins[2])
-      ->setOption('margin-left', $pageMargins[3])
-      ->setOption('encoding', 'utf-8')
-      ->stream($pageName);
+
+    $pdf = \PDF::loadView('contract.' . $type, $data);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
   }
 
   /**
