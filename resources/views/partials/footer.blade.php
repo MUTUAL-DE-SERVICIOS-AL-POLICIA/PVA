@@ -45,12 +45,12 @@ use \Milon\Barcode\DNS2D;
 <body onload="substitutePdfVariables()">
     <div class="parent" style="padding-top: {{ $footer_margin }};">
         <div class="child" align="left">
-        @if (env("APP_ENV") == "production")
+        @if (env("APP_ENV") != "production")
+            VERSIÓN DE PRUEBAS
+        @else
             @if ($print_date)
                 Impreso el {{ $date }}
             @endif
-        @else
-            VERSIÓN DE PRUEBAS
         @endif
         </div>
         <div class="child" align="center">
