@@ -28,7 +28,7 @@
             </p>
             @else
             <p>
-                Mediante CITE: <span class="">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la evaluación efectuada por parte del Director de Área, en coordinación con el Director General Ejecutivo y la Jefatura de la Unidad de Recursos Humanos, se instruye la elaboración de Contrato del Personal Eventual de <span class="cap">{{ Util::fullName($contract->employee, 'lowercase') }}</span>.
+                Mediante CITE: <span class="">{{ $contract->rrhh_cite }} </span> de fecha {{ Carbon::parse($contract->rrhh_cite_date)->day }} de {{ Carbon::parse($contract->rrhh_cite_date)->formatLocalized('%B') }} de {{ Carbon::parse($contract->rrhh_cite_date)->year }}, como resultado de la evaluación efectuada por parte del inmediato superior, en coordinación con el Director General Ejecutivo y la Jefatura de la Unidad de Recursos Humanos, se determinó la elaboración del Contrato del Personal Eventual de <span class="cap">{{ Util::fullName($contract->employee, 'lowercase') }}</span>.
             </p>
             @endif
         @endif        
