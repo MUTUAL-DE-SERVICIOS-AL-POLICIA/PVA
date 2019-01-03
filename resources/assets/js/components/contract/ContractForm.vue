@@ -424,7 +424,7 @@ export default {
   watch: {
     date(val) {
       this.selectedItem.start_date = this.date;
-      this.date2 = this.$moment(this.date).add(6, 'months').format('YYYY-MM-DD')
+      this.date2 = this.$moment(this.date).add(6, 'months').subtract(1, 'days').format('YYYY-MM-DD')
       this.monthSalaryCalc()
     },
     date2(val) {
