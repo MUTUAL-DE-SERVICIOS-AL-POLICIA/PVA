@@ -233,7 +233,7 @@
                   v-validate="'required'"
                   name="Horario"
                   :error-messages="errors.collect('Horario')"
-                  v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh'"
+                  v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh' || $store.getters.currentUser.roles[0].name == 'juridica'"
                 >
                   <template v-for="n in jobSchedules">
                     <v-radio
