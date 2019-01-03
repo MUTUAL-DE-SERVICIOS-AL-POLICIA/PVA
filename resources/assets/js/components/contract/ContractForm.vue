@@ -148,10 +148,10 @@
                     <v-text-field
                       v-model="selectedItem.rrhh_cite"
                       label="Cite de Recursos Humanos"
-                      :outline="juridica"
                       v-validate="'required'"
                       name="Cite de Recursos Humanos"
                       :error-messages="errors.collect('Cite de Recursos Humanos')"
+                      :disabled="$store.getters.currentUser.roles[0].name != 'admin' || $store.getters.currentUser.roles[0].name != 'rrhh'"
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs6>
@@ -165,19 +165,20 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
+                      :disabled="$store.getters.currentUser.roles[0].name != 'admin' || $store.getters.currentUser.roles[0].name != 'rrhh'"
                     >
                       <v-text-field
                         slot="activator"
                         v-model="formatDateCite"
                         label="Fecha de cite de Recursos Humanos"
                         prepend-icon="event"
-                        readonly 
-                        :outline="juridica"                    
+                        readonly
                         clearable
                         v-validate="'required'"
                         name="Fecha de cite de Recursos Humanos"
                         :error-messages="errors.collect('Fecha de cite de Recursos Humanos')"
                         @input="dateCiteNull"
+                        :disabled="$store.getters.currentUser.roles[0].name != 'admin' || $store.getters.currentUser.roles[0].name != 'rrhh'"
                       ></v-text-field>
                       <v-date-picker v-model="date4" no-title @input="menuDate4 = false" locale="es-bo"></v-date-picker>
                     </v-menu>
@@ -232,6 +233,7 @@
                   v-validate="'required'"
                   name="Horario"
                   :error-messages="errors.collect('Horario')"
+                  v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh'"
                 >
                   <template v-for="n in jobSchedules">
                     <v-radio

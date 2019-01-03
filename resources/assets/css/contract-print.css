@@ -1,0 +1,27 @@
+html, body {}
+.doc{
+  font: 14pt "Times New Roman", "Times";
+  text-align: justify;
+}
+.head{
+  font-weight: bold;
+  text-decoration: underline;
+}
+.title-text{
+  font-weight: bold;
+}
+.up{
+  text-transform: uppercase;
+}
+.cap{
+  text-transform: capitalize;
+}
+.center{
+  text-align: center;
+}
+.firma{
+  width: 900px;
+  height: 150px;
+  display: table-cell;
+  vertical-align: bottom;
+}

@@ -14,7 +14,7 @@ use \Milon\Barcode\DNS2D;
         }
         .child{
             display: inline-block;
-            width: 33%;
+            width: 32%;
         }
     </style>
     <script>
@@ -45,16 +45,19 @@ use \Milon\Barcode\DNS2D;
 <body onload="substitutePdfVariables()">
     <div class="parent">
         <div class="child" align="left">
-        @php ($date = Carbon::now()->format('d/m/Y H:i'))
         @if (env("APP_ENV") == "production")
-            Impreso el {{ $date }}
+            @if ($print_date)
+                Impreso el {{ $date }}
+            @endif
         @else
             VERSIÓN DE PRUEBAS
         @endif
         </div>
         <div class="child" align="center">
         @if ($paginator)
-            Página <span class="page"></span> de <span class="topage"></span>
+            <span size="3">
+                Página <span class="page"></span> de <span class="topage"></span>
+            </span>
         @endif
         </div>
         <div class="child" align="right">

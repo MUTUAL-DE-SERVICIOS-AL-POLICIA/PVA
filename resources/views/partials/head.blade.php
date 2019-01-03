@@ -17,7 +17,7 @@
 				width: 15cm;
 				height: 3cm;
 				text-align: right;
-				font: italic bold 13pt arial, sans-serif;
+				font: italic bold 12pt arial, sans-serif;
 			}
 			.caja{
 				background: #D6E3BC;

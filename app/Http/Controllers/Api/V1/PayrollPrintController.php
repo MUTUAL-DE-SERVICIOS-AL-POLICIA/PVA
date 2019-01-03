@@ -210,7 +210,7 @@ class PayrollPrintController extends Controller
 
 		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]) . ".pdf";
 
-		$footerHtml = view()->make('partials.footer')->with(array('paginator' => true))->render();
+		$footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_date' => true, 'date' => Carbon::now()->format('d/m/Y H:i')))->render();
 
 		$options = [
 			'orientation' => 'landscape',
