@@ -517,17 +517,19 @@ export default {
     },
     async saveRecontract() {
       try {
-        await this.$validator.validateAll();
-        let newres = await axios.post(
-          "/contract",
-          $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
-        );
-        let editres = await axios.patch(
-          "/contract/" + this.selectedItem.id,
-          { active: false }
-        );
-        this.close();
-        this.toastr.success("Recontratado correctamente");
+        let valid = await this.$validator.validateAll();
+        if (valid) {
+          let newres = await axios.post(
+            "/contract",
+            $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+          );
+          let editres = await axios.patch(
+            "/contract/" + this.selectedItem.id,
+            { active: false }
+          );
+          this.close();
+          this.toastr.success("Recontratado correctamente");
+        }
       } catch (e) {
         console.log(e);
       }
