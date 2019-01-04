@@ -2,7 +2,7 @@
 
 ---
 
-## [1.4.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.4.0) - 2018-12-05
+## [2.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.0) - 2018-01-05
 
 ### Added
 
@@ -10,6 +10,8 @@
 * Year bonus procedures
 * Dashboard to watch and download basic reports
 * Consultant management and procedure's control
+* Barcode images on the footer of printed pdfs
+* Financiera role
 
 ### Fixed
 
@@ -19,6 +21,7 @@
 
 * Menu left shows on hover
 * Splitted left menu into submenus to view contract and payrolls each for eventual and consultant
+* Switched user actions to laravel native observers instead middleware
 
 ## [1.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.1) - 2018-10-24
 
