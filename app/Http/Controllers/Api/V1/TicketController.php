@@ -40,4 +40,20 @@ class TicketController extends Controller
 			->setOption('encoding', 'utf-8')
 			->stream($file_name);
 	}
+
+	function standalone($code)
+	{
+		$payrolls = Payroll::where('code', $code)->leftJoin('employees as e', 'e.id', '=', 'payrolls.employee_id')->leftJoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->orderBy('c.start_date')->get();
+
+		foreach ($payrolls as $key => $payroll) {
+			if ($key == 0) {
+				$p = new EmployeePayroll($payroll);
+			} else {
+				$p->mergePayroll(new EmployeePayroll($payroll));
+			}
+		}
+		$p = $p->generateImage();
+
+		return response()->json($p);
+	}
 }

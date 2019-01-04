@@ -4,6 +4,17 @@ Route::group([
 	'middleware' => 'api',
 	'prefix' => 'v1',
 ], function () {
+
+
+	// Ticket
+	Route::get('ticket/standalone/{code}', 'Api\V1\TicketController@standalone')->name('standalone_ticket_print');
+
+
+
+
+
+
+
 	// Login
 	Route::post('auth', 'Api\V1\AuthController@store')->name('login');
 	Route::get('date', 'Api\V1\DateController@show')->name('date_now');
