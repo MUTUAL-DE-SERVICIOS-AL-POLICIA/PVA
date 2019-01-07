@@ -99,7 +99,6 @@
                       <v-date-picker v-model="date" no-title 
                       @input="menuDate = false" 
                       @change="monthSalaryCalc" 
-                      :min="minDate" 
                       locale="es-bo"></v-date-picker>
                     </v-menu>
                   </v-flex>
