@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Boletas de Pago de {{ $procedure->month->name }} de {{ $procedure->year }}</title>
+    <style>
+      <?php include public_path('css/ticket-print.min.css') ?>
+    </style>
 </head>
 
 <body>

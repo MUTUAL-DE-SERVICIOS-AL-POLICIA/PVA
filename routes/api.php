@@ -4,17 +4,6 @@ Route::group([
 	'middleware' => 'api',
 	'prefix' => 'v1',
 ], function () {
-
-
-	// Ticket
-	Route::get('ticket/standalone/{code}', 'Api\V1\TicketController@standalone')->name('standalone_ticket_print');
-
-
-
-
-
-
-
 	// Login
 	Route::post('auth', 'Api\V1\AuthController@store')->name('login');
 	Route::get('date', 'Api\V1\DateController@show')->name('date_now');
@@ -291,6 +280,8 @@ Route::group([
 			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['index', 'store', 'show', 'update', 'delete']);
 			// Ticket
 			Route::get('ticket/print/{id}', 'Api\V1\TicketController@print')->name('ticket_print');
+			// Ticket
+			Route::get('ticket/standalone/{code}', 'Api\V1\TicketController@standalone')->name('standalone_ticket_print');
 			// Employee
 			Route::get('employee/active/{active}', 'Api\V1\EmployeeController@filter_employees')->name('employee_active_list');
 			Route::post('employee', 'Api\V1\EmployeeController@store')->name('employee_store');
