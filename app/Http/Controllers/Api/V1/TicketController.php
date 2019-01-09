@@ -45,15 +45,15 @@ class TicketController extends Controller
 			'orientation' => 'portrait',
 			'page-width' => '216',
 			'page-height' => '356',
-			'margin-left' => '0',
-			'margin-right' => '0',
+			'margin-left' => '4',
+			'margin-right' => '4',
 			'margin-top' => '0',
 			'margin-bottom' => '0',
 			'encoding' => 'UTF-8',
-			'user-style-sheet' => public_path('css/ticket-standalone.min.css')
+			'user-style-sheet' => public_path('css/ticket-print.min.css')
 		];
 
-		$pdf = \PDF::loadView('tickets.standalone', $data);
+		$pdf = \PDF::loadView('tickets.print', $data);
 		$pdf->setOptions($options);
 
 		return $pdf->stream($file_name);

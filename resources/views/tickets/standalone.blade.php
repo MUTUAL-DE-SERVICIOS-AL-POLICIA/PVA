@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <style>
-    <?php include public_path('css/ticket-standalone.min.css') ?>
+    <?php include public_path('css/ticket-print.min.css') ?>
   </style>
 </head>
 

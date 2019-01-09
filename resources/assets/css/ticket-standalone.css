@@ -125,27 +125,9 @@ html, body {
 .right-image {
   margin-top: 14px;
   padding-bottom: 2px;
-  margin-left: 84px;
+  margin-left: 80px;
 }
 .right-nua {
   min-height: 12px;
   max-height: 12px;
-}
-.rounded {
-  border-top-left-radius: .7rem;
-  border-top-right-radius: .7rem;
-  border-bottom-right-radius: .7rem;
-  border-bottom-left-radius: .7rem;
-}
-.page {
-  overflow: hidden;
-  page-break-after: always;
-}
-.border1 {
-  border-color: #5D6975;
-  border-style: solid;
-  border-width: 1px;
-}
-.text-center {
-  text-align: center;
 }
