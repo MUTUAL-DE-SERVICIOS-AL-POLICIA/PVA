@@ -1,0 +1,129 @@
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+.font-tiny {
+  font-size: 8pt;
+}
+.font-normal {
+  font-size: 9pt;
+}
+.font-large {
+  font-size: 10.8pt;
+}
+.font-huge {
+  font-size: 12.7pt;
+}
+.left-header {
+  margin-left: 400px;
+}
+.left-header-title {
+  margin-top: 28px;
+  margin-bottom: 1px;
+}
+.left-header-subtitle {
+  margin-left: 397px;
+  margin-top: -2px;
+}
+.left-nit {
+  min-width: 146px;
+}
+.left-employee-box {
+  margin-left: 127px;
+  margin-top: 10px;
+}
+.left-box-code {
+  min-width: 193px;
+}
+.left-employee-space-normal {
+  min-width: 139.7px;
+}
+.left-employee-space-tiny {
+  padding-top: 6px;
+}
+.left-charge {
+  max-width: 559px;
+  min-height: 25px;
+  max-height: 25px;
+  margin-left: 70px;
+}
+.left-discounts-box {
+  margin-left: 38px;
+  margin-top: 42px;
+}
+.left-discounts-first-row {
+  min-width: 127px;
+}
+.left-discounts-second-row {
+  min-width: 90px;
+  margin-right: 15px;
+}
+.left-discounts-third-row {
+  min-width: 235px;
+  padding-left: 25px;
+}
+.left-image {
+  margin-top: 8px;
+  margin-left: 252px;
+}
+.left-discounts-vertical-space {
+  padding-top: 37px;
+}
+.ticket {
+  min-height: 538px;
+  max-height: 538px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.left-ticket {
+  display: inline-block;
+}
+.right-ticket {
+  display: inline-block;
+  margin-top: 0;
+  padding-top: 0;
+  margin-left: 50.8px;
+  min-width: 304.8px;
+  max-width: 304.8px;
+}
+.right-content {
+  margin-left: 63.5px;
+  margin-top: 20px;
+}
+.right-charge {
+  min-height: 66px;
+  max-height: 66px;
+}
+.right-text {
+  margin-top: 5px;
+  margin-left: 12.7px;
+}
+.right-text-left {
+  margin-top: 5px;
+  margin-left: 6.4px;
+}
+.right-text-right {
+  margin-left: 38.1px;
+}
+.right-nit {
+  min-width: 142.2px;
+}
+.right-header-title {
+  margin-left: 59.7px;
+  margin-top: 5px;
+}
+.right-header-subtitle {
+  margin-left: 57.2px;
+  margin-top: 2.5px;
+}
+.right-name {
+  margin-top: 14px;
+  min-height: 22px;
+  max-height: 22px;
+}
+.right-image {
+  margin-top: 14px;
+  padding-bottom: 2px;
+  margin-left: 84px;
+}

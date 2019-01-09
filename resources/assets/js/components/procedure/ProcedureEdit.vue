@@ -24,6 +24,7 @@
           v-model="selectedDate"
           label="Fecha de Pago"
           prepend-icon="event"
+          :disabled="!procedure.active"
           readonly
         ></v-text-field>
         <v-date-picker
@@ -33,6 +34,7 @@
         locale="es-bo"
         :min="minDatePay"
         :max="maxDatePay"
+        :disabled="!procedure.active"
         no-title></v-date-picker>
       </v-menu>
       <v-dialog
@@ -55,8 +57,8 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" small @click="dialogDelete = false"><v-icon small>check</v-icon> Cancelar</v-btn>
-            <v-btn color="error" small @click="deleteProcedure"><v-icon small>close</v-icon> Eliminar</v-btn>
+              <v-btn color="success" small @click="dialogDelete = false"><v-icon small>check</v-icon> Cancelar</v-btn>
+              <v-btn color="error" small @click="deleteProcedure"><v-icon small>close</v-icon> Eliminar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -154,6 +156,7 @@
                 min="0"
                 :max="Number(props.item.unworked_days) + Number(workedDays(props.item))"
                 @keyup.enter.native="savePayroll(props.item)"
+                :disabled="!procedure.active"
               ></v-text-field>
             </td>
             <td :class="withoutBorders" class="bordered">
@@ -164,6 +167,7 @@
                 data-vv-name="RC-IVA"
                 v-model="props.item.rc_iva"
                 @keyup.enter.native="savePayroll(props.item)"
+                :disabled="!procedure.active"
               ></v-text-field>
             </td>
             <td :class="withoutBorders" class="bordered">
@@ -174,6 +178,7 @@
                 data-vv-name="Descuentos"
                 v-model="props.item.faults"
                 @keyup.enter.native="savePayroll(props.item)"
+                :disabled="!procedure.active"
               ></v-text-field>
             </td>
             <td :class="withoutBorders" class="bordered">
@@ -184,10 +189,11 @@
                 data-vv-name="Descuentos"
                 v-model="props.item.previous_month_balance"
                 @keyup.enter.native="savePayroll(props.item)"
+                :disabled="!procedure.active"
               ></v-text-field>
             </td>
             <td :class="withoutBorders" class="bordered">
-              <v-layout wrap>
+              <v-layout wrap v-if="procedure.active">
                 <v-flex xs6>
                   <v-tooltip top>
                     <v-btn slot="activator" flat icon color="primary" @click="savePayroll(props.item)">
@@ -205,6 +211,12 @@
                   </v-tooltip>
                 </v-flex>
               </v-layout>
+              <v-tooltip top v-else>
+                <v-btn slot="activator" flat icon color="info" @click="printPayroll(props.item.code)">
+                  <v-icon>print</v-icon>
+                </v-btn>
+                <span>Imprimir boleta</span>
+              </v-tooltip>
             </td>
             <td class="text-md-center font-weight-bold bordered" :class="withoutBorders">
               {{ total(props.item) }}
@@ -395,6 +407,24 @@ export default {
     },
   },
   methods: {
+    async printPayroll(code) {
+      try {
+        this.loading = true
+        let res = await axios({
+          method: "GET",
+          url: `/ticket/standalone/${code}`,
+          responseType: "arraybuffer"
+        })
+        let blob = new Blob([res.data], {
+          type: "application/pdf"
+        })
+        this.loading = false
+        printJS(window.URL.createObjectURL(blob));
+      } catch (e) {
+        console.log(e)
+        this.loading = false
+      }
+    },
     deletePayroll(item) {
       this.bus.$emit("openDialogRemove", `/payroll/${item.id}`);
     },
@@ -420,14 +450,16 @@ export default {
     },
     async savePayroll(payroll) {
       try {
-        await axios.patch(`/payroll/${payroll.id}`, {
-          unworked_days: parseInt(payroll.unworked_days),
-          rc_iva: Number(payroll.rc_iva),
-          faults: Number(payroll.faults),
-          previous_month_balance: Number(payroll.previous_month_balance)
-        });
-        payroll.updated_at = null
-        this.toastr.success("Guardado");
+        if (procedure.active) {
+          await axios.patch(`/payroll/${payroll.id}`, {
+            unworked_days: parseInt(payroll.unworked_days),
+            rc_iva: Number(payroll.rc_iva),
+            faults: Number(payroll.faults),
+            previous_month_balance: Number(payroll.previous_month_balance)
+          });
+          payroll.updated_at = null
+          this.toastr.success("Guardado");
+        }
       } catch (e) {
         console.log(e);
         this.toastr.error("Error al guardar");

@@ -5,93 +5,165 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    <?php include public_path('css/ticket-standalone.min.css') ?>
+  </style>
 </head>
 
 <body>
-  <div>MUTUAL DE SERVICIOS AL POLIICA</div>
-  <div>Av. 6 de Agosto #2354 Z. Sopocachi</div>
-  <table>
-    <tr>
-      <td>001-720-0025</td>
-      <td>234578021</td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <td>0999-18</td>
-      <td>ABONO EN CUENTA</td>
-    </tr>
-    <tr>
-      <td>PAGO DE HABERES NOV 2018</td>
-      <td>30</td>
-    </tr>
-    <tr>
-      <td>5955336 LP</td>
-      <td>BENITEZ ESCOBAR OSCAR DANIEL</td>
-    </tr>
-    <tr>
-      <td>10000024976629</td>
-      <td>04/08/1982</td>
-    </tr>
-    <tr>
-      <td>FUTURO</td>
-      <td>34720716</td>
-    </tr>
-  </table>
-  <div>ENCARGADO DE CUENTAS INDIVIDUALES</div>
-  <table>
-    <tr>
-      <td>SUELDOS</td>
-      <td>5,000.00</td>
-      <td>AFP.RV.10%</td>
-      <td>500.00</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td>AFP.RC.1,71%</td>
-      <td>85.50</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td>AFP.CM.0,5%</td>
-      <td>25.00</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td>AFP.SOL.ASE.0,5%</td>
-      <td>0.00</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td>RC-IVA</td>
-      <td>0.00</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td>OTROS DESCUENTOS</td>
-      <td>0.00</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>5,000.00</td>
-      <td></td>
-      <td>635.50</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>4,364.50</td>
-    </tr>
-  </table>
-  <div>
-    <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAacAAAnMAQMAAAB4/bslAAAABlBMVEX///8BAQE6HLieAAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAABRlJREFUeJzt3UGKs0gYBuAKvXDpDdqLCF4rvTKQe7RXSU7gFdy5FdwkIH5T5fwzi0mvfgIzDM9LEDU+VQd4qaqURERERERE5H+Xj4j9a7708X3uYpyvj2o/xaWfL+duHbcm5ks97/UUY9s8UhPxfZqvN4qiKIqiKIqiKIqiKIqiKIqiKIqi/kUV1/x4iu8+8/IYkckc45bvhp9VasY21fl9Vunj1u6pi/u8n6bm1sYzz05RFEVRFEVRFEVRFEVRFEVRFEVR1NvU3scwdvl6qCqijZxxjnFqYouYh3hV7dLHpe72c/o8bZ+H+oh5qef1bzVSFEVRFEVRFEVRFEVRFEVRFEVRFPUuFWtkFXs/Nfdt7yOiy2/yx1lFUTnbi5qv45aOZYAf923pt6KOtYHrLS31tI55WIqiKIqiKIqiKIqiKIqiKIqiKIqi3qUioqiIaS0qP3ZHnZdVm1/GkeGfqo1nVtMaaTlNSx1L3+15xue8pLZ5TvlmP1EURVEURVEURVEURVEURVEURVEU9S61RWyl9YsqntNex9HrRf44Sq+3lfv7D2qNqahbUZ+pGqI9CsRquKUy6dhl3lAURVEURVEURVEURVEURVEURVEU9SYVEVnFrSvqXP3q9R55kCi93pivL+qrfJ/VZ+qG55TOaam75dw2j2r5KqsC13tc42XPT4qiKIqiKIqiKIqiKIqiKIqiKIqifk/1ZTleKe+e+belssSvyx83f/V6a+n1XtfrxXqfSlH4nJfTluqiyi6g52q4VfFos/ppbSBFURRFURRFURRFURRFURRFURRFUb+pSql3qHhuEUVFbM1zHqL6tQ/n80V9lR07l7r9uKV4Tll9pzzC1NzzgNVxtF/bPH5Y5UdRFEVRFEVRFEVRFEVRFEVRFEVR1O+o8j72elvHrKLcFzUPkf+aD9UNz+1FtR/RZbXUqZy+95yW1C3nKpPLab6c03rrLieKoiiKoiiKoiiKoiiKoiiKoiiKot6mmuhijL1vsyobb+ZBMunnpZ6HaEvZl0d7VY/0caj9lMmWp/7up3SulnpqipooiqIoiqIoiqIoiqIoiqIoiqIoinqf2ppH6fVy9lO5Hr1elG05xy2yinx9UV/lFL+9bpsxllPZxnPpu+XcxX0ebm3cUoYf0TYURVEURVEURVEURVEURVEURVEURb1F9dtnnVX+PuL+l/rKN3Pct4isunjt9fo21d2ljnXM40/NrVrO7XGo37zep9Sn9Vb9dJYfRVEURVEURVEURVEURVEURVEURVG/p7aljqX0euVYvYhuP7cRMYzzsSfn0evdf1RzVntdDUW1e8pqHm7VkNXj6BDvW0NRFEVRFEVRFEVRFEVRFEVRFEVR1NvUsVgvqiiq21OXVdyqKMkqMn9RpUOMMf9bLV9znnFJ3fVZ1FJO5UtlkSBFURRFURRFURRFURRFURRFURRFUW9T3TDGn73e+oy9nvesojzufRQ1/tjrVcO4pTquUV2f23Ka9tR+lC+zalOf9rpcKYqiKIqiKIqiKIqiKIqiKIqiKIp6kypl31HezfGMNaJsvFlqvvk4WS/F2GX+T/U1NUVlO8V9vkaeNKtpOc3D2MUjrbcuz05RFEVRFEVRFEVRFEVRFEVRFEVR1JvUFjmlyIu4ZxJHrzeVPTnLyy2/jMeLOrfl/dgtdXc5xfUee902WT2qvZ7WomaKoiiKoiiKoiiKoiiKoiiKoiiKov4tJSIiIiIiIv/h/AF2gKg/xM/YdQAAAABJRU5ErkJggg==" alt="">
+  @foreach ($payrolls as $payroll)
+  <div class="ticket">
+    <!-- LEFT-TICKET -->
+    <div class="left-ticket">
+      <div class="font-normal left-header left-header-title">{{ strtoupper($company->name) }}</div>
+      <div class="font-tiny left-header">{{ ucwords(strtolower($company->address)) }}</div>
+      <div class="left-header-subtitle">
+        <table>
+          <tr>
+            <td class="font-tiny left-nit">{{ $payroll->employer_number }}</td>
+            <td class="font-tiny">{{ $company->tax_number }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="left-employee-box">
+        <table>
+          <tr>
+            <td class="font-normal left-box-code">{{ $payroll->code }}</td>
+            <td class="left-employee-space-normal"></td>
+          @if ($payroll->account_number)
+            <td class="font-normal">ABONO EN CUENTA</td>
+          @else
+            <td class="font-normal">PAGO EN CHEQUE</td>
+          @endif
+          </tr>
+          <tr>
+            <td class="font-normal left-box-code">PAGO DE HABERES {{ $payroll->month_shortened }} {{ $payroll->year }}</td>
+            <td class="left-employee-space-normal"></td>
+            <td class="font-normal">{{ $payroll->worked_days }}</td>
+          </tr>
+          <tr>
+            <td class="left-employee-space-tiny"></td>
+          </tr>
+          <tr>
+            <td class="font-normal left-box-code">{{ $payroll->ci_ext }}</td>
+            <td class="font-normal" colspan="2">{{ $payroll->full_name }}</td>
+          </tr>
+          <tr>
+          @if ($payroll->account_number)
+            <td class="font-normal left-box-code">{{ $payroll->account_number }}</td>
+          @else
+            <td class="font-normal left-box-code">S/N</td>
+          @endif
+            <td class="font-normal" colspan="2">{{ $payroll->birth_date }}</td>
+          </tr>
+          <tr>
+            <td class="font-normal left-box-code">{{ $payroll->management_entity }}</td>
+            <td class="font-normal" colspan="2">{{ $payroll->nua_cua }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="font-normal left-charge">{{ strtoupper($payroll->position) }}</div>
+      <div class="left-discounts-box">
+        <table>
+          <tr>
+            <td class="font-large left-discounts-first-row">SUELDOS</td>
+            <td class="font-large left-discounts-second-row" align="right">{{ Util::formatMoney($payroll->quotable) }}</td>
+            <td class="font-large left-discounts-third-row">AFP.RV.{{ $procedure->employee_discount->elderly * 100 }}%</td>
+            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_old) }}</td>
+          </tr>
+          <tr>
+            <td class="font-large left-discounts-first-row"></td>
+            <td class="font-large left-discounts-second-row" align="right"></td>
+            <td class="font-large left-discounts-third-row">AFP.RC.{{ $procedure->employee_discount->common_risk * 100 }}%</td>
+            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_common_risk) }}</td>
+          </tr>
+          <tr>
+            <td class="font-large left-discounts-first-row"></td>
+            <td class="font-large left-discounts-second-row" align="right"></td>
+            <td class="font-large left-discounts-third-row">AFP.CM.{{ $procedure->employee_discount->comission * 100 }}%</td>
+            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_commission) }}</td>
+          </tr>
+          <tr>
+            <td class="font-large left-discounts-first-row"></td>
+            <td class="font-large left-discounts-second-row" align="right"></td>
+            <td class="font-large left-discounts-third-row">AFP.SOL.ASE.{{ $procedure->employee_discount->solidary * 100 }}%</td>
+            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_solidary) }}</td>
+          </tr>
+          <tr>
+            <td class="font-large left-discounts-first-row"></td>
+            <td class="font-large left-discounts-second-row" align="right"></td>
+            <td class="font-large left-discounts-third-row">RC-IVA</td>
+            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_rc_iva) }}</td>
+          </tr>
+          <tr>
+            <td class="font-large left-discounts-first-row"></td>
+            <td class="font-large left-discounts-second-row" align="right"></td>
+            <td class="font-large left-discounts-third-row">OTROS DESCUENTOS</td>
+            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_faults) }}</td>
+          </tr>
+          <tr>
+            <td class="left-discounts-vertical-space"></td>
+          </tr>
+          <tr>
+            <td class="font-large left-discounts-first-row"></td>
+            <td class="font-large left-discounts-second-row" align="right">{{ Util::formatMoney($payroll->quotable) }}</td>
+            <td class="font-large left-discounts-third-row"></td>
+            <td class="font-large" align="right">{{ Util::formatMoney($payroll->total_discounts) }}</td>
+          </tr>
+          <tr>
+            <td class="font-huge left-discounts-first-row"></td>
+            <td class="font-huge left-discounts-second-row" align="right"></td>
+            <td class="font-huge left-discounts-third-row"></td>
+            <td class="font-huge" align="right">{{ Util::formatMoney($payroll->payable_liquid) }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="left-image">
+        <img src="data:image/png;base64, {{ $payroll->code_image }}" width="180pt" height="38pt">
+      </div>
+    </div>
+
+    <!-- RIGHT-TICKET -->
+    <div class="right-ticket">
+      <div class="font-normal right-text right-header-title">{{ strtoupper($company->name) }}</div>
+      <div class="font-normal right-text right-header-title">{{ ucwords(strtolower($company->address)) }}</div>
+      <div class="right-header-subtitle">
+        <table>
+          <tr>
+            <td class="font-normal right-text right-nit">{{ $payroll->employer_number }}</td>
+            <td class="font-normal right-text">{{ $company->tax_number }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="right-content">
+        <div class="font-normal right-text right-text-right">{{ $payroll->code }}</div>
+        @if ($payroll->account_number)
+        <div class="font-normal right-text right-text-right">ABONO EN CUENTA</div>
+        @else
+        <div class="font-normal right-text right-text-right">PAGO EN CHEQUE</div>
+        @endif
+        <div class="font-normal right-text right-text-right">PAGO DE HABERES {{ $payroll->month_shortened }} {{ $payroll->year }}</div>
+        <div class="font-normal right-text right-text-right right-worked-days">{{ $payroll->worked_days }}</div>
+        <div class="font-normal right-text right-text-right">{{ $payroll->ci_ext }}</div>
+        <div class="font-normal right-text-left right-name">{{ $payroll->full_name }}</div>
+        @if ($payroll->account_number)
+        <div class="font-normal right-text-left">{{ $payroll->account_number }}</div>
+        @else
+        <div class="font-normal right-text-left">S/N</div>
+        @endif
+        <div class="font-normal right-text-left">{{ $payroll->birth_date }}</div>
+        <div class="font-normal right-text-left">{{ $payroll->management_entity }}</div>
+        <div class="font-normal right-text-left">{{ $payroll->nua_cua }}</div>
+        <div class="font-normal right-text-left right-charge">{{ strtoupper($payroll->position) }}</div>
+      </div>
+      <div class="font-huge" align="right">{{ Util::formatMoney($payroll->payable_liquid) }}</div>
+      <div>
+          <img class="right-image" src="data:image/png;base64, {{ $payroll->code_image }}"  width="180pt" height="38pt">
+        </div>
+      </div>
+    </div>
   </div>
+  @endforeach
 </body>
 
 </html>

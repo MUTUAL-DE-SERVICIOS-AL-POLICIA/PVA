@@ -186,10 +186,10 @@
               <div>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="(procedure.active && $store.getters.options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="$store.getters.options.includes('edit')" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
                     <v-tooltip top>
-                      <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
-                      <span>Editar</span>
+                      <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">{{ procedure.active ? 'edit' : 'visibility' }}</v-icon>
+                      <span>{{ procedure.active ? 'Editar' : 'Ver' }}</span>
                     </v-tooltip>
                   </v-btn>
                   <v-btn icon v-if="$store.getters.options.includes('ticket')">
