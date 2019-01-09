@@ -153,7 +153,7 @@
         @endif
         <div class="font-normal right-text-left">{{ $payroll->birth_date }}</div>
         <div class="font-normal right-text-left">{{ $payroll->management_entity }}</div>
-        <div class="font-normal right-text-left">{{ $payroll->nua_cua }}</div>
+        <div class="font-normal right-text-left right-nua">{{ $payroll->nua_cua }}</div>
         <div class="font-normal right-text-left right-charge">{{ strtoupper($payroll->position) }}</div>
       </div>
       <div class="font-huge" align="right">{{ Util::formatMoney($payroll->payable_liquid) }}</div>
