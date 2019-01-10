@@ -1,7 +1,7 @@
 html, body {
   margin: 0 !important;
   padding: 0 !important;
-  font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: "Roboto Mono", monospace;
 }
 .font-tiny {
   font-size: 8pt;
@@ -19,7 +19,7 @@ html, body {
   margin-left: 400px;
 }
 .left-header-title {
-  margin-top: 28px;
+  margin-top: 27px;
   margin-bottom: 1px;
 }
 .left-header-subtitle {
@@ -71,8 +71,8 @@ html, body {
   padding-top: 37px;
 }
 .ticket {
-  min-height: 538px;
-  max-height: 538px;
+  min-height: 537px;
+  max-height: 537px;
   margin-bottom: 0;
   padding-bottom: 0;
 }
@@ -128,6 +128,6 @@ html, body {
   margin-left: 80px;
 }
 .right-nua {
-  min-height: 12px;
-  max-height: 12px;
+  min-height: 17px;
+  max-height: 17px;
 }

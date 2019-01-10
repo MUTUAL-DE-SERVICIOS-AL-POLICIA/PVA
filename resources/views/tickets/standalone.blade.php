@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <style>
-    <?php include public_path('css/ticket-print.min.css') ?>
+    <?php include public_path('css/ticket-standalone.min.css') ?>
   </style>
 </head>
 
@@ -15,7 +15,7 @@
   <div class="ticket">
     <!-- LEFT-TICKET -->
     <div class="left-ticket">
-      <div class="font-normal left-header left-header-title">{{ strtoupper($company->name) }}</div>
+      <div class="font-normal left-header left-header-title">{{ mb_strtoupper($company->name) }}</div>
       <div class="font-tiny left-header">{{ ucwords(strtolower($company->address)) }}</div>
       <div class="left-header-subtitle">
         <table>
@@ -30,11 +30,7 @@
           <tr>
             <td class="font-normal left-box-code">{{ $payroll->code }}</td>
             <td class="left-employee-space-normal"></td>
-          @if ($payroll->account_number)
-            <td class="font-normal">ABONO EN CUENTA</td>
-          @else
-            <td class="font-normal">PAGO EN CHEQUE</td>
-          @endif
+            <td class="font-normal" style="white-space: nowrap;">{{ $payroll->account_number ? 'ABONO EN CUENTA' : 'PAGO EN CHEQUE' }}</td>
           </tr>
           <tr>
             <td class="font-normal left-box-code">PAGO DE HABERES {{ $payroll->month_shortened }} {{ $payroll->year }}</td>
@@ -62,7 +58,7 @@
           </tr>
         </table>
       </div>
-      <div class="font-normal left-charge">{{ strtoupper($payroll->position) }}</div>
+      <div class="font-normal left-charge">{{ mb_strtoupper($payroll->position) }}</div>
       <div class="left-discounts-box">
         <table>
           <tr>
@@ -125,7 +121,7 @@
 
     <!-- RIGHT-TICKET -->
     <div class="right-ticket">
-      <div class="font-normal right-text right-header-title">{{ strtoupper($company->name) }}</div>
+      <div class="font-normal right-text right-header-title">{{ mb_strtoupper($company->name) }}</div>
       <div class="font-normal right-text right-header-title">{{ ucwords(strtolower($company->address)) }}</div>
       <div class="right-header-subtitle">
         <table>
@@ -137,11 +133,7 @@
       </div>
       <div class="right-content">
         <div class="font-normal right-text right-text-right">{{ $payroll->code }}</div>
-        @if ($payroll->account_number)
-        <div class="font-normal right-text right-text-right">ABONO EN CUENTA</div>
-        @else
-        <div class="font-normal right-text right-text-right">PAGO EN CHEQUE</div>
-        @endif
+        <div class="font-normal right-text right-text-right">{{ $payroll->account_number ? 'ABONO EN CUENTA' : 'PAGO EN CHEQUE' }}</div>
         <div class="font-normal right-text right-text-right">PAGO DE HABERES {{ $payroll->month_shortened }} {{ $payroll->year }}</div>
         <div class="font-normal right-text right-text-right right-worked-days">{{ $payroll->worked_days }}</div>
         <div class="font-normal right-text right-text-right">{{ $payroll->ci_ext }}</div>
@@ -154,7 +146,7 @@
         <div class="font-normal right-text-left">{{ $payroll->birth_date }}</div>
         <div class="font-normal right-text-left">{{ $payroll->management_entity }}</div>
         <div class="font-normal right-text-left right-nua">{{ $payroll->nua_cua }}</div>
-        <div class="font-normal right-text-left right-charge">{{ strtoupper($payroll->position) }}</div>
+        <div class="font-normal right-text-left right-charge">{{ mb_strtoupper($payroll->position) }}</div>
       </div>
       <div class="font-huge" align="right">{{ Util::formatMoney($payroll->payable_liquid) }}</div>
       <div>
