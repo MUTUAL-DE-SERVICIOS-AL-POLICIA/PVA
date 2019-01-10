@@ -150,7 +150,7 @@
                       v-validate="'required'"
                       name="Cite de Recursos Humanos"
                       :error-messages="errors.collect('Cite de Recursos Humanos')"
-                      :disabled="$store.getters.currentUser.roles[0].name != 'admin' || $store.getters.currentUser.roles[0].name != 'rrhh'"
+                      :disabled="$store.getters.role != 'admin' && $store.getters.role != 'rrhh'"
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs6>
@@ -164,7 +164,7 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="$store.getters.currentUser.roles[0].name != 'admin' || $store.getters.currentUser.roles[0].name != 'rrhh'"
+                      :disabled="$store.getters.role != 'admin' && $store.getters.role != 'rrhh'"
                     >
                       <v-text-field
                         slot="activator"
@@ -177,27 +177,10 @@
                         name="Fecha de cite de Recursos Humanos"
                         :error-messages="errors.collect('Fecha de cite de Recursos Humanos')"
                         @input="dateCiteNull"
-                        :disabled="$store.getters.currentUser.roles[0].name != 'admin' || $store.getters.currentUser.roles[0].name != 'rrhh'"
+                        :disabled="$store.getters.role != 'admin' && $store.getters.role != 'rrhh'"
                       ></v-text-field>
                       <v-date-picker v-model="date4" no-title @input="menuDate4 = false" locale="es-bo"></v-date-picker>
                     </v-menu>
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap>
-                  <v-flex xs6>
-                    <v-text-field
-                      v-model="selectedItem.performance_cite"
-                      label="Cite de evaluación"
-                      :outline="juridica"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs6>
-                    <v-text-field
-                      v-if="edit||selectedIndex==-1"
-                      v-model="selectedItem.hiring_reference_number"
-                      label="Referencia de contratación"
-                      :outline="juridica"
-                    ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -222,74 +205,126 @@
                     ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-textarea
-                  v-model="selectedItem.description"
-                  label="Descripción/Observaciones"
-                  rows="2"
-                ></v-textarea>
-                <v-radio-group 
-                  v-model="selectedSchedule.id"
-                  v-validate="'required'"
-                  name="Horario"
-                  :error-messages="errors.collect('Horario')"
-                  v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh' || $store.getters.currentUser.roles[0].name == 'juridica'"
-                >
-                  <template v-for="n in jobSchedules">
-                    <v-radio
-                      label="Horario  (08:00-12:00 | 14:30-18:30)"
-                      :key="n.id"
-                      :value="n.id"
-                      color="primary"
-                      v-if="n.id==1"
-                    ></v-radio>
-                  </template>
-                  <template v-for="n in jobSchedules">
-                    <v-radio
-                      :label="`Horario (${n.start_hour}:${n.start_minutes}0 - ${n.end_hour}:${n.end_minutes}0)`"
-                      :key="n.id"
-                      :value="n.id"
-                      color="primary"
-                      v-if="n.id!=1 && n.id!=2"
-                    ></v-radio>
-                  </template>
-                </v-radio-group>
-                <v-layout row wrap>
-                  <v-flex xs6>
-                    <v-select v-if="edit"
-                      v-model="selectedItem.retirement_reason_id"
-                      :items="retirementReasons"
-                      item-text="name"
-                      item-value="id"
-                      label="Razón del retiro"
-                      :disabled="juridica"
-                    ></v-select>
-                  </v-flex>
-                  <v-flex xs6>
-                    <v-menu v-if="edit"
-                      :close-on-content-click="true"
-                      v-model="menuDate3"
-                      :nudge-right="40"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      max-width="290px"
-                      min-width="290px"
-                      :disabled="juridica"                  
+                <template v-if="!showMore">
+                  <v-layout align-center justify-center>
+                    <v-btn
+                      flat
+                      small
+                      @click="showMore = true"
                     >
+                      Mas Opciones
+                      <v-icon dark right>arrow_drop_down</v-icon>
+                    </v-btn>
+                  </v-layout>
+                </template>
+                <template v-if="showMore">
+                  <v-layout row wrap>
+                    <v-flex xs6>
                       <v-text-field
-                        slot="activator"
-                        v-model="formatDateRetirement"
-                        prepend-icon="event"
-                        label="Fecha de retiro" :disabled="juridica"
-                        readonly
-                        clearable
-                        @input="dateRetirementNull"
+                        v-model="selectedItem.performance_cite"
+                        label="Cite de evaluación"
+                        :outline="juridica"
                       ></v-text-field>
-                      <v-date-picker v-model="date3" no-title @input="menuDate3 = false" locale="es-bo"></v-date-picker>
-                    </v-menu>
-                  </v-flex>                  
-                </v-layout>
+                    </v-flex>
+                    <v-flex xs6>
+                      <v-text-field
+                        v-if="edit||selectedIndex==-1"
+                        v-model="selectedItem.hiring_reference_number"
+                        label="Referencia de contratación"
+                        :outline="juridica"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-textarea
+                    v-model="selectedItem.description"
+                    label="Descripción/Observaciones"
+                    rows="2"
+                  ></v-textarea>
+                  <v-radio-group
+                    v-model="selectedSchedule.id"
+                    v-validate="'required'"
+                    name="Horario"
+                    :error-messages="errors.collect('Horario')"
+                    v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh' || $store.getters.currentUser.roles[0].name == 'juridica'"
+                  >
+                    <template v-for="n in jobSchedules">
+                      <v-radio
+                        label="Horario  (08:00-12:00 | 14:30-18:30)"
+                        :key="n.id"
+                        :value="n.id"
+                        color="primary"
+                        v-if="n.id==1"
+                      ></v-radio>
+                    </template>
+                    <template v-for="n in jobSchedules">
+                      <v-radio
+                        :label="`Horario (${n.start_hour}:${n.start_minutes}0 - ${n.end_hour}:${n.end_minutes}0)`"
+                        :key="n.id"
+                        :value="n.id"
+                        color="primary"
+                        v-if="n.id!=1 && n.id!=2"
+                      ></v-radio>
+                    </template>
+                  </v-radio-group>
+                  <template v-if="edit">
+                    <v-layout align-center justify-center>
+                      <v-switch
+                        v-model="deactivateContract"
+                        :value="deactivateContract"
+                        label="Dar de baja"
+                        color="red"
+                        hide-details
+                      ></v-switch>
+                    </v-layout>
+                  </template>
+                  <template v-if="deactivateContract">
+                    <v-layout row wrap>
+                      <v-flex xs6>
+                        <v-select
+                          v-if="edit"
+                          v-model="selectedItem.retirement_reason_id"
+                          :items="retirementReasons"
+                          item-text="name"
+                          item-value="id"
+                          label="Razón del retiro"
+                          :disabled="juridica"
+                          v-validate="deactivateContract ? 'required' : ''"
+                          name="Razón del retiro"
+                          :error-messages="errors.collect('Razón del retiro')"
+                        ></v-select>
+                      </v-flex>
+                      <v-flex xs6>
+                        <v-menu
+                          v-if="edit"
+                          :close-on-content-click="true"
+                          v-model="menuDate3"
+                          :nudge-right="40"
+                          lazy
+                          transition="scale-transition"
+                          offset-y
+                          full-width
+                          max-width="290px"
+                          min-width="290px"
+                          :disabled="juridica"
+                        >
+                          <v-text-field
+                            slot="activator"
+                            v-model="formatDateRetirement"
+                            prepend-icon="event"
+                            label="Fecha de retiro" :disabled="juridica"
+                            readonly
+                            clearable
+                            @input="dateRetirementNull"
+                            v-validate="deactivateContract ? 'required' : ''"
+                            name="Fecha de retiro"
+                            :error-messages="errors.collect('Fecha de retiro')"
+                          ></v-text-field>
+                          <v-date-picker v-model="date3" no-title @input="menuDate3 = false" locale="es-bo"></v-date-picker>
+                        </v-menu>
+                      </v-flex>
+                    </v-layout>
+                  </template>
+                </template>
               </v-form>
             </v-flex>
             <v-spacer></v-spacer>
@@ -386,10 +421,12 @@ export default {
       },
       selectedSchedule: {},
       juridica: false,
-      minDate: this.$moment().format('YYYY')+'-01-01'
+      minDate: this.$moment().format('YYYY')+'-01-01',
+      showMore: true,
+      deactivateContract: false
     };
   },
-  created() {    
+  created() {
     if (this.$store.getters.currentUser.roles[0].name == "juridica") {
       this.juridica = true;
     }
@@ -492,6 +529,8 @@ export default {
       this.edit = false;
       this.selectedIndex = -1;
       this.last_end_date = null;
+      this.showMore = true
+      this.deactivateContract = false
     },
     async save() {
       try {
@@ -667,8 +706,10 @@ export default {
         this.selectedItem.performance_cite = null;
         this.selectedItem.retirement_reason_id = null;
         this.selectedItem.retirement_date = null;
+        this.showMore = false
       } else if (item.mode == "edit") {
         this.edit = true;
+        this.showMore = false
       }
       this.onSelectEmployee(item.employee_id);
       this.onSelectPosition(item.position_id);
