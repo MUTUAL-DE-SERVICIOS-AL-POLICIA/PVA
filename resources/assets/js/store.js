@@ -26,7 +26,7 @@ export default {
         } else {
           return menu['empleado'];
         }
-        return 
+        return
       }
       return null
     },
@@ -38,6 +38,9 @@ export default {
     },
     options(state) {
       return state.options
+    },
+    role(state) {
+      return JSON.parse(state.currentUser).roles[0].name
     }
   },
   mutations: {
