@@ -188,13 +188,14 @@
                     <v-select
                       v-model="selectedItem.insurance_company_id"
                       :items="insuranceCompanies"
-                      item-text="name" 
-                      item-value="id"                    
+                      item-text="shortened"
+                      item-value="id"
                       label="Compañia de seguro"
                       v-validate="'required'"
                       name="Seguro"
                       :error-messages="errors.collect('Seguro')"
                       :disabled="juridica"
+                      :hint="selectedItem.insurance_company_id ? `${insuranceCompanies.find(o => o.id == selectedItem.insurance_company_id).name}` : ``"
                     ></v-select>
                   </v-flex>
                   <v-flex xs6>
