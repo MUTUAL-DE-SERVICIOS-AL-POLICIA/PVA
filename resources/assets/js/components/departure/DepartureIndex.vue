@@ -98,7 +98,7 @@
 import Vue from "vue";
 import DepartureForm from "./DepartureForm";
 import RemoveItem from "../RemoveItem";
-import { admin, rrhh, juridica } from "../../menu.js";
+// import { admin, rrhh, juridica } from "../../menu.js";
 export default {
   name: "ContractIndex",
   components: {

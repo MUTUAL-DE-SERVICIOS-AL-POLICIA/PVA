@@ -1,0 +1,55 @@
+[
+  {
+    "href": "dashboard",
+    "title": "Inicio",
+    "icon": "home"
+  }, {
+    "href": "employeeIndex",
+    "title": "Personas",
+    "icon": "group"
+  }, {
+    "title": "Eventuales",
+    "icon": "person",
+    "group": [
+      {
+        "href": "contractIndex",
+        "title": "Contratos Eventuales",
+        "icon": "gavel"
+      }, {
+        "href": "procedureIndex",
+        "title": "Planillas Eventuales",
+        "icon": "storage"
+      }
+    ]
+  }, {
+    "title": "Consultores",
+    "icon": "work",
+    "group": [
+      {
+        "href": "consultantIndex",
+        "title": "Contratos Consultores",
+        "icon": "gavel"
+      }, {
+        "href": "consultantProcedureIndex",
+        "title": "Planillas Consultores",
+        "icon": "storage"
+      }
+    ]
+  }, {
+    "href": "userIndex",
+    "title": "Usuarios",
+    "icon": "security"
+  }, {
+    "href": "userActionIndex",
+    "title": "Actividad",
+    "icon": "timeline"
+  }, {
+    "href": "departureAdmin",
+    "title": "Salidas y Licencias",
+    "icon": "directions_walk"
+  }, {
+    "href": "phonebookIndex",
+    "title": "Agenda Telefonica",
+    "icon": "contact_phone"
+  }
+]

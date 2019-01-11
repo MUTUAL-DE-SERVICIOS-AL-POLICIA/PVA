@@ -1,46 +1,35 @@
-import menu from "./menu.js";
 import moment from 'moment';
 
 export default {
   state: {
-    currentUser: localStorage.getItem('user') || null,    
+    user: localStorage.getItem('user') || null,
+    role: localStorage.getItem('role') || null,
+    permissions: localStorage.getItem('permissions') || null,
     ldapAuth: JSON.parse(process.env.MIX_LDAP_AUTHENTICATION),
     dateNow: moment().format('Y-MM-DD'),
     token: {
       type: localStorage.getItem('token_type') || null,
       value: localStorage.getItem('token') || null
-    },
-    options: localStorage.getItem('options'),
+    }
   },
   getters: {
     ldapAuth(state) {
       return state.ldapAuth
     },
-    currentUser(state) {
-      return JSON.parse(state.currentUser)
+    user(state) {
+      return JSON.parse(state.user)
     },
-    menuLeft(state) {
-      if (state.currentUser) {
-        if (JSON.parse(state.currentUser).roles[0]) {
-          return menu[JSON.parse(state.currentUser).roles[0].name];
-        } else {
-          return menu['empleado'];
-        }
-        return
-      }
-      return null
+    role(state) {
+      return JSON.parse(state.role)
+    },
+    permissions(state) {
+      return JSON.parse(state.permissions)
     },
     dateNow(state) {
       return state.dateNow
     },
     token(state) {
       return state.token
-    },
-    options(state) {
-      return state.options
-    },
-    role(state) {
-      return JSON.parse(state.currentUser).roles[0].name
     }
   },
   mutations: {
@@ -48,15 +37,19 @@ export default {
       localStorage.removeItem('user')
       localStorage.removeItem('token')
       localStorage.removeItem('token_type')
-      state.currentUser = null
-      state.menuLeft = null
-      state.options = null
+      state.user = null
+      state.role = null
+      state.permissions = null
     },
     'login': function (state, data) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("token_type", data.token_type);
       localStorage.setItem("user", JSON.stringify(data.user));
-      state.currentUser = localStorage.getItem('user');
+      localStorage.setItem("role", JSON.stringify(data.role));
+      localStorage.setItem("permissions", JSON.stringify(data.permissions));
+      state.user = localStorage.getItem('user');
+      state.role = localStorage.getItem('role');
+      state.permissions = localStorage.getItem('permissions');
       state.token = {
         type: localStorage.getItem('token_type'),
         value: localStorage.getItem('token')
@@ -65,10 +58,6 @@ export default {
     },
     'setDate': function(state, newValue) {
       state.dateNow = newValue;
-    },
-    'setOptions': function(state, data) {
-      localStorage.setItem("options", JSON.stringify(data));
-      state.options = localStorage.getItem('options');
     }
   },
   actions: {

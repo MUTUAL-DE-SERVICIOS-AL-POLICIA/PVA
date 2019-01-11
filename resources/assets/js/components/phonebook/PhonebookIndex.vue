@@ -71,7 +71,7 @@ import Vue from "vue";
 import PhonebookForm from "./PhonebookForm";
 import RemoveItem from "../RemoveItem";
 import Loading from "../Loading";
-import { admin, rrhh, juridica } from "../../menu.js";
+// import { admin, rrhh, juridica } from "../../menu.js";
 export default {
   name: "PhonebookIndex",
   components: {

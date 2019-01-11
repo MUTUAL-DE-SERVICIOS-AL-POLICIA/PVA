@@ -89,7 +89,7 @@
 import Vue from "vue";
 import DepartureReport from "./DepartureReport";
 import RemoveItem from "../RemoveItem";
-import { admin, rrhh, juridica } from "../../menu.js";
+// import { admin, rrhh, juridica } from "../../menu.js";
 export default {
   name: "DepartureIndex",
   components: {

@@ -121,13 +121,15 @@ class AuthController extends Controller
 	 */
 	protected function respondWithToken($token)
 	{
-		$this->guard()->user()->roles;
+		$user = $this->guard()->user();
 
 		return response()->json([
 			'token' => $token,
 			'token_type' => 'Bearer',
 			'expires_in' => auth('api')->factory()->getTTL(),
-			'user' => $this->guard()->user(),
+			'user' => $user->username,
+			'role' => $user->roles[0]->name,
+			'permissions' => $user->permissions->pluck('name')->toArray(),
 			'message' => 'Indentidad verificada',
 		], 200);
 	}
