@@ -242,4 +242,12 @@ class EmployeeBonus
 
     return $cuts;
   }
+
+  public function generateImage($procedure)
+  {
+    $year_shortened = substr(strval($procedure->year), -2);
+    $this->code = implode([$procedure->id, str_pad($this->employee_id + 1, 4, '0', STR_PAD_LEFT), $year_shortened], '-');
+    $this->code_image = DNS2D::getBarcodePNG(($this->employee_id . ' ' . $this->full_name . ' ' . $this->position . ' ' . $procedure->id . ' ' . $this->year . ' ' . $this->average . ' ' . ($this->worked_days['months'] * 30 + $this->worked_days['days']) . ' ' . $this->bonus), "PDF417", 3, 33, array(1, 1, 1));
+    return $this;
+  }
 }
