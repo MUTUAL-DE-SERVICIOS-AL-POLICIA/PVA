@@ -2,6 +2,12 @@
 
 ---
 
+## [2.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.1.0) - 2018-01-11
+
+### Added
+
+* Ticket print option for bonus procedures
+
 ## [2.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.1) - 2018-01-10
 
 ### Fixed
