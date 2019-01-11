@@ -108,7 +108,7 @@ class BonusController extends Controller
             ->where('end_date', null)
             ->whereYear('start_date', '<=', $year);
         });
-    })->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('start_date')->limit(2)->get()->groupBy('employee_id');
+    })->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('start_date')->get()->groupBy('employee_id');
 
     if (count($grouped_contracts) == 0) abort(404);
 
