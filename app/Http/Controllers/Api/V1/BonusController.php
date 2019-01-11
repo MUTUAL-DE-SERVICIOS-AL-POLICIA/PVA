@@ -108,7 +108,7 @@ class BonusController extends Controller
             ->where('end_date', null)
             ->whereYear('start_date', '<=', $year);
         });
-    })->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('start_date')->get()->groupBy('employee_id');
+    })->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('start_date')->limit(2)->get()->groupBy('employee_id');
 
     if (count($grouped_contracts) == 0) abort(404);
 
@@ -188,7 +188,7 @@ class BonusController extends Controller
           $e->discount_rc_iva = 0;
           $e->discount_faults = 0;
           $e->total_discounts = 0;
-          $e->payable_liquid = $e->bonus;
+          $e->payable_liquid = $procedure->split_percentage ? $e->bonus_percentage->first_split->value : $e->bonus;
           $e = $e->generateImage($procedure);
         }
 
