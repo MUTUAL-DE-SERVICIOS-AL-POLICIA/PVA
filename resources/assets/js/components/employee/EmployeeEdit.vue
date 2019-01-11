@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close" scrollable>
-    <v-tooltip slot="activator" top v-if="$store.getters.options.includes('new')">
+    <v-tooltip slot="activator" top v-if="$store.getters.permissions.includes('create_employee') || $store.getters.role == 'admin'">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Empleado</span>
     </v-tooltip>
