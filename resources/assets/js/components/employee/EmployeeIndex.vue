@@ -228,14 +228,16 @@ export default {
     }
   },
   mounted() {
-    if (!this.$store.getters.permissions.includes("update_employee")) {
-      this.headers = this.headers
-        .filter(el => {
-          return el.text != "Activo";
-        })
-        .filter(el => {
-          return el.text != "Acciones";
-        });
+    if (this.$store.getters.role != 'admin') {
+      if (!this.$store.getters.permissions.includes("update_employee")) {
+        this.headers = this.headers
+          .filter(el => {
+            return el.text != "Activo";
+          })
+          .filter(el => {
+            return el.text != "Acciones";
+          });
+      }
     }
     this.getEmployees(this.active);
     this.bus.$on("closeDialog", () => {
