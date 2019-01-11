@@ -2,6 +2,17 @@
 
 ---
 
+## [2.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.1) - 2018-01-10
+
+### Fixed
+
+* Non editable inputs with some roles on eventual contract form
+
+### Changed
+
+* Reflowed contract form
+* Name to shortened with hint on insurance company
+
 ## [2.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.0) - 2018-01-05
 
 ### Added
