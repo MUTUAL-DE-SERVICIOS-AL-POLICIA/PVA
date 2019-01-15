@@ -19,7 +19,7 @@ class LocationController extends Controller
   {
     return PositionGroup::with(array('locations' => function ($query) {
       $query->orderBy('phone_number');
-    }))->has('locations', '>', 0)->get();
+    }))->has('locations', '>', 0)->get()->sortBy('id');
   }
 
   /**
