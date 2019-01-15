@@ -13,48 +13,52 @@
     >
       <v-list>
         <div v-for="item in menuLeft" :key="item.title" class="mb-0 mt-0">
-          <v-list-tile
-            v-if="!item.group"
-            :to="{name: item.href}"
-            active-class="tertiary"
-            @click.stop="miniVariant = true"
-            @mouseover="miniVariant = false"
-            @mouseout="miniVariant = true"
-          >
-            <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-          </v-list-tile>
-
-          <v-list-group
-            v-else
-            :value="false"
-            :prepend-icon="item.icon"
-            @mouseover="miniVariant = false"
-            @mouseout="miniVariant = true"
-          >
-            <v-list-tile slot="activator">
-              <v-list-tile-title :class="miniVariant ? 'pl-3' : ''">{{ item.title }}</v-list-tile-title>
+          <template v-if="item.permission == null || $store.getters.permissions.includes(item.permission) || $store.getters.role == 'admin'">
+            <v-list-tile
+              v-if="!item.group"
+              :to="{name: item.href}"
+              active-class="tertiary"
+              @click.stop="miniVariant = true"
+              @mouseover="miniVariant = false"
+              @mouseout="miniVariant = true"
+            >
+              <v-list-tile-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile>
 
-            <v-list class="pt-0 pb-0">
-              <v-list-tile
-                v-for="group in item.group"
-                :key="group.href"
-                :to="{name: group.href}"
-                active-class="tertiary"
-                @click.stop="miniVariant = true"
-                @mouseover="miniVariant = false"
-                @mouseout="miniVariant = true"
-              >
-                <v-list-tile-action>
-                  <v-icon :class="!miniVariant ? 'pl-4' : 'ml-2'">{{ group.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-title>{{ group.title }}</v-list-tile-title>
+            <v-list-group
+              v-else
+              :value="false"
+              :prepend-icon="item.icon"
+              @mouseover="miniVariant = false"
+              @mouseout="miniVariant = true"
+            >
+              <v-list-tile slot="activator">
+                <v-list-tile-title :class="miniVariant ? 'pl-3' : ''">{{ item.title }}</v-list-tile-title>
               </v-list-tile>
-            </v-list>
-          </v-list-group>
+
+              <v-list class="pt-0 pb-0">
+                <v-list-tile
+                  v-for="group in item.group"
+                  :key="group.href"
+                  :to="{name: group.href}"
+                  active-class="tertiary"
+                  @click.stop="miniVariant = true"
+                  @mouseover="miniVariant = false"
+                  @mouseout="miniVariant = true"
+                >
+                  <template v-if="item.permission == null || $store.getters.permissions.includes(item.permission) || $store.getters.role == 'admin'">
+                    <v-list-tile-action>
+                      <v-icon :class="!miniVariant ? 'pl-4' : 'ml-2'">{{ group.icon }}</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-title>{{ group.title }}</v-list-tile-title>
+                  </template>
+                </v-list-tile>
+              </v-list>
+            </v-list-group>
+          </template>
         </div>
       </v-list>
     </v-navigation-drawer>

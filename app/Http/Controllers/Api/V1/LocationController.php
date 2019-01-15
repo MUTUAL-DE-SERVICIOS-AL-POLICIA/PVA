@@ -29,7 +29,7 @@ class LocationController extends Controller
    */
   public function list()
   {
-    return Location::with('position_group')->orderBy('position_group_id')->get();
+    return Location::with('position_group')->orderBy('position_group_id')->orderBy('phone_number')->get();
   }
 
   /**

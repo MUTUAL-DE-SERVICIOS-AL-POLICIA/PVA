@@ -2,54 +2,71 @@
   {
     "href": "dashboard",
     "title": "Inicio",
-    "icon": "home"
+    "icon": "home",
+    "permission": null
   }, {
     "href": "employeeIndex",
     "title": "Personas",
-    "icon": "group"
+    "icon": "group",
+    "permission": "read-employee"
   }, {
     "title": "Eventuales",
     "icon": "person",
+    "permission": "read-eventual",
     "group": [
       {
         "href": "contractIndex",
         "title": "Contratos Eventuales",
-        "icon": "gavel"
+        "icon": "gavel",
+        "permission": "read-eventual"
       }, {
         "href": "procedureIndex",
         "title": "Planillas Eventuales",
-        "icon": "storage"
+        "icon": "storage",
+        "permission": "read-procedure-eventual"
       }
     ]
   }, {
     "title": "Consultores",
     "icon": "work",
+    "permission": "read-consultant",
     "group": [
       {
         "href": "consultantIndex",
         "title": "Contratos Consultores",
-        "icon": "gavel"
+        "icon": "gavel",
+        "permission": "read-consultant"
       }, {
         "href": "consultantProcedureIndex",
         "title": "Planillas Consultores",
-        "icon": "storage"
+        "icon": "storage",
+        "permission": "read-procedure-consultant"
       }
     ]
   }, {
     "href": "userIndex",
     "title": "Usuarios",
-    "icon": "security"
+    "icon": "security",
+    "permission": "read-user"
   }, {
     "href": "userActionIndex",
     "title": "Actividad",
-    "icon": "timeline"
+    "icon": "timeline",
+    "permission": "read-action"
   }, {
     "href": "departureAdmin",
     "title": "Salidas y Licencias",
-    "icon": "directions_walk"
+    "icon": "directions_walk",
+    "permission": "read-departure"
+  }, {
+    "href": "departureIndex",
+    "title": "Salidas/Licencias",
+    "icon": "directions_run",
+    "permission": null
   }, {
     "href": "phonebookIndex",
     "title": "Agenda Telefonica",
-    "icon": "contact_phone"
+    "icon": "contact_phone",
+    "permission": "read-location"
   }
 ]
