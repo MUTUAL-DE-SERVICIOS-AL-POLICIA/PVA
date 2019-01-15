@@ -7,8 +7,8 @@ $factory->define(App\PositionGroup::class, function (Faker $faker) {
 	$addresses = App\CompanyAddress::get()->all();
 
 	return [
-		'name' => strtoupper($faker->unique()->catchPhrase),
-		'shortened' => strtoupper($faker->unique()->firstname),
+		'name' => mb_strtoupper($faker->unique()->catchPhrase),
+		'shortened' => mb_strtoupper($faker->unique()->firstname),
 		'active' => true,
 		'company_address_id' => $addresses[array_rand($addresses)],
 	];

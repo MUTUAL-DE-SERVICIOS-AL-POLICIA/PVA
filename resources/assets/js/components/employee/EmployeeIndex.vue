@@ -64,7 +64,7 @@
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center" v-if="$store.getters.role == 'admin' || $store.getters.permissions.includes('update_employee')">
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center" v-if="$store.getters.role == 'admin' || $store.getters.permissions.includes('update-employee')">
             <v-switch
               v-model="props.item.active"
               @change="switchActive(props.item)"
@@ -72,7 +72,7 @@
           </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center">
             <table>
-              <td :class="withoutBorders" v-if="(!active && $store.getters.permissions.includes('update_employee')) || (active && $store.getters.permissions.includes('update_employee_inactive')) || $store.getters.role == 'admin'">
+              <td :class="withoutBorders" v-if="(!active && $store.getters.permissions.includes('update-employee')) || (active && $store.getters.permissions.includes('update-employee-inactive')) || $store.getters.role == 'admin'">
                 <v-tooltip top :class="withoutBorders">
                   <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
                     <v-icon>edit</v-icon>
@@ -80,7 +80,7 @@
                   <span>Editar</span>
                 </v-tooltip>
               </td>
-              <td v-if="props.item.consultant == null && ($store.getters.role == 'admin' || $store.getters.permissions.includes('delete_employee'))" :class="withoutBorders">
+              <td v-if="props.item.consultant == null && ($store.getters.role == 'admin' || $store.getters.permissions.includes('delete-employee'))" :class="withoutBorders">
                 <v-tooltip top :class="withoutBorders">
                   <v-btn medium :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                     <v-icon>delete</v-icon>
@@ -228,8 +228,13 @@ export default {
     }
   },
   mounted() {
+
+    console.log(this.$store.getters.permissions.includes('create-employee'))
+
+
+
     if (this.$store.getters.role != 'admin') {
-      if (!this.$store.getters.permissions.includes("update_employee")) {
+      if (!this.$store.getters.permissions.includes("update-employee")) {
         this.headers = this.headers
           .filter(el => {
             return el.text != "Activo";

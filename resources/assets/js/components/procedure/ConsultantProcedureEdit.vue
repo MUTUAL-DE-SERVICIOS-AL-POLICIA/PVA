@@ -44,7 +44,7 @@
           slot="activator"
           color="error"
           dark
-          v-if="$store.getters.currentUser.roles[0].name == 'admin'"
+          v-if="$store.getters.role == 'admin'"
         >
           Eliminar Planilla
         </v-btn>
@@ -173,7 +173,7 @@
                     Guardar
                   </v-btn>
                 </v-flex>
-                <v-flex xs6 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                <v-flex xs6 v-if="$store.getters.role == 'admin'">
                   <v-btn small class="error" @click="deletePayroll(props.item)">
                     Eliminar
                   </v-btn>

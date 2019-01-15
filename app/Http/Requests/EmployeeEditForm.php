@@ -33,34 +33,34 @@ class EmployeeEditForm extends FormRequest
 		$input = $this->all();
 
 		if (array_key_exists('gender', $input)) {
-			$input['gender'] = strtoupper($input['gender']);
+			$input['gender'] = mb_strtoupper($input['gender']);
 		}
 		if (array_key_exists('first_name', $input)) {
-			$input['first_name'] = strtoupper($input['first_name']);
+			$input['first_name'] = mb_strtoupper($input['first_name']);
 		}
 		if (array_key_exists('second_name', $input)) {
-			$input['second_name'] = strtoupper($input['second_name']);
+			$input['second_name'] = mb_strtoupper($input['second_name']);
 		}
 		if (array_key_exists('last_name', $input)) {
-			$input['last_name'] = strtoupper($input['last_name']);
+			$input['last_name'] = mb_strtoupper($input['last_name']);
 		}
 		if (array_key_exists('mothers_last_name', $input)) {
-			$input['mothers_last_name'] = strtoupper($input['mothers_last_name']);
+			$input['mothers_last_name'] = mb_strtoupper($input['mothers_last_name']);
 		}
 		if (array_key_exists('country_birth', $input)) {
-			$input['country_birth'] = strtoupper($input['country_birth']);
+			$input['country_birth'] = mb_strtoupper($input['country_birth']);
 		}
 		if (array_key_exists('location', $input)) {
-			$input['location'] = strtoupper($input['location']);
+			$input['location'] = mb_strtoupper($input['location']);
 		}
 		if (array_key_exists('zone', $input)) {
-			$input['zone'] = strtoupper($input['zone']);
+			$input['zone'] = mb_strtoupper($input['zone']);
 		}
 		if (array_key_exists('street', $input)) {
-			$input['street'] = strtoupper($input['street']);
+			$input['street'] = mb_strtoupper($input['street']);
 		}
 		if (array_key_exists('address_number', $input)) {
-			$input['address_number'] = strtoupper($input['address_number']);
+			$input['address_number'] = mb_strtoupper($input['address_number']);
 		}
 
 		$this->replace($input);

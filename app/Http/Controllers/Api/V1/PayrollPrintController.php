@@ -155,7 +155,7 @@ class PayrollPrintController extends Controller
 			case 2:
 				$report_name = request('report_name');
 			case 1:
-				$report_type = strtoupper(request('report_type'));
+				$report_type = mb_strtoupper(request('report_type'));
 				break;
 			default:
 				abort(404);
@@ -208,7 +208,7 @@ class PayrollPrintController extends Controller
 			$response->data['company']->employer_number = $employer_number->number;
 		}
 
-		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]) . ".pdf";
+		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, mb_strtoupper($month->name)]) . ".pdf";
 
 		$footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => true, 'date' => $response->data['procedure']->pay_date ? Carbon::parse($response->data['procedure']->pay_date)->format('d/m/Y') : Carbon::now()->format('d/m/Y H:i')))->render();
 

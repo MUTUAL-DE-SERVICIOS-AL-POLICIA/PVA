@@ -25,13 +25,13 @@
           >
             <template
               slot="selection"
-              slot-scope="{ item, selected }"
+              slot-scope="{ item }"
             >
               {{ `${item.employee.last_name} ${item.employee.mothers_last_name} ${item.employee.first_name} ${(item.employee.second_name) ? item.employee.second_name : ''}` }}
             </template>
             <template
               slot="item"
-              slot-scope="{ item, tile }"
+              slot-scope="{ item }"
             >
               <v-list-tile-content>
                 <v-layout wrap row>

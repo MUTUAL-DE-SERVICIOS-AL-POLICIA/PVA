@@ -2,6 +2,7 @@ import moment from 'moment';
 
 export default {
   state: {
+    id: localStorage.getItem('id') || null,
     user: localStorage.getItem('user') || null,
     role: localStorage.getItem('role') || null,
     permissions: localStorage.getItem('permissions') || null,
@@ -15,6 +16,9 @@ export default {
   getters: {
     ldapAuth(state) {
       return state.ldapAuth
+    },
+    id(state) {
+      return JSON.parse(state.id)
     },
     user(state) {
       return JSON.parse(state.user)
@@ -37,6 +41,7 @@ export default {
       localStorage.removeItem('user')
       localStorage.removeItem('token')
       localStorage.removeItem('token_type')
+      state.id = null
       state.user = null
       state.role = null
       state.permissions = null
@@ -44,9 +49,11 @@ export default {
     'login': function (state, data) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("token_type", data.token_type);
+      localStorage.setItem("id", JSON.stringify(data.id));
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("role", JSON.stringify(data.role));
       localStorage.setItem("permissions", JSON.stringify(data.permissions));
+      state.user = localStorage.getItem('id');
       state.user = localStorage.getItem('user');
       state.role = localStorage.getItem('role');
       state.permissions = localStorage.getItem('permissions');
