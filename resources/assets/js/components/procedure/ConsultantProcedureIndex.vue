@@ -55,7 +55,7 @@
               <div v-else>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="(procedure.active && $store.getters.permissions.includes('update-procedure-c')) || $store.getters.role == 'admin'" :to="{ name: 'consultantProcedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="(procedure.active && $store.getters.permissions.includes('update-procedure-consultant')) || $store.getters.role == 'admin'" :to="{ name: 'consultantProcedureEdit', params: { id: procedure.id }}" >
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                       <span>Editar</span>
@@ -95,7 +95,7 @@
                   <v-btn
                     color="info"
                     @click="storeProcedure"
-                    v-if="$store.getters.permissions.includes('create-procedure-c') || $store.getters.role == 'admin'"
+                    v-if="$store.getters.permissions.includes('create-procedure-consultant') || $store.getters.role == 'admin'"
                   >
                     Registrar
                   </v-btn>
