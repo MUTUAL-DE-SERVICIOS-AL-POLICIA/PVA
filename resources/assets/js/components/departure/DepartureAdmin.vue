@@ -54,11 +54,11 @@
                 v-model="props.item.approved"
                 color="info"
                 @click.native="switchActive(props.item)"
-                v-if="$store.getters.options.includes('active')"
+                v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"
               ></v-switch>
             </td>
-            <td class="justify-center layout" v-if="$store.getters.options.length > 0">
-              <v-tooltip top v-if="$store.getters.options.includes('print')">
+            <td class="justify-center layout" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">
+              <v-tooltip top>
                 <v-btn slot="activator" flat icon color="info" @click="print(props.item)">
                   <v-icon>print</v-icon>
                 </v-btn>
@@ -89,7 +89,7 @@
 import Vue from "vue";
 import DepartureReport from "./DepartureReport";
 import RemoveItem from "../RemoveItem";
-// import { admin, rrhh, juridica } from "../../menu.js";
+
 export default {
   name: "DepartureIndex",
   components: {
@@ -161,7 +161,7 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getDepartures();
     });
-    if (!this.$store.getters.options.includes('edit')) {
+    if (this.$store.getters.role != 'rrhh' || this.$store.getters.role != 'admin') {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Acciones";

@@ -289,7 +289,7 @@ export default {
     },
     async getUser() {
       try {
-        let res = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);
+        let res = await axios.get('/contract/last_contract/' + this.$store.getters.id);
         this.selectedItem.contract_id = res.data.id;
         this.contractType = res.data.contract_type_id;
         this.start_time = res.data.job_schedules[0].start_hour + ':' + res.data.job_schedules[0].start_minutes;
@@ -359,7 +359,7 @@ export default {
       if (this.dateDeparture && this.dateReturn && this.selectedItem.departure_time && this.selectedItem.return_time && this.selectedItem.departure_reason_id) {
         this.errorMessages = null;
         this.valid = true;
-        let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
+        let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.id);
         var rest = 0;
         var rest_hour = 0;
         var rest_day = 0;

@@ -163,7 +163,7 @@ export default {
     };
   },
   created() {
-    if (this.$store.getters.currentUser.roles[0].name == "juridica") {
+    if (this.$store.getters.role == "juridica") {
       this.juridica = 1;
     }
   },
@@ -216,7 +216,7 @@ export default {
       }
     },
     async checkUsed () {      
-      let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
+      let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.id);
 
       var h1 = this.selectedItem.departure_time.split(":");
       var h2 = this.selectedItem.return_time.split(":");

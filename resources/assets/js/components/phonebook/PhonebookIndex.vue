@@ -44,14 +44,14 @@
           <td> {{ props.item.position_group.name }} </td>
           <td> {{ props.item.name }} </td>
           <td> {{ props.item.phone_number }} </td>
-          <td class="justify-center layout" v-if="$store.getters.options.length > 0">            
-            <v-tooltip top v-if="$store.getters.options.includes('edit')">
+          <td class="justify-center layout" v-if="$store.getters.role == 'admin'">            
+            <v-tooltip top>
               <v-btn :class="withoutBorders" slot="activator" flat icon @click="editItem(props.item)" color="info">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top v-if="$store.getters.options.includes('delete')">
+            <v-tooltip top>
               <v-btn :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -71,7 +71,7 @@ import Vue from "vue";
 import PhonebookForm from "./PhonebookForm";
 import RemoveItem from "../RemoveItem";
 import Loading from "../Loading";
-// import { admin, rrhh, juridica } from "../../menu.js";
+
 export default {
   name: "PhonebookIndex",
   components: {
@@ -125,7 +125,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.$store.getters.options.includes("edit")) {
+    if (!this.$store.getters.role == 'admin') {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Acciones";

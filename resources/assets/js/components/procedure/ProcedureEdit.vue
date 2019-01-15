@@ -410,8 +410,7 @@ export default {
             .toUpperCase()} de ${res.data.procedure.year}`
         );
         this.$router.push({
-          name: "procedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Eventuales' }).group.find(obj => { return obj.href ==  'procedureIndex'}).params
+          name: "procedureIndex"
         });
       } catch (e) {
         console.log(e);
@@ -591,8 +590,7 @@ export default {
           `Planilla de mes de ${res.data.month.name} cerrada`
         );
         this.$router.push({
-          name: "procedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Eventuales' }).group.find(obj => { return obj.href ==  'procedureIndex'}).params
+          name: "procedureIndex"
         });
       } catch (e) {
         console.log(e);
