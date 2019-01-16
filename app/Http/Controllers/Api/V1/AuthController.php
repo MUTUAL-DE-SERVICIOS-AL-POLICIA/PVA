@@ -130,7 +130,7 @@ class AuthController extends Controller
 			'id' => $user->id,
 			'user' => $user->username,
 			'role' => $user->roles[0]->name,
-			'permissions' => $user->permissions->pluck('name')->toArray(),
+			'permissions' => array_unique(array_merge($user->roles[0]->permissions->pluck('name')->toArray(), $user->permissions->pluck('name')->toArray())),
 			'message' => 'Indentidad verificada',
 		], 200);
 	}

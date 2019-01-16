@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="closeDialog">
-    <v-tooltip slot="activator" top v-if="$store.getters.permissions.includes('create-consultant') || $store.getters.role == 'admin'">
+    <v-tooltip slot="activator" top v-if="$store.getters.permissions.includes('create-consultant')">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Contrato</span>
     </v-tooltip>

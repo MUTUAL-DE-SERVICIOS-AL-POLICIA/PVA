@@ -82,19 +82,19 @@
                 <v-list-tile @click="print(props.item, 'printLow')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Baja del seguro</v-list-tile>
               </v-list>
             </v-menu>
-            <v-tooltip top v-if="($store.getters.role == 'admin' || $store.getters.permissions.includes('update-eventual')) && checkEnd(props.item) != '' && props.item.active == true">
+            <v-tooltip top v-if="$store.getters.permissions.includes('update-eventual') && checkEnd(props.item) != '' && props.item.active == true">
               <v-btn :class="withoutBorders" slot="activator" flat icon color="info" @click="editItem(props.item, 'recontract')">
                 <v-icon>autorenew</v-icon>
               </v-btn>
               <span>Recontratar</span>
             </v-tooltip>
-            <v-tooltip top v-if="(active && $store.getters.permissions.includes('update-eventual')) || (!active && $store.getters.permissions.includes('update-eventual-inactive')) || $store.getters.role == 'admin'">
+            <v-tooltip top v-if="(active && $store.getters.permissions.includes('update-eventual')) || (!active && $store.getters.permissions.includes('update-eventual-inactive'))">
               <v-btn :class="withoutBorders" slot="activator" flat icon @click="editItem(props.item, 'edit')" color="info">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top v-if="($store.getters.role == 'admin' || $store.getters.permissions.includes('delete-eventual')) && props.item.payrolls_count == 0">
+            <v-tooltip top v-if="$store.getters.permissions.includes('delete-eventual') && props.item.payrolls_count == 0">
               <v-btn :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -203,13 +203,11 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.getters.role != 'admin') {
-      if (!this.$store.getters.permissions.includes("update-eventual")) {
-        this.headers = this.headers
-          .filter(el => {
-            return el.text != "Acciones";
-          });
-      }
+    if (!this.$store.getters.permissions.includes("update-eventual")) {
+      this.headers = this.headers
+        .filter(el => {
+          return el.text != "Acciones";
+        });
     }
     this.getContracts(this.active);
     this.bus.$on("closeDialog", () => {

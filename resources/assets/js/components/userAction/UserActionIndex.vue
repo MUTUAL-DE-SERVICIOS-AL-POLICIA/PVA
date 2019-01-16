@@ -38,7 +38,7 @@
           <td class="text-md-center">{{ props.item.action }}</td>
           <td class="text-md-center">{{ props.item.created_at | moment('LL') }}</td>
           <td class="text-md-center">{{ props.item.created_at | moment('hh:mm a') }}</td>
-          <td class="text-md-center" v-if="$store.getters.permissions.includes('delete-user-action') || $store.getters.role == 'admin'">
+          <td class="text-md-center" v-if="$store.getters.permissions.includes('delete-user-action')">
             <v-tooltip top>
               <v-btn medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item.id)">
                 <v-icon>delete</v-icon>
@@ -82,7 +82,7 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getActions();
     });
-    if (this.$store.getters.permissions.includes('delete-user-action') || this.$store.getters.role == 'admin') {
+    if (this.$store.getters.permissions.includes('delete-user-action')) {
       this.headers.push({ align: "center", text: "Acciones", sortable: false })
     }
   },

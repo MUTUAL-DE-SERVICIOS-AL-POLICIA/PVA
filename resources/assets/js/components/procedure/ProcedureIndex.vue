@@ -38,7 +38,7 @@
         <v-layout row wrap>
           <v-flex
             md6 lg4
-            v-if="bonusYear.bonus > 0 && ($store.getters.permissions.includes('create-procedure-eventual') || $store.getters.role == 'admin')"
+            v-if="bonusYear.bonus > 0 && $store.getters.permissions.includes('create-procedure-eventual')"
           >
             <v-card color="info" height="100%" dark>
               <v-card-title>
@@ -186,7 +186,7 @@
               <div>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="(procedure.active && $store.getters.permissions.includes('update-procedure-eventual')) || $store.getters.role == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="procedure.active && $store.getters.permissions.includes('update-procedure-eventual')" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                       <span>Editar</span>
@@ -336,7 +336,7 @@
                   <v-btn
                     color="info"
                     @click="storeProcedure"
-                    v-if="$store.getters.permissions.includes('create-procedure-eventual') || $store.getters.role == 'admin'"
+                    v-if="$store.getters.permissions.includes('create-procedure-eventual')"
                   >
                     Registrar
                   </v-btn>

@@ -49,7 +49,7 @@
                   @mouseover="miniVariant = false"
                   @mouseout="miniVariant = true"
                 >
-                  <template v-if="item.permission == null || $store.getters.permissions.includes(item.permission) || $store.getters.role == 'admin'">
+                  <template v-if="item.permission == null || $store.getters.permissions.includes(item.permission) || ($store.getters.role == 'admin' && item.permission != '!admin')">
                     <v-list-tile-action>
                       <v-icon :class="!miniVariant ? 'pl-4' : 'ml-2'">{{ group.icon }}</v-icon>
                     </v-list-tile-action>

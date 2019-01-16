@@ -65,19 +65,19 @@
             </v-tooltip>
           </td>
           <td class="justify-center layout" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">
-            <v-tooltip top v-if="($store.getters.role == 'admin' || $store.getters.permissions.includes('update-consultant')) && checkEnd(props.item) != ''">
+            <v-tooltip top v-if="$store.getters.permissions.includes('update-consultant') && checkEnd(props.item) != ''">
               <v-btn slot="activator" flat icon color="info" @click="editItem(Object.assign(props.item, {edit: false, new: false}))">
                 <v-icon>autorenew</v-icon>
               </v-btn>
               <span>Recontratar</span>
             </v-tooltip>
-            <v-tooltip top v-if="($store.getters.role == 'admin' || $store.getters.permissions.includes('update-consultant'))">
+            <v-tooltip top v-if="$store.getters.permissions.includes('update-consultant')">
               <v-btn slot="activator" flat icon color="accent" @click="editItem(Object.assign(props.item, {edit: true, new: false}))">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top v-if="($store.getters.role == 'admin' || $store.getters.permissions.includes('delete-consultant'))">
+            <v-tooltip top v-if="$store.getters.permissions.includes('delete-consultant')">
               <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -177,12 +177,10 @@ export default {
     }
   },
   async created() {
-    if (this.$store.getters.role != 'admin') {
-      if (!this.$store.getters.permissions.includes("update-consultant")) {
-        this.headers = this.headers.filter(el => {
-          return el.text != "Acciones"
-        })
-      }
+    if (!this.$store.getters.permissions.includes("update-consultant")) {
+      this.headers = this.headers.filter(el => {
+        return el.text != "Acciones"
+      })
     }
     this.getContracts(this.active);
     this.bus.$on("closeDialog", () => {
