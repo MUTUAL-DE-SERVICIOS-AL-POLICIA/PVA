@@ -146,8 +146,6 @@ export default {
         type: null,
         start_date: this.$moment().format("YYYY-MM-DD"),
         end_date: this.$moment().format("YYYY-MM-DD")
-        // start_date: null,
-        // end_date: null,
       },
       menuDateStart: null,
       dateStart: this.$moment().format("DD/MM/YYYY"),

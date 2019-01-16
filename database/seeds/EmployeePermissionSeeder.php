@@ -14,6 +14,12 @@ class EmployeePermissionSeeder extends Seeder
   {
     $permissions = [
       [
+        'name' => 'read-employee',
+        'display_name' => 'Leer empleado',
+        'description' => 'Permiso para leer datos de los empleados',
+        'created_at' => new \dateTime,
+        'updated_at' => new \dateTime,
+      ], [
         'name' => 'create-employee',
         'display_name' => 'Crear empleado',
         'description' => 'Permiso para registrar un nuevo empleado',
@@ -35,12 +41,6 @@ class EmployeePermissionSeeder extends Seeder
         'name' => 'update-employee-inactive',
         'display_name' => 'Editar empleado inactivo',
         'description' => 'Permiso para editar los datos de un empleado inactivo',
-        'created_at' => new \dateTime,
-        'updated_at' => new \dateTime,
-      ], [
-        'name' => 'print-employee-dashboard',
-        'display_name' => 'Imprimir lista de empleados',
-        'description' => 'Permiso para imprimir la lista de empleados desde el dashboard',
         'created_at' => new \dateTime,
         'updated_at' => new \dateTime,
       ]

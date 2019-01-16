@@ -71,13 +71,11 @@
 <script type="text/javascript">
 import Vue from "vue";
 import CompanyForm from "./CompanyForm";
-// import RemoveItem from "../RemoveItem";
-// import { admin, rrhh, juridica } from "../../menu.js";
+
 export default {
   name: "ContractIndex",
   components: {
-    CompanyForm,
-    // RemoveItem
+    CompanyForm
   },
   data: () => ({
     toggle_one: 0,

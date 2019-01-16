@@ -113,7 +113,7 @@ import Vue from "vue";
 import ConsultantForm from "./ConsultantForm";
 import RemoveItem from "../RemoveItem";
 import Loading from "../Loading";
-// import { admin, rrhh, juridica } from "../../menu.js";
+
 export default {
   name: "ConsultantIndex",
   components: {

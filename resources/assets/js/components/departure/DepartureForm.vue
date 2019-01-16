@@ -376,19 +376,17 @@ export default {
         var f2 = this.$moment(this.selectedItem.return_date);
 
         if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) { 
-          // if (this.on_vacation == false) {
-            if (f2.diff(f1, "day") == 0) {
-               rest_day = rest_hour;
-            } else if (f2.diff(f1, "day") == 1) {
-              rest_day = rest_hour + 480;
-            } else {
-              rest_day = rest_hour + 960;
-            }
-            if (rest_day > departure_used.data.total_minutes_year_rest) {
-              this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest % 480 / 60) + ' Horas.';
-              this.valid = false;
-            } 
-          // }
+          if (f2.diff(f1, "day") == 0) {
+              rest_day = rest_hour;
+          } else if (f2.diff(f1, "day") == 1) {
+            rest_day = rest_hour + 480;
+          } else {
+            rest_day = rest_hour + 960;
+          }
+          if (rest_day > departure_used.data.total_minutes_year_rest) {
+            this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest % 480 / 60) + ' Horas.';
+            this.valid = false;
+          } 
         } else if (this.departure_type_id == 1 && this.selectedItem.departure_reason_id == 1) { 
           if (rest_hour > departure_used.data.total_minutes_month_rest || f2.diff(f1, "day") != 0) {
             this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_month_rest / 60) + ' Horas y ' + parseInt(departure_used.data.total_minutes_month_rest % 60)+ ' Minutos.';
