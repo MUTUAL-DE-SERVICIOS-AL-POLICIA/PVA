@@ -13,7 +13,7 @@
     >
       <v-list>
         <div v-for="item in menuLeft" :key="item.title" class="mb-0 mt-0">
-          <template v-if="item.permission == null || $store.getters.permissions.includes(item.permission) || $store.getters.role == 'admin'">
+          <template v-if="item.permission == null || $store.getters.permissions.includes(item.permission) || ($store.getters.role == 'admin' && item.permission != '!admin')">
             <v-list-tile
               v-if="!item.group"
               :to="{name: item.href}"

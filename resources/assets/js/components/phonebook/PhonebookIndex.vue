@@ -125,7 +125,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.$store.getters.role == 'admin') {
+    if (this.$store.getters.role != 'admin') {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Acciones";

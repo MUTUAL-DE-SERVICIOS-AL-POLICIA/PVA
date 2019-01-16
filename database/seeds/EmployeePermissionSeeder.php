@@ -14,15 +14,15 @@ class EmployeePermissionSeeder extends Seeder
   {
     $permissions = [
       [
-        'name' => 'read-employee',
-        'display_name' => 'Leer empleado',
-        'description' => 'Permiso para leer datos de los empleados',
-        'created_at' => new \dateTime,
-        'updated_at' => new \dateTime,
-      ], [
         'name' => 'create-employee',
         'display_name' => 'Crear empleado',
         'description' => 'Permiso para registrar un nuevo empleado',
+        'created_at' => new \dateTime,
+        'updated_at' => new \dateTime,
+      ], [
+        'name' => 'read-employee',
+        'display_name' => 'Leer empleado',
+        'description' => 'Permiso para leer datos de los empleados',
         'created_at' => new \dateTime,
         'updated_at' => new \dateTime,
       ], [

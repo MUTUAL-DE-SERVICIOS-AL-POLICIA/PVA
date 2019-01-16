@@ -47,12 +47,12 @@
     "href": "userIndex",
     "title": "Usuarios",
     "icon": "security",
-    "permission": "read-user"
+    "permission": "admin"
   }, {
     "href": "userActionIndex",
     "title": "Actividad",
     "icon": "timeline",
-    "permission": "read-action"
+    "permission": "read-user-action"
   }, {
     "href": "departureAdmin",
     "title": "Salidas y Licencias",
@@ -62,11 +62,11 @@
     "href": "departureIndex",
     "title": "Salidas/Licencias",
     "icon": "directions_run",
-    "permission": null
+    "permission": "!admin"
   }, {
     "href": "phonebookIndex",
     "title": "Agenda Telefonica",
     "icon": "contact_phone",
-    "permission": "read-location"
+    "permission": null
   }
 ]
