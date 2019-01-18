@@ -8,11 +8,14 @@
           item-text="description"
           item-value="id"
           class="subheading font-weight-medium"
-          label="Artículos de almacén"
+          :label="requestButton.title"
         ></v-select>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="showRequest" @click.native="requestButton.state = !requestButton.state" class="primary white--text ml-0">
+      <v-btn v-if="showRequest && requestButton.state" @click.native="printRequest" class="danger white--text ml-0">
+        <div class="font-weight-regular subheading pa-2">IMPRIMIR</div>
+      </v-btn>
+      <v-btn v-if="showRequest" @click.native="switchRequest()" class="primary white--text ml-0">
         <div class="font-weight-regular subheading pa-2">{{ requestButton.text }}</div>
       </v-btn>
       <v-divider
@@ -41,12 +44,13 @@
       disable-initial-sort
     >
       <template slot="items" slot-scope="props">
-        <tr :key="props.item.id">
+        <tr>
           <td class="text-md-center">{{ props.item.description }}</td>
           <td class="text-md-center">{{ remaining(props.item) }}</td>
           <td class="text-md-center">{{ props.item.unit }}</td>
           <td>
             <v-text-field
+              class="ma-0 pa-0 centered-input"
               v-model="props.item.request"
               type="number"
               step="1"
@@ -84,7 +88,7 @@ export default {
   name: "SupplyIndex",
   data: () => ({
     loading: true,
-    search: "",
+    search: '',
     materials: [{
       id: 0,
       description: 'TODOS'
@@ -92,15 +96,16 @@ export default {
     materialSelected: 0,
     supplies: [],
     headers: [
-      { align: "center", text: "Descripción", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "description" },
-      { align: "center", text: "Stock", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "stock" },
-      { align: "center", text: "Unidad", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "unit" },
-      { align: "center", text: "Pedido", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "" },
+      { align: "center", text: "Descripción", class: ["ma-0", "pa-0"], value: "description" },
+      { align: "center", text: "Stock", class: ["ma-0", "pa-0"], value: "stock" },
+      { align: "center", text: "Unidad", class: ["ma-0", "pa-0"], value: "unit" },
+      { align: "center", text: "Pedido", class: ["ma-0", "pa-0"], value: "" },
     ],
     supplyRequest: [],
     requestButton: {
       state: false,
-      text: 'VER PEDIDO'
+      text: 'VER PEDIDO',
+      title: "Artículos de almacén"
     }
   }),
   mounted() {
@@ -126,19 +131,29 @@ export default {
     showRequest() {
       if (this.supplies.filter(o => o.request > 0).length > 0) {
         if (this.requestButton.state) {
-          this.materialSelected = -1
+          this.requestButton.title = "Pedidos de almacén"
           this.requestButton.text = 'VER ARTÍCULOS'
         } else {
-          this.materialSelected = 0
+          this.requestButton.title = "Artículos de almacén"
           this.requestButton.text = 'VER PEDIDO'
         }
         return true
       } else {
+        this.materialSelected = 0
         return false
       }
     }
   },
   methods: {
+    switchRequest() {
+      if (this.requestButton.state) {
+        this.materialSelected = 0
+      } else {
+        this.materialSelected = -1
+      }
+      this.requestButton.state = !this.requestButton.state
+      this.search = ''
+    },
     remaining(item) {
       return item.stock - item.request
     },
@@ -176,3 +191,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.centered-input input {
+  text-align: center
+}
+</style>
