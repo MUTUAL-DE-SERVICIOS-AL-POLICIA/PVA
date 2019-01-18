@@ -81,7 +81,14 @@ export default {
       params: {
         options: ['new', 'edit', 'delete', 'print']
       }
-    }
+    }, {
+      href: 'subarticleIndex',
+      title: 'Almacén',
+      icon: 'receipt',
+      params: {
+        options: []
+      }
+    },
   ],
   rrhh: [
     {
@@ -159,7 +166,14 @@ export default {
       params: {
         options: []
       }
-    }
+    }, {
+      href: 'subarticleIndex',
+      title: 'Almacén',
+      icon: 'receipt',
+      params: {
+        options: []
+      }
+    },
   ],
   juridica: [
     {
@@ -200,7 +214,14 @@ export default {
       params: {
         options: []
       }
-    }
+    }, {
+      href: 'subarticleIndex',
+      title: 'Almacén',
+      icon: 'receipt',
+      params: {
+        options: []
+      }
+    },
   ],
   financiera: [
     {
@@ -260,6 +281,13 @@ export default {
       href: 'userActionIndex',
       title: 'Actividad',
       icon: 'timeline',
+      params: {
+        options: []
+      }
+    }, {
+      href: 'subarticleIndex',
+      title: 'Almacén',
+      icon: 'receipt',
       params: {
         options: []
       }

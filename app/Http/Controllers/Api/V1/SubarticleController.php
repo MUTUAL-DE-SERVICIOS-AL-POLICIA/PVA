@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Material;
+use App\Subarticle;
 
-class MaterialController extends Controller
+class SubarticleController extends Controller
 {
   /**
    * Display a listing of the resource.
@@ -14,21 +14,22 @@ class MaterialController extends Controller
    */
   public function index()
   {
-    return Material::get();
+    $subarticles = Subarticle::get();
+    foreach ($subarticles as $subarticle) {
+      $subarticle->stock();
+    }
+    return $subarticles;
   }
 
   /**
    * Display the specified resource.
    *
-   * @param  \App\Material  $material
+   * @param  \App\Subarticle  $subarticle
    * @return \Illuminate\Http\Response
    */
   public function show($id)
   {
-    $material = Material::findOrFail($id);
-    foreach ($material->subarticles as $subarticle) {
-      $subarticle->stock();
-    }
-    return $material;
+    $subarticle = Subarticle::findOrFail($id);
+    return $subarticle->stock();
   }
 }
