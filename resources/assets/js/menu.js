@@ -76,15 +76,15 @@ export default {
       }
     }, {
       href: 'phonebookIndex',
-      title: 'Agenda Telefonica',
+      title: 'Agenda Telefónica',
       icon: 'contact_phone',
       params: {
         options: ['new', 'edit', 'delete', 'print']
       }
     }, {
-      href: 'subarticleIndex',
+      href: 'supplyIndex',
       title: 'Almacén',
-      icon: 'receipt',
+      icon: 'shopping_cart',
       params: {
         options: []
       }
@@ -167,9 +167,9 @@ export default {
         options: []
       }
     }, {
-      href: 'subarticleIndex',
+      href: 'supplyIndex',
       title: 'Almacén',
-      icon: 'receipt',
+      icon: 'shopping_cart',
       params: {
         options: []
       }
@@ -215,9 +215,9 @@ export default {
         options: []
       }
     }, {
-      href: 'subarticleIndex',
+      href: 'supplyIndex',
       title: 'Almacén',
-      icon: 'receipt',
+      icon: 'shopping_cart',
       params: {
         options: []
       }
@@ -285,9 +285,9 @@ export default {
         options: []
       }
     }, {
-      href: 'subarticleIndex',
+      href: 'supplyIndex',
       title: 'Almacén',
-      icon: 'receipt',
+      icon: 'shopping_cart',
       params: {
         options: []
       }
