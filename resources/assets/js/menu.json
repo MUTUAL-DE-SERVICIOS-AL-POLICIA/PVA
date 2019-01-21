@@ -68,5 +68,10 @@
     "title": "Agenda Telefonica",
     "icon": "contact_phone",
     "permission": null
+  }, {
+    "href": "supplyIndex",
+    "title": "Almacén",
+    "icon": "shopping_cart",
+    "permission": null
   }
 ]
