@@ -396,6 +396,9 @@ export default {
         }, {
           name: 'OVT',
           type: 'csv'
+        }, {
+          name: 'BOLETAS DE PAGO',
+          type: 'ticket'
         }
       ],
       bonusProcedure: {}
@@ -449,7 +452,7 @@ export default {
     },
     bonusPrint(id, type) {
       let url = `/bonus/print/${id}?report_type=${type}`
-      if (type == 'pdf') {
+      if (type == 'pdf' || type == 'ticket') {
         this.print(url)
       } else {
         this.download(url)
