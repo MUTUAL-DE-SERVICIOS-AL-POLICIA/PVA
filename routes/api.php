@@ -25,7 +25,7 @@ Route::group([
 	Route::get('location/{id}', 'Api\V1\LocationController@show')->name('location_details');
 	// Material
 	Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
-	Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'show']);
+	Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
 	// With credentials
 	Route::group([
 		'middleware' => 'jwt.auth'

@@ -12,7 +12,7 @@
         ></v-select>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="showRequest && requestButton.state" @click.native="printRequest" class="danger white--text ml-0">
+      <v-btn v-if="showRequest && requestButton.state" @click.native="printRequest()" class="danger white--text ml-0">
         <div class="font-weight-regular subheading pa-2">IMPRIMIR</div>
       </v-btn>
       <v-btn v-if="showRequest" @click.native="switchRequest()" class="primary white--text ml-0">
@@ -145,6 +145,22 @@ export default {
     }
   },
   methods: {
+    async printRequest() {
+      try {
+        let res = await axios({
+          method: "POST",
+          url: `subarticle`,
+          responseType: "arraybuffer",
+          data: this.supplyRequest
+        });
+        let blob = new Blob([res.data], {
+          type: "application/pdf"
+        });
+        printJS(window.URL.createObjectURL(blob));
+      } catch (e) {
+        console.log(e)
+      }
+    },
     switchRequest() {
       if (this.requestButton.state) {
         this.materialSelected = 0
