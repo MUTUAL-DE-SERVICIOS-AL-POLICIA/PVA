@@ -16,7 +16,7 @@ class Subarticle extends Model
 
   public function requests()
   {
-
+    return $this->belongsToMany(SupplyRequest::class, 'subarticle_requests', 'subarticle_id', 'request_id')->withPivot('id', 'amount', 'amount_delivered', 'total_delivered', 'invalidate');
   }
 
   public function entries()
@@ -28,9 +28,7 @@ class Subarticle extends Model
   {
     $entries = $this->entries()->where('invalidate', 0)->sum('amount');
 
-    $requests = $this->requests()->where('invalidate', 0)->with(['supply_request' => function ($query) {
-      $query->where('status', 'delivered')->where('invalidate', 0);
-    }])->sum('total_delivered');
+    $requests = $this->requests()->wherePivot('invalidate', 0)->where('status', 'delivered')->where('requests.invalidate', 0)->sum('total_delivered');
 
     $this->stock = $entries - $requests;
 
