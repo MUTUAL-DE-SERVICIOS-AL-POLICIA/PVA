@@ -188,6 +188,7 @@ export default {
     async printRequest() {
       try {
         let res = await axios.post('/request',this.supplyRequest);
+        console.log(res);
       } catch (e) {
         console.log(e);
       }

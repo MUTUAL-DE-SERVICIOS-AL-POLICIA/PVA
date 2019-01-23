@@ -30,7 +30,7 @@ Route::group([
 	// Material
 	Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
 	Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
-	Route::resource('request','Api\V1\RequestController')->only(['store']);
+	Route::resource('request','Api\V1\SupplyRequestController')->only(['store']);
 	
 	// With credentials
 	Route::group([
