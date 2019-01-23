@@ -169,6 +169,13 @@ export default {
         this.supplyRequest = this.supplyRequest.filter(o => o.id != item.id)
       }
     },
+    async printRequest() {
+      try {
+        let res = await axios.post('/request',this.supplyRequest);
+      } catch (e) {
+        console.log(e);
+      }
+    },
     async getMaterials() {
       try {
         let res = await axios.get(`/material`)
