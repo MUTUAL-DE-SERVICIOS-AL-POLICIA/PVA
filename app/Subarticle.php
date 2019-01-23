@@ -16,7 +16,7 @@ class Subarticle extends Model
 
   public function requests()
   {
-    return $this->hasMany(SubarticleRequest::class);
+
   }
 
   public function entries()
