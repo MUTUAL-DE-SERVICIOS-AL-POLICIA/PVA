@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Subarticle extends Model
 {
   protected $connection = 'nsiaf';
+  public $timestamps = true;
   protected $fillable = ['id', 'code', 'description', 'unit', 'status', 'article_id', 'created_at', 'updated_at', 'amount', 'minimum', 'barcode', 'code_old', 'incremento', 'material_id', 'stock'];
 
   public function material()

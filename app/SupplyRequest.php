@@ -8,6 +8,7 @@ class SupplyRequest extends Model
 {
   protected $connection = 'nsiaf';
   protected $table = 'requests';
+  public $timestamps = true;
 
   public function subarticles()
   {

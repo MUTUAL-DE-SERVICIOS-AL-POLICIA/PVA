@@ -30,8 +30,11 @@ Route::group([
 	// Material
 	Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
 	Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
-	Route::resource('request','Api\V1\RequestController')->only(['store']);
-	
+	Route::resource('request', 'Api\V1\RequestController')->only(['store']);
+	// SupplyUser
+	Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
+	Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show']);
+
 	// With credentials
 	Route::group([
 		'middleware' => 'jwt.auth'
