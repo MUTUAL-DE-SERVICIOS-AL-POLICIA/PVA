@@ -7,7 +7,7 @@ $factory->define(App\User::class, function (Faker $faker) {
   return [
     'username' => $faker->unique()->firstname,
     'employee_id' => Employee::inRandomOrder()->first(),
-    'position' => strtoupper($faker->unique()->catchPhrase),
+    'position' => mb_strtoupper($faker->unique()->catchPhrase),
     'password' => Hash::make('secret'),
   ];
 });

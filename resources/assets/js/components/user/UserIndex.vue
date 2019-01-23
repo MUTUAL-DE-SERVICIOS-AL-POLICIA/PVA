@@ -7,7 +7,7 @@
         persistent
         v-model="dialog"
         width="500"
-        @keydown.esc="$router.go({name:'userIndex', params: $store.getters.options})"
+        @keydown.esc="$router.go({name:'userIndex'})"
         :fullscreen="loading"
       >
         <v-btn
@@ -94,7 +94,7 @@
             <v-divider></v-divider>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="success" small @click.native="$router.go({name:'userIndex', params: $store.getters.options})"><v-icon small>check</v-icon> Cerrar</v-btn>
+              <v-btn color="success" small @click.native="$router.go({name:'userIndex'})"><v-icon small>check</v-icon> Cerrar</v-btn>
             </v-card-actions>
           </div>
         </v-card>

@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-flex xs2>
         <v-select
-          :disabled="!$store.getters.currentUser.roles[0].name == 'admin' || !$store.getters.currentUser.roles[0].name == 'rrhh'"
+          :disabled="!$store.getters.role == 'admin' || !$store.getters.role == 'rrhh'"
           :items="[1, 2]"
           label="# de Aguinaldos"
           class="mr-3"
@@ -25,7 +25,7 @@
         ></v-select>
       </v-flex>
       <RemoveItem :bus="bus"/>
-      <ProcedureAdd v-if="$store.getters.currentUser.roles[0].name == 'admin'" :bus="bus" type="eventual"/>
+      <ProcedureAdd v-if="$store.getters.role == 'admin'" :bus="bus" type="eventual"/>
     </v-toolbar>
     <div v-if="loading">
       <Loading/>
@@ -38,7 +38,7 @@
         <v-layout row wrap>
           <v-flex
             md6 lg4
-            v-if="bonusYear.bonus > 0"
+            v-if="bonusYear.bonus > 0 && $store.getters.permissions.includes('create-procedure-eventual')"
           >
             <v-card color="info" height="100%" dark>
               <v-card-title>
@@ -74,12 +74,12 @@
                         </v-list-tile>
                       </v-list>
                       <v-list>
-                        <v-list-tile @click="bonusProcedure = procedure; bonusDialog = true" v-if="$store.getters.currentUser.roles[0].name == 'rrhh' || $store.getters.currentUser.roles[0].name == 'admin'">
+                        <v-list-tile @click="bonusProcedure = procedure; bonusDialog = true" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">
                           <v-list-tile-content>
                             <div class="blue--text">EDITAR</div>
                           </v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile @click="bus.$emit('openDialogRemove', `/bonus/${procedure.id}`)" v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                        <v-list-tile @click="bus.$emit('openDialogRemove', `/bonus/${procedure.id}`)" v-if="$store.getters.role == 'admin'">
                           <v-list-tile-content>
                             <div class="red--text">ELIMINAR</div>
                           </v-list-tile-content>
@@ -186,13 +186,13 @@
               <div>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="(procedure.active && $store.getters.options.includes('edit')) || $store.getters.currentUser.roles[0].name == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="procedure.active && $store.getters.permissions.includes('update-procedure-eventual')" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" >
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                       <span>Editar</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon v-if="$store.getters.options.includes('ticket')">
+                  <v-btn icon v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">
                     <v-tooltip top>
                       <v-btn slot="activator" icon flat @click.prevent="print(`/ticket/print/${procedure.id}`)">
                         <v-icon :color="procedure.active ? 'info' : 'primary'">print</v-icon>
@@ -200,20 +200,20 @@
                       <span>Imprimir boletas</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$store.getters.options.includes('bank')">
+                  <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                       <span>TXT Banco</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="$store.getters.options.includes('ovt')">
+                  <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">work</v-icon>
                       <span>CSV OVT</span>
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y class="mr-2" v-if="$store.getters.options.includes('afp')">
+                  <v-menu offset-y class="mr-2" v-if="$store.getters.role == 'financiera' || $store.getters.role == 'admin'">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>AFP</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -235,7 +235,7 @@
                       </v-list>
                     </v-card>
                   </v-menu>
-                  <v-menu offset-y v-if="$store.getters.options.includes('payroll')">
+                  <v-menu offset-y v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'financiera' || $store.getters.role == 'admin'">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span>Planillas</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -336,7 +336,7 @@
                   <v-btn
                     color="info"
                     @click="storeProcedure"
-                    v-if="$store.getters.options.includes('new')"
+                    v-if="$store.getters.permissions.includes('create-procedure-eventual')"
                   >
                     Registrar
                   </v-btn>
@@ -351,10 +351,11 @@
 </template>
 
 <script>
-import Vue from "vue";
-import ProcedureAdd from "./ProcedureAdd";
-import RemoveItem from "../RemoveItem";
-import Loading from "../Loading";
+import Vue from "vue"
+import ProcedureAdd from "./ProcedureAdd"
+import RemoveItem from "../RemoveItem"
+import Loading from "../Loading"
+
 export default {
   name: "ProcedureIndex",
   components: {

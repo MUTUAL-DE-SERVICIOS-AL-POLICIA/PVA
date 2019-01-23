@@ -64,16 +64,15 @@
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center" v-if="$store.getters.options.length > 0">
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center" v-if="$store.getters.permissions.includes('update-employee')">
             <v-switch
               v-model="props.item.active"
               @change="switchActive(props.item)"
-              v-if="$store.getters.options.includes('edit')"
             ></v-switch>
           </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center">
             <table>
-              <td :class="withoutBorders" v-if="(!active && $store.getters.options.includes('edit')) || (active && $store.getters.options.includes('inactiveEdit'))">
+              <td :class="withoutBorders" v-if="(!active && $store.getters.permissions.includes('update-employee')) || (active && $store.getters.permissions.includes('update-employee-inactive'))">
                 <v-tooltip top :class="withoutBorders">
                   <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
                     <v-icon>edit</v-icon>
@@ -81,7 +80,7 @@
                   <span>Editar</span>
                 </v-tooltip>
               </td>
-              <td v-if="props.item.consultant == null" :class="withoutBorders">
+              <td v-if="props.item.consultant == null && $store.getters.permissions.includes('delete-employee')" :class="withoutBorders">
                 <v-tooltip top :class="withoutBorders">
                   <v-btn medium :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                     <v-icon>delete</v-icon>
@@ -187,7 +186,7 @@ export default {
         { align: "center", text: "C.I.", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "identity_card" },
         { text: "Funcionario", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "last_name" },
         { align: "center", text: "Contrato", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "mothers_last_name", sortable: false },
-        { align: "center", text: "Nacimiento", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "birth_date" },
+        { align: "center", text: "Nacimiento", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "phone_number" },
         { text: "# Cuenta", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "account_number" },
         { text: "AFP", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "management_entity.name" },
         { text: "CUA/NUA", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "nua_cua" },
@@ -229,7 +228,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.$store.getters.options.includes("edit")) {
+    if (!this.$store.getters.permissions.includes("update-employee")) {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Activo";

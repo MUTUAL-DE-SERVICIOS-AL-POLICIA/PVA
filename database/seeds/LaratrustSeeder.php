@@ -3,13 +3,15 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class LaratrustSeeder extends Seeder {
+class LaratrustSeeder extends Seeder
+{
 	/**
 	 * Run the database seeds.
 	 *
 	 * @return  void
 	 */
-	public function run() {
+	public function run()
+	{
 		$this->command->info('Truncating User, Role and Permission tables');
 		$this->truncateLaratrustTables();
 
@@ -27,7 +29,7 @@ class LaratrustSeeder extends Seeder {
 			]);
 			$permissions = [];
 
-			$this->command->info('Creating Role ' . strtoupper($key));
+			$this->command->info('Creating Role ' . mb_strtoupper($key));
 
 			// Reading role permission modules
 			foreach ($modules as $module => $value) {
@@ -102,7 +104,8 @@ class LaratrustSeeder extends Seeder {
 	 *
 	 * @return    void
 	 */
-	public function truncateLaratrustTables() {
+	public function truncateLaratrustTables()
+	{
 		Schema::disableForeignKeyConstraints();
 		DB::table('permission_role')->truncate();
 		DB::table('permission_user')->truncate();

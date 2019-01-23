@@ -39,7 +39,7 @@
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.shortened }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.tax_number }}</td>
             <td class="justify-center layout">              
-              <v-tooltip top v-if="$store.params.options.includes('edit')">
+              <v-tooltip top v-if="$store.getters.role == 'admin'">
                 <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, props.item.document)">
                   <v-icon>edit</v-icon>
                 </v-btn>
@@ -71,13 +71,11 @@
 <script type="text/javascript">
 import Vue from "vue";
 import CompanyForm from "./CompanyForm";
-// import RemoveItem from "../RemoveItem";
-// import { admin, rrhh, juridica } from "../../menu.js";
+
 export default {
   name: "ContractIndex",
   components: {
-    CompanyForm,
-    // RemoveItem
+    CompanyForm
   },
   data: () => ({
     toggle_one: 0,

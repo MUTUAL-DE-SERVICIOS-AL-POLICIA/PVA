@@ -98,7 +98,7 @@
 import Vue from "vue";
 import DepartureForm from "./DepartureForm";
 import RemoveItem from "../RemoveItem";
-import { admin, rrhh, juridica } from "../../menu.js";
+
 export default {
   name: "ContractIndex",
   components: {
@@ -162,12 +162,12 @@ export default {
   methods: {
     async getDepartures(departureType = this.departureType) {
       try {
-        let contract = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);
+        let contract = await axios.get('/contract/last_contract/' + this.$store.getters.id);
         let res = await axios.get(`/departure/get_departures/${contract.data.id}`);
         this.departureType = departureType;
         this.departures = res.data.filter(e => e.departure_reason.departure_type_id == departureType);
 
-        let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
+        let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.id);
         this.hrsxMes = Math.trunc((departure_used.data.total_minutes_month_rest / 60)) + " hr. y " + (departure_used.data.total_minutes_month_rest % 60) + " min.";
         this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest % 480 / 60) + " hr.";
       } catch (e) {

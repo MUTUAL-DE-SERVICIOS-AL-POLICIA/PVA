@@ -64,20 +64,20 @@
               </span>
             </v-tooltip>
           </td>
-          <td class="justify-center layout" v-if="$store.getters.options.length > 0">
-            <v-tooltip top v-if="$store.getters.options.includes('renew') && checkEnd(props.item) != ''">
+          <td class="justify-center layout" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">
+            <v-tooltip top v-if="$store.getters.permissions.includes('update-consultant') && checkEnd(props.item) != ''">
               <v-btn slot="activator" flat icon color="info" @click="editItem(Object.assign(props.item, {edit: false, new: false}))">
                 <v-icon>autorenew</v-icon>
               </v-btn>
               <span>Recontratar</span>
             </v-tooltip>
-            <v-tooltip top v-if="$store.getters.options.includes('edit')">
+            <v-tooltip top v-if="$store.getters.permissions.includes('update-consultant')">
               <v-btn slot="activator" flat icon color="accent" @click="editItem(Object.assign(props.item, {edit: true, new: false}))">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top v-if="$store.getters.options.includes('delete')">
+            <v-tooltip top v-if="$store.getters.permissions.includes('delete-consultant')">
               <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -113,7 +113,7 @@ import Vue from "vue";
 import ConsultantForm from "./ConsultantForm";
 import RemoveItem from "../RemoveItem";
 import Loading from "../Loading";
-import { admin, rrhh, juridica } from "../../menu.js";
+
 export default {
   name: "ConsultantIndex",
   components: {
@@ -177,7 +177,7 @@ export default {
     }
   },
   async created() {
-    if (!this.$store.getters.options.includes("edit")) {
+    if (!this.$store.getters.permissions.includes("update-consultant")) {
       this.headers = this.headers.filter(el => {
         return el.text != "Acciones"
       })

@@ -17,7 +17,7 @@
         class="elevation-1"
         style="width:2500px;height:500px;">
           <template slot="items" slot-scope="props">
-            <tr v-model="props.selected">
+            <tr>
               <td class="cell text-xs-center"> {{ props.item.month_shortened }}-{{ props.item.year }} </td>
               <td class="cell text-xs-left"> {{ props.item.position }} </td>
               <td class="cell text-xs-center"> {{ props.item.worked_days }} </td>

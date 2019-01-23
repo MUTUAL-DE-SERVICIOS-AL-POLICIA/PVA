@@ -361,11 +361,11 @@ class Util
       }
     }
     if (empty($decimales)) {
-            // $valor_convertido = $converted . strtoupper($moneda);
+            // $valor_convertido = $converted . mb_strtoupper($moneda);
       $valor_convertido = $converted . '00/100';
     } else {
-      $valor_convertido = $converted . strtoupper($moneda) . ($div_decimales[1]) . '/100';
-            // $valor_convertido = $converted . strtoupper($moneda) . ' CON ' . $decimales . ' ' . strtoupper($centimos);
+      $valor_convertido = $converted . mb_strtoupper($moneda) . ($div_decimales[1]) . '/100';
+            // $valor_convertido = $converted . mb_strtoupper($moneda) . ' CON ' . $decimales . ' ' . mb_strtoupper($centimos);
     }
     return $valor_convertido;
   }

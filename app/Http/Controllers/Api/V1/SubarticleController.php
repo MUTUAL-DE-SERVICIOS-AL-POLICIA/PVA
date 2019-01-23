@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Subarticle;
 
 class SubarticleController extends Controller
@@ -19,6 +20,30 @@ class SubarticleController extends Controller
       $subarticle->stock();
     }
     return $subarticles;
+  }
+
+  /**
+   * Print a supply request.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function store(Request $request)
+  {
+    $filename = 'supply.pdf';
+
+    $data = [
+      'supplies' => $request->all()
+    ];
+
+    return \PDF::loadView('supply.print', $data)
+      ->setOption('page-width', '216')
+      ->setOption('page-height', '279')
+      ->setOption('margin-top', '0')
+      ->setOption('margin-right', '5')
+      ->setOption('margin-bottom', '0')
+      ->setOption('margin-left', '10')
+      ->setOption('encoding', 'utf-8')
+      ->stream($filename);
   }
 
   /**

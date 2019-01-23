@@ -19,14 +19,19 @@ Route::group([
 	Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
 	Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
 	Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
+	// Employee
+	Route::get('employee', 'Api\V1\EmployeeController@index')->name('employees_list');
+	// Position Group
+	Route::get('position_group', 'Api\V1\PositionGroupController@index')->name('position_group_list');
 	// Location
 	Route::get('location/list', 'Api\V1\LocationController@list')->name('location_lists');
 	Route::get('location', 'Api\V1\LocationController@index')->name('location_list');
 	Route::get('location/{id}', 'Api\V1\LocationController@show')->name('location_details');
 	// Material
 	Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
-	Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'show']);
+	Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
 	Route::resource('request','Api\V1\RequestController')->only(['store']);
+	
 	// With credentials
 	Route::group([
 		'middleware' => 'jwt.auth'
@@ -36,7 +41,6 @@ Route::group([
 		Route::delete('auth', 'Api\V1\AuthController@destroy')->name('logout');
 		Route::patch('auth', 'Api\V1\AuthController@update')->name('refresh');
 		// Employee
-		Route::get('employee', 'Api\V1\EmployeeController@index')->name('employees_list');
 		Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
 		// Employee-Contract
 		Route::group([
@@ -168,7 +172,6 @@ Route::group([
 			Route::get('', 'Api\V1\CompanyAddressCityController@get_city')->name('company_address_get_city');
 		});
 		// Position Group
-		Route::get('position_group', 'Api\V1\PositionGroupController@index')->name('position_group_list');
 		Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
 		Route::group([
 			'prefix' => 'position_group/{superior_id}',
