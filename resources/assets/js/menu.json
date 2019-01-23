@@ -62,7 +62,7 @@
     "href": "departureIndex",
     "title": "Salidas/Licencias",
     "icon": "directions_run",
-    "permission": "!admin"
+    "permission": null
   }, {
     "href": "phonebookIndex",
     "title": "Agenda Telefonica",
