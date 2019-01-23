@@ -29,21 +29,7 @@ class SubarticleController extends Controller
    */
   public function store(Request $request)
   {
-    $filename = 'supply.pdf';
-
-    $data = [
-      'supplies' => $request->all()
-    ];
-
-    return \PDF::loadView('supply.print', $data)
-      ->setOption('page-width', '216')
-      ->setOption('page-height', '279')
-      ->setOption('margin-top', '0')
-      ->setOption('margin-right', '5')
-      ->setOption('margin-bottom', '0')
-      ->setOption('margin-left', '10')
-      ->setOption('encoding', 'utf-8')
-      ->stream($filename);
+    return response(null, 200);
   }
 
   /**

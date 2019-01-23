@@ -12,8 +12,8 @@
         ></v-select>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="showRequest && requestButton.state" @click.native="printRequest()" class="danger white--text ml-0">
-        <div class="font-weight-regular subheading pa-2">IMPRIMIR</div>
+      <v-btn v-if="showRequest && requestButton.state" @click.native="sendRequest()" class="danger white--text ml-0">
+        <div class="font-weight-regular subheading pa-2">ENVIAR PEDIDO</div>
       </v-btn>
       <v-btn v-if="showRequest" @click.native="switchRequest()" class="primary white--text ml-0">
         <div class="font-weight-regular subheading pa-2">{{ requestButton.text }}</div>
@@ -145,18 +145,14 @@ export default {
     }
   },
   methods: {
-    async printRequest() {
+    async sendRequest() {
       try {
-        let res = await axios({
-          method: "POST",
-          url: `subarticle`,
-          responseType: "arraybuffer",
-          data: this.supplyRequest
-        });
-        let blob = new Blob([res.data], {
-          type: "application/pdf"
-        });
-        printJS(window.URL.createObjectURL(blob));
+        let res = await axios.post(`subarticle`, {
+          employee: {
+            id: this.$store.getters.id
+          },
+          supplyRequest: this.supplyRequest
+        })
       } catch (e) {
         console.log(e)
       }

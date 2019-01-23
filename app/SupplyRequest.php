@@ -9,8 +9,8 @@ class SupplyRequest extends Model
   protected $connection = 'nsiaf';
   protected $table = 'requests';
 
-  public function subarticle_requests()
+  public function subarticles()
   {
-    return $this->hasMany(SubarticleRequest::class, 'request_id', 'id');
+    return $this->belongsToMany(Subarticle::class, 'subarticle_requests', 'request_id', 'subarticle_id')->withPivot('id', 'amount', 'amount_delivered', 'total_delivered', 'invalidate');
   }
 }
