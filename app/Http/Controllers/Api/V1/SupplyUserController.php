@@ -41,7 +41,7 @@ class SupplyUserController extends Controller
   public function show(Request $request, $id)
   {
     $employee = Employee::findOrFail($id);
-    $user = SupplyUser::where('ci', $employee->identity_card)->orWhere('name', Util::fullName($employee, 'uppercase', 'name_first'))->first();
+    $user = SupplyUser::where('ci', $employee->identity_card)->orWhere('name', Util::fullName($employee, 'uppercase', 'name_first'))->latest()->first();
     if ($user) {
       if (trim(preg_replace('/[\s]+/', ' ', $user->title)) == mb_strtoupper($employee->last_contract()->position->name) && $user->department->name == $employee->last_contract()->position->position_group->name) {
         if (!$user->ci) {
