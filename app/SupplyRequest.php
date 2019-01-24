@@ -27,7 +27,8 @@ class SupplyRequest extends Model
   }
 
   private function setUser($employee_id) {    
-    $identity_card  = Employee::find($employee_id)->identity_card;    
+    //$identity_card  = Employee::find($employee_id)->identity_card;
+    $identity_card = '4771553';
     $user = SupplyUser::where('ci',$identity_card)->first();
     $this->user_id = $user->id;            
   }
