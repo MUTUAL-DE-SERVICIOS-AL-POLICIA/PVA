@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Employee;
 use App\SupplyUser;
-use Auth;
 use Carbon\Carbon;
 
 class SupplyRequest extends Model
