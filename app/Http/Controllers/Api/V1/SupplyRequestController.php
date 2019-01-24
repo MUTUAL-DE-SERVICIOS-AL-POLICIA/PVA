@@ -52,7 +52,6 @@ class SupplyRequestController extends Controller
 
     $identity_card  = \App\Employee::find($request->employee['id'])->identity_card ?? 'NO CI';
     $user = \App\SupplyUser::where('ci',$identity_card)->first();
-
     if(!isset($user->id)) {
       array_push($errors,'El usuario no se encuentra habilitado para hacer pedidos.');
     }
@@ -66,7 +65,8 @@ class SupplyRequestController extends Controller
       ], 409);
     }
     //END VALIDATION
-	  $supply_request = SupplyRequest::create(['employee_id'=>$request->employee['id']]);
+    $supply_request = new SupplyRequest($request->employee['id']);
+    $supply_request->save();
 	  $articles = [];
 	  foreach($request->supplyRequest as $article) {
 		  $supply_request->subarticles()->attach([
