@@ -153,10 +153,10 @@ export default {
           },
           supplyRequest: this.supplyRequest
         })
-        console.log(res.data.nro_solicitud);
         this.toastr.success('Solicitud realizada correctamente. Solicitud Número: '+res.data.nro_solicitud);
       } catch (e) {
         console.log(e)
+        toastr.error('No sdfsfsdf')
       }
     },
     switchRequest() {
