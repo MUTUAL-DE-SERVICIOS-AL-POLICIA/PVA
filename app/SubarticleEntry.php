@@ -8,6 +8,7 @@ class SubarticleEntry extends Model
 {
   protected $connection = 'nsiaf';
   protected $table = 'entry_subarticles';
+  public $timestamps = true;
 
   public function subarticle()
   {

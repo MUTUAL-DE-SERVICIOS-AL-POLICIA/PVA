@@ -12,6 +12,7 @@ class SupplyRequest extends Model
 {
   protected $connection = 'nsiaf';
   protected $table = 'requests';
+  public $timestamps = true;
   
   function __construct($employee_id = 0) {    
     if($employee_id == 0) {
@@ -31,7 +32,7 @@ class SupplyRequest extends Model
     $user = SupplyUser::where('ci',$identity_card)->first();
     $this->user_id = $user->id;            
   }
-
+  
   private function setAdmin() {
     $role = \App\Role::where('name','almacenes')->first();				
 		$user = \App\User::whereHas('roles',function($query) use ($role) {

@@ -8,6 +8,7 @@ class SupplyDepartment extends Model
 {
   protected $connection = 'nsiaf';
   protected $table = 'departments';
+  public $timestamps = true;
 
   public function users()
   {

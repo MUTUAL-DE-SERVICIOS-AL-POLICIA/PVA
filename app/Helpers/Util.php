@@ -74,7 +74,7 @@ class Util
 
   public static function removeSpaces($text)
   {
-    $re = ' / \s + / ';
+    $re = '/[\s]+/';
     $subst = ' ';
     $result = preg_replace($re, $subst, $text);
     return $result ? trim($result) : null;
