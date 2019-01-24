@@ -43,7 +43,7 @@ class SupplyUserController extends Controller
     $employee = Employee::findOrFail($id);
     $user = SupplyUser::where('ci', $employee->identity_card)->orWhere('name', Util::fullName($employee, 'uppercase', 'name_first'))->first();
     if ($user) {
-      if (preg_replace('/[\s]+/', ' ', $user->title) == mb_strtoupper($employee->last_contract()->position->name) && $user->department->name == $employee->last_contract()->position->position_group->name) {
+      if (trim(preg_replace('/[\s]+/', ' ', $user->title)) == mb_strtoupper($employee->last_contract()->position->name) && $user->department->name == $employee->last_contract()->position->position_group->name) {
         if (!$user->ci) {
           $user->ci = $employee->identity_card;
           $user->save();
@@ -58,8 +58,7 @@ class SupplyUserController extends Controller
     } else {
       $user = $this->create_user($employee, $request['username']);
     }
-    $user->requests;
-    return $user;
+    return $user->requests()->where('invalidate', 0)->orderBy('created_at', 'DESC')->get();
   }
 
   /**
