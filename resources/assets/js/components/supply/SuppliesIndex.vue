@@ -156,7 +156,6 @@ export default {
         this.toastr.success('Solicitud realizada correctamente. Solicitud Número: '+res.data.nro_solicitud);
       } catch (e) {
         console.log(e)
-        toastr.error('No sdfsfsdf')
       }
     },
     switchRequest() {
