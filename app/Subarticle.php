@@ -25,7 +25,7 @@ class Subarticle extends Model
   }
 
   public function stock()
-  {    
+  {
     $entries = $this->entries()->where('invalidate', 0)->sum('amount');
 
     $requests = $this->requests()->wherePivot('invalidate', 0)->where('status', 'delivered')->where('requests.invalidate', 0)->sum('total_delivered');

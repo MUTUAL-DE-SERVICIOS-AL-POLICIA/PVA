@@ -7,6 +7,7 @@ use App\Employee;
 use App\SupplyUser;
 use Auth;
 use Carbon\Carbon;
+
 class SupplyRequest extends Model
 {
   protected $connection = 'nsiaf';
