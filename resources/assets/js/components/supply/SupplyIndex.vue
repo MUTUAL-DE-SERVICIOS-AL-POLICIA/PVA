@@ -147,7 +147,7 @@ export default {
   methods: {
     async sendRequest() {
       try {
-        let res = await axios.post(`subarticle`, {
+        let res = await axios.post(`supply_request`, {
           employee: {
             id: this.$store.getters.id
           },
@@ -180,14 +180,7 @@ export default {
       } else {
         this.supplyRequest = this.supplyRequest.filter(o => o.id != item.id)
       }
-    },
-    async printRequest() {
-      try {
-        let res = await axios.post('/request',this.supplyRequest);
-      } catch (e) {
-        console.log(e);
-      }
-    },
+    },    
     async getMaterials() {
       try {
         let res = await axios.get(`/material`)
