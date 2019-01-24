@@ -15,7 +15,7 @@ class SupplyRequestController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(Request $request)
-	{				
+	{			
 		$supply_request = SupplyRequest::create(['employee_id'=>$request->employee['id']]);				
 		$articles = [];
 		foreach($request->supplyRequest as $article) {			

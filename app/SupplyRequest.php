@@ -13,24 +13,20 @@ class SupplyRequest extends Model
   protected $table = 'requests';
   
   function __construct($employee_id = 0) {    
+    if($employee_id == 0) {
+      return 0;
+    }
     $this->setUser($employee_id);        
     $this->setAdmin();
     $this->status = 'initiation';    
     $this->delivery_date = Carbon::now()->format('Y-m-d H:i:s');    
-    $this->invalidate = 0;
-    // $last = \App\SupplyRequest::where('admin_id',$this->admin_id)->max();
-    // if(!$last) {
-    //   $last = 0;
-    // }
-    // $this->nro_solicitud = $last->+1;
+    $this->invalidate = 0;    
+    $last = SupplyRequest::where('admin_id',$this->admin_id)->max('nro_solicitud');
+		$this->nro_solicitud = $last+1;    
   }
 
-  private function setUser($employee_id) {
-    if($employee_id == 0) {
-      return 0;
-    }
-    //$identity_card  = Employee::find($employee_id)->identity_card;    
-    $identity_card = '7555331';
+  private function setUser($employee_id) {    
+    $identity_card  = Employee::find($employee_id)->identity_card;    
     $user = SupplyUser::where('ci',$identity_card)->first();
     $this->user_id = $user->id;            
   }
