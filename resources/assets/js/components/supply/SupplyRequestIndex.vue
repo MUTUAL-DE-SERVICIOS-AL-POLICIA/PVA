@@ -39,7 +39,7 @@
       expand
     >
       <template slot="items" slot-scope="props">
-        <tr>
+        <tr :class="props.expanded ? 'expanded' : ''">
           <td class="text-md-center" @click="getSubarticles(props)">{{ props.item.nro_solicitud }}</td>
           <td class="text-md-center" @click="getSubarticles(props)">{{ $moment(props.item.created_at).format('L') }}</td>
           <td class="text-md-center" @click="getSubarticles(props)">{{ props.item.delivery_date ? $moment(props.item.delivery_date).format('L') : '-' }}</td>
@@ -47,26 +47,27 @@
         </tr>
       </template>
       <template slot="expand" slot-scope="{ item }">
-        <table>
-          <thead>
-            <th class="font-weight-bold">Item</th>
-            <th class="font-weight-bold">Pedido</th>
-            <th class="font-weight-bold">Entregado</th>
-          </thead>
-          <tbody>
-            <tr v-for="subarticle in item.subarticles" :key="subarticle.id">
+        <v-data-table
+          :headers="subHeaders"
+          :items="item.subarticles"
+          disable-initial-sort
+          hide-actions
+          class="elevation-4"
+        >
+          <template slot="items" slot-scope="props">
+            <tr class="sub-table">
               <td class="text-md-center">
-                <v-list-tile-content>{{ subarticle.description }}</v-list-tile-content>
+                {{ props.item.description }}
               </td>
               <td class="text-md-center">
-                <v-list-tile-content>{{ subarticle.pivot.amount }}</v-list-tile-content>
+                {{ props.item.pivot.amount }}
               </td>
               <td class="text-md-center">
-                <v-list-tile-content>{{ subarticle.pivot.total_delivered }}</v-list-tile-content>
+                {{ props.item.pivot.total_delivered }}
               </td>
             </tr>
-          </tbody>
-        </table>
+          </template>
+        </v-data-table>
       </template>
       <v-alert slot="no-results" :value="true" color="error">
         La búsqueda de "{{ search }}" no encontró resultados.
@@ -124,6 +125,11 @@ export default {
       { align: "center", text: "Fecha de Entrega", class: ["ma-0", "pa-0"], value: "delivery_date" },
       { align: "center", text: "Observación", class: ["ma-0", "pa-0"], value: "observacion" }
     ],
+    subHeaders: [
+      { align: "center", sortable: false, text: "Artículo", class: ["ma-0", "pa-0"], value: "description" },
+      { align: "center", sortable: false, text: "Pedido", class: ["ma-0", "pa-0"], value: "amount" },
+      { align: "center", sortable: false, text: "Entregado", class: ["ma-0", "pa-0"], value: "total_delivered" }
+    ],
   }),
   computed: {
     filteredRequests() {
@@ -165,3 +171,13 @@ export default {
   }
 }
 </script>
+
+<style>
+.expanded {
+  border-top: 1px solid black;
+  background-color: #42B2A6;
+}
+.sub-table {
+  border-bottom: 1px solid black;
+}
+</style>
