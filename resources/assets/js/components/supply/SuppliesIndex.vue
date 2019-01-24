@@ -85,7 +85,7 @@
 
 <script>
 export default {
-  name: "SupplyIndex",
+  name: "SuppliesIndex",
   data: () => ({
     loading: true,
     search: '',

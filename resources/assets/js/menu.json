@@ -69,9 +69,21 @@
     "icon": "contact_phone",
     "permission": null
   }, {
-    "href": "supplyIndex",
     "title": "Almacén",
     "icon": "shopping_cart",
-    "permission": null
+    "permission": null,
+    "group": [
+      {
+        "href": "supplyRequestIndex",
+        "title": "Pedidos",
+        "icon": "send",
+        "permission": "read-eventual"
+      }, {
+        "href": "suppliesIndex",
+        "title": "Artículos",
+        "icon": "add_shopping_cart",
+        "permission": "read-procedure-eventual"
+      }
+    ]
   }
 ]
