@@ -153,6 +153,7 @@ export default {
           },
           supplyRequest: this.supplyRequest
         })
+        this.toastr.success('Solicitud realizada correctamente. Solicitud Número: '+res.data.nro_solicitud);
       } catch (e) {
         console.log(e)
       }
