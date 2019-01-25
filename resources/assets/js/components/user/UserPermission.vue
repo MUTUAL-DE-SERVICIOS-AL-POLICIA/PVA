@@ -7,7 +7,7 @@
       :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
       disable-initial-sort
     >
-      <template slot="items" slot-scope="props">
+      <template slot="items" slot-scope="props" v-if="props.item.roles.length > 0">
         <tr v-if="props.item.roles[0].name != 'admin'">
           <td class="text-xs-center">
             <v-tooltip right v-if="props.item.employee">
