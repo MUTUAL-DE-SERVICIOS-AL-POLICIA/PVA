@@ -18,7 +18,7 @@
       <v-btn v-if="showRequest" @click.native="switchRequest()" class="primary white--text ml-0">
         <div class="font-weight-regular subheading pa-2">{{ requestButton.text }}</div>
       </v-btn>
-      <v-divider
+      <v-divider 
         class="mx-2"
         inset
         vertical
