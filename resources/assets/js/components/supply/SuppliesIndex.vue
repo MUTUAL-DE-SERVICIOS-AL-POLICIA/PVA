@@ -154,6 +154,7 @@ export default {
           supplyRequest: this.supplyRequest
         })
         this.toastr.success('Solicitud realizada correctamente. Solicitud Número: '+res.data.nro_solicitud);
+        this.$router.replace({name:'supplyRequestIndex'});
       } catch (e) {
         console.log(e)
       }
