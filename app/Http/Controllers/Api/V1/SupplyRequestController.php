@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\SupplyRequest;
-use Auth;
+
 class SupplyRequestController extends Controller
 {
   /**
@@ -32,15 +32,48 @@ class SupplyRequestController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request)
-  {			
-	  $supply_request = SupplyRequest::create(['employee_id'=>$request->employee['id']]);				
+  {
+    //VALIDATION
+    $errors = [];
+    $role = \App\Role::where('name','almacenes')->first();
+    if(!isset($role->id)) {
+      $roleid = 0;
+      array_push($errors,'No se econtró el rol ALMACENES.');
+    } else {
+      $roleid = $role->id;
+    }
+
+		$user = \App\User::whereHas('roles', function($query) use ($roleid) {
+			$query->where('role_id',$roleid);
+    })->first();
+    if(!isset($user->id)) {
+      array_push($errors,'No se encontró encargado de almacenes.');
+    }
+
+    $identity_card  = \App\Employee::find($request->employee['id'])->identity_card ?? 'NO CI';
+    $user = \App\SupplyUser::where('ci',$identity_card)->first();
+    if(!isset($user->id)) {
+      array_push($errors,'El usuario no se encuentra habilitado para hacer pedidos.');
+    }
+    if(sizeof($errors) > 0)
+    {
+      return response()->json([
+        'message' => 'bad database formed',
+        'errors' => [
+            'type' => $errors,
+        ]
+      ], 409);
+    }
+    //END VALIDATION
+    $supply_request = new SupplyRequest($request->employee['id']);
+    $supply_request->save();
 	  $articles = [];
-	  foreach($request->supplyRequest as $article) {			
+	  foreach($request->supplyRequest as $article) {
 		  $supply_request->subarticles()->attach([
 				  $article['id']=> ['amount' => $article['request'] ]
-			  ]);				
+			  ]);
 	  }
-	  return $supply_request;    
+	  return $supply_request;
   }
 
   /**
