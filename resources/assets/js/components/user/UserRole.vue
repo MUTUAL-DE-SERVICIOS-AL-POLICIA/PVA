@@ -55,7 +55,7 @@ import Vue from "vue";
 import RemoveItem from "../RemoveItem";
 
 export default {
-  name: "userRegistered",
+  name: "userRole",
   components: {
     RemoveItem
   },
