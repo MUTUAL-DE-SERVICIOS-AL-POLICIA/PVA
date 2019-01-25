@@ -131,7 +131,7 @@ class AuthController extends Controller
 	{
 		if ($employee == null) {
 			$user = $this->guard()->user();
-			$id = $user->id;
+			$id = $user->employee_id;
 			$username = $user->username;
 			$role = $user->roles[0]->name;
 			$permissions = array_unique(array_merge($user->roles[0]->permissions->pluck('name')->toArray(), $user->permissions->pluck('name')->toArray()));
