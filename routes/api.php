@@ -32,7 +32,7 @@ Route::group([
 	Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);	
 	// SupplyUser
 	Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
-	Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show','store']);
+	Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show', 'store']);
 
 	// With credentials
 	Route::group([
@@ -229,6 +229,8 @@ Route::group([
 			// User
 			Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update']);
 			Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'destroy']);
+			// Permission
+			Route::resource('permission', 'Api\V1\PermissionController')->only(['index']);
 			// Role
 			Route::get('role', 'Api\V1\RoleController@index')->name('roles_list');
 			Route::get('role/{id}', 'Api\V1\RoleController@show')->name('role_details');
@@ -255,6 +257,19 @@ Route::group([
 					Route::get('', 'Api\V1\UserRoleController@get_role')->name('user_role_details');
 					Route::patch('', 'Api\V1\UserRoleController@set_role')->name('user_set_role');
 					Route::delete('', 'Api\V1\UserRoleController@unset_role')->name('user_unset_role');
+				});
+			});
+			// User-Permission
+			Route::group([
+				'prefix' => 'user/{user_id}/permission',
+			], function () {
+				Route::get('', 'Api\V1\UserPermissionController@get_permissions')->name('user_permisions_list');
+				Route::group([
+					'prefix' => '/{permission_id}',
+				], function () {
+					Route::get('', 'Api\V1\UserPermissionController@get_permission')->name('user_permission_details');
+					Route::patch('', 'Api\V1\UserPermissionController@set_permission')->name('user_set_permission');
+					Route::delete('', 'Api\V1\UserPermissionController@unset_permission')->name('user_unset_permission');
 				});
 			});
 			// User-Actions

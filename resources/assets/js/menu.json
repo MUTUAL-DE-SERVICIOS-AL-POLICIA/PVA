@@ -62,7 +62,7 @@
     "href": "departureIndex",
     "title": "Salidas/Licencias",
     "icon": "directions_run",
-    "permission": null
+    "permission": "!admin"
   }, {
     "href": "phonebookIndex",
     "title": "Agenda Telefonica",
@@ -71,7 +71,7 @@
   }, {
     "title": "Almacén",
     "icon": "shopping_cart",
-    "permission": null,
+    "permission": "!admin",
     "group": [
       {
         "href": "supplyRequestIndex",

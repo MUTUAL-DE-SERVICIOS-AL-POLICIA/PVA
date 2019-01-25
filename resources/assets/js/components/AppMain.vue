@@ -13,7 +13,7 @@
     >
       <v-list>
         <div v-for="item in menuLeft" :key="item.title" class="mb-0 mt-0">
-          <template v-if="item.permission == null || $store.getters.permissions.includes(item.permission) || ($store.getters.role == 'admin' && item.permission != '!admin')">
+          <template v-if="checkPermission(item)">
             <v-list-tile
               v-if="!item.group"
               :to="{name: item.href}"
@@ -49,7 +49,7 @@
                   @mouseover="miniVariant = false"
                   @mouseout="miniVariant = true"
                 >
-                  <template v-if="item.permission == null || $store.getters.permissions.includes(item.permission) || ($store.getters.role == 'admin' && item.permission != '!admin')">
+                  <template v-if="checkPermission(item)">
                     <v-list-tile-action>
                       <v-icon :class="!miniVariant ? 'pl-4' : 'ml-2'">{{ group.icon }}</v-icon>
                     </v-list-tile-action>
@@ -150,6 +150,9 @@ export default {
         console.log(e);
         this.$store.commit("setDate", this.$moment().format("YYYY-MM-DD"));
       }
+    },
+    checkPermission(item) {
+      return item.permission == null || this.$store.getters.permissions.includes(item.permission) || (this.$store.getters.role == 'admin' && item.permission != '!admin') || (this.$store.getters.role != 'admin' && item.permission == '!admin')
     }
   },
   created: function() {
