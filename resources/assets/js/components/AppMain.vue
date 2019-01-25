@@ -152,7 +152,7 @@ export default {
       }
     },
     checkPermission(item) {
-      return item.permission == null || this.$store.getters.permissions.includes(item.permission) || (this.$store.getters.role == 'admin' && item.permission != '!admin') || (this.$store.getters.role != 'admin' && item.permission == '!admin')
+      return item.permission == null || this.$store.getters.permissions.includes(item.permission) || (this.$store.getters.role == 'admin' && item.permission != '!admin') || (this.$store.getters.role != 'admin' && item.permission == '!admin') || (this.$store.getters.role == 'admin' && this.$store.getters.id)
     }
   },
   created: function() {
