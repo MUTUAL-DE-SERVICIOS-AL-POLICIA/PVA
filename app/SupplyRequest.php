@@ -14,16 +14,15 @@ class SupplyRequest extends Model
   public $timestamps = true;
 
   function __construct($employee_id = 0) {
-    if($employee_id == 0) {
-      return 0;
+    if ($employee_id && $employee_id != 0) {
+      $this->setUser($employee_id);
+      $this->setAdmin();
+      $this->status = 'initiation';
+      $this->delivery_date = Carbon::now()->format('Y-m-d H:i:s');
+      $this->invalidate = 0;
+      $last = SupplyRequest::where('admin_id',$this->admin_id)->max('nro_solicitud');
+      $this->nro_solicitud = $last+1;
     }
-    $this->setUser($employee_id);
-    $this->setAdmin();
-    $this->status = 'initiation';
-    $this->delivery_date = Carbon::now()->format('Y-m-d H:i:s');
-    $this->invalidate = 0;
-    $last = SupplyRequest::where('admin_id',$this->admin_id)->max('nro_solicitud');
-		$this->nro_solicitud = $last+1;
   }
 
   private function setUser($employee_id) {
