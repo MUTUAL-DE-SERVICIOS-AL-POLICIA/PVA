@@ -55,8 +55,8 @@
     "permission": "read-user-action"
   }, {
     "href": "departureAdmin",
-    "title": "Salidas y Licencias",
-    "icon": "directions_walk",
+    "title": "Aprobar Licencias y S.",
+    "icon": "alarm_on",
     "permission": "read-departure"
   }, {
     "href": "departureIndex",

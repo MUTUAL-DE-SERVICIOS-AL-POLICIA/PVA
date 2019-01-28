@@ -232,7 +232,8 @@ Cada acción generada por los usuarios es guardada como respaldo de la actividad
 
 ## SALIDAS Y LICENCIAS
 
-### SOLICITUD DE SALIDAS Y LICIENCIAS
+### SOLICITUD DE SALIDAS Y LICENCIAS
+
 Seleccione la opción de salidas y licencias como se muestra en la siguiente imagen:
 
 ![IMAGE](./img/menu_departure.png)
@@ -264,8 +265,9 @@ Proceda a imprimir la solicitud.
 
 Una vez solicitado debe dirigirse a Recursos humanos con la documentación correspondiente para que la solicitud sea aprobada.
 
-### ADMINISTRACIÓN DE SALIDAS Y LICIENCIAS
-Seleccione la opción de "Administración de salidas y liciencias" el cual le mostrara la siguiente vista:
+### ADMINISTRACIÓN DE SALIDAS Y LICENCIAS
+
+Seleccione la opción de "Administración de salidas y licencias" el cual le mostrara la siguiente vista:
 
 ![IMAGE](./img/admin_departure.png)
 
@@ -281,3 +283,41 @@ Seleccione la opción de "Administración de salidas y liciencias" el cual le mo
 - **3)** Seleccione tipo de solicitud (salida, licencia).
 - **4)** Seleccione estado de solicitud.
 - **5)** Seleccione rango de fechas de solicitud.
+
+## ALMACENES
+
+### SOLICITUDES DE PEDIDOS
+
+Seleccione la opción de `Pedidos` del grupo *Almacén*, el cual le mostrara la siguiente vista:
+
+![IMAGE](./img/supply_request.png)
+
+- **1)** Filtro de pedidos que muestra los Todos los pedidos, pedidos Nuevos, Entregados y Cancelados.
+- **2)** Detalles de un pedido.
+- **3)** Impresión de la solicitud.
+
+![IMAGE](./img/supply_request_print.png)
+
+### SOLICITUD DE ARTÍCULOS EN STOCK
+
+Seleccione la opción de `Artículos` del grupo *Almacén*, el cual le mostrara la siguiente vista:
+
+![IMAGE](./img/supply_index.png)
+
+- **1)** Filtro de artículos agrupados por tipo.
+- **2)** Buscador por nombre.
+- **3)** Cantidad de artículos pedidos.
+- **4)** En caso de que el stock de un artículo sea 0, no se podrá realizar pedido del mismo.
+
+Una vez seleccionada la cantidad de artículos del pedido (15 artículos como máximo) se habilitará la opción de `VER PEDIDO`.
+
+![IMAGE](./img/supply_show.png)
+
+En esta vista se mostrarán todos los artículos pedidos y las cantidades, para eliminar un artículo bastará con reducir la cantidad pedida a `0`.
+
+![IMAGE](./img/supply_send.png)
+
+- **1)** Enviar e imprimir pedido.
+- **2)** Modificar cantidad.
+
+La impresión debe ser en una hoja tamaño carta, está será dividida en dos a fin de obtener dos ejemplares impresos del pedido.
