@@ -18,7 +18,7 @@
       <v-btn v-if="showRequest" @click.native="switchRequest()" class="primary white--text ml-0">
         <div class="font-weight-regular subheading pa-2">{{ requestButton.text }}</div>
       </v-btn>
-      <v-divider 
+      <v-divider
         class="mx-2"
         inset
         vertical
@@ -106,7 +106,7 @@ export default {
       state: false,
       text: 'VER PEDIDO',
       title: "Artículos de almacén"
-    }
+    },
   }),
   mounted() {
     this.getMaterials()
@@ -154,7 +154,7 @@ export default {
           supplyRequest: this.supplyRequest
         })
         this.toastr.success(`Solicitud realizada correctamente. Solicitud Número: ${res.data.nro_solicitud}`)
-        this.$router.replace({ name: 'supplyRequestIndex' })
+        this.$router.replace({ name: 'supplyRequestIndex',params: { id: res.data.id } })
       } catch (e) {
         console.log(e)
       }
@@ -182,7 +182,7 @@ export default {
       } else {
         this.supplyRequest = this.supplyRequest.filter(o => o.id != item.id)
       }
-    },    
+    },
     async getMaterials() {
       try {
         let res = await axios.get(`/material`)

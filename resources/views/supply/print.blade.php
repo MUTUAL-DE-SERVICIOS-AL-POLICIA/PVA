@@ -32,11 +32,11 @@
                 </tr>
                 <tr>
                   <td class="text-center bg-grey-darker text-xxs text-white">Fecha</td>
-                  <td class="text-xs uppercase"> {{ Carbon::now()->format('d/m/Y') }} </td>
+                  <td class="text-xs uppercase"> {{ Carbon::parse($supply_request->delivery_date)->format('d/m/Y') }} </td>
                 </tr>
                 <tr>
                   <td class="text-center bg-grey-darker text-xxs text-white">Nº </td>
-                  <td class="text-xs uppercase">  </td>
+                  <td class="text-xs uppercase"> {{ $supply_request->nro_solicitud }} </td>
                 </tr>
               </tbody>
             </table>
@@ -59,15 +59,15 @@
             </tr>
           </thead>
           <tbody class="table-striped">
-            @foreach ($supplies as $i => $supply)
+            @foreach ($supply_request->subarticles as $i => $supply)
             <tr class="text-sm uppercase font-thin">
               <td class="text-center border">{{ ++$i }}</td>
-              <td class="text-center border">{{ $supply['request'] }}</td>
+              <td class="text-center border">{{ $supply['pivot']->amount }}</td>
               <td class="text-center border">{{ $supply['unit'] }}</td>
               <td class="text-center border">{{ $supply['description'] }}</td>
             </tr>
             @endforeach
-            @for($i=sizeof($supplies);$i<=15;$i++)
+            @for($i=sizeof($supply_request->subarticles);$i<=15;$i++)
                 <tr class="text-sm uppercase">
                     <td class="text-center border">{{ $i }}</td>
                     <td class="text-center border"></td>
