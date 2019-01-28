@@ -40,22 +40,22 @@
               </v-list-tile>
 
               <v-list class="pt-0 pb-0">
-                <v-list-tile
-                  v-for="group in item.group"
-                  :key="group.href"
-                  :to="{name: group.href}"
-                  active-class="tertiary"
-                  @click.stop="miniVariant = true"
-                  @mouseover="miniVariant = false"
-                  @mouseout="miniVariant = true"
-                >
-                  <template v-if="checkPermission(item)">
+                <template v-for="group in item.group">
+                  <v-list-tile
+                    v-if="checkPermission(item)"
+                    :key="group.href"
+                    :to="{name: group.href}"
+                    active-class="tertiary"
+                    @click.stop="miniVariant = true"
+                    @mouseover="miniVariant = false"
+                    @mouseout="miniVariant = true"
+                  >
                     <v-list-tile-action>
                       <v-icon :class="!miniVariant ? 'pl-4' : 'ml-2'">{{ group.icon }}</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-title>{{ group.title }}</v-list-tile-title>
-                  </template>
-                </v-list-tile>
+                  </v-list-tile>
+                </template>
               </v-list>
             </v-list-group>
           </template>
@@ -126,12 +126,12 @@ export default {
       if (process.env.NODE_ENV == 'production') {
         return {
           color: `primary white--text`,
-          text: `SISTEMA DE RECURSOS HUMANOS`
+          text: `PLATAFORMA VIRTUAL ADMINISTRATIVA`
         }
       } else {
         return {
           color: `error white--text`,
-          text: `SISTEMA DE RECURSOS HUMANOS (VERSIÓN DE PRUEBA)`
+          text: `PLATAFORMA VIRTUAL ADMINISTRATIVA (VERSIÓN DE PRUEBA)`
         }
       }
     }
