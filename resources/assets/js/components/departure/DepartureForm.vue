@@ -328,7 +328,6 @@ export default {
         let valid = await this.$validator.validateAll();
         this.checkMonthDayYear();
         if (valid && this.valid) {
-          console.log('validadoooo'+this.selectedIndex);
           if (this.selectedIndex === -1) {
             this.selectedCertificate.data = this.selectedItem;
             let certificate = await axios.post('/certificate', this.selectedCertificate);
