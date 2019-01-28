@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
-    <v-tooltip slot="activator" top v-if="$store.params.options.includes('new')">
+    <v-tooltip slot="activator" top v-if="$store.getters.role == 'admin'">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Contrato</span>
     </v-tooltip>
@@ -79,7 +79,7 @@ export default {
     };
   },
   created() {    
-    if (this.$store.getters.currentUser.roles[0].name == 'juridica') {
+    if (this.$store.getters.role == 'juridica') {
       this.juridica = 1
     }
   },

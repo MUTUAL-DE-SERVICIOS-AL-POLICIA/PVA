@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="1000px" @keydown.esc="close">
-    <v-tooltip slot="activator" top v-if="$store.getters.options.includes('new')">
+    <v-tooltip slot="activator" top v-if="$store.getters.permissions.includes('create-eventual')">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Contrato</span>
     </v-tooltip>
@@ -82,7 +82,7 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="selectedItem.id && $store.getters.currentUser.roles[0].name != 'admin'"
+                      :disabled="selectedItem.id && $store.getters.role != 'admin'"
                     >
                       <v-text-field
                         slot="activator"
@@ -93,7 +93,7 @@
                         name="Fecha de inicio"
                         :error-messages="errors.collect('Fecha de inicio')"
                         readonly
-                        :disabled="selectedItem.id && $store.getters.currentUser.roles[0].name != 'admin'"
+                        :disabled="selectedItem.id && $store.getters.role != 'admin'"
                         autocomplete='cc-exp-month'
                       ></v-text-field>
                       <v-date-picker v-model="date" no-title 
@@ -113,14 +113,14 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="selectedItem.id && $store.getters.currentUser.roles[0].name != 'admin'"
+                      :disabled="selectedItem.id && $store.getters.role != 'admin'"
                     >
                       <v-text-field
                         slot="activator"
                         v-model="formatDateEnd"
                         label="Fecha de conclusión"
                         prepend-icon="event" 
-                        :disabled="selectedItem.id && $store.getters.currentUser.roles[0].name != 'admin'"
+                        :disabled="selectedItem.id && $store.getters.role != 'admin'"
                         autocomplete='cc-exp-year'
                         readonly
                         clearable
@@ -246,7 +246,7 @@
                     v-validate="'required'"
                     name="Horario"
                     :error-messages="errors.collect('Horario')"
-                    v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh' || $store.getters.currentUser.roles[0].name == 'juridica'"
+                    v-if="$store.getters.role != 'financiera'"
                   >
                     <template v-for="n in jobSchedules">
                       <v-radio
@@ -428,7 +428,7 @@ export default {
     };
   },
   created() {
-    if (this.$store.getters.currentUser.roles[0].name == "juridica") {
+    if (this.$store.getters.role == "juridica") {
       this.juridica = true;
     }
   },
@@ -712,6 +712,7 @@ export default {
         this.edit = true;
         this.showMore = false
       }
+      if (this.selectedItem.retirement_date) this.deactivateContract = true
       this.onSelectEmployee(item.employee_id);
       this.onSelectPosition(item.position_id);
       if (item.job_schedules[0]) {

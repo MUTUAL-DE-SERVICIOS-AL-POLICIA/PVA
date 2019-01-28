@@ -136,7 +136,7 @@ class ConsultantPayrollPrintController extends Controller
 			$response->data['title']->position_group = $position_group->name;
 		}
 
-		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]) . ".pdf";
+		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, mb_strtoupper($month->name)]) . ".pdf";
 
 		$footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => true, 'date' => $response->data['procedure']->pay_date ? Carbon::parse($response->data['procedure']->pay_date)->format('d/m/Y') : Carbon::now()->format('d/m/Y H:i')))->render();
 

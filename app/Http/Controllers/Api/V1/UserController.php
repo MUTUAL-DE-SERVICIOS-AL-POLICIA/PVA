@@ -26,7 +26,13 @@ class UserController extends Controller
 	 */
 	public function index()
 	{
-		return User::where('active', true)->with('employee')->with('roles')->orderBy('username')->get();
+		$users = User::where('active', true)->with('roles')->whereNotNull('employee_id')->with('employee')->orderBy('username')->get();
+		foreach ($users as $i => $user) {
+			$permissions_list = $user->allPermissions()->pluck('id');
+			unset($user['permissions']);
+			$user->permissions = $permissions_list;
+		}
+		return $users;
 	}
 
 	/**

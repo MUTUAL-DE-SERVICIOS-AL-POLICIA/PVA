@@ -1,0 +1,89 @@
+[
+  {
+    "href": "dashboard",
+    "title": "Inicio",
+    "icon": "home",
+    "permission": null
+  }, {
+    "href": "employeeIndex",
+    "title": "Personas",
+    "icon": "group",
+    "permission": "read-employee"
+  }, {
+    "title": "Eventuales",
+    "icon": "person",
+    "permission": "read-eventual",
+    "group": [
+      {
+        "href": "contractIndex",
+        "title": "Contratos Eventuales",
+        "icon": "gavel",
+        "permission": "read-eventual"
+      }, {
+        "href": "procedureIndex",
+        "title": "Planillas Eventuales",
+        "icon": "storage",
+        "permission": "read-procedure-eventual"
+      }
+    ]
+  }, {
+    "title": "Consultores",
+    "icon": "work",
+    "permission": "read-consultant",
+    "group": [
+      {
+        "href": "consultantIndex",
+        "title": "Contratos Consultores",
+        "icon": "gavel",
+        "permission": "read-consultant"
+      }, {
+        "href": "consultantProcedureIndex",
+        "title": "Planillas Consultores",
+        "icon": "storage",
+        "permission": "read-procedure-consultant"
+      }
+    ]
+  }, {
+    "href": "userIndex",
+    "title": "Usuarios",
+    "icon": "security",
+    "permission": "admin"
+  }, {
+    "href": "userActionIndex",
+    "title": "Actividad",
+    "icon": "timeline",
+    "permission": "read-user-action"
+  }, {
+    "href": "departureAdmin",
+    "title": "Salidas y Licencias",
+    "icon": "directions_walk",
+    "permission": "read-departure"
+  }, {
+    "href": "departureIndex",
+    "title": "Salidas/Licencias",
+    "icon": "directions_run",
+    "permission": "!admin"
+  }, {
+    "href": "phonebookIndex",
+    "title": "Agenda Telefonica",
+    "icon": "contact_phone",
+    "permission": null
+  }, {
+    "title": "Almacén",
+    "icon": "shopping_cart",
+    "permission": "!admin",
+    "group": [
+      {
+        "href": "supplyRequestIndex",
+        "title": "Pedidos",
+        "icon": "send",
+        "permission": "read-eventual"
+      }, {
+        "href": "suppliesIndex",
+        "title": "Artículos",
+        "icon": "add_shopping_cart",
+        "permission": "read-procedure-eventual"
+      }
+    ]
+  }
+]

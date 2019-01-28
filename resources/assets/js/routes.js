@@ -14,6 +14,8 @@ import DepartureIndex from './components/departure/DepartureIndex'
 import DepartureAdmin from './components/departure/DepartureAdmin'
 import Dashboard from './components/dashboard/Dashboard'
 import PhonebookIndex from './components/phonebook/PhonebookIndex'
+import SuppliesIndex from './components/supply/SuppliesIndex'
+import SupplyRequestIndex from './components/supply/SupplyRequestIndex'
 
 export const routes = [
   {
@@ -30,10 +32,7 @@ export const routes = [
   }, {
     path: '*',
     redirect: {
-      name: 'dashboard',
-      params: {
-        active: true
-      },
+      name: 'dashboard'
     },
     meta: {
       requiresAuth: true
@@ -133,6 +132,20 @@ export const routes = [
     path: '/phonebook',
     component: PhonebookIndex,
     name: 'phonebookIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/supplies',
+    component: SuppliesIndex,
+    name: 'suppliesIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/supply_requests',
+    component: SupplyRequestIndex,
+    name: 'supplyRequestIndex',
     meta: {
       requiresAuth: true
     }

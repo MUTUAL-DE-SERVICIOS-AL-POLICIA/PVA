@@ -44,7 +44,7 @@
           slot="activator"
           color="error"
           dark
-          v-if="$store.getters.currentUser.roles[0].name == 'admin'"
+          v-if="$store.getters.role == 'admin'"
         >
           Eliminar Planilla
         </v-btn>
@@ -173,7 +173,7 @@
                     Guardar
                   </v-btn>
                 </v-flex>
-                <v-flex xs6 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                <v-flex xs6 v-if="$store.getters.role == 'admin'">
                   <v-btn small class="error" @click="deletePayroll(props.item)">
                     Eliminar
                   </v-btn>
@@ -341,8 +341,7 @@ export default {
             .toUpperCase()} de ${res.data.procedure.year}`
         );
         this.$router.push({
-          name: "consultantProcedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Consultores' }).group.find(obj => { return obj.href ==  'consultantProcedureIndex'}).params
+          name: "consultantProcedureIndex"
         });
       } catch (e) {
         console.log(e);
@@ -486,8 +485,7 @@ export default {
           `Planilla de mes de ${res.data.month.name} cerrada`
         );
         this.$router.push({
-          name: "consultantProcedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Consultores' }).group.find(obj => { return obj.href ==  'consultantProcedureIndex'}).params
+          name: "consultantProcedureIndex"
         });
       } catch (e) {
         console.log(e);

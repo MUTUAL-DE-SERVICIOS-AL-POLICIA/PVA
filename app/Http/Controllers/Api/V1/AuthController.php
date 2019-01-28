@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthForm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\User;
+use App\Employee;
 use Ldap;
 
 /** @resource Authenticate
@@ -45,7 +47,6 @@ class AuthController extends Controller
 
 			if ($ldap->connection && $ldap->verify_open_port()) {
 				if ($ldap->bind($request['username'], $request['password'])) {
-					$ldap->unbind();
 					$user = User::where('username', $request['username'])->where('active', true)->first();
 					if ($user) {
 						if (!Hash::check($request['password'], $user->password)) {
@@ -56,7 +57,14 @@ class AuthController extends Controller
 						$token = auth('api')->login($user);
 						$user->remember_token = $token;
 						$user->save();
+						$ldap->unbind();
 						return $this->respondWithToken($token);
+					} else {
+						$employee = Employee::find($ldap->get_entry($request['username'], 'uid')['employeeNumber']);
+						$employee->username = $request['username'];
+						$token = JWTAuth::fromUser(new User(['username' => $request['username']]));
+						$ldap->unbind();
+						return $this->respondWithToken($token, $employee);
 					}
 				}
 				return response()->json([
@@ -119,15 +127,29 @@ class AuthController extends Controller
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	protected function respondWithToken($token)
+	protected function respondWithToken($token, $employee = null)
 	{
-		$this->guard()->user()->roles;
+		if ($employee == null) {
+			$user = $this->guard()->user();
+			$id = $user->employee_id;
+			$username = $user->username;
+			$role = $user->roles[0]->name;
+			$permissions = array_unique(array_merge($user->roles[0]->permissions->pluck('name')->toArray(), $user->permissions->pluck('name')->toArray()));
+		} else {
+			$id = $employee->id;
+			$username = $employee->username;
+			$role = 'guest';
+			$permissions = [];
+		}
 
 		return response()->json([
 			'token' => $token,
 			'token_type' => 'Bearer',
 			'expires_in' => auth('api')->factory()->getTTL(),
-			'user' => $this->guard()->user(),
+			'id' => $id,
+			'user' => $username,
+			'role' => $role,
+			'permissions' => $permissions,
 			'message' => 'Indentidad verificada',
 		], 200);
 	}

@@ -2,6 +2,22 @@
 
 ---
 
+## From [2.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.1.0) to [3.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.0)
+
+* Enable PHP's mysql extension within file `/etc/php/php.ini`
+
+```sh
+extension=pdo_mysql
+```
+
+* Modify `.env` and set credentials to connect with the nsiaf database like the example
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
+* Set user's permissions according to a related role
+
 ## From [2.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.1) to [2.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.1.0)
 
 ```sh

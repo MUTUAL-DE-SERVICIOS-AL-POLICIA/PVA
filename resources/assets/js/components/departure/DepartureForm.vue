@@ -289,7 +289,7 @@ export default {
     },
     async getUser() {
       try {
-        let res = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);
+        let res = await axios.get('/contract/last_contract/' + this.$store.getters.id);
         this.selectedItem.contract_id = res.data.id;
         this.contractType = res.data.contract_type_id;
         this.start_time = res.data.job_schedules[0].start_hour + ':' + res.data.job_schedules[0].start_minutes;
@@ -359,7 +359,7 @@ export default {
       if (this.dateDeparture && this.dateReturn && this.selectedItem.departure_time && this.selectedItem.return_time && this.selectedItem.departure_reason_id) {
         this.errorMessages = null;
         this.valid = true;
-        let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
+        let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.id);
         var rest = 0;
         var rest_hour = 0;
         var rest_day = 0;
@@ -376,19 +376,17 @@ export default {
         var f2 = this.$moment(this.selectedItem.return_date);
 
         if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) { 
-          // if (this.on_vacation == false) {
-            if (f2.diff(f1, "day") == 0) {
-               rest_day = rest_hour;
-            } else if (f2.diff(f1, "day") == 1) {
-              rest_day = rest_hour + 480;
-            } else {
-              rest_day = rest_hour + 960;
-            }
-            if (rest_day > departure_used.data.total_minutes_year_rest) {
-              this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest % 480 / 60) + ' Horas.';
-              this.valid = false;
-            } 
-          // }
+          if (f2.diff(f1, "day") == 0) {
+              rest_day = rest_hour;
+          } else if (f2.diff(f1, "day") == 1) {
+            rest_day = rest_hour + 480;
+          } else {
+            rest_day = rest_hour + 960;
+          }
+          if (rest_day > departure_used.data.total_minutes_year_rest) {
+            this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest % 480 / 60) + ' Horas.';
+            this.valid = false;
+          } 
         } else if (this.departure_type_id == 1 && this.selectedItem.departure_reason_id == 1) { 
           if (rest_hour > departure_used.data.total_minutes_month_rest || f2.diff(f1, "day") != 0) {
             this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_month_rest / 60) + ' Horas y ' + parseInt(departure_used.data.total_minutes_month_rest % 60)+ ' Minutos.';

@@ -8,64 +8,66 @@
       enable-resize-watcher
       fixed
       app
-      v-if="this.$store.getters.currentUser"
+      v-if="$store.getters.user"
       class="normal"
     >
       <v-list>
         <div v-for="item in menuLeft" :key="item.title" class="mb-0 mt-0">
-          <v-list-tile
-            @click="setOptions(item.params)"
-            :to="{name: item.href, params: item.params}"
-            v-if="!item.group"
-            active-class="tertiary"
-            @click.stop="miniVariant = true"
-            @mouseover="miniVariant = false"
-            @mouseout="miniVariant = true"
-          >
-            <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-          </v-list-tile>
-
-          <v-list-group
-            v-else
-            :value="false"
-            :prepend-icon="item.icon"
-            @mouseover="miniVariant = false"
-            @mouseout="miniVariant = true"
-          >
-            <v-list-tile slot="activator">
-              <v-list-tile-title :class="miniVariant ? 'pl-3' : ''">{{ item.title }}</v-list-tile-title>
+          <template v-if="checkPermission(item)">
+            <v-list-tile
+              v-if="!item.group"
+              :to="{name: item.href}"
+              active-class="tertiary"
+              @click.stop="miniVariant = true"
+              @mouseover="miniVariant = false"
+              @mouseout="miniVariant = true"
+            >
+              <v-list-tile-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile>
 
-            <v-list class="pt-0 pb-0" :class="!miniVariant ? 'pl-4' : 'pl-2'">
-              <v-list-tile
-                v-for="group in item.group"
-                :key="group.href"
-                @click="setOptions(group.params)"
-                :to="{name: group.href, params: group.params}"
-                active-class="tertiary"
-                @click.stop="miniVariant = true"
-                @mouseover="miniVariant = false"
-                @mouseout="miniVariant = true"
-              >
-                <v-list-tile-action>
-                  <v-icon>{{ group.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-title>{{ group.title }}</v-list-tile-title>
+            <v-list-group
+              v-else
+              :value="false"
+              :prepend-icon="item.icon"
+              @mouseover="miniVariant = false"
+              @mouseout="miniVariant = true"
+            >
+              <v-list-tile slot="activator">
+                <v-list-tile-title :class="miniVariant ? 'pl-3' : ''">{{ item.title }}</v-list-tile-title>
               </v-list-tile>
-            </v-list>
-          </v-list-group>
+
+              <v-list class="pt-0 pb-0">
+                <template v-for="group in item.group">
+                  <v-list-tile
+                    v-if="checkPermission(group)"
+                    :key="group.href"
+                    :to="{name: group.href}"
+                    active-class="tertiary"
+                    @click.stop="miniVariant = true"
+                    @mouseover="miniVariant = false"
+                    @mouseout="miniVariant = true"
+                  >
+                    <v-list-tile-action>
+                      <v-icon :class="!miniVariant ? 'pl-4' : 'ml-2'">{{ group.icon }}</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-title>{{ group.title }}</v-list-tile-title>
+                  </v-list-tile>
+                </template>
+              </v-list>
+            </v-list-group>
+          </template>
         </div>
       </v-list>
     </v-navigation-drawer>
 
     <v-toolbar
-      :class="bar.color"
       app
+      :class="bar.color"
       :clipped-left="clipped"
-      v-if="this.$store.getters.currentUser"
+      v-if="$store.getters.user"
     >
       <v-btn icon @click.stop="drawer = !drawer; miniVariant = false">
         <v-icon v-html="miniVariant ? 'more_vert' : 'menu'" class="white--text"></v-icon>
@@ -79,9 +81,9 @@
             color="primary"
             dark
           >
-            <template v-if="this.$store.getters.currentUser.username">
+            <template v-if="$store.getters.user">
               <v-icon>person </v-icon>
-              <div>{{ this.$store.getters.currentUser.username }}</div>
+              <div>{{ $store.getters.user }}</div>
             </template>
           </v-btn>
           <v-list>
@@ -108,13 +110,15 @@
 </template>
 
 <script>
+import menuLeft from '../menu.json'
+
 export default {
   data() {
     return {
       clipped: true,
       drawer: true,
-      menuLeft: null,
-      miniVariant: true
+      miniVariant: true,
+      menuLeft: menuLeft
     };
   },
   computed: {
@@ -122,12 +126,12 @@ export default {
       if (process.env.NODE_ENV == 'production') {
         return {
           color: `primary white--text`,
-          text: `SISTEMA DE RECURSOS HUMANOS`
+          text: `PLATAFORMA VIRTUAL ADMINISTRATIVA`
         }
       } else {
         return {
           color: `error white--text`,
-          text: `SISTEMA DE RECURSOS HUMANOS (VERSIÓN DE PRUEBA)`
+          text: `PLATAFORMA VIRTUAL ADMINISTRATIVA (VERSIÓN DE PRUEBA)`
         }
       }
     }
@@ -147,13 +151,12 @@ export default {
         this.$store.commit("setDate", this.$moment().format("YYYY-MM-DD"));
       }
     },
-    setOptions(params) {
-      this.$store.commit("setOptions", params);
+    checkPermission(item) {
+      return item.permission == null || this.$store.getters.permissions.includes(item.permission) || (this.$store.getters.role == 'admin' && item.permission != '!admin') || (this.$store.getters.role != 'admin' && item.permission == '!admin') || (this.$store.getters.role == 'admin' && this.$store.getters.id)
     }
   },
   created: function() {
     this.getDate();
-    this.menuLeft = this.$store.getters.menuLeft;
   }
 };
 </script>

@@ -2,6 +2,24 @@
 
 ---
 
+## [3.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.0) - 2018-01-28
+
+### Added
+
+* NSIAF database connection
+* Printable supply requests
+* Almacenes role
+
+### Fixed
+
+* Departures management
+* Login as guest without role
+* Left navbar mouse position bug when hover on a subgroup
+
+### Changed
+
+* Splitted roles and permissions on users view
+
 ## [2.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.1.0) - 2018-01-11
 
 ### Added

@@ -47,7 +47,7 @@ class LocationForm extends FormRequest
   public function sanitize()
   {
     $input = $this->all();
-    $input['name'] = strtoupper($input['name']);
+    $input['name'] = mb_strtoupper($input['name']);
     $this->replace($input);
   }
 
