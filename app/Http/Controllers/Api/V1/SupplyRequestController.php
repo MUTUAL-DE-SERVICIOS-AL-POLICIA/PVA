@@ -111,4 +111,29 @@ class SupplyRequestController extends Controller
   {
     //
   }
+
+  /**
+   * Print a supplyrequest from.
+   *
+   * @param  \App\SupplyRequest  $supplyRequest
+   * @return \View
+   */
+  public function print($id)
+  {
+    $supply_request = SupplyRequest::find($id);
+
+    $data = [
+      'supply_request' => $supply_request
+    ];
+    $filename = 'solicitudalmacen'.$supply_request->nro_solicitud.'.pdf';
+    return \PDF::loadView('supply.print', $data)
+      ->setOption('page-width', '216')
+      ->setOption('page-height', '279')
+      ->setOption('margin-top', '0')
+      ->setOption('margin-right', '5')
+      ->setOption('margin-bottom', '0')
+      ->setOption('margin-left', '10')
+      ->setOption('encoding', 'utf-8')
+      ->stream($filename);
+  }
 }
