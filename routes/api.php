@@ -33,7 +33,7 @@ Route::group([
 	// SupplyUser
 	Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
 	Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show', 'store']);
-
+	Route::get('supply_request/print/{id}','Api\V1\SupplyRequestController@print');
 	// With credentials
 	Route::group([
 		'middleware' => 'jwt.auth'
