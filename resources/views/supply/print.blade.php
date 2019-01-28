@@ -67,7 +67,7 @@
               <td class="text-center border">{{ $supply['description'] }}</td>
             </tr>
             @endforeach
-            @for($i=sizeof($supply_request->subarticles);$i<=15;$i++)
+            @for($i=sizeof($supply_request->subarticles)+1;$i<=15;$i++)
                 <tr class="text-sm uppercase">
                     <td class="text-center border">{{ $i }}</td>
                     <td class="text-center border"></td>
