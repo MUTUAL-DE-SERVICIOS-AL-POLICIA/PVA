@@ -33,7 +33,7 @@ Route::group([
 	// SupplyUser
 	Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
 	Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show', 'store']);
-	Route::get('supply_request/print/{id}','Api\V1\SupplyRequestController@print');
+	Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
 	// With credentials
 	Route::group([
 		'middleware' => 'jwt.auth'
@@ -301,7 +301,7 @@ Route::group([
 			// Bonus
 			Route::get('bonus/print/{year}', 'Api\V1\BonusController@print')->name('bonus_print');
 			Route::resource('bonus', 'Api\V1\BonusController')->only('index', 'show', 'store', 'update', 'destroy');
-			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['index', 'store', 'show', 'update', 'delete']);
+			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only('index', 'store', 'update', 'delete');
 			// Ticket
 			Route::get('ticket/print/{id}', 'Api\V1\TicketController@print')->name('ticket_print');
 			// Employee
@@ -429,6 +429,13 @@ Route::group([
 			Route::post('employee_discount', 'Api\V1\EmployeeDiscountController@store')->name('employee_discount_store');
 			Route::patch('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@update')->name('employee_discount_update');
 			Route::delete('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@destroy')->name('employee_discount_delete');
+		});
+
+		// FINANCIERA-RRHH routes
+		Route::group([
+			'middleware' => 'role:admin|rrhh|financiera',
+		], function () {
+			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only('show');
 		});
 
 		// JURIDICA-RRHH routes
