@@ -7,7 +7,7 @@
 </head>
 <body style="border: 0; border-radius: 0;">
   @for($it = 0; $it<2; $it++)
-  <div style="height: 50px; max-height: 500px; min-height: 50px; margin-top: 0; padding-top: 0;"></div>
+  <div style="height: 50px; max-height: 50px; min-height: 50px; margin-top: 0; padding-top: 0;"></div>
     <div class="page-break p-10" style="border-radius: 0.75em; border: 1px solid #22292f;">
       <table class="w-100">
         <tr>
@@ -77,7 +77,7 @@
             @endfor
           </tbody>
         </table>
-        <table class="table-info w-100 m-b-1">
+        <table class="w-100"  border="1" frame="void" rules="all">
           <tbody class="">
             <tr class="" style="height: 100px; vertical-align: bottom;">
               <td class="text-center w-50 font-bold text-xxs">Solicitante</td>
