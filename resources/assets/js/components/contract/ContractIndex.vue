@@ -71,30 +71,30 @@
               </span>
             </v-tooltip>
           </td>
-          <td :class="(checkEnd(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center layout" v-if="$store.getters.options.length > 0">
+          <td :class="(checkEnd(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center layout" v-if="$store.getters.role != 'financiera'">
             <v-menu offset-y>
               <v-btn :class="withoutBorders" slot="activator" flat icon color="info">
                 <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
               </v-btn>
               <v-list>
-                <v-list-tile @click="print(props.item, 'printEventual')" v-if="$store.getters.options.includes('printContract')"> Contrato</v-list-tile>
-                <v-list-tile @click="print(props.item, 'printUp')" v-if="$store.getters.options.includes('printInsurance')"> Alta del seguro</v-list-tile>
-                <v-list-tile @click="print(props.item, 'printLow')" v-if="$store.getters.options.includes('printInsurance')"> Baja del seguro</v-list-tile>
+                <v-list-tile @click="print(props.item, 'printEventual')" v-if="$store.getters.role == 'juridica' || $store.getters.role == 'admin'"> Contrato</v-list-tile>
+                <v-list-tile @click="print(props.item, 'printUp')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Alta del seguro</v-list-tile>
+                <v-list-tile @click="print(props.item, 'printLow')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Baja del seguro</v-list-tile>
               </v-list>
             </v-menu>
-            <v-tooltip top v-if="$store.getters.options.includes('renew') && checkEnd(props.item) != '' && props.item.active == true">
+            <v-tooltip top v-if="$store.getters.permissions.includes('update-eventual') && checkEnd(props.item) != '' && props.item.active == true">
               <v-btn :class="withoutBorders" slot="activator" flat icon color="info" @click="editItem(props.item, 'recontract')">
                 <v-icon>autorenew</v-icon>
               </v-btn>
               <span>Recontratar</span>
             </v-tooltip>
-            <v-tooltip top v-if="(active && $store.getters.options.includes('edit')) || (!active && $store.getters.options.includes('inactiveEdit'))">
+            <v-tooltip top v-if="(active && $store.getters.permissions.includes('update-eventual')) || (!active && $store.getters.permissions.includes('update-eventual-inactive'))">
               <v-btn :class="withoutBorders" slot="activator" flat icon @click="editItem(props.item, 'edit')" color="info">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip top v-if="$store.getters.options.includes('delete') && props.item.payrolls_count == 0">
+            <v-tooltip top v-if="$store.getters.permissions.includes('delete-eventual') && props.item.payrolls_count == 0">
               <v-btn :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -135,7 +135,7 @@ import Vue from "vue";
 import ContractForm from "./ContractForm";
 import RemoveItem from "../RemoveItem";
 import Loading from "../Loading";
-import { admin, rrhh, juridica } from "../../menu.js";
+
 export default {
   name: "ContractIndex",
   components: {
@@ -203,7 +203,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.$store.getters.options.includes("edit")) {
+    if (!this.$store.getters.permissions.includes("update-eventual")) {
       this.headers = this.headers
         .filter(el => {
           return el.text != "Acciones";
@@ -280,7 +280,7 @@ export default {
     },
     checkEdit(item) {
       if (item.active == false) {
-        if (this.$store.getters.currentUser.roles[0].name == 'admin') {
+        if (this.$store.getters.role == 'admin') {
           return true;
         } else {
           return false;

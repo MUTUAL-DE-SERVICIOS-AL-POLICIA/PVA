@@ -66,8 +66,8 @@
         <v-layout row wrap>
           <v-flex md12 lg8>
             <v-layout row wrap>
-              <template v-if="$store.getters.currentUser.roles.length > 0">
-                <v-flex xs12 sm6 v-for="filter in filteredEmployees" :key="filter.icon">
+              <template v-for="filter in filteredEmployees">
+                <v-flex xs12 sm6 :key="filter.title" v-if="filter.role == null || $store.getters.role == filter.role || $store.getters.role == 'admin'">
                   <v-card :color="filter.color" dark height="190px" class="mb-2">
                     <v-layout row wrap>
                       <v-flex xs4 class="text-xs-center" mt-4>
@@ -116,7 +116,7 @@
                   </v-card>
                 </v-flex>
               </template>
-              <v-flex xs12 sm6 v-if="$store.getters.currentUser.roles[0].name == 'admin' || $store.getters.currentUser.roles[0].name == 'rrhh'">
+              <v-flex xs12 sm6 v-if="$store.getters.role == 'admin' || $store.getters.role == 'rrhh'">
                 <v-card dark height="190px" class="mb-2">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
@@ -130,7 +130,7 @@
                               name: { title: 'MES' },
                               faults: { title: 'DESCUENTOS' }
                             }"
-                            :csv-title="`fondo_social_a_${procedures[procedures.length - 1].name.toLowerCase()}_${$moment(this.$store.getters.dateNow).year()}`"
+                            :csv-title="`fondo_social_a_${procedures[procedures.length - 1].name.toLowerCase()}_${$moment($store.getters.dateNow).year()}`"
                           >
                           <v-tooltip right>
                             <v-btn flat icon slot="activator">
@@ -144,7 +144,7 @@
                     <v-flex xs8>
                       <v-card-text class="text-xs-center">
                         <div class="display-3 font-weight-thin">{{ procedures.length == 0 ? '0' : new Intl.NumberFormat('es-BO').format(procedures.map(item => item.faults).reduce((prev, next) => prev + next)) }}</div>
-                        <div class="display-1 font-weight-light">Fondo Social {{ $moment(this.$store.getters.dateNow).year() }}</div>
+                        <div class="display-1 font-weight-light">Fondo Social {{ $moment($store.getters.dateNow).year() }}</div>
                         <v-tooltip bottom>
                           <div slot="activator" class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
                           <table>
@@ -174,7 +174,7 @@
                   </v-layout>
                 </v-card>
               </v-flex>
-              <v-flex xs12 sm6 v-if="$store.getters.currentUser.roles.length == 0">
+              <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
                 <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}" style="cursor: pointer">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
@@ -279,7 +279,7 @@ export default {
   },
   created() {
     this.getEmployees()
-    this.getYearFaults()
+    if (this.$store.role == 'rrhh' || this.$store.role == 'admin') this.getYearFaults()
     this.getLocations()
   },
   methods: {
@@ -324,6 +324,7 @@ export default {
                 obj.icon = 'person'
                 obj.color = 'blue darken-4'
                 obj.downloadable = true
+                obj.role = null
                 break
               case 'consultants':
                 obj.data = this.employees.filter(o => {
@@ -333,6 +334,7 @@ export default {
                 obj.icon = 'work'
                 obj.color = 'deep-orange darken-2'
                 obj.downloadable = true
+                obj.role = null
                 break
               case 'withoutContracts':
                 obj.data = this.employees.filter(o => {
@@ -342,6 +344,7 @@ export default {
                 obj.icon = obj.data.length > 0 ? 'warning' : 'done'
                 obj.color = obj.data.length > 0 ? 'red accent-4' : 'green darken-1'
                 obj.downloadable = false
+                obj.role = 'rrhh'
                 break
             }
 

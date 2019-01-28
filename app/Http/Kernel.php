@@ -67,7 +67,7 @@ class Kernel extends HttpKernel
 		'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
 		// ACL Entrust
 		'role' => \Laratrust\Middleware\LaratrustRole::class,
-		// 'permission' => \Laratrust\Middleware\LaratrustPermission::class,
+		'permission' => \Laratrust\Middleware\LaratrustPermission::class,
 		// 'ability' => \Laratrust\Middleware\LaratrustAbility::class,
 	];
 }

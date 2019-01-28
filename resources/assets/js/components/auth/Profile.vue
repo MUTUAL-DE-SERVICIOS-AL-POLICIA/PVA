@@ -9,28 +9,22 @@
           Usuario:
         </v-flex>
         <v-flex xs10>
-          {{ $store.getters.currentUser.username }}
+          {{ $store.getters.user }}
         </v-flex>
         <v-flex xs2 font-weight-bold>
           Rol:
         </v-flex>
         <v-flex xs10>
-          {{ $store.getters.currentUser.roles[0].display_name }}
+          {{ $store.getters.role }}
         </v-flex>
-        <v-flex xs2 font-weight-bold v-if="$store.getters.currentUser.name">
+        <v-flex xs2 font-weight-bold v-if="$store.getters.name">
           Nombre:
         </v-flex>
-        <v-flex xs10 v-if="$store.getters.currentUser.name">
-          {{ $store.getters.currentUser.name }}
-        </v-flex>
-        <v-flex xs2 font-weight-bold v-if="$store.getters.currentUser.position">
-          Cargo:
-        </v-flex>
-        <v-flex xs10 v-if="$store.getters.currentUser.position">
-          {{ $store.getters.currentUser.position }}
+        <v-flex xs10 v-if="$store.getters.name">
+          {{ $store.getters.name }}
         </v-flex>
       </v-card-title>
-      <v-card-text v-if="!$store.getters.ldapAuth || this.$store.getters.currentUser.username == 'admin'">
+      <v-card-text v-if="!$store.getters.ldapAuth || this.$store.getters.user == 'admin'">
         <span class="info--text">Cambiar Contraseña</span>
         <v-flex xs3>
           <v-form>
@@ -70,7 +64,7 @@
           </v-form>
         </v-flex>
       </v-card-text>
-      <v-card-actions v-if="!$store.getters.ldapAuth || this.$store.getters.currentUser.username == 'admin'">
+      <v-card-actions v-if="!$store.getters.ldapAuth || this.$store.getters.user == 'admin'">
         <v-flex xs3>
           <v-btn
             @click="changePassword(auth)"
@@ -111,7 +105,7 @@ export default {
             this.toastr.error("Las contraseñas no coinciden");
           } else {
             await axios.patch(
-              `/user/${this.$store.getters.currentUser.id}`,
+              `/user/${this.$store.getters.id}`,
               this.auth
             );
             this.toastr.success("Contraseña actualizada correctamente");
