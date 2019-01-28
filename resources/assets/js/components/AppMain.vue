@@ -42,7 +42,7 @@
               <v-list class="pt-0 pb-0">
                 <template v-for="group in item.group">
                   <v-list-tile
-                    v-if="checkPermission(item)"
+                    v-if="checkPermission(group)"
                     :key="group.href"
                     :to="{name: group.href}"
                     active-class="tertiary"
