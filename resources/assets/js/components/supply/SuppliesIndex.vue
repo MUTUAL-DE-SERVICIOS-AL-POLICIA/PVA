@@ -40,7 +40,7 @@
       :items="filteredSupplies"
       :search="search"
       :loading="loading"
-      :rows-per-page-items="[10,20,30,{text:'TODO', value:-1}]"
+      :rows-per-page-items="[15,30,50,{text:'TODO', value:-1}]"
       disable-initial-sort
     >
       <template slot="items" slot-scope="props">
@@ -59,6 +59,7 @@
               @keyup.enter.native="makeRequest(props.item)"
               @change="makeRequest(props.item)"
               @blur="makeRequest(props.item)"
+              :disabled="(supplyRequest.length >= maxRequest || remaining(props.item) == 0) && !itemInRequest(props.item.id)"
             ></v-text-field>
           </td>
         </tr>
@@ -87,6 +88,7 @@
 export default {
   name: "SuppliesIndex",
   data: () => ({
+    maxRequest: 15,
     loading: true,
     search: '',
     materials: [{
@@ -144,7 +146,15 @@ export default {
       }
     }
   },
+  watch: {
+    supplyRequest: function (val) {
+      if (val.length >= this.maxRequest) this.toastr.warning('El número máximo de pedidos es 15')
+    }
+  },
   methods: {
+    itemInRequest(id) {
+      return this.supplyRequest.find(o => o.id == id) ? true : false
+    },
     async sendRequest() {
       try {
         let res = await axios.post(`supply_request`, {
