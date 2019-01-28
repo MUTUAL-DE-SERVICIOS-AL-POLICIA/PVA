@@ -44,6 +44,11 @@
           <td class="text-md-center" @click="getSubarticles(props)">{{ $moment(props.item.created_at).format('L') }}</td>
           <td class="text-md-center" @click="getSubarticles(props)">{{ props.item.delivery_date ? $moment(props.item.delivery_date).format('L') : '-' }}</td>
           <td class="text-md-center" @click="getSubarticles(props)">{{ props.item.observacion }}</td>
+          <td class="text-md-center" v-if="props.item.status == 'initiation'">
+            <v-btn flat icon color="info" @click.native="printRequest(props.item.id)">
+              <v-icon>print</v-icon>
+            </v-btn>
+          </td>
         </tr>
       </template>
       <template slot="expand" slot-scope="{ item }">
@@ -133,6 +138,14 @@ export default {
   }),
   computed: {
     filteredRequests() {
+      if (this.requestTypeSelected == 'all' || this.requestTypeSelected == 'initiation') {
+        if (!this.headers.find(o => o.text == 'Acciones')) {
+          this.headers.push({ align: "center", sortable: false, text: "Acciones", class: ["ma-0", "pa-0"], value: "" })
+        }
+      } else {
+        this.headers = this.headers.filter(o => o.text != 'Acciones')
+      }
+
       if (this.requestTypeSelected == 'all') {
         return this.requests
       } else {
@@ -143,9 +156,21 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.params.id) this.printRequest(this.$route.params.id)
     this.getRequests()
   },
   methods: {
+    async printRequest(id) {
+      let res = await axios({
+        method: "GET",
+        url: `supply_request/print/${id}`,
+        responseType: "arraybuffer"
+      });
+      let blob = new Blob([res.data], {
+        type: "application/pdf"
+      });
+      printJS(window.URL.createObjectURL(blob));
+    },
     async getRequests() {
       try {
         let res = await axios.get(`supply_user/${this.$store.getters.id}`)
