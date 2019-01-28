@@ -34,6 +34,8 @@ Route::group([
 	Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
 	Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show', 'store']);
 	Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
+	// Certificate
+	Route::resource('certificate', 'Api\V1\CertificateController')->only(['index', 'show', 'store', 'update']);
 	// With credentials
 	Route::group([
 		'middleware' => 'jwt.auth'
@@ -56,7 +58,7 @@ Route::group([
 			});
 		});
 		// Certificate
-		Route::resource('certificate', 'Api\V1\CertificateController')->only(['index', 'show', 'store', 'update']);
+		//Route::resource('certificate', 'Api\V1\CertificateController')->only(['index', 'show', 'store', 'update']);
 		// City
 		Route::resource('city', 'Api\V1\CityController')->only(['index', 'show']);
 		// Management Entity
@@ -300,8 +302,8 @@ Route::group([
 		], function () {
 			// Bonus
 			Route::get('bonus/print/{year}', 'Api\V1\BonusController@print')->name('bonus_print');
-			Route::resource('bonus', 'Api\V1\BonusController')->only('index', 'show', 'store', 'update', 'destroy');
-			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only('index', 'store', 'update', 'delete');
+			Route::resource('bonus', 'Api\V1\BonusController')->only(['index', 'show', 'store', 'update', 'destroy']);
+			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['index', 'store', 'update', 'delete']);
 			// Ticket
 			Route::get('ticket/print/{id}', 'Api\V1\TicketController@print')->name('ticket_print');
 			// Employee
@@ -435,7 +437,7 @@ Route::group([
 		Route::group([
 			'middleware' => 'role:admin|rrhh|financiera',
 		], function () {
-			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only('show');
+			Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['show']);
 		});
 
 		// JURIDICA-RRHH routes

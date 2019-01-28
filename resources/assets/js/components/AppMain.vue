@@ -126,12 +126,12 @@ export default {
       if (process.env.NODE_ENV == 'production') {
         return {
           color: `primary white--text`,
-          text: `SISTEMA DE RECURSOS HUMANOS`
+          text: `PLATAFORMA VIRTUAL ADMINISTRATIVA`
         }
       } else {
         return {
           color: `error white--text`,
-          text: `SISTEMA DE RECURSOS HUMANOS (VERSIÓN DE PRUEBA)`
+          text: `PLATAFORMA VIRTUAL ADMINISTRATIVA (VERSIÓN DE PRUEBA)`
         }
       }
     }
