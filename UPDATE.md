@@ -16,6 +16,8 @@ extension=pdo_mysql
 composer install --prefer-dist --no-dev
 ```
 
+* Set user's permissions according to a related role
+
 ## From [2.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.1) to [2.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.1.0)
 
 ```sh
