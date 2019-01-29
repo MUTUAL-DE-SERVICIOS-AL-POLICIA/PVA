@@ -10,17 +10,6 @@
           inset
           vertical
         ></v-divider>
-        <v-btn  @click="getDepartures(1)" :class="departureType == 1 ? 'primary white--text' : 'normal'" class="mr-0">
-          <div class="font-weight-regular subheading pa-2">SALIDAS</div>
-        </v-btn>
-        <v-btn  @click="getDepartures(2)" :class="departureType == 2 ? 'primary white--text' : 'normal'" class="ml-0">
-          <div class="font-weight-regular subheading pa-2">LICENCIAS</div>
-        </v-btn>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
         <v-toolbar-title>
           <v-text-field
               v-model="search"
@@ -106,7 +95,6 @@ export default {
     RemoveItem
   },
   data: () => ({
-    departureType: 1,
     bus: new Vue(),
     headers: [
       {
@@ -123,7 +111,7 @@ export default {
         text: "Razón",
         value: "departure_reason.name",
         align: "center"
-      },      
+      },
       {
         text: "Fecha de Solicitud",
         value: "created_at",
@@ -149,24 +137,19 @@ export default {
     contracState: "vigentes",
     hrsxMes: null,
     dayxYear: null
-  }),  
+  }),
   async mounted() {
     this.getDepartures();
-    this.bus.$on("closeDialog", departureType => {
-      if (departureType == null) {
-        departureType = this.departureType;
-      } 
-      this.getDepartures(departureType);      
+    this.bus.$on("closeDialog", departures => {
+      this.getDepartures();
     });
   },
   methods: {
-    async getDepartures(departureType = this.departureType) {
+    async getDepartures() {
       try {
         let contract = await axios.get('/contract/last_contract/' + this.$store.getters.id);
         let res = await axios.get(`/departure/get_departures/${contract.data.id}`);
-        this.departureType = departureType;
-        this.departures = res.data.filter(e => e.departure_reason.departure_type_id == departureType);
-
+        this.departures = res.data
         let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.id);
         this.hrsxMes = Math.trunc((departure_used.data.total_minutes_month_rest / 60)) + " hr. y " + (departure_used.data.total_minutes_month_rest % 60) + " min.";
         this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest % 480 / 60) + " hr.";
