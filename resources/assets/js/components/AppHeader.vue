@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-md navbar-light navbar-laravel" v-if="this.$store.getters.user">
     <div class="container">
-      <router-link class="navbar-brand" to="home">RR.HH.</router-link>
+      <router-link class="navbar-brand" to="home">PVA</router-link>
       <ul class="nav">
         <li class="dropdown">
           <button class="btn dropdown-toggle btn-transparent btn-default" type="button" id="dropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

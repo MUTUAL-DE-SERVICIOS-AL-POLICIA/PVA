@@ -77,12 +77,12 @@
         "href": "supplyRequestIndex",
         "title": "Pedidos",
         "icon": "send",
-        "permission": "read-eventual"
+        "permission": null
       }, {
         "href": "suppliesIndex",
         "title": "Artículos",
         "icon": "add_shopping_cart",
-        "permission": "read-procedure-eventual"
+        "permission": null
       }
     ]
   }
