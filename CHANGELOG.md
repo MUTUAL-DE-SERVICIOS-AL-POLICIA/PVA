@@ -2,6 +2,16 @@
 
 ---
 
+## [3.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.1) - 2018-01-29
+
+### Fixed
+
+* Permissions on left supply submenu
+
+### Changed
+
+* Changed RR.HH. text to P.V.A.
+
 ## [3.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.0) - 2018-01-28
 
 ### Added
