@@ -136,7 +136,7 @@ export default {
         align: "center"
       },
       {
-        text: "Apobado",
+        text: "Aprobado",
         value: "contract.employee.mothers_last_name",
         align: "center"
       },
