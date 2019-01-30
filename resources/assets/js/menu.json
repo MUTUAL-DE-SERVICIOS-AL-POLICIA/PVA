@@ -55,34 +55,34 @@
     "permission": "read-user-action"
   }, {
     "href": "departureAdmin",
-    "title": "Aprobar Licencias y S.",
+    "title": "Aprobar Permisos",
     "icon": "alarm_on",
     "permission": "read-departure"
   }, {
     "href": "departureIndex",
-    "title": "Salidas/Licencias",
+    "title": "Permisos",
     "icon": "directions_run",
     "permission": "!admin"
   }, {
     "href": "phonebookIndex",
     "title": "Agenda Telefonica",
     "icon": "contact_phone",
-    "permission": null
+    "permission": "admin"
   }, {
     "title": "Almacén",
     "icon": "shopping_cart",
     "permission": "!admin",
     "group": [
       {
+        "href": "suppliesIndex",
+        "title": "Materiales",
+        "icon": "add_shopping_cart",
+        "permission": null
+      }, {
         "href": "supplyRequestIndex",
         "title": "Pedidos",
         "icon": "send",
-        "permission": "read-eventual"
-      }, {
-        "href": "suppliesIndex",
-        "title": "Artículos",
-        "icon": "add_shopping_cart",
-        "permission": "read-procedure-eventual"
+        "permission": null
       }
     ]
   }

@@ -13,63 +13,60 @@
           <v-layout wrap>
             <v-flex xs12>
               <v-form ref="form">
-                  <fieldset class="field">
-                    <legend>OPCIONES:</legend>
-                    <v-flex xs12>
-                      <v-layout row wrap>
-                        <v-flex xs6>
-                          <v-radio-group 
-                            v-model="departure_type_id"
-                            :mandatory="false"
-                            @change="getDepartureReason"
-                            v-validate="'required'"
-                            name="Tipo"
-                            :error-messages="errors.collect('Tipo')"
-                            row
+                <v-layout wrap>
+                  <v-flex xs6>
+                    <fieldset class="field data-box">
+                      <legend> OPCIONES</legend>
+                      <v-flex xs12>
+                        <v-layout wrap>
+                          <v-flex xs4>
+                            <v-radio-group
+                              v-model="departure_type_id"
+                              :mandatory="false"
+                              @change="getDepartureReason"
+                              v-validate="'required'"
+                              name="Tipo"
+                              :error-messages="errors.collect('Tipo')"
+                              row
                             >
-                            <span v-for="departureType in departureTypes" :key="departureType.id">
-                              <v-radio :label="departureType.name" :value="departureType.id" color="success" v-if="type_departures.includes(departureType.id)"></v-radio>
-                            </span>
-                          </v-radio-group>
-                          <v-checkbox label="A cuenta de vacación" v-model="selectedItem.on_vacation" v-if="departure_type_id==2 && contractType==1"></v-checkbox>
-                          <v-autocomplete
-                            v-model="selectedItem.departure_reason_id"
-                            :items="departureReasons"
-                            item-text="name"
-                            item-value="id"
-                            label="Motivo"
-                            :hint="descriptionReason"
-                            persistent-hint
-                            @change="getDepartureReasonDesc();checkMonthDayYear()"
-                            v-validate="'required'"
-                            name="Motivo"
-                            :error-messages="errors.collect('Motivo')"
-                            :disabled="disabledReason">
-                          </v-autocomplete>
-                          
-                        </v-flex>
-                        <v-flex xs6>
-                          <v-text-field
-                            v-model="selectedItem.destiny"
-                            label="Lugar de destino"
-                            v-validate="'required'"
-                            name="Destino"
-                            :error-messages="errors.collect('Destino')"
-                          ></v-text-field>
-                          <v-textarea
-                            v-model="selectedItem.description"
-                            label="Observaciones"
-                            rows="4"
-                          ></v-textarea>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </fieldset>
-                  <fieldset class="field">
-                    <legend>HORARIO:</legend>
-                    <v-flex xs12>
-                      <v-layout row wrap>
-                        <v-flex xs3>
+                              <div v-for="departureType in departureTypes" :key="departureType.id" class="mb-2">
+                                <v-radio :label="departureType.name" :value="departureType.id" color="success" v-if="type_departures.includes(departureType.id)"></v-radio>
+                              </div>
+                            </v-radio-group>
+                          </v-flex>
+                          <v-flex xs8>
+                            <v-checkbox label="A cuenta de vacación" v-model="selectedItem.on_vacation" v-if="departure_type_id==2 && contractType==1"></v-checkbox>
+                            <v-autocomplete
+                              v-model="selectedItem.departure_reason_id"
+                              :items="departureReasons"
+                              item-text="name"
+                              item-value="id"
+                              label="Motivo"
+                              :hint="descriptionReason"
+                              persistent-hint
+                              @change="getDepartureReasonDesc();checkMonthDayYear()"
+                              v-validate="'required'"
+                              name="Motivo"
+                              :error-messages="errors.collect('Motivo')"
+                              :disabled="disabledReason">
+                            </v-autocomplete>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                      <v-text-field
+                        v-model="selectedItem.destiny"
+                        label="Lugar de destino"
+                        v-validate="'required'"
+                        name="Destino"
+                        :error-messages="errors.collect('Destino')"
+                      ></v-text-field>
+                    </fieldset>
+                  </v-flex>
+                  <v-flex xs6>
+                    <fieldset class="field time-box">
+                      <legend> DESDE</legend>
+                      <v-layout wrap>
+                        <v-flex xs7>
                           <v-menu
                             :close-on-content-click="false"
                             v-model="menuDateDeparture"
@@ -84,7 +81,7 @@
                             <v-text-field
                               slot="activator"
                               v-model="dateDeparture"
-                              label="Fecha de salida"
+                              label="Fecha"
                               prepend-icon="event"
                               v-validate="'required'"
                               name="Fecha de salida"
@@ -93,20 +90,20 @@
                               clearable
                             ></v-text-field>
                             <v-date-picker 
-                            v-model="selectedItem.departure_date" 
-                            @input="menuDateDeparture = false" 
-                            no-title 
-                            locale="es-bo" 
-                            :min="$moment().subtract(1, 'days').format('YYYY-MM-DD')"
-                            :max="$moment().add(2, 'days').format('YYYY-MM-DD')"
-                            @change="checkMonthDayYear"
+                              v-model="selectedItem.departure_date" 
+                              @input="menuDateDeparture = false" 
+                              no-title 
+                              locale="es-bo" 
+                              :min="$moment().subtract(1, 'days').format('YYYY-MM-DD')"
+                              :max="$moment().add(2, 'days').format('YYYY-MM-DD')"
+                              @change="checkMonthDayYear"
                             ></v-date-picker>
                           </v-menu>
                         </v-flex>
-                        <v-flex xs3>
+                        <v-flex xs4 offset-xs1>
                           <v-text-field
                             v-model="selectedItem.departure_time" 
-                            label="Hora de salida"
+                            label="Hora"
                             type="time"
                             name="Hora de salida"
                             v-validate="'required'"
@@ -116,7 +113,12 @@
                             @change="checkMonthDayYear();"
                           ></v-text-field>
                         </v-flex>
-                        <v-flex xs3>
+                      </v-layout>
+                    </fieldset>
+                    <fieldset class="field mt-2 time-box">
+                      <legend> HASTA</legend>
+                      <v-layout wrap>
+                        <v-flex xs7>
                           <v-menu
                             :close-on-content-click="false"
                             v-model="menuDateReturn"
@@ -131,7 +133,7 @@
                             <v-text-field
                               slot="activator"
                               v-model="dateReturn"
-                              label="Fecha de retorno"
+                              label="Fecha"
                               prepend-icon="event"
                               v-validate="'required'"
                               name="Fecha de retorno"
@@ -140,19 +142,20 @@
                               clearable
                             ></v-text-field>
                             <v-date-picker 
-                            v-model="selectedItem.return_date" 
-                            @input="menuDateReturn = false"
-                            no-title 
-                            locale="es-bo"
-                            :min="selectedItem.departure_date"
-                            :max="$moment().add(30, 'days').format('YYYY-MM-DD')"
-                            @change="checkMonthDayYear"></v-date-picker>
+                              v-model="selectedItem.return_date" 
+                              @input="menuDateReturn = false"
+                              no-title 
+                              locale="es-bo"
+                              :min="selectedItem.departure_date"
+                              :max="$moment().add(30, 'days').format('YYYY-MM-DD')"
+                              @change="checkMonthDayYear"
+                            ></v-date-picker>
                           </v-menu>
                         </v-flex>
-                        <v-flex xs3>
+                        <v-flex xs4 offset-xs1>
                           <v-text-field
                             v-model="selectedItem.return_time" 
-                            label="Hora de retorno"
+                            label="Hora"
                             type="time"
                             name="Hora de retorno"
                             v-validate="'required'"
@@ -161,18 +164,25 @@
                             :max="end_time"
                             @change="checkMonthDayYear();"
                           ></v-text-field>
-                        </v-flex>                        
+                        </v-flex>
                       </v-layout>
-                    </v-flex>
-                  </fieldset>
+                    </fieldset>
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-textarea
+                      label="DETALLE"
+                      v-model="selectedItem.description"
+                      rows="1"
+                    ></v-textarea>
+                  </v-flex>
+                </v-layout>
               </v-form>
               <v-alert
                 v-model="alert"
-                dismissible
                 type="error"
                 v-if="errorMessages"
               >
-                <p> Alerta: {{ errorMessages }}</p>
+                <p>{{ errorMessages }}</p>
               </v-alert>
             </v-flex>
           </v-layout>
@@ -427,8 +437,16 @@ export default {
 };
 </script>
 <style type="text/css">
-  .field{ 
+.field {
   border: #EFEFEF 1px solid;
   color: #999999;
-  }
+}
+.time-box {
+  height: 111px;
+  max-height: 111px;
+}
+.data-box {
+  height: 230px;
+  max-height: 230px;
+}
 </style>

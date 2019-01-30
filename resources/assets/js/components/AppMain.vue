@@ -9,7 +9,7 @@
       fixed
       app
       v-if="$store.getters.user"
-      class="normal"
+      class="normal pl-0 ml-0 pr-0 mr-0"
     >
       <v-list>
         <div v-for="item in menuLeft" :key="item.title" class="mb-0 mt-0">
@@ -68,6 +68,7 @@
       :class="bar.color"
       :clipped-left="clipped"
       v-if="$store.getters.user"
+      height="50px"
     >
       <v-btn icon @click.stop="drawer = !drawer; miniVariant = false">
         <v-icon v-html="miniVariant ? 'more_vert' : 'menu'" class="white--text"></v-icon>
