@@ -44,7 +44,7 @@
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ $moment(props.item.created_at).format('DD/MM/YYYY') }} </td>
             <td class="text-xs-center"> {{ (props.item.approved == true)? 'APROBADO' : (props.item.approved == false)? 'RECHAZADO' : 'PENDIENTE' }} </td>
             <td class="justify-center layout">
-              <v-tooltip top>
+              <v-tooltip top v-if="props.item.approved == null">
                 <v-btn slot="activator" flat icon color="accent" @click="print(props.item)">
                   <v-icon>print</v-icon>
                 </v-btn>

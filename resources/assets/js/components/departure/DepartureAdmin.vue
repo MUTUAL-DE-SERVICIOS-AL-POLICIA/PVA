@@ -57,7 +57,7 @@
                 v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"
               ></v-switch>
             </td>
-            <td class="justify-center layout" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">
+            <td class="justify-center layout" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin' && props.item.approved == null">
               <v-tooltip top>
                 <v-btn slot="activator" flat icon color="info" @click="print(props.item)">
                   <v-icon>print</v-icon>
