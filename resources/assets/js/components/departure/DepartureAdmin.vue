@@ -2,19 +2,8 @@
   <v-container fluid>
     <v-toolbar>
         <v-toolbar-title>Administrador de Salidas y Licencias</v-toolbar-title>
-        <v-spacer></v-spacer>        
-         <DepartureReport :bus="bus"/>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <v-btn  @click="getDepartures(1)" :class="departureType == 1 ? 'primary white--text' : 'normal'" class="mr-0">
-          <div class="font-weight-regular subheading pa-2">SALIDAS</div>
-        </v-btn>
-        <v-btn  @click="getDepartures(2)" :class="departureType == 2 ? 'primary white--text' : 'normal'" class="ml-0">
-          <div class="font-weight-regular subheading pa-2">LICENCIAS</div>
-        </v-btn>
+        <v-spacer></v-spacer>
+        <DepartureReport :bus="bus"/>
         <v-divider
           class="mx-2"
           inset
@@ -57,14 +46,6 @@
                 v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"
               ></v-switch>
             </td>
-            <td class="justify-center layout" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin' && props.item.approved == null">
-              <v-tooltip top>
-                <v-btn slot="activator" flat icon color="info" @click="print(props.item)">
-                  <v-icon>print</v-icon>
-                </v-btn>
-                <span>Imprimir</span>
-              </v-tooltip>              
-            </td>
           </tr>
         </template>
         <template slot="expand" slot-scope="props">
@@ -97,7 +78,6 @@ export default {
     RemoveItem
   },
   data: () => ({
-    departureType: 1,
     bus: new Vue(),
     headers: [
       {
@@ -136,15 +116,9 @@ export default {
         align: "center"
       },
       {
-        text: "Apobado",
+        text: "Aprobado",
         value: "contract.employee.mothers_last_name",
         align: "center"
-      },
-      {
-        text: "Acciones",
-        value: "contract.employee.first_name",
-        align: "center",
-        sortable: false
       }
     ],
     departures: [],
@@ -161,19 +135,12 @@ export default {
     this.bus.$on("closeDialog", () => {
       this.getDepartures();
     });
-    if (this.$store.getters.role != 'rrhh' || this.$store.getters.role != 'admin') {
-      this.headers = this.headers
-        .filter(el => {
-          return el.text != "Acciones";
-        });
-    }
   },
   methods: {
-    async getDepartures(departureType = this.departureType) {
+    async getDepartures() {
       try {
-        let res = await axios.get(`/departure`);
-        this.departureType = departureType;
-        this.departures = res.data.filter(e => e.departure_reason.departure_type_id == departureType);
+        let res = await axios.get(`/departure`)
+        this.departures = res.data
       } catch (e) {
         console.log(e);
       }
@@ -211,21 +178,6 @@ export default {
           approved: departure.approved
         });
         this.getDepartures();
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    async print(item) {
-      try {
-        let res = await axios({
-          method: "GET",
-          url: `/departure/print/${item.id}`,
-          responseType: "arraybuffer"
-        });
-        let blob = new Blob([res.data], {
-          type: "application/pdf"
-        });
-        printJS(window.URL.createObjectURL(blob));
       } catch (e) {
         console.log(e);
       }
