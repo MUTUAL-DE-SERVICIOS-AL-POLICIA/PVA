@@ -28,7 +28,6 @@
                 clearable
                 single-line
                 hide-details
-                width="20px"
               ></v-text-field>
             </v-flex>
           </v-layout>
@@ -68,11 +67,11 @@
             <v-layout row wrap>
               <template v-for="filter in filteredEmployees">
                 <v-flex xs12 sm6 :key="filter.title" v-if="filter.role == null || $store.getters.role == filter.role || $store.getters.role == 'admin'">
-                  <v-card :color="filter.color" dark height="190px" class="mb-2">
+                  <v-card :color="filter.color" dark class="mb-2 card-box">
                     <v-layout row wrap>
                       <v-flex xs4 class="text-xs-center" mt-4>
                         <v-icon size="80">{{ filter.icon }}</v-icon>
-                        <div class="text-xs-left mt-4 ml-3">
+                        <div class="text-xs-left mt-2 ml-3">
                           <vue-json-to-csv
                             v-if="filter.downloadable"
                             :json-data="filter.data.filter(o => { return o.active == true })"
@@ -96,10 +95,10 @@
                           </vue-json-to-csv>
                         </div>
                       </v-flex>
-                      <v-flex xs8>
+                      <v-flex xs7>
                         <v-card-text class="text-xs-center">
-                          <div class="display-3 font-weight-thin">{{ filter.total.active }}</div>
-                          <div class="display-1 font-weight-light">{{ filter.title }}</div>
+                          <div class="display-2 font-weight-thin">{{ filter.total.active }}</div>
+                          <div class="headline font-weight-light">{{ filter.title }}</div>
                           <v-tooltip bottom v-if="'new' in filter && filter.new.length > 0">
                             <div slot="activator" class="subheading font-weight-light">Nuevos {{ $moment($store.getters.dateNow).format('MMMM') }}: {{ filter.new.length }}</div>
                             <div v-for="(item, index) in filter.new" :key="item.id">{{ `${++index}.- ${item.last_name} ${item.mothers_last_name} ${item.first_name} ${item.second_name}` }}</div>
@@ -117,7 +116,7 @@
                 </v-flex>
               </template>
               <v-flex xs12 sm6 v-if="$store.getters.role == 'admin' || $store.getters.role == 'rrhh'">
-                <v-card dark height="190px" class="mb-2">
+                <v-card dark class="mb-2 card-box">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
                       <v-icon size="80">attach_money</v-icon>
@@ -141,11 +140,11 @@
                         </vue-json-to-csv>
                       </div>
                     </v-flex>
-                    <v-flex xs8>
+                    <v-flex xs7>
                       <v-card-text class="text-xs-center">
-                        <div class="display-3 font-weight-thin">{{ procedures.length == 0 ? '0' : new Intl.NumberFormat('es-BO').format(procedures.map(item => item.faults).reduce((prev, next) => prev + next)) }}</div>
-                        <div class="display-1 font-weight-light">Fondo Social {{ $moment($store.getters.dateNow).year() }}</div>
-                        <v-tooltip bottom>
+                        <div class="display-2 font-weight-thin">{{ procedures.length == 0 ? '0' : new Intl.NumberFormat('es-BO').format(procedures.map(item => item.faults).reduce((prev, next) => prev + next)) }}</div>
+                        <div class="headline font-weight-light">Fondo Social {{ $moment($store.getters.dateNow).year() }}</div>
+                        <v-tooltip bottom v-if="procedures.length > 0">
                           <div slot="activator" class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
                           <table>
                             <tr v-for="item in procedures" :key="item.id">
@@ -155,20 +154,21 @@
                             </tr>
                           </table>
                         </v-tooltip>
+                        <div v-else class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
                       </v-card-text>
                     </v-flex>
                   </v-layout>
                 </v-card>
               </v-flex>
               <v-flex xs12 sm6>
-                <v-card color="teal darken-4" dark @click="phoneDialog = true" style="cursor: pointer">
+                <v-card color="teal darken-4" dark @click="phoneDialog = true" style="cursor: pointer" class="card-box">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
                       <v-icon size="80">phone</v-icon>
                     </v-flex>
-                    <v-flex xs8>
+                    <v-flex xs7>
                       <v-card-text class="text-xs-center">
-                        <div class="display-3 font-weight-thin">Teléfonos Internos</div>
+                        <div class="display-2 font-weight-thin">Teléfonos Internos</div>
                       </v-card-text>
                     </v-flex>
                   </v-layout>
@@ -180,9 +180,9 @@
                     <v-flex xs4 class="text-xs-center" mt-4>
                       <v-icon size="80">directions_run</v-icon>
                     </v-flex>
-                    <v-flex xs8>
+                    <v-flex xs7>
                       <v-card-text class="text-xs-center">
-                        <div class="display-3 font-weight-thin">Salidas y Licencias</div>
+                        <div class="display-2 font-weight-thin">Salidas y Licencias</div>
                       </v-card-text>
                     </v-flex>
                   </v-layout>
@@ -197,11 +197,11 @@
                   <v-flex xs4 class="text-xs-center" mt-4>
                     <v-icon size="80">cake</v-icon>
                   </v-flex>
-                  <v-flex xs8>
+                  <v-flex xs7>
                     <v-card-text class="text-xs-center">
-                      <div class="display-3 font-weight-thin">{{ birthday.length }}</div>
-                      <div class="display-1 font-weight-light">Cumpleañeros de {{ $moment($store.getters.dateNow).format('MMMM') }}</div>
-                      <div class="title font-weight-light mt-2 mb-2" v-if="birthday.length > 0">Felicidades !!!!</div>
+                      <div class="display-2 font-weight-thin">{{ birthday.length }}</div>
+                      <div class="headline font-weight-light">Cumpleañeros de {{ $moment($store.getters.dateNow).format('MMMM') }}</div>
+                      <div class="subheading font-weight-light mt-2 mb-2" v-if="birthday.length > 0">Felicidades !!!!</div>
                     </v-card-text>
                   </v-flex>
                 </v-layout>
@@ -392,3 +392,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.card-box {
+  height: 170px;
+}
+</style>
