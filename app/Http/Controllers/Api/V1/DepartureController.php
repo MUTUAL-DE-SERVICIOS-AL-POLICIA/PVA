@@ -81,22 +81,22 @@ class DepartureController extends Controller
      */
     public function get_departures_used($employee_id)
     {
-        $month               = Carbon::now()->month;
-        $year                = Carbon::now()->year;
-        $hours               = 0;
-        $days                = 0;
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
+        $hours = 0;
+        $days = 0;
         $total_minutes_month = 0;
-        $total_minutes_year  = 0;
-        $dep                 = [];
-        $contracts           = Contract::where('employee_id', $employee_id)->get();
+        $total_minutes_year = 0;
+        $dep = [];
+        $contracts = Contract::where('employee_id', $employee_id)->get();
         $departure_hour = DepartureReason::where('departure_type_id', 1)->where('name', 'Personal')->first();
         $departure_day = DepartureReason::where('departure_type_id', 2)->where('name', 'Personal')->first();
         foreach ($contracts as $contract) {
             $departures = Departure::where('contract_id', $contract->id)->get();
             foreach ($departures as $departure) {
-                $e               = new EmployeeDeparture($departure);
+                $e = new EmployeeDeparture($departure);
                 $departure_days = Carbon::parse($departure->departure_date)->day;
-                $departure_year  = Carbon::parse($departure->departure_date)->year;
+                $departure_year = Carbon::parse($departure->departure_date)->year;
                 if ($departure_days <= 19) {
                     $departure_month1 = Carbon::parse($departure->departure_date)->subMonth()->month;
                     $departure_month2 = Carbon::parse($departure->departure_date)->month;
@@ -105,8 +105,8 @@ class DepartureController extends Controller
                     $departure_month2 = Carbon::parse($departure->departure_date)->addMonth()->month;
                 }
 
-                $start_date = Carbon::parse($departure_year.'-0'.$departure_month1.'-20')->format('Y-m-d');
-                $end_date = Carbon::parse($departure_year.'-'.$departure_month2.'-19')->format('Y-m-d');
+                $start_date = Carbon::parse($departure_year . '-0' . $departure_month1 . '-20')->format('Y-m-d');
+                $end_date = Carbon::parse($departure_year . '-' . $departure_month2 . '-19')->format('Y-m-d');
                 if ($departure->departure_date >= $start_date && $departure->departure_date <= $end_date) {
                     if ($departure->departure_reason->departure_type_id == 1 && $departure->departure_reason->name == 'Personal' && $departure->approved == true) {
                         $total_minutes_month = $total_minutes_month + $e->departure_minutes;
@@ -115,17 +115,17 @@ class DepartureController extends Controller
                 if ($year == $departure_year) {
                     if ($departure->departure_reason->departure_type_id == 2 && $departure->departure_reason->name == 'Personal' && $departure->approved == true) {
                         // if ($departure->on_vacation != false) {
-                            $total_minutes_year = $total_minutes_year + $e->departure_minutes;
+                        $total_minutes_year = $total_minutes_year + $e->departure_minutes;
                         // }
                     }
                 }
                 $dep[] = $e;
             }
         }
-        $total_departure['total_minutes_month']      = $total_minutes_month;
+        $total_departure['total_minutes_month'] = $total_minutes_month;
         $total_departure['total_minutes_month_rest'] = $departure_hour->hour * 60 - $total_minutes_month;
-        $total_departure['total_minutes_year']       = $total_minutes_year;
-        $total_departure['total_minutes_year_rest']  = $departure_day->day * 8 * 60 - $total_minutes_year;
+        $total_departure['total_minutes_year'] = $total_minutes_year;
+        $total_departure['total_minutes_year_rest'] = $departure_day->day * 8 * 60 - $total_minutes_year;
         return $total_departure;
     }
 
@@ -165,14 +165,14 @@ class DepartureController extends Controller
      * @param  int  $id
      * @return pdf
      */
-    function print($departure_id) 
-    {        
-        $pageWidth   = '216';
-        $pageHeight  = '279';
+    function print($departure_id)
+    {
+        $pageWidth = '216';
+        $pageHeight = '279';
         $pageMargins = [5, 5, 5, 10];
-        $pageName    = 'Solicitud.pdf';
-        
-        $data        = [
+        $pageName = 'Solicitud.pdf';
+
+        $data = [
             'departure' => Departure::findOrFail($departure_id)
         ];
         return \PDF::loadView('departure.print', $data)
@@ -185,7 +185,7 @@ class DepartureController extends Controller
             ->setOption('encoding', 'utf-8')
             ->stream($pageName);
     }
-    function print_report(Request $request) 
+    function print_report(Request $request)
     {
         $search['state'] = $request->state;
         $search['type'] = $request->type;
@@ -197,25 +197,25 @@ class DepartureController extends Controller
             ->join('departure_reasons', 'departure_reasons.id', '=', 'departures.departure_reason_id')
             ->whereBetween('departures.departure_date', [$request->start_date, $request->end_date]);
         if ($request->position_group_id != null) {
-            $query->where('positions.position_group_id', $request->position_group_id);            
+            $query->where('positions.position_group_id', $request->position_group_id);
             $search['position_group'] = PositionGroup::findOrFail($request->position_group_id);
         }
         if ($request->employee_id != null) {
             $query->where('contracts.employee_id', $request->employee_id);
             $search['employee'] = Employee::findOrFail($request->employee_id);
         }
-        if ($request->state != null) {            
+        if ($request->state != null) {
             $query->where('departures.approved', $request->state);
         }
-        if ($request->type != null) {            
-            $query->where('departure_reasons.departure_type_id', $request->type);   
+        if ($request->type != null) {
+            $query->where('departure_reasons.departure_type_id', $request->type);
         }
         $res = $query->get();
-        $pageWidth   = '216';
-        $pageHeight  = '279';
+        $pageWidth = '216';
+        $pageHeight = '279';
         $pageMargins = [10, 10, 10, 15];
-        $pageName    = 'Reporte de salidas/licencias.pdf';
-        $data        = [
+        $pageName = 'Reporte de salidas/licencias.pdf';
+        $data = [
             'departures' => $res,
             'search' => (object)$search
         ];
@@ -229,6 +229,7 @@ class DepartureController extends Controller
             ->setOption('footer-font-size', 5)
             ->setOption('footer-center', '[page] de [topage] - Impreso el ' . date('m/d/Y H:i'))
             ->setOption('encoding', 'utf-8')
+            ->setOption('user-style-sheet', public_path('css/report-print.min.css'))
             ->stream($pageName);
     }
 }
