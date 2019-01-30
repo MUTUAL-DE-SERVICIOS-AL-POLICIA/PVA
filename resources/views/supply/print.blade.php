@@ -27,16 +27,12 @@
             <table class="table-code no-padding no-margins">
               <tbody>
                 <tr>
-                  <td class="text-center bg-grey-darker text-xxs text-white">Tipo</td>
-                  <td class="text-xs uppercase"> SOL. ALMACENES </td>
+                    <td class="text-center bg-grey-darker text-xs text-white">Nº </td>
+                    <td class="text-xs uppercase"> {{ $supply_request->nro_solicitud }} </td>
                 </tr>
                 <tr>
-                  <td class="text-center bg-grey-darker text-xxs text-white">Fecha</td>
+                  <td class="text-center bg-grey-darker text-xs text-white">Fecha</td>
                   <td class="text-xs uppercase"> {{ Carbon::parse($supply_request->delivery_date)->format('d/m/Y') }} </td>
-                </tr>
-                <tr>
-                  <td class="text-center bg-grey-darker text-xxs text-white">Nº </td>
-                  <td class="text-xs uppercase"> {{ $supply_request->nro_solicitud }} </td>
                 </tr>
               </tbody>
             </table>
@@ -44,18 +40,19 @@
         </tr>
       </table>
       <div class="block">
+        <div class="font-semibold leading-tight text-md text-center">SOLICITUD DE MATERIAL DE ALAMAC&Eacute;N</div>
         <table class="table-info w-100 m-b-10">
           <thead>
-            <tr class="bg-grey-darker font-medium text-white text-sm uppercase">
+            {{-- <tr class="bg-grey-darker font-medium text-white text-sm uppercase">
               <td colspan='6' class="px-15 text-center">
                 PEDIDO INTERNO DE ALMACENES
               </td>
-            </tr>
-            <tr class="text-xs uppercase font-light">
-              <th class="text-center border">ITEM</th>
-              <th class="text-center border" >CANTIDAD</th>
-              <th class="text-center border">UNIDAD</th>
-              <th class="text-center border">DESCRIPCIÓN</th>
+            </tr> --}}
+            <tr class="bg-grey-darker text-xs text-white uppercase font-light">
+              <th class="text-center border" style="border: 1px solid #ffffff;">ITEM</th>
+              <th class="text-center border" style="border: 1px solid #ffffff;">CANTIDAD</th>
+              <th class="text-center border" style="border: 1px solid #ffffff;">UNIDAD</th>
+              <th class="text-center border" style="border: 1px solid #ffffff;">DESCRIPCIÓN</th>
             </tr>
           </thead>
           <tbody class="table-striped">
@@ -69,10 +66,7 @@
             @endforeach
             @for($i=sizeof($supply_request->subarticles)+1;$i<=15;$i++)
                 <tr class="text-sm uppercase">
-                    <td class="text-center border">{{ $i }}</td>
-                    <td class="text-center border"></td>
-                    <td class="text-center border"></td>
-                    <td class="text-center border"></td>
+                    <td class="text-center border" colspan="4" >&nbsp;</td>
                 </tr>
             @endfor
           </tbody>
@@ -87,7 +81,7 @@
         </table>
       </div>
     </div>
-    <div class="text-xxxs" align="right"> {{ 'Impreso el '.date('d/m/Y H:i') }} </div>
+    <div class="text-xxxs" align="left"> Plataforma Virtual Administrativa - MUSERPOL </div>
   </div>
   @endfor
 </body>
