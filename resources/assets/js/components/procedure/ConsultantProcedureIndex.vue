@@ -31,7 +31,7 @@
             <v-card :color="procedure.active ? 'warning' : 'green lighten-4'" height="100%">
               <v-card-title>
                 <v-flex xs6>
-                  <div class="font-weight-light display-1">{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</div>
+                  <div class="font-weight-light headline">{{ procedure.month_name || $moment().month(procedure.month_id-1).format('MMMM').toUpperCase() }}</div>
                 </v-flex>
                 <v-flex xs6>
                   <v-text-field
@@ -55,13 +55,13 @@
               <div v-else>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="procedure.active && $store.getters.permissions.includes('update-procedure-consultant')" :to="{ name: 'consultantProcedureEdit', params: { id: procedure.id }}" >
+                  <v-btn icon v-if="procedure.active && $store.getters.permissions.includes('update-procedure-consultant')" :to="{ name: 'consultantProcedureEdit', params: { id: procedure.id }}" class="ml-0">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
                       <span>Editar</span>
                     </v-tooltip>
                   </v-btn>
-                  <v-btn icon @click="download(`/consultant_payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">
+                  <v-btn icon @click="download(`/consultant_payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'" class="ml-0">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
                       <span>TXT Banco</span>
@@ -70,19 +70,19 @@
                   <v-spacer></v-spacer>
                   <v-menu offset-y v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'financiera' || $store.getters.role == 'admin'">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
-                      <span>Planillas</span>
+                      <span class="caption">Planillas</span>
                       <v-icon small>arrow_drop_down</v-icon>
                     </v-btn>
                     <v-card
                       style="max-height: 360px"
                       class="scroll-y"
                     >
-                      <v-list>
+                      <v-list class="mt-0 mb-0 pt-0 pb-0">
                         <v-list-tile @click="print(`/consultant_payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_name=BANCO&valid_contracts=1&with_account=1`)">
                           <span class="caption">BANCO</span>
                         </v-list-tile>
                       </v-list>
-                      <v-list>
+                      <v-list class="mt-0 mb-0 pt-0 pb-0">
                         <v-list-tile @click="print(`/consultant_payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_name=GENERAL&valid_contracts=0&with_account=0`)">
                           <span class="caption">GENERAL</span>
                         </v-list-tile>
@@ -97,7 +97,7 @@
                     @click="storeProcedure"
                     v-if="$store.getters.permissions.includes('create-procedure-consultant')"
                   >
-                    Registrar
+                    <div class="caption">Registrar</div>
                   </v-btn>
                 </v-card-actions>
               </div>
