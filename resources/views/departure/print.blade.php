@@ -58,17 +58,17 @@
                 </thead>
                 <tbody class="table-striped">
                     
-                    <tr class="text-sm">
+                    <tr class="text-base">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Nombre</td>
                         <td class="text-left uppercase px-5 py-3">
                             {{ $departure->contract->employee->first_name.' '.$departure->contract->employee->last_name.' '.$departure->contract->employee->mothers_last_name }}
                         </td>
                     </tr>
-                    <tr class="text-sm">
+                    <tr class="text-base">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Cargo</td>
                         <td class="text-left uppercase px-5 py-3"> {{ $departure->contract->position->name }} </td>
                     </tr>
-                    <tr class="text-sm">
+                    <tr class="text-base">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Área</td>
                         <td class="text-left uppercase px-5 py-3"> {{ $departure->contract->position->position_group->name }} </td>
                     </tr>
@@ -83,15 +83,15 @@
                     </tr>
                 </thead>
                 <tbody class="table-striped">
-                    <tr class="text-sm">
+                    <tr class="text-base">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Motivo</td>
                         <td colspan='3' class="text-left uppercase px-5 py-3"> {{ $departure->departure_reason->name }} </td>
                     </tr>
-                    <tr class="text-sm">
+                    <tr class="text-base">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Destino</td>
                         <td colspan='3' class="text-left uppercase px-5 py-3"> {{ $departure->destiny }} </td>
                     </tr>
-                    <tr class="text-sm">
+                    <tr class="text-base">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Desde</td>
                         <td class="text-left uppercase w-30 px-5 py-3">
                             <span>{{ Carbon::parse($departure->departure_date)->format('d/m/Y') }}</span>
@@ -105,13 +105,13 @@
                             <span>{{ Carbon::parse($departure->return_time)->format('H:i') }}</span>
                         </td>
                     </tr>
-                    <tr class="text-sm" style="height: 50px">
+                    <tr class="text-base" style="height: 50px">
                         <td class="text-left w-20 px-10 py-3 uppercase font-bold">Observaciones</td>
                         <td colspan='3' class="text-left uppercase px-5 py-3"> {{ $departure->description }} </td>
                     </tr>
                 </tbody>
             </table>
-            <table class="w-100" border="1" frame="void" rules="all" style="height: 180px;">
+            <table class="w-100" border="1" frame="void" rules="all" style="height: 165px;">
                 <tbody>
                     <tr style="height: 100px; vertical-align: bottom;">
                         <td class="text-center w-33 font-bold text-xxs">Solicitante</td>
