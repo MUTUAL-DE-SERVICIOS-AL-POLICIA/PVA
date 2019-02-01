@@ -57,7 +57,6 @@
               min="0"
               :max="Number(props.item.request) + Number(remaining(props.item))"
               @keyup.enter.native="makeRequest(props.item)"
-              @change="makeRequest(props.item)"
               @blur="makeRequest(props.item)"
               :disabled="(supplyRequest.length >= maxRequest || remaining(props.item) == 0) && !itemInRequest(props.item.id)"
             ></v-text-field>
@@ -192,6 +191,7 @@ export default {
       } else {
         this.supplyRequest = this.supplyRequest.filter(o => o.id != item.id)
       }
+      this.toastr.success(`Pedidos: ${this.supplyRequest.length} artículos`)
     },
     async getMaterials() {
       try {
