@@ -66,7 +66,7 @@
                     <fieldset class="field time-box">
                       <legend> DESDE</legend>
                       <v-layout wrap>
-                        <v-flex xs7>
+                        <v-flex xs6>
                           <v-menu
                             :close-on-content-click="false"
                             v-model="menuDateDeparture"
@@ -100,16 +100,33 @@
                             ></v-date-picker>
                           </v-menu>
                         </v-flex>
-                        <v-flex xs4 offset-xs1>
+                        <v-flex xs3>
                           <v-text-field
-                            v-model="selectedItem.departure_time" 
+                            v-model="inputTime.departure.hours"
+                            step="1"
                             label="Hora"
-                            type="time"
+                            hint="(24 hrs.)"
+                            prepend-icon="alarm"
+                            type="number"
                             name="Hora de salida"
-                            v-validate="'required'"
+                            v-validate="'required|min_value:8|max_value:18'"
+                            min="8"
+                            max="18"
+                            class="right-input"
+                            @change="checkMonthDayYear();"
+                          ></v-text-field>
+                        </v-flex>
+                        <span class="mt-4 title font-weight-black">:</span>
+                        <v-flex xs2>
+                          <v-text-field
+                            v-model="inputTime.departure.minutes"
+                            step="1"
+                            type="number"
+                            name="Hora de salida"
+                            v-validate="'required|min_value:0|max_value:59'"
                             :error-messages="errors.collect('Hora de salida')"
-                            :min="start_time"
-                            :max="end_time"
+                            min="0"
+                            max="59"
                             @change="checkMonthDayYear();"
                           ></v-text-field>
                         </v-flex>
@@ -118,7 +135,7 @@
                     <fieldset class="field mt-2 time-box">
                       <legend> HASTA</legend>
                       <v-layout wrap>
-                        <v-flex xs7>
+                        <v-flex xs6>
                           <v-menu
                             :close-on-content-click="false"
                             v-model="menuDateReturn"
@@ -152,16 +169,33 @@
                             ></v-date-picker>
                           </v-menu>
                         </v-flex>
-                        <v-flex xs4 offset-xs1>
+                        <v-flex xs3>
                           <v-text-field
-                            v-model="selectedItem.return_time" 
+                            v-model="inputTime.return.hours"
+                            step="1"
                             label="Hora"
-                            type="time"
+                            hint="(24 hrs.)"
+                            prepend-icon="alarm"
+                            type="number"
                             name="Hora de retorno"
-                            v-validate="'required'"
+                            v-validate="'required|min_value:8|max_value:18'"
+                            min="8"
+                            max="18"
+                            class="right-input"
+                            @change="checkMonthDayYear();"
+                          ></v-text-field>
+                        </v-flex>
+                        <span class="mt-4 title font-weight-black">:</span>
+                        <v-flex xs2>
+                          <v-text-field
+                            v-model="inputTime.return.minutes"
+                            step="1"
+                            type="number"
+                            name="Hora de retorno"
+                            v-validate="'required|min_value:0|max_value:59'"
                             :error-messages="errors.collect('Hora de retorno')"
-                            :min="start_time"
-                            :max="end_time"
+                            min="0"
+                            max="59"
                             @change="checkMonthDayYear();"
                           ></v-text-field>
                         </v-flex>
@@ -203,6 +237,16 @@ export default {
   props: ["item", "bus"],
   data() {
     return {
+      inputTime: {
+        departure: {
+          hours: null,
+          minutes: null
+        },
+        return: {
+          hours: null,
+          minutes: null
+        }
+      },
       dialog: false,
       valid: true,
       selectedIndex: -1,
@@ -254,6 +298,48 @@ export default {
     }    
   },
   watch: {
+    async 'inputTime.departure.hours'(val) {
+      if (this.inputTime.departure.hours != null) {
+        if (this.inputTime.departure.minutes == null) {
+          if (this.inputTime.departure.hours == 18) {
+            this.inputTime.departure.minutes = 30
+          } else {
+            this.inputTime.departure.minutes = '00'
+          }
+        }
+        this.inputTime.departure = await this.formatTime(this.inputTime.departure)
+        this.selectedItem.departure_time = `${this.inputTime.departure.hours}:${this.inputTime.departure.minutes}`
+        this.checkMonthDayYear()
+      }
+    },
+    async 'inputTime.departure.minutes'(val) {
+      if (this.inputTime.departure.minutes != null) {
+        this.inputTime.departure = await this.formatTime(this.inputTime.departure)
+        this.selectedItem.departure_time = `${this.inputTime.departure.hours}:${this.inputTime.departure.minutes}`
+        this.checkMonthDayYear()
+      }
+    },
+    async 'inputTime.return.hours'(val) {
+      if (this.inputTime.return.hours != null) {
+        if (this.inputTime.return.minutes == null) {
+          if (this.inputTime.return.hours == 18) {
+            this.inputTime.return.minutes = 30
+          } else {
+            this.inputTime.return.minutes = '00'
+          }
+        }
+        this.inputTime.return = await this.formatTime(this.inputTime.return)
+        this.selectedItem.return_time = `${this.inputTime.return.hours}:${this.inputTime.return.minutes}`
+        this.checkMonthDayYear()
+      }
+    },
+    async 'inputTime.return.minutes'(val) {
+      if (this.inputTime.return.minutes != null) {
+        this.inputTime.return = await this.formatTime(this.inputTime.return)
+        this.selectedItem.return_time = `${this.inputTime.return.hours}:${this.inputTime.return.minutes}`
+        this.checkMonthDayYear()
+      }
+    },
     'selectedItem.departure_date'(val) {
       if (this.selectedItem.departure_date) {
         this.dateDeparture = this.$moment(this.selectedItem.departure_date).format("DD/MM/YYYY");
@@ -268,6 +354,18 @@ export default {
     }
   },
   methods: {
+    formatTime(time) {
+      return new Promise((resolve, reject) => {
+        let hours = time.hours.toString()
+        hours = hours.padStart(2, '0')
+        let minutes = time.minutes.toString()
+        minutes = minutes.padStart(2, '0')
+        return resolve({
+          hours: hours.slice(hours.length-2, hours.length),
+          minutes: minutes.slice(minutes.length-2, minutes.length)
+        })
+      })
+    },
     async initialize() {
       try {
         this.getDepartureType();
@@ -277,9 +375,19 @@ export default {
       }
     },
     close() {
-      this.dialog = false;
-      this.$validator.reset();
-      this.bus.$emit("closeDialog", this.departure_type_id);
+      this.inputTime = {
+        departure: {
+          hours: null,
+          minutes: null
+        },
+        return: {
+          hours: null,
+          minutes: null
+        }
+      }
+      this.dialog = false
+      this.$validator.reset()
+      this.bus.$emit("closeDialog", this.departure_type_id)
       this.selectedItem = {
         id: null,
         contract_id: this.selectedItem.contract_id,
@@ -292,10 +400,10 @@ export default {
         departure_time: null,
         return_time: null,
         on_vacation: false
-      };
-      this.errorMessages = null;
-      this.dateDeparture = null;
-      this.dateReturn = null;
+      }
+      this.errorMessages = null
+      this.dateDeparture = null
+      this.dateReturn = null
     },
     async getUser() {
       try {
@@ -448,5 +556,11 @@ export default {
 .data-box {
   height: 230px;
   max-height: 230px;
+}
+</style>
+
+<style>
+.right-input input {
+  text-align: right;
 }
 </style>
