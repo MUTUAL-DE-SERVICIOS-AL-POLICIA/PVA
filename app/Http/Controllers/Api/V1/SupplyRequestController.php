@@ -129,9 +129,9 @@ class SupplyRequestController extends Controller
     return \PDF::loadView('supply.print', $data)
       ->setOption('page-width', '216')
       ->setOption('page-height', '279')
-      ->setOption('margin-top', '0')
+      ->setOption('margin-top', '5')
       ->setOption('margin-right', '5')
-      ->setOption('margin-bottom', '0')
+      ->setOption('margin-bottom', '5')
       ->setOption('margin-left', '10')
       ->setOption('encoding', 'utf-8')
       ->stream($filename);
