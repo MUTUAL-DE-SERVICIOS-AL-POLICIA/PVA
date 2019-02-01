@@ -124,8 +124,7 @@
     </div>
     <table class="w-100 text-xxxs">
         <tr>
-            <td align="left">PLATAFORMA VIRTUAL ADMINISTRATIVA</td>
-            <td align="right">{{ 'Impreso el '.date('d/m/Y H:i') }}</td>
+            <td align="left">PLATAFORMA VIRTUAL ADMINISTRATIVA - MUSERPOL</td>
         </tr>
     </table>
     @if($it == 0)
