@@ -147,7 +147,7 @@
                     <v-text-field
                       v-model="selectedItem.rrhh_cite"
                       label="Cite de Recursos Humanos"
-                      v-validate="'required'"
+                      v-validate="deactivateContract ? '' : 'required'"
                       name="Cite de Recursos Humanos"
                       :error-messages="errors.collect('Cite de Recursos Humanos')"
                       :disabled="$store.getters.role != 'admin' && $store.getters.role != 'rrhh'"
@@ -173,7 +173,7 @@
                         prepend-icon="event"
                         readonly
                         clearable
-                        v-validate="'required'"
+                        v-validate="deactivateContract ? '' : 'required'"
                         name="Fecha de cite de Recursos Humanos"
                         :error-messages="errors.collect('Fecha de cite de Recursos Humanos')"
                         @input="dateCiteNull"
