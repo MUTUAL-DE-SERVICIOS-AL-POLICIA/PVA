@@ -30,6 +30,7 @@ class EmployeeController extends Controller
 			->get();
 
 		foreach ($employees as $employee) {
+			$employee->total_contracts = $employee->total_contracts();
 			$employee->consultant = $employee->consultant();
 
 			if ($employee->consultant === null) {

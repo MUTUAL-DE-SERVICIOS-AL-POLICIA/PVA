@@ -66,6 +66,7 @@
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center" v-if="$store.getters.permissions.includes('update-employee')">
             <v-switch
+              v-show="props.item.consultant == null"
               v-model="props.item.active"
               @change="switchActive(props.item)"
             ></v-switch>
@@ -74,13 +75,13 @@
             <table>
               <td :class="withoutBorders" v-if="(!active && $store.getters.permissions.includes('update-employee')) || (active && $store.getters.permissions.includes('update-employee-inactive'))">
                 <v-tooltip top :class="withoutBorders">
-                  <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'danger' : 'info'" @click="editItem(props.item)">
+                  <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'white' : 'info'" @click="editItem(props.item)">
                     <v-icon>edit</v-icon>
                   </v-btn>
                   <span>Editar</span>
                 </v-tooltip>
               </td>
-              <td v-if="props.item.consultant == null && $store.getters.permissions.includes('delete-employee')" :class="withoutBorders">
+              <td v-if="props.item.total_contracts == 0 && $store.getters.permissions.includes('delete-employee')" :class="withoutBorders">
                 <v-tooltip top :class="withoutBorders">
                   <v-btn medium :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                     <v-icon>delete</v-icon>
@@ -88,9 +89,9 @@
                   <span>Eliminar</span>
                 </v-tooltip>
               </td>
-              <td v-if="props.item.consultant != null" :class="withoutBorders">
+              <td v-else :class="withoutBorders">
                 <v-tooltip top :class="withoutBorders">
-                  <v-btn medium :class="withoutBorders" slot="activator" flat icon color="info" @click="certificateItem(props.item)">
+                  <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'white' : 'info'" @click="certificateItem(props.item)">
                     <v-icon>timeline</v-icon>
                   </v-btn>
                   <span>Certificado de trabajo</span>
@@ -267,10 +268,10 @@ export default {
       try {
         let res = await axios.patch(`/employee/${employee.id}`, {
           active: employee.active
-        });
-        this.getEmployees(employee.active);
+        })
+        this.employees = this.employees.filter(o => o.id != employee.id)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
     editItem(employee) {
