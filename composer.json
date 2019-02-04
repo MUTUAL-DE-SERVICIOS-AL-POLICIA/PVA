@@ -30,7 +30,6 @@
     "mockery/mockery": "^1.2.0",
     "nunomaduro/collision": "^v2.1.1",
     "phpunit/phpunit": "^7.4.5",
-    "bea/composer/freeze-version": "^1.0.2",
     "beyondcode/laravel-dump-server": "^1.2.2"
   },
   "autoload": {
@@ -79,11 +78,5 @@
     "optimize-autoloader": true
   },
   "minimum-stability": "dev",
-  "prefer-stable": true,
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/BeAPI/composer-freeze-version"
-    }
-  ]
+  "prefer-stable": true
 }
