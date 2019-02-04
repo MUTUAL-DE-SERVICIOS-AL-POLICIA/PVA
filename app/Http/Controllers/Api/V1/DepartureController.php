@@ -169,7 +169,7 @@ class DepartureController extends Controller
     {
         $pageWidth = '216';
         $pageHeight = '279';
-        $pageMargins = [5, 5, 5, 10];
+        $pageMargins = [1, 2.5, 0, 2.5];
         $pageName = 'Solicitud.pdf';
 
         $data = [
