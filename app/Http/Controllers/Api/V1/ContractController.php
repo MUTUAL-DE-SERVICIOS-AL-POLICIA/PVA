@@ -205,20 +205,20 @@ class ContractController extends Controller
 
   private function contract_between_dates($employee_id, $start_date, $end_date, $contract_id = null)
   {
+    $query = Contract::where('employee_id', $employee_id);
+
     if ($contract_id) {
-      return Contract::where('id', '!=', $contract_id)->where('employee_id', $employee_id)->where(function ($q) use ($start_date, $end_date) {
-        $q
-          ->whereBetween('start_date', [$start_date, $end_date])
-          ->orWhereBetween('end_date', [$start_date, $end_date])
-          ->orWhereBetween('retirement_date', [$start_date, $end_date]);
-      })->count();
-    } else {
-      return Contract::where('employee_id', $employee_id)->where(function ($q) use ($start_date, $end_date) {
-        $q
-          ->whereBetween('start_date', [$start_date, $end_date])
-          ->orWhereBetween('end_date', [$start_date, $end_date])
-          ->orWhereBetween('retirement_date', [$start_date, $end_date]);
-      })->count();
+      $query = $query->where('id', '!=', $contract_id);
     }
+
+    return $query->whereNull('retirement_date')->where(function ($q) use ($start_date, $end_date) {
+      $q
+        ->whereBetween('start_date', [$start_date, $end_date])
+        ->orWhereBetween('end_date', [$start_date, $end_date]);
+    })->count() + $query->whereNotNull('retirement_date')->where(function ($q) use ($start_date, $end_date) {
+      $q
+        ->whereBetween('start_date', [$start_date, $end_date])
+        ->orWhereBetween('retirement_date', [$start_date, $end_date]);
+    })->count();
   }
 }
