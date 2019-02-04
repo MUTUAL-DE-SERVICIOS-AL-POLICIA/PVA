@@ -50,22 +50,58 @@ class Employee extends Model
 		return $this->hasMany(Payroll::class);
 	}
 
+	public function total_contracts()
+	{
+		return $this->contracts->count() + $this->consultant_contracts->count();
+	}
+
 	public function consultant()
 	{
 		$contract = $this->last_contract();
 		$consultant_contract = $this->last_consultant_contract();
+		$type = null;
 		if ($contract && $consultant_contract) {
 			if (Carbon::parse($contract->start_date)->greaterThan(Carbon::parse($consultant_contract->start_date))) {
-				return false;
+				$type = 'eventual';
 			} else {
-				return true;
+				$type = 'consultant';
 			}
 		} elseif (!$contract && $consultant_contract) {
-			return true;
+			$type = 'consultant';
 		} elseif ($contract && !$consultant_contract) {
-			return false;
-		} else {
-			return null;
+			$type = 'eventual';
+		}
+		switch ($type) {
+			case 'eventual':
+				if ($contract->end_date != null) {
+					if ($contract->retirement_date) {
+						if (Carbon::parse($contract->retirement_date)->greaterThan(Carbon::now())) {
+							return false;
+						}
+					} else {
+						if (Carbon::parse($contract->end_date)->greaterThan(Carbon::now())) {
+							return false;
+						}
+					}
+				} else {
+					return false;
+				}
+				return null;
+				break;
+			case 'consultant':
+				if ($consultant_contract->end_date != null) {
+					if ($consultant_contract->retirement_date) {
+						if (Carbon::parse($consultant_contract->retirement_date)->greaterThan(Carbon::now())) return true;
+					} else {
+						if (Carbon::parse($consultant_contract->end_date)->greaterThan(Carbon::now())) return true;
+					}
+				} else {
+					return true;
+				}
+				return null;
+				break;
+			default:
+				return null;
 		}
 	}
 
