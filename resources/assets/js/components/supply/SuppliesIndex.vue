@@ -31,7 +31,6 @@
           single-line
           hide-details
           full-width
-          clearable
         ></v-text-field>
       </v-flex>
     </v-toolbar>
