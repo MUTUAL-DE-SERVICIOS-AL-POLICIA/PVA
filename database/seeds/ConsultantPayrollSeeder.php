@@ -11,7 +11,7 @@ class ConsultantPayrollSeeder extends Seeder
 	 */
 	public function run()
 	{
-		$procedure = App\Procedure::orderBy('created_at', 'DESC')->limit(1)->first();
+		$procedure = App\ConsultantProcedure::orderBy('created_at', 'DESC')->limit(1)->first();
 		$month_shortened = str_pad($procedure->month->order, 2, '0', STR_PAD_LEFT);
 		$year_shortened = substr((string)$procedure->year, -2);
 
@@ -21,7 +21,7 @@ class ConsultantPayrollSeeder extends Seeder
 			App\ConsultantPayroll::create([
 				'code' => implode('-', ['C', str_pad(++$i, 3, '0', STR_PAD_LEFT), $year_shortened]),
 				'unworked_days' => rand(0, 3),
-				'procedure_id' => $procedure->id,
+				'consultant_procedure_id' => $procedure->id,
 				'consultant_contract_id' => $contract->id,
 				'employee_id' => $contract->employee->id,
 				'charge_id' => $contract->consultant_position->charge_id,

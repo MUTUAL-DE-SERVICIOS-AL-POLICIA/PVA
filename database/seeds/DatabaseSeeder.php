@@ -58,6 +58,8 @@ class DatabaseSeeder extends Seeder
 			DB::statement('TRUNCATE TABLE ' . $table . ' CASCADE;');
 		}
 
+		$this->call(UserSeeder::class);
+		Auth::login(App\User::first());
 		$this->call(CitySeeder::class);
 		$this->call(InsuranceCompanySeeder::class);
 		$this->call(ManagementEntitySeeder::class);
@@ -70,7 +72,6 @@ class DatabaseSeeder extends Seeder
 		$this->call(PositionSeeder::class);
 		$this->call(ConsultantPositionSeeder::class);
 		$this->call(EmployeeSeeder::class);
-		$this->call(UserSeeder::class);
 		$this->call(JobScheduleSeeder::class);
 		$this->call(RetirementReasonSeeder::class);
 		$this->call(ContractTypeSeeder::class);
