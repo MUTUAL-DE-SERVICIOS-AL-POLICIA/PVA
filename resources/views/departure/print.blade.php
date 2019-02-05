@@ -10,14 +10,42 @@
       min-height: 17px;
     }
     .description-row {
-      height: 140px;
-      min-height: 140px;
+      height: 138px;
+      min-height: 138px;
+    }
+    .scissors-rule {
+      display: block;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .scissors-rule > span {
+      position: relative;
+      display: inline-block;
+    }
+    .scissors-rule > span:before,
+    .scissors-rule > span:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 9999px;
+      height: 1px;
+      background: white;
+      border-top: 1px dashed black;
+    }
+    .scissors-rule > span:before {
+      right: 100%;
+      margin-right: 5px;
+    }
+    .scissors-rule > span:after {
+      left: 100%;
+      margin-left: 5px;
     }
   </style>
 </head>
 <body style="border: 0; border-radius: 0;">
   @for($i = 0; $i < 3; $i++)
-  <div class="page-break px-4" style="border-radius: 0.75em; border: 1px solid #22292f; padding-top: 4px;">
+  <div class="page-break px-4" style="border-radius: 0.75em; border: 1px solid #22292f; padding-top: 3px;">
     <table class="w-100">
       <tr>
         <th class="w-15 text-left no-padding no-margins align-middle">
@@ -120,7 +148,7 @@
       </table>
       <table class="w-100 description-row" border="1" frame="void" rules="all">
         <tbody>
-          <tr style="height: 100px; vertical-align: bottom;">
+          <tr style="height: 97px; vertical-align: bottom;">
             <td class="text-center w-33 font-bold text-xxxs">Solicitante</td>
             <td class="text-center w-33 font-bold text-xxxs">Autorizado</td>
             <td class="text-center w-33 font-bold text-xxxs">RRHH</td>
@@ -135,7 +163,9 @@
     </tr>
   </table>
   @if($i != 2)
-  <hr style="border-top: dashed 1px;"/>
+  <div class="scissors-rule">
+    <span>&#9986;</span>
+  </div>
   @endif
   @endfor
 </body>
