@@ -4,6 +4,36 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>PLATAFORMA VIRTUAL - MUSERPOL </title>
   <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all" />
+  <style>
+    .scissors-rule {
+      display: block;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .scissors-rule > span {
+      position: relative;
+      display: inline-block;
+    }
+    .scissors-rule > span:before,
+    .scissors-rule > span:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 9999px;
+      height: 1px;
+      background: white;
+      border-top: 1px dashed black;
+    }
+    .scissors-rule > span:before {
+      right: 100%;
+      margin-right: 5px;
+    }
+    .scissors-rule > span:after {
+      left: 100%;
+      margin-left: 5px;
+    }
+  </style>
 </head>
 <body style="border: 0; border-radius: 0;">
   @for($it = 0; $it<2; $it++)
@@ -13,26 +43,26 @@
         <tr>
           <th class="w-15 text-left no-padding no-margins align-middle">
             <div class="text-center">
-              <img src="{{ public_path("/img/logo.png") }}" class="w-85">
+              <img src="{{ public_path("/img/logo.png") }}" class="w-65">
             </div>
           </th>
           <th class="w-50 align-top">
-            <span class="font-light uppercase leading-tight text-sm" >
-              {{  'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"' }} <br>
-              {{  'DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS' }} <br>
-              {{  'UNIDAD ADMINISTRATIVA' }}
-            </span>
+            <div class="font-thin uppercase leading-tight text-xs" >
+              <div>MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</div>
+              <div>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</div>
+              <div>UNIDAD DE RECURSOS HUMANOS</div>
+            </div>
           </th>
             <th class="w-20 no-padding no-margins align-top">
-            <table class="table-code no-padding no-margins">
+            <table class="table-code no-padding no-margins text-xxxs">
               <tbody>
                 <tr>
-                    <td class="text-center bg-grey-darker text-xs text-white">Nº </td>
-                    <td class="text-xs uppercase"> {{ $supply_request->nro_solicitud }} </td>
+                    <td class="text-center bg-grey-darker text-white">Nº </td>
+                    <td class="text-xxs uppercase"> {{ $supply_request->nro_solicitud }} </td>
                 </tr>
                 <tr>
-                  <td class="text-center bg-grey-darker text-xs text-white">Fecha</td>
-                  <td class="text-xs uppercase"> {{ Carbon::parse($supply_request->delivery_date)->format('d/m/Y') }} </td>
+                  <td class="text-center bg-grey-darker text-white">Fecha</td>
+                  <td class="text-xxs uppercase"> {{ Carbon::parse($supply_request->delivery_date)->format('d/m/Y') }} </td>
                 </tr>
               </tbody>
             </table>
@@ -41,7 +71,7 @@
         <tr><td colspan="3" style="border-bottom: 1px solid #22292f;"></td></tr>
       </table>
       <div class="block">
-        <div class="font-semibold leading-tight text-md text-center" style="margin-top:10px; margin-bottom:10px">SOLICITUD DE MATERIAL DE ALAMAC&Eacute;N</div>
+        <div class="font-semibold leading-tight text-md text-center" style="margin-bottom: 5px">SOLICITUD DE MATERIAL DE ALAMAC&Eacute;N</div>
         <table class="table-info w-100 m-b-10">
           <thead>
             <tr class="bg-grey-darker text-xs text-white uppercase font-light">
@@ -80,10 +110,10 @@
     <div class="text-xxxs" align="left"> Plataforma Virtual Administrativa - MUSERPOL </div>
   </div>
   @if($it == 0)
-    <br><br>
-    <hr>
-    <br><br>
-    @endif
+  <div class="scissors-rule">
+    <span>&#9986;</span>
+  </div>
+  @endif
   @endfor
 </body>
 </html>
