@@ -139,10 +139,13 @@ export default {
     dayxYear: null
   }),
   async mounted() {
-    this.getDepartures();
+    this.getDepartures()
     this.bus.$on("closeDialog", departures => {
-      this.getDepartures();
-    });
+      this.getDepartures()
+    })
+    this.bus.$on("printDeparture", item => {
+      this.print(item)
+    })
   },
   methods: {
     async getDepartures() {
@@ -192,15 +195,17 @@ export default {
     },
     async print(item) {
       try {
-        let res = await axios({
-          method: "GET",
-          url: `/departure/print/${item.id}`,
-          responseType: "arraybuffer"
-        });
-        let blob = new Blob([res.data], {
-          type: "application/pdf"
-        });
-        printJS(window.URL.createObjectURL(blob));
+        if ('id' in item) {
+          let res = await axios({
+            method: "GET",
+            url: `/departure/print/${item.id}`,
+            responseType: "arraybuffer"
+          });
+          let blob = new Blob([res.data], {
+            type: "application/pdf"
+          });
+          printJS(window.URL.createObjectURL(blob));
+        }
       } catch (e) {
         console.log(e);
       }
