@@ -10,6 +10,8 @@
       text-align: center;
       overflow: hidden;
       white-space: nowrap;
+      margin-top: 10px;
+      margin-bottom: 15px;
     }
     .scissors-rule > span {
       position: relative;
