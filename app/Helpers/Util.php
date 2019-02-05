@@ -397,4 +397,11 @@ class Util
       'action' => $action
     ]);
   }
+
+  public static function departure_string_length($text)
+  {
+    if (strlen($text) > 80) return 'text-xxxs';
+    if (strlen($text) > 60) return 'text-xxs';
+    return 'text-xs';
+  }
 }
