@@ -36,20 +36,20 @@
                           </v-flex>
                           <v-flex xs8>
                             <v-checkbox label="A cuenta de vacación" v-model="selectedItem.on_vacation" v-if="departure_type_id==2 && contractType==1"></v-checkbox>
-                            <v-autocomplete
-                              v-model="selectedItem.departure_reason_id"
+                            <v-select
                               :items="departureReasons"
+                              v-model="selectedItem.departure_reason_id"
                               item-text="name"
                               item-value="id"
                               label="Motivo"
                               :hint="descriptionReason"
                               persistent-hint
-                              @change="getDepartureReasonDesc();checkMonthDayYear()"
+                              @change="checkMonthDayYear()"
                               v-validate="'required'"
                               name="Motivo"
                               :error-messages="errors.collect('Motivo')"
                               :disabled="disabledReason">
-                            </v-autocomplete>
+                            ></v-select>
                           </v-flex>
                         </v-layout>
                       </v-flex>
@@ -289,7 +289,7 @@ export default {
       start_time: null,
       end_time: null,
       type_reasons: null,
-      type_departures: [1],
+      type_departures: [1]
     };
   },
   computed: {
@@ -351,6 +351,11 @@ export default {
       if (this.selectedItem.return_date) {
         this.dateReturn = this.$moment(this.selectedItem.return_date).format("DD/MM/YYYY");
       }
+    },
+    'selectedItem.departure_reason_id'(val) {
+      if (val) {
+        this.getDepartureReasonDesc(val)
+      }
     }
   },
   methods: {
@@ -404,6 +409,8 @@ export default {
       this.errorMessages = null
       this.dateDeparture = null
       this.dateReturn = null
+      this.departure_type_id = null
+      this.descriptionReason = null
     },
     async getUser() {
       try {
@@ -442,6 +449,7 @@ export default {
       }
     },
     async save() {
+      let res = {}
       try {
         let valid = await this.$validator.validateAll();
         this.checkMonthDayYear();
@@ -450,9 +458,9 @@ export default {
             this.selectedCertificate.data = this.selectedItem;
             let certificate = await axios.post('/certificate', this.selectedCertificate);
             this.selectedItem.certificate_id = certificate.data.id;
-            let departure = await axios.post('/departure', this.selectedItem);
+            res = await axios.post('/departure', this.selectedItem);
           } else {
-            let departure = await axios.patch("/departure/" + this.selectedItem.id, this.selectedItem);
+            res = await axios.patch("/departure/" + this.selectedItem.id, this.selectedItem);
           }
           this.close();
           this.toastr.success(
@@ -461,11 +469,13 @@ export default {
         }
       } catch (e) {
         console.log(e);
+      } finally {
+        this.bus.$emit('printDeparture', res.data)
       }
     },
-    async getDepartureReasonDesc() {
+    async getDepartureReasonDesc(id) {
       try{
-        let res = await axios.get('/departure_reason/' + this.selectedItem.departure_reason_id);
+        let res = await axios.get(`departure_reason/${id}`)
         this.departureReason = res.data;
         this.descriptionReason = res.data.description;
         this.disabledReason = false;
@@ -535,10 +545,16 @@ export default {
       this.getDepartureReason();
       this.dateDeparture = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
       this.dateReturn = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
-      this.selectedItem.departure_date = item.departure_date;
-      this.selectedItem.return_date = item.return_date;
-      this.selectedItem.departure_time = this.$moment.utc(item.departure_time, "HH:mm:ss").format("HH:mm");
-      this.selectedItem.return_time = this.$moment.utc(item.return_time, "HH:mm:ss").format("HH:mm");      
+      this.inputTime = {
+        departure: {
+          hours: item.departure_time.split(':').length > 0 ? item.departure_time.split(':')[0] : null,
+          minutes: item.departure_time.split(':').length > 0 ? item.departure_time.split(':')[1] : null
+        },
+        return: {
+          hours: item.return_time.split(':').length > 0 ? item.return_time.split(':')[0] : null,
+          minutes: item.return_time.split(':').length > 0 ? item.return_time.split(':')[1] : null
+        }
+      }
     });
     this.initialize();
   }

@@ -25,12 +25,12 @@
     "sass-loader": "^7.1.0",
     "toastr": "^2.1.4",
     "vee-validate": "^2.1.7",
-    "vue": "^2.5.22",
+    "vue": "^2.6.2",
     "vue-json-to-csv": "^1.1.7",
     "vue-moment": "^4.0.0",
     "vue-router": "^3.0.2",
-    "vue-template-compiler": "^2.5.22",
-    "vuetify": "^1.4.4",
+    "vue-template-compiler": "^2.6.2",
+    "vuetify": "^1.4.6",
     "vuex": "^3.1.0"
   }
 }
