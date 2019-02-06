@@ -13,31 +13,26 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
     </head>
 
     <body>
-        <div class="header-left">
-            <p>{{ $company->name }}</p>
-            <p>NIT {{ $company->tax_number }}</p>
-            <p>{{ $company->address }}</p>
-        </div>
-
-        <div class="header-right">
-        @if ($company->employer_number)
-            <span>No. Patronal CNS: {{ $company->employer_number }}</span>
-            <span style="padding-left: 5em;"></span>
-        @endif
-            <span>{{ $title->report_name }}</span>
-        </div>
-
-        <div class="header-center">
-            <h2>
-                {{ implode(' - ', array_filter([$title->name, $title->subtitle, $title->management_entity, $title->position_group, $title->employer_number])) }}
-            </h2>
-            <h3>PERSONAL EVENTUAL -
-            MES {{ $title->month }} DE {{ $title->year }}</h3>
-            <h3>(EXPRESADO EN BOLIVIANOS)</h3>
-        </div>
-
-        <div class="header-left">
-            <img id="header-image" src="{{ public_path().'/img/logo.png'}}">
+        <div>
+            <div class="header-left">
+                <img id="header-image" src="{{ public_path().'/img/logo.png'}}">
+            </div>
+            <div class="header-center">
+                <h2>
+                    {{ implode(' - ', array_filter([$title->name, $title->subtitle, $title->management_entity, $title->position_group, $title->employer_number])) }}
+                </h2>
+                <h3>PERSONAL EVENTUAL -
+                MES {{ $title->month }} DE {{ $title->year }}</h3>
+                <h3>(EXPRESADO EN BOLIVIANOS)</h3>
+            </div>
+            <div class="header-right">
+                <span style="font-weight: bold; margin-bottom: 2px;">{{ $title->report_name }}</span>
+                <p>NIT {{ $company->tax_number }}</p>
+                <p>{{ $company->address }}</p>
+                @if ($company->employer_number)
+                <span>No. Patronal CNS: {{ $company->employer_number }}</span>
+                @endif
+            </div>
         </div>
 
         <table align="center">

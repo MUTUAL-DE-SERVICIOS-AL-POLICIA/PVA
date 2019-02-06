@@ -338,7 +338,7 @@ export default {
                 break
               case 'withoutContracts':
                 obj.data = this.employees.filter(o => {
-                  return o.consultant == null
+                  return o.consultant == null && o.active
                 })
                 obj.title = 'Sin Contratos'
                 obj.icon = obj.data.length > 0 ? 'warning' : 'done'

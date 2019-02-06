@@ -210,14 +210,16 @@ class PayrollPrintController extends Controller
 
 		$file_name = implode(" ", [$response->data['title']->name, $report_name, $year, mb_strtoupper($month->name)]) . ".pdf";
 
-		$footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => true, 'date' => $response->data['procedure']->pay_date ? Carbon::parse($response->data['procedure']->pay_date)->format('d/m/Y') : Carbon::now()->format('d/m/Y H:i')))->render();
+		$footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => false, 'date' => null))->render();
 
 		$options = [
 			'orientation' => 'landscape',
 			'page-width' => '216',
-			'page-height' => '330',
-			'margin-left' => '26',
-			'margin-right' => '0',
+			'page-height' => '356',
+			'margin-top' => '7',
+			'margin-bottom' => '12',
+			'margin-left' => '30',
+			'margin-right' => '6',
 			'encoding' => 'UTF-8',
 			'footer-html' => $footerHtml,
 			'user-style-sheet' => public_path('css/payroll-print.min.css')
