@@ -45,21 +45,34 @@ class LdapController extends Controller
     foreach ($added as $key => $e) {
       $new_entry = Employee::findOrFail($e);
       $last_contract = $new_entry->last_contract();
-      if ($last_contract) {
+      $last_consultant_contract = $new_entry->last_consultant_contract();
+      if ($last_contract || $last_consultant_contract) {
         $givenName = $new_entry->first_name;
         if ($new_entry->second_name) $givenName .= ' ' . $new_entry->second_name;
         $sn = $new_entry->last_name;
         if ($new_entry->mothers_last_name) $sn .= ' ' . $new_entry->mothers_last_name;
-
-        if ($ldap->create_entry([
-          'sn' => $sn,
-          'givenName' => $givenName,
-          'title' => $new_entry->last_contract()->position->name,
-          'employeeNumber' => $new_entry->id
-        ])) {
-          $success_added++;
-        } else {
-          $added[$key] = $new_entry;
+        if ($last_contract) {
+          if ($ldap->create_entry([
+            'sn' => $sn,
+            'givenName' => $givenName,
+            'title' => $new_entry->last_contract()->position->name,
+            'employeeNumber' => $new_entry->id
+          ])) {
+            $success_added++;
+          } else {
+            $added[$key] = $new_entry;
+          }
+        } elseif ($last_consultant_contract) {
+          if ($ldap->create_entry([
+            'sn' => $sn,
+            'givenName' => $givenName,
+            'title' => $new_entry->last_consultant_contract()->consultant_position->name,
+            'employeeNumber' => $new_entry->id
+          ])) {
+            $success_added++;
+          } else {
+            $added[$key] = $new_entry;
+          }
         }
       } else {
         $added[$key] = $new_entry;
