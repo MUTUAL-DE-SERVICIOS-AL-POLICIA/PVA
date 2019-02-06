@@ -73,7 +73,7 @@
         <tr><td colspan="3" style="border-bottom: 1px solid #22292f;"></td></tr>
       </table>
       <div class="block">
-        <div class="font-semibold leading-tight text-md text-center" style="margin-bottom: 5px">SOLICITUD DE MATERIAL DE ALAMAC&Eacute;N</div>
+        <div class="font-semibold leading-tight text-md text-center" style="margin-bottom: 5px">SOLICITUD DE MATERIAL DE ALMACÉN</div>
         <table class="table-info w-100 m-b-10">
           <thead>
             <tr class="bg-grey-darker text-xs text-white uppercase font-light">
