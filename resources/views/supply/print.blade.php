@@ -52,7 +52,7 @@
             <div class="font-thin uppercase leading-tight text-xs" >
               <div>MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</div>
               <div>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</div>
-              <div>UNIDAD DE RECURSOS HUMANOS</div>
+              <div>UNIDAD ADMINISTRATIVA</div>
             </div>
           </th>
             <th class="w-20 no-padding no-margins align-top">
