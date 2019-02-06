@@ -279,7 +279,7 @@ export default {
   },
   created() {
     this.getEmployees()
-    if (this.$store.role == 'rrhh' || this.$store.role == 'admin') this.getYearFaults()
+    if (this.$store.getters.role == 'rrhh' || this.$store.getters.role == 'admin') this.getYearFaults()
     this.getLocations()
   },
   methods: {
