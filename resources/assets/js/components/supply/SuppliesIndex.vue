@@ -45,7 +45,6 @@
       <template slot="items" slot-scope="props">
         <tr>
           <td class="text-md-center">{{ props.item.description }}</td>
-          <td class="text-md-center">{{ remaining(props.item) }}</td>
           <td class="text-md-center">{{ props.item.unit }}</td>
           <td>
             <v-text-field
@@ -97,7 +96,6 @@ export default {
     supplies: [],
     headers: [
       { align: "center", text: "Descripción", class: ["ma-0", "pa-0"], value: "description" },
-      { align: "center", text: "Stock", class: ["ma-0", "pa-0"], value: "stock" },
       { align: "center", text: "Unidad", class: ["ma-0", "pa-0"], value: "unit" },
       { align: "center", text: "Pedido", class: ["ma-0", "pa-0"], value: "" },
     ],
