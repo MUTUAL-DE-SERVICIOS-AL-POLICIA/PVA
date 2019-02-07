@@ -43,17 +43,32 @@ class SupplyUserController extends Controller
     $employee = Employee::findOrFail($id);
     $user = SupplyUser::where('ci', $employee->identity_card)->orWhere('name', Util::fullName($employee, 'uppercase', 'name_first'))->latest()->first();
     if ($user) {
-      if (trim(preg_replace('/[\s]+/', ' ', $user->title)) == mb_strtoupper($employee->last_contract()->position->name) && $user->department->name == $employee->last_contract()->position->position_group->name) {
-        if (!$user->ci) {
-          $user->ci = $employee->identity_card;
-          $user->save();
-        }
-        if ($user->code != $employee->id) {
-          $user->code = $employee->id;
-          $user->save();
+      if ($employee->consultant()) {
+        if (trim(preg_replace('/[\s]+/', ' ', $user->title)) == mb_strtoupper($employee->last_consultant_contract()->consultant_position->name) && $user->department->name == $employee->last_consultant_contract()->consultant_position->position_group->name) {
+          if (!$user->ci) {
+            $user->ci = $employee->identity_card;
+            $user->save();
+          }
+          if ($user->code != $employee->id) {
+            $user->code = $employee->id;
+            $user->save();
+          }
+        } else {
+          $user = $this->create_user($employee, $request['username']);
         }
       } else {
-        $user = $this->create_user($employee, $request['username']);
+        if (trim(preg_replace('/[\s]+/', ' ', $user->title)) == mb_strtoupper($employee->last_contract()->position->name) && $user->department->name == $employee->last_contract()->position->position_group->name) {
+          if (!$user->ci) {
+            $user->ci = $employee->identity_card;
+            $user->save();
+          }
+          if ($user->code != $employee->id) {
+            $user->code = $employee->id;
+            $user->save();
+          }
+        } else {
+          $user = $this->create_user($employee, $request['username']);
+        }
       }
     } else {
       $user = $this->create_user($employee, $request['username']);
@@ -89,10 +104,10 @@ class SupplyUserController extends Controller
     return SupplyUser::create([
       'code' => $employee->id,
       'name' => Util::fullName($employee, 'uppercase', 'name_first'),
-      'title' => mb_strtoupper($employee->last_contract()->position->name),
+      'title' => $employee->consultant() ? mb_strtoupper($employee->last_consultant_contract()->consultant_position->name) : mb_strtoupper($employee->last_contract()->position->name),
       'ci' => $employee->identity_card,
       'status' => 1,
-      'department_id' => SupplyDepartment::where('name', $employee->last_contract()->position->position_group->name)->first()->id
+      'department_id' => $employee->consultant() ? SupplyDepartment::where('name', $employee->last_consultant_contract()->consultant_position->position_group->name)->first()->id : SupplyDepartment::where('name', $employee->last_contract()->position->position_group->name)->first()->id
     ]);
   }
 }
