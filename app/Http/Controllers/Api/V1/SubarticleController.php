@@ -16,10 +16,12 @@ class SubarticleController extends Controller
   public function index()
   {
     $subarticles = Subarticle::get();
+    $items = [];
     foreach ($subarticles as $subarticle) {
       $subarticle->stock();
+      if ($subarticle->stock > 0) $items[] = $subarticle;
     }
-    return $subarticles;
+    return $items;
   }
 
   /**
