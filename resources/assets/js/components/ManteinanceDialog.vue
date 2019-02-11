@@ -13,7 +13,7 @@
       </v-card-title>
 
       <v-card-text>
-        Comuniquese con {{ this.positionGroup }} para mas información.
+        Comuníquese con {{ this.positionGroup }} para mas información.
       </v-card-text>
 
       <v-divider></v-divider>
