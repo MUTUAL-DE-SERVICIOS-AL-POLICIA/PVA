@@ -1,89 +1,99 @@
 <template>
   <v-container fluid>
-    <v-toolbar>
-      <v-toolbar-title>
-        <v-select
-          v-model="materialSelected"
-          :items="materials"
-          item-text="description"
-          item-value="id"
-          class="subheading font-weight-medium"
-          :label="requestButton.title"
-        ></v-select>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn v-if="showRequest && requestButton.state" @click.native="sendRequest()" class="danger white--text ml-0">
-        <div class="font-weight-regular subheading pa-2">ENVIAR PEDIDO</div>
-      </v-btn>
-      <v-btn v-if="showRequest" @click.native="switchRequest()" class="primary white--text ml-0">
-        <div class="font-weight-regular subheading pa-2">{{ requestButton.text }}</div>
-      </v-btn>
-      <v-divider
-        class="mx-2"
-        inset
-        vertical
-      ></v-divider>
-      <v-flex xs2>
-        <v-text-field
-          v-model="search"
-          append-icon="search"
-          label="Buscar"
-          single-line
-          hide-details
-          full-width
-        ></v-text-field>
-      </v-flex>
-    </v-toolbar>
-    <v-data-table
-      :headers="headers"
-      :items="filteredSupplies"
-      :search="search"
-      :loading="loading"
-      :rows-per-page-items="[15,30,50,{text:'TODO', value:-1}]"
-      disable-initial-sort
-    >
-      <template slot="items" slot-scope="props">
-        <tr>
-          <td class="text-md-center">{{ props.item.description }}</td>
-          <td class="text-md-center">{{ props.item.unit }}</td>
-          <td>
-            <v-text-field
-              class="ma-0 pa-0 centered-input"
-              v-model="props.item.request"
-              type="number"
-              step="1"
-              min="0"
-              :max="Number(props.item.request) + Number(remaining(props.item))"
-              @keyup.enter.native="makeRequest(props.item)"
-              @blur="makeRequest(props.item)"
-              :disabled="(supplyRequest.length >= maxRequest || remaining(props.item) == 0) && !itemInRequest(props.item.id)"
-            ></v-text-field>
-          </td>
-        </tr>
-      </template>
-      <v-alert slot="no-results" :value="true" color="error">
-        La búsqueda de "{{ search }}" no encontró resultados.
-      </v-alert>
-      <template slot="no-data">
-        <v-container fluid fill-height>
-          <v-layout align-center justify-center>
-            <v-progress-circular
-              :width="1"
-              :size="50"
-              color="primary"
-              indeterminate
-              class="pa-5 ma-5"
-            ></v-progress-circular>
-          </v-layout>
-        </v-container>
-      </template>
-    </v-data-table>
+    <template v-if="!this.manteinanceMode">
+      <v-toolbar>
+        <v-toolbar-title>
+          <v-select
+            v-model="materialSelected"
+            :items="materials"
+            item-text="description"
+            item-value="id"
+            class="subheading font-weight-medium"
+            :label="requestButton.title"
+          ></v-select>
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn v-if="showRequest && requestButton.state" @click.native="sendRequest()" class="danger white--text ml-0">
+          <div class="font-weight-regular subheading pa-2">ENVIAR PEDIDO</div>
+        </v-btn>
+        <v-btn v-if="showRequest" @click.native="switchRequest()" class="primary white--text ml-0">
+          <div class="font-weight-regular subheading pa-2">{{ requestButton.text }}</div>
+        </v-btn>
+        <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+        <v-flex xs2>
+          <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Buscar"
+            single-line
+            hide-details
+            full-width
+          ></v-text-field>
+        </v-flex>
+      </v-toolbar>
+      <v-data-table
+        :headers="headers"
+        :items="filteredSupplies"
+        :search="search"
+        :loading="loading"
+        :rows-per-page-items="[15,30,50,{text:'TODO', value:-1}]"
+        disable-initial-sort
+      >
+        <template slot="items" slot-scope="props">
+          <tr>
+            <td class="text-md-center">{{ props.item.description }}</td>
+            <td class="text-md-center">{{ props.item.unit }}</td>
+            <td>
+              <v-text-field
+                class="ma-0 pa-0 centered-input"
+                v-model="props.item.request"
+                type="number"
+                step="1"
+                min="0"
+                :max="Number(props.item.request) + Number(remaining(props.item))"
+                @keyup.enter.native="makeRequest(props.item)"
+                @blur="makeRequest(props.item)"
+                :disabled="(supplyRequest.length >= maxRequest || remaining(props.item) == 0) && !itemInRequest(props.item.id)"
+              ></v-text-field>
+            </td>
+          </tr>
+        </template>
+        <v-alert slot="no-results" :value="true" color="error">
+          La búsqueda de "{{ search }}" no encontró resultados.
+        </v-alert>
+        <template slot="no-data">
+          <v-container fluid fill-height>
+            <v-layout align-center justify-center>
+              <v-progress-circular
+                :width="1"
+                :size="50"
+                color="primary"
+                indeterminate
+                class="pa-5 ma-5"
+              ></v-progress-circular>
+            </v-layout>
+          </v-container>
+        </template>
+      </v-data-table>
+    </template>
+    <template v-else>
+      <ManteinanceDialog positionGroup="la Unidad Administrativa"></ManteinanceDialog>
+    </template>
   </v-container>
 </template>
 
 <script>
+import ManteinanceDialog from "../ManteinanceDialog";
+
 export default {
   name: "SuppliesIndex",
+  components: {
+    ManteinanceDialog
+  },
   data: () => ({
     maxRequest: 15,
     loading: true,
@@ -111,6 +121,9 @@ export default {
     this.getSupplies()
   },
   computed: {
+    manteinanceMode() {
+      return process.env.MIX_SUPPLY_MANTEINANCE_MODE
+    },
     filteredSupplies() {
       if (this.materialSelected == -1) {
         return this.supplies.filter(o => {
