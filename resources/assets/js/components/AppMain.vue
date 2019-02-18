@@ -16,11 +16,12 @@
           <template v-if="checkPermission(item)">
             <v-list-tile
               v-if="!item.group"
-              :to="{name: item.href}"
+              :to="{ name: item.href, query: item.params }"
               active-class="tertiary"
               @click.stop="miniVariant = true"
               @mouseover="miniVariant = false"
               @mouseout="miniVariant = true"
+              :exact="true"
             >
               <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
@@ -43,12 +44,13 @@
                 <template v-for="group in item.group">
                   <v-list-tile
                     v-if="checkPermission(group)"
-                    :key="group.href"
-                    :to="{name: group.href}"
+                    :key="group.title"
+                    :to="{ name: group.href, query: group.params }"
                     active-class="tertiary"
                     @click.stop="miniVariant = true"
                     @mouseover="miniVariant = false"
                     @mouseout="miniVariant = true"
+                    :exact="true"
                   >
                     <v-list-tile-action>
                       <v-icon :class="!miniVariant ? 'pl-4' : 'ml-2'">{{ group.icon }}</v-icon>

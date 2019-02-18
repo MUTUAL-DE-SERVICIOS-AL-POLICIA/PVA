@@ -3,12 +3,14 @@
     "href": "dashboard",
     "title": "Inicio",
     "icon": "home",
-    "permission": null
+    "permission": null,
+    "params": {}
   }, {
     "href": "employeeIndex",
     "title": "Personas",
     "icon": "group",
-    "permission": "read-employee"
+    "permission": "read-employee",
+    "params": {}
   }, {
     "title": "Eventuales",
     "icon": "person",
@@ -18,12 +20,14 @@
         "href": "contractIndex",
         "title": "Contratos Eventuales",
         "icon": "gavel",
-        "permission": "read-eventual"
+        "permission": "read-eventual",
+        "params": {}
       }, {
         "href": "procedureIndex",
         "title": "Planillas Eventuales",
         "icon": "storage",
-        "permission": "read-procedure-eventual"
+        "permission": "read-procedure-eventual",
+        "params": {}
       }
     ]
   }, {
@@ -35,54 +39,73 @@
         "href": "consultantIndex",
         "title": "Contratos Consultores",
         "icon": "gavel",
-        "permission": "read-consultant"
+        "permission": "read-consultant",
+        "params": {}
       }, {
         "href": "consultantProcedureIndex",
         "title": "Planillas Consultores",
         "icon": "storage",
-        "permission": "read-procedure-consultant"
+        "permission": "read-procedure-consultant",
+        "params": {}
       }
     ]
   }, {
     "href": "userIndex",
     "title": "Usuarios",
     "icon": "security",
-    "permission": "admin"
+    "permission": "admin",
+    "params": {}
   }, {
     "href": "userActionIndex",
     "title": "Actividad",
     "icon": "timeline",
-    "permission": "read-user-action"
+    "permission": "read-user-action",
+    "params": {}
   }, {
     "href": "departureAdmin",
     "title": "Aprobar Permisos",
     "icon": "alarm_on",
-    "permission": "read-departure"
+    "permission": "read-departure",
+    "params": {}
   }, {
     "href": "departureIndex",
     "title": "Permisos",
     "icon": "directions_run",
-    "permission": "!admin"
+    "permission": "!admin",
+    "params": {}
   }, {
     "href": "phonebookIndex",
     "title": "Agenda Telefonica",
     "icon": "contact_phone",
-    "permission": "admin"
+    "permission": "admin",
+    "params": {}
+  }, {
+    "href": "supplyRequestIndex",
+    "title": "Solicitud de Material",
+    "icon": "add_shopping_cart",
+    "permission": "!admin",
+    "params": {
+      "requestType": "user"
+    }
   }, {
     "title": "Almacén",
     "icon": "shopping_cart",
-    "permission": "!admin",
+    "permission": "read-supply-requests",
     "group": [
       {
-        "href": "suppliesIndex",
-        "title": "Materiales",
-        "icon": "add_shopping_cart",
-        "permission": null
-      }, {
         "href": "supplyRequestIndex",
         "title": "Pedidos",
         "icon": "send",
-        "permission": null
+        "permission": "read-supply-requests",
+        "params": {
+          "requestType": "all"
+        }
+      }, {
+        "href": "suppliesIndex",
+        "title": "Materiales",
+        "icon": "receipt",
+        "permission": "read-supplies",
+        "params": {}
       }
     ]
   }

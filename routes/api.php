@@ -447,5 +447,12 @@ Route::group([
 			Route::patch('contract/{id}', 'Api\V1\ContractController@update')->name('contract_update');
 			Route::patch('consultant_contract/{id}', 'Api\V1\ConsultantContractController@update')->name('consultant_contract_update');
 		});
+
+		// ALMACENES routes
+		Route::group([
+			'middleware' => 'role:admin|almacenes',
+		], function () {
+			Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['index', 'update']);
+		});
 	});
 });

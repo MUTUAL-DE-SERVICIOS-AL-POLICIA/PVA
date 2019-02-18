@@ -28,6 +28,10 @@
           clearable
         ></v-text-field>
       </v-flex>
+      <v-tooltip top v-if="$route.query.requestType == 'user'">
+        <v-icon large slot="activator" dark color="primary"  @click.native="openDialogSupply('request')" style="cursor: pointer">add_circle</v-icon>
+        <span>Nueva Solicitud</span>
+      </v-tooltip>
     </v-toolbar>
     <v-data-table
       :headers="headers"
@@ -42,12 +46,28 @@
         <tr :class="props.expanded ? 'expanded' : ''">
           <td class="text-md-center" @click="getSubarticles(props)">{{ props.item.nro_solicitud }}</td>
           <td class="text-md-center" @click="getSubarticles(props)">{{ $moment(props.item.created_at).format('L') }}</td>
-          <td class="text-md-center" @click="getSubarticles(props)">{{ props.item.delivery_date ? $moment(props.item.delivery_date).format('L') : '-' }}</td>
+          <td v-if="requestTypeSelected == 'initiation' && $route.query.requestType == 'all' && 'employee' in props.item" class="text-md-center" @click="getSubarticles(props)">
+            <v-tooltip top>
+              <span slot="activator">{{ props.item.employee.name }}</span>
+              <span>{{ props.item.employee.title }}</span>
+            </v-tooltip>
+          </td>
+          <td v-else class="text-md-center" @click="getSubarticles(props)">{{ props.item.delivery_date ? $moment(props.item.delivery_date).format('L') : '-' }}</td>
           <td class="text-md-center" @click="getSubarticles(props)">{{ props.item.observacion }}</td>
-          <td class="text-md-center" v-if="props.item.status == 'initiation'">
-            <v-btn flat icon color="info" @click.native="printRequest(props.item.id)">
-              <v-icon>print</v-icon>
-            </v-btn>
+          <td class="text-md-center">
+            <template v-if="props.item.status == 'initiation' && ($store.getters.role == 'admin' || $store.getters.role == 'almacenes') && $route.query.requestType == 'all'">
+              <v-tooltip top>
+                <v-btn slot="activator" flat icon color="primary" @click.native="openDialogSupply('delivery', props.item.id)">
+                  <v-icon>local_shipping</v-icon>
+                </v-btn>
+                <span>Entregar</span>
+              </v-tooltip>
+            </template>
+            <template v-if="props.item.status == 'initiation' && $route.query.requestType == 'user'">
+              <v-btn flat icon color="info" @click.native="printRequest(props.item.delivery_date ? 'delivery' : 'request', props.item.id)">
+                <v-icon>print</v-icon>
+              </v-btn>
+            </template>
           </td>
         </tr>
       </template>
@@ -98,13 +118,21 @@
         </v-container>
       </template>
     </v-data-table>
+    <SupplyRequest :bus="bus"/>
   </v-container>
 </template>
 
 <script>
+import Vue from "vue"
+import SupplyRequest from "./SupplyRequest"
+
 export default {
   name: 'SupplyRequestIndex',
+  components: {
+    SupplyRequest
+  },
   data: () => ({
+    bus: new Vue(),
     loading: true,
     search: '',
     requestTypes: [
@@ -138,7 +166,13 @@ export default {
   }),
   computed: {
     filteredRequests() {
-      if (this.requestTypeSelected == 'all' || this.requestTypeSelected == 'initiation') {
+      if (this.requestTypeSelected == 'initiation' && this.$route.query.requestType == 'all') {
+        this.headers[2] = {align: "center", text: "Funcionario", class: ["ma-0", "pa-0"], value: '' }
+      } else {
+        this.headers[2] = {align: "center", text: "Fecha de Entrega", class: ["ma-0", "pa-0"], value: "delivery_date" }
+      }
+
+      if (this.requestTypeSelected == 'all' || this.requestTypeSelected == 'initiation' || this.$store.getters.role == 'admin' || this.$store.getters.role == 'almacenes') {
         if (!this.headers.find(o => o.text == 'Acciones')) {
           this.headers.push({ align: "center", sortable: false, text: "Acciones", class: ["ma-0", "pa-0"], value: "" })
         }
@@ -156,24 +190,77 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.params.id) this.printRequest(this.$route.params.id)
-    this.getRequests()
+    if (this.$route.params.id) this.printRequest('request', this.$route.params.id)
+    this.getRequests(this.$route.query.requestType)
+    this.bus.$on('setRequestState', data => {
+      let request = this.requests.find(o => { return o.id == data.id })
+      request.delivery_date = data.request.delivery_date
+      request.status = data.request.status
+    })
+    this.bus.$on('addRequest', data => {
+      this.requests.unshift(data)
+    })
+    this.bus.$on('printRequest', data => {
+      if (data.type != 'cancel') this.printRequest(data.type, data.id)
+    })
+  },
+  watch: {
+    '$route.query.requestType'(val) {
+      this.getRequests(val)
+    }
   },
   methods: {
-    async printRequest(id) {
+    async openDialogSupply(type, requestId = null) {
+      try {
+        this.loading = true
+        let res
+        switch (type) {
+          case 'delivery':
+            res = await axios.get(`supply_request/${requestId}`)
+            break
+          case 'request':
+            res = await axios.get(`subarticle`)
+            let supplies = res.data
+            supplies.forEach(supply => supply.amount = 0)
+            res.data = {
+              subarticles: supplies
+            }
+            break
+        }
+        this.bus.$emit("openDialogSupply", {
+          formType: type,
+          supplyRequest: res.data
+        })
+        this.loading = false
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async printRequest(type, id) {
       let res = await axios({
         method: "GET",
         url: `supply_request/print/${id}`,
-        responseType: "arraybuffer"
+        responseType: "arraybuffer",
+        params: {
+          type: type
+        }
       });
       let blob = new Blob([res.data], {
         type: "application/pdf"
       });
       printJS(window.URL.createObjectURL(blob));
     },
-    async getRequests() {
+    async getRequests(requestType) {
       try {
-        let res = await axios.get(`supply_user/${this.$store.getters.id}`)
+        let res
+        switch (requestType) {
+          case 'all':
+            res = await axios.get(`supply_request`)
+            break
+          case 'user':
+            res = await axios.get(`supply_user/${this.$store.getters.id}`)
+            break
+        }
         this.requests = await res.data
         this.loading = false
       } catch (e) {
@@ -182,10 +269,14 @@ export default {
     },
     async getSubarticles(props) {
       try {
-        let res = await axios.get(`supply_request/${props.item.id}`)
-        if (res.data.subarticles.length > 0) {
-          props.item.subarticles = res.data.subarticles
-          props.expanded = !props.expanded
+        if (!props.expanded) {
+          let res = await axios.get(`supply_request/${props.item.id}`)
+          if (res.data.subarticles.length > 0) {
+            props.item.subarticles = res.data.subarticles
+            props.expanded = !props.expanded
+          } else {
+            props.expanded = false
+          }
         } else {
           props.expanded = false
         }
