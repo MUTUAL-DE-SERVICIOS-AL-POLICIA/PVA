@@ -16,7 +16,7 @@ class SupplyRequestController extends Controller
    */
   public function index()
   {
-    return SupplyRequest::with('employee')->orderBy('created_at', 'ASC')->get();
+    return SupplyRequest::with('employee')->orderBy('created_at', 'DESC')->get();
   }
 
   /**

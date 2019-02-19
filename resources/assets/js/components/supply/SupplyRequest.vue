@@ -45,24 +45,6 @@
 
       <div>
         <v-stepper v-model="step">
-          <!-- <v-stepper-header v-if="steps.length > 1">
-            <template v-for="n in steps.length">
-              <v-stepper-step
-                :key="`${n}-step`"
-                :complete="step > n"
-                :step="n"
-                :editable="supplyRequest.length > 0"
-              >
-                {{ steps.find(o => { return o.n==n }).title }}
-              </v-stepper-step>
-
-              <v-divider
-                v-if="n !== steps.length"
-                :key="n"
-              ></v-divider>
-            </template>
-          </v-stepper-header> -->
-
           <v-stepper-items>
             <v-stepper-content
               v-for="n in steps.length"
