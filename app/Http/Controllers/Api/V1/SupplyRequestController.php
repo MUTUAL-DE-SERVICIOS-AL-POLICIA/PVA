@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\SupplyRequest;
@@ -15,7 +16,7 @@ class SupplyRequestController extends Controller
    */
   public function index()
   {
-    //
+    return SupplyRequest::with('employee')->orderBy('created_at', 'DESC')->get();
   }
 
   /**
@@ -69,7 +70,7 @@ class SupplyRequestController extends Controller
     $articles = [];
     foreach ($request->supplyRequest as $article) {
       $supply_request->subarticles()->attach([
-        $article['id'] => ['amount' => $article['request']]
+        $article['id'] => ['amount' => $article['amount'], 'amount_delivered' => 0, 'total_delivered' => 0]
       ]);
     }
     return $supply_request;
@@ -85,6 +86,9 @@ class SupplyRequestController extends Controller
   {
     $request = SupplyRequest::find($id);
     $request->subarticles;
+    foreach ($request->subarticles as $subarticle) {
+      $subarticle->stock();
+    }
     return $request;
   }
 
@@ -97,7 +101,15 @@ class SupplyRequestController extends Controller
    */
   public function update(Request $request, $id)
   {
-    //
+    $supply_request = SupplyRequest::find($id);
+    foreach ($request->subarticles as $subarticle) {
+      $supply_request->subarticles()->updateExistingPivot($subarticle['id'], $subarticle['pivot']);
+    }
+    $supply_request->fill($request->all());
+    $supply_request->delivery_date = Carbon::now()->toDateTimeString();
+    $supply_request->save();
+    $supply_request->subarticles;
+    return $supply_request;
   }
 
   /**
@@ -117,14 +129,15 @@ class SupplyRequestController extends Controller
    * @param  \App\SupplyRequest  $supplyRequest
    * @return \View
    */
-  public function print($id)
+  public function print(Request $request, $id)
   {
     $supply_request = SupplyRequest::find($id);
 
     $data = [
-      'supply_request' => $supply_request
+      'supply_request' => $supply_request,
+      'type' => $request->query()['type']
     ];
-    $filename = 'solicitudalmacen' . $supply_request->nro_solicitud . '.pdf';
+    $filename = $request->query()['type'] == 'delivery' ? 'entrega_almacen_' : 'solicitud_almacen_' . $supply_request->nro_solicitud . '.pdf';
     return \PDF::loadView('supply.print', $data)
       ->setOption('page-width', '216')
       ->setOption('page-height', '279')

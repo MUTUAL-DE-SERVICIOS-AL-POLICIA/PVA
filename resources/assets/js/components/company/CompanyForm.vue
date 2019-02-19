@@ -110,16 +110,16 @@ export default {
           var doc = null
           if (this.selectedIndex != -1) {
             if (this.selectedItem.document_id) {
-              doc = await axios.put('/document/' + this.selectedDocument.id, this.selectedDocument)              
+              doc = await axios.patch('/document/' + this.selectedDocument.id, this.selectedDocument)              
             } else {
               if (this.selectedDocument.name) {
                 doc = await axios.post('/document', this.selectedDocument)
               }
             }
             if (doc != null) {
-              let res = await axios.put('/company/' + this.selectedItem.id, $.extend({}, this.selectedItem, {'document_id': doc.data.id}))
+              let res = await axios.patch('/company/' + this.selectedItem.id, $.extend({}, this.selectedItem, {'document_id': doc.data.id}))
             } else {
-              let res = await axios.put('/company/' + this.selectedItem.id, this.selectedItem)
+              let res = await axios.patch('/company/' + this.selectedItem.id, this.selectedItem)
             }            
             this.close()
             this.toastr.success('Editado correctamente')

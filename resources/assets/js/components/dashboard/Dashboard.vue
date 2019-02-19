@@ -1,65 +1,5 @@
 <template>
   <v-container fluid>
-    <v-dialog
-      v-model="phoneDialog"
-      @keydown.esc="phoneDialog = false"
-      max-width="900"
-      scrollable
-      persistent
-    >
-      <v-card>
-        <v-toolbar dark color="primary">
-          <v-toolbar-title>NÚMEROS DE TELÉFONOS INTERNOS</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn icon dark @click.native="phoneDialog = false">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </v-toolbar>
-        <v-card-text>
-          <v-layout row>
-            <v-flex xs9>
-
-            </v-flex>
-            <v-flex xs3>
-              <v-text-field
-                v-model="phoneSearch"
-                append-icon="search"
-                label="Buscar"
-                clearable
-                single-line
-                hide-details
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-
-          <v-data-table
-            :headers="phoneHeaders"
-            :items="positionGroups"
-            :search="phoneSearch"
-            :rows-per-page-items="[{text:'TODO',value:-1}, 10, 20, 30]"
-            disable-initial-sort
-            class="elevation-1"
-          >
-            <template slot="items" slot-scope="props">
-              <tr>
-                <td class="text-xs-left"> {{ props.item.position_group.name }} </td>
-                <td class="text-xs-left"> {{ props.item.name }} </td>
-                <td class="text-xs-center"> {{ props.item.phone_number }} </td>
-              </tr>
-            </template>
-            <v-alert slot="no-results" :value="true" color="error">
-              La búsqueda de "{{ phoneSearch }}" no encontró resultados.
-            </v-alert>
-          </v-data-table>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="error" @click="phoneDialog=false"><v-icon>clear</v-icon> Cerrar</v-btn>
-        </v-card-actions>
-        <v-divider></v-divider>
-      </v-card>
-    </v-dialog>
-
     <v-card>
       <v-container fluid grid-list-md>
         <v-layout row wrap>
@@ -161,28 +101,28 @@
                 </v-card>
               </v-flex>
               <v-flex xs12 sm6>
-                <v-card color="teal darken-4" dark @click="phoneDialog = true" style="cursor: pointer" class="card-box">
+                <v-card color="teal darken-4" dark :to="{ name: 'supplyRequestIndex', query: { requestType: 'user' }}" style="cursor: pointer" class="card-box">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
-                      <v-icon size="80">phone</v-icon>
+                      <v-icon size="80">add_shopping_cart</v-icon>
                     </v-flex>
                     <v-flex xs7>
                       <v-card-text class="text-xs-center">
-                        <div class="display-2 font-weight-thin">Teléfonos Internos</div>
+                        <div class="display-2 font-weight-thin">Solicitud de Material</div>
                       </v-card-text>
                     </v-flex>
                   </v-layout>
                 </v-card>
               </v-flex>
               <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
-                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex'}" style="cursor: pointer" class="card-box">
+                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex' }" style="cursor: pointer" class="card-box">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
                       <v-icon size="80">directions_run</v-icon>
                     </v-flex>
                     <v-flex xs7>
                       <v-card-text class="text-xs-center">
-                        <div class="display-2 font-weight-thin">Salidas y Licencias</div>
+                        <div class="display-2 font-weight-thin">Permisos y Licencias</div>
                       </v-card-text>
                     </v-flex>
                   </v-layout>
@@ -192,7 +132,7 @@
           </v-flex>
           <v-flex md12 lg4>
             <v-card color="red">
-              <v-card dark color="blue-grey darken-2">
+              <v-card dark color="deep-orange darken-2">
                 <v-layout row wrap>
                   <v-flex xs4 class="text-xs-center" mt-4>
                     <v-icon size="80">cake</v-icon>
@@ -263,7 +203,6 @@ export default {
       },
     ],
     phoneSearch: "",
-    phoneDialog: false,
     employees: [],
     filteredEmployees: [],
     procedures: [],
@@ -332,7 +271,7 @@ export default {
                 })
                 obj.title = 'Consultores'
                 obj.icon = 'work'
-                obj.color = 'deep-orange darken-2'
+                obj.color = 'blue-grey darken-2'
                 obj.downloadable = true
                 obj.role = null
                 break
