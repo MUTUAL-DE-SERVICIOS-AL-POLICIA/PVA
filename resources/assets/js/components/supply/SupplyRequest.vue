@@ -132,7 +132,7 @@
                 <v-btn color="primary" v-if="step > 1" @click.native="step-=1">
                   Volver
                 </v-btn>
-                <v-btn color="error" v-if="step < steps.length" @click.native="step+=1; search=''">
+                <v-btn color="error" v-if="step < steps.length" @click.native="nextStep">
                   Siguiente
                 </v-btn>
                 <v-btn color="error" v-if="step == steps.length && supplyRequest.length > 0" @click.native="sendRequest('request')">
@@ -248,7 +248,16 @@ export default {
     })
   },
   methods: {
+    nextStep() {
+      if (this.supplyRequest.length > 0) {
+        this.step += 1
+        this.search = ''
+      } else {
+        this.toastr.warning('Debe seleccionar algún material')
+      }
+    },
     closeDialog() {
+      this.step = 1
       this.search = ''
       this.requestNumber = ''
       this.requestId = ''
