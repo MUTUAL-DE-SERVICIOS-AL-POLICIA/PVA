@@ -112,11 +112,11 @@
                         v-model="props.item.total_delivered"
                         step="1"
                         type="number"
-                        :name="props.item.code"
-                        v-validate="'required|min_value:0|max_value:59'"
-                        :error-messages="errors.collect(`props.item.code`)"
+                        v-validate="`required|numeric|min_value:0|max_value:${maxDelivered(props.item)}`"
+                        :data-vv-name="`${props.item.code}`"
+                        :error-messages="errors.collect(`${props.item.code}`)"
                         min="0"
-                        :max="props.item.stock < props.item.amount ? props.item.stock : props.item.amount"
+                        :max="maxDelivered(props.item)"
                       ></v-text-field>
                     </td>
                   </template>
@@ -248,6 +248,13 @@ export default {
     })
   },
   methods: {
+    maxDelivered(item) {
+      if (item.stock < item.amount) {
+        return item.stock
+      } else {
+        return item.amount
+      }
+    },
     nextStep() {
       if (this.supplyRequest.length > 0) {
         this.step += 1
@@ -295,19 +302,53 @@ export default {
     },
     async sendRequest(type) {
       try {
-        let res
-        let subarticles
-        switch (type) {
-          case 'delivery':
-            subarticles = this.subarticles.filter(o => { return o.total_delivered > 0 })
-            if (subarticles.length > 0) {
-              subarticles.forEach(subarticle => {
-                subarticle.pivot.total_delivered = subarticle.total_delivered
-                subarticle.pivot.amount_delivered = subarticle.total_delivered
+        if (await this.$validator.validateAll()) {
+          let res
+          let subarticles
+          switch (type) {
+            case 'delivery':
+              subarticles = this.subarticles.filter(o => { return o.total_delivered > 0 })
+              if (subarticles.length > 0) {
+                subarticles.forEach(subarticle => {
+                  subarticle.pivot.total_delivered = subarticle.total_delivered
+                  subarticle.pivot.amount_delivered = subarticle.total_delivered
+                })
+                res = await axios.patch(`supply_request/${this.requestId}`, {
+                  subarticles: subarticles,
+                  status: 'delivered'
+                })
+                this.bus.$emit("setRequestState", {
+                  id: res.data.id,
+                  request: {
+                    delivery_date: res.data.delivery_date,
+                    status: res.data.status
+                  }
+                })
+              } else {
+                this.toastr.error('No se ha entregado ningún artículo')
+              }
+              break
+            case 'request':
+              res = await axios.post(`supply_request`, {
+                employee: {
+                  id: this.$store.getters.id
+                },
+                supplyRequest: this.supplyRequest
               })
+              this.toastr.success(`Solicitud realizada correctamente. Solicitud Número: ${res.data.nro_solicitud}`)
+              this.bus.$emit('addRequest', res.data)
+              break
+            case 'cancel':
+              subarticles = this.subarticles.filter(o => { return o.total_delivered > 0 })
+              if (subarticles.length > 0) {
+                subarticles.forEach(subarticle => {
+                  subarticle.pivot.total_delivered = 0
+                  subarticle.pivot.amount_delivered = 0
+                })
+              }
               res = await axios.patch(`supply_request/${this.requestId}`, {
                 subarticles: subarticles,
-                status: 'delivered'
+                status: 'canceled'
               })
               this.bus.$emit("setRequestState", {
                 id: res.data.id,
@@ -316,48 +357,16 @@ export default {
                   status: res.data.status
                 }
               })
-            } else {
-              this.toastr.error('No se ha entregado ningún artículo')
-            }
-            break
-          case 'request':
-            res = await axios.post(`supply_request`, {
-              employee: {
-                id: this.$store.getters.id
-              },
-              supplyRequest: this.supplyRequest
-            })
-            this.toastr.success(`Solicitud realizada correctamente. Solicitud Número: ${res.data.nro_solicitud}`)
-            this.bus.$emit('addRequest', res.data)
-            break
-          case 'cancel':
-            subarticles = this.subarticles.filter(o => { return o.total_delivered > 0 })
-            if (subarticles.length > 0) {
-              subarticles.forEach(subarticle => {
-                subarticle.pivot.total_delivered = 0
-                subarticle.pivot.amount_delivered = 0
-              })
-            }
-            res = await axios.patch(`supply_request/${this.requestId}`, {
-              subarticles: subarticles,
-              status: 'canceled'
-            })
-            this.bus.$emit("setRequestState", {
-              id: res.data.id,
-              request: {
-                delivery_date: res.data.delivery_date,
-                status: res.data.status
-              }
-            })
-            break
+              break
+          }
+          this.dialog = false
+          this.dialogNullify = false
+          this.bus.$emit('printRequest', {
+            id: res.data.id,
+            type: type
+          })
+          this.closeDialog
         }
-        this.dialog = false
-        this.dialogNullify = false
-        this.bus.$emit('printRequest', {
-          id: res.data.id,
-          type: type
-        })
-        this.closeDialog
       } catch (e) {
         console.log(e)
       }

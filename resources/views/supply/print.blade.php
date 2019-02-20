@@ -1,3 +1,8 @@
+<?php
+use \Carbon\Carbon;
+use \Milon\Barcode\DNS2D;
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -41,7 +46,7 @@
   @for($it = 0; $it<2; $it++)
   {{-- <div style="height: 50px; max-height: 50px; min-height: 50px; margin-top: 0; padding-top: 0;"></div> --}}
     <div class="page-break p-10" style="border-radius: 0.75em; border: 1px solid #22292f;">
-      <table class="w-100">
+      <table class="w-100 uppercase">
         <tr>
           <th class="w-15 text-left no-padding no-margins align-middle">
             <div class="text-center">
@@ -49,22 +54,24 @@
             </div>
           </th>
           <th class="w-50 align-top">
-            <div class="font-thin uppercase leading-tight text-xs" >
+            <div class="font-thin leading-tight text-xs" >
               <div>MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</div>
               <div>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</div>
               <div>UNIDAD ADMINISTRATIVA</div>
             </div>
           </th>
             <th class="w-20 no-padding no-margins align-top">
-            <table class="table-code no-padding no-margins text-xxxs">
+            <table class="table-code no-padding no-margins text-xxxs uppercase">
               <tbody>
                 <tr>
                     <td class="text-center bg-grey-darker text-white">Nº </td>
-                    <td class="text-xxs uppercase"> {{ $supply_request->nro_solicitud }} </td>
+                    <td class="text-xxs"> {{ $supply_request->nro_solicitud }} </td>
                 </tr>
                 <tr>
                   <td class="text-center bg-grey-darker text-white">Fecha</td>
-                  <td class="text-xxs uppercase"> {{ Carbon::parse($type == 'delivery' ? $supply_request->delivery_date : $supply_request->created_at)->format('d/m/Y') }} </td>
+                  @php ($date = ($type == 'delivery') ? $supply_request->delivery_date : $supply_request->created_at)
+                  @php ($date = Carbon::parse($date)->format('d/m/Y'))
+                  <td class="text-xxs"> {{ $date }} </td>
                 </tr>
               </tbody>
             </table>
@@ -74,40 +81,40 @@
       </table>
       <div class="block">
         <div class="font-semibold leading-tight text-md text-center" style="margin-bottom: 5px">{{ $type == 'delivery' ? 'ENTREGA DE MATERIAL DE ALMACÉN' : 'SOLICITUD DE MATERIAL DE ALMACÉN' }}</div>
-        <table class="table-info w-100 m-b-10">
+        <table class="table-info w-100 m-b-10 uppercase">
           <thead>
-            <tr class="bg-grey-darker text-xs text-white uppercase font-light">
-              <th class="text-center border" style="border: 1px solid #ffffff; border-bottom: 0px;">ITEM</th>
-              <th class="text-center border" style="border: 1px solid #ffffff; border-bottom: 0px;">DESCRIPCIÓN</th>
-              <th class="text-center border" style="border: 1px solid #ffffff; border-bottom: 0px;">UNIDAD</th>
-              <th class="text-center border" style="border: 1px solid #ffffff; border-bottom: 0px;">SOLICITADO</th>
+            <tr class="bg-grey-darker text-xs text-white font-light">
+              <th class="text-center">ITEM</th>
+              <th class="text-center">DESCRIPCIÓN</th>
+              <th class="text-center">UNIDAD</th>
+              <th class="text-center">SOLICITADO</th>
               @if ($type == 'delivery')
-                <th class="text-center border" style="border: 1px solid #ffffff; border-bottom: 0px;">ENTREGADO</th>
+                <th class="text-center">ENTREGADO</th>
               @endif
             </tr>
           </thead>
           <tbody class="table-striped">
             @foreach ($supply_request->subarticles as $i => $supply)
-            <tr class="text-sm uppercase font-thin">
-              <td class="text-center border">{{ ++$i }}</td>
-              <td class="text-center border">{{ $supply['description'] }}</td>
-              <td class="text-center border">{{ $supply['unit'] }}</td>
-              <td class="text-center border">{{ $supply['pivot']->amount }}</td>
+            <tr class="text-sm font-thin">
+              <td class="text-center">{{ ++$i }}</td>
+              <td class="text-center">{{ $supply['description'] }}</td>
+              <td class="text-center">{{ $supply['unit'] }}</td>
+              <td class="text-center">{{ $supply['pivot']->amount }}</td>
               @if ($type == 'delivery')
-                <td class="text-center border">{{ $supply['pivot']->total_delivered }}</td>
+                <td class="text-center">{{ $supply['pivot']->total_delivered }}</td>
               @endif
             </tr>
             @endforeach
             @for($i=sizeof($supply_request->subarticles)+1;$i<=15;$i++)
-              <tr class="text-sm uppercase">
-                <td class="text-center border" colspan="{{ $type == 'delivery' ? 5 : 4}}" >&nbsp;</td>
+              <tr class="text-sm">
+                <td class="text-center" colspan="{{ $type == 'delivery' ? 5 : 4}}" >&nbsp;</td>
               </tr>
             @endfor
           </tbody>
         </table>
-        <table class="w-100"  border="1" frame="void" rules="all">
+        <table class="w-100" border="1" frame="void" rules="all">
           <tbody class="">
-            <tr class="" style="height: 100px; vertical-align: bottom;">
+            <tr class="" style="height: 200px; vertical-align: bottom;">
               <td class="text-center w-50 font-bold text-xxs">{{ $type == 'delivery' ? 'Recibí conforme' : 'Solicitante' }}</td>
               <td class="text-center w-50 font-bold text-xxs">{{ $type == 'delivery' ? 'Entregado por' : 'Autorizado' }}</td>
             </tr>
@@ -115,7 +122,20 @@
         </table>
       </div>
     </div>
-    <div class="text-xxxs" align="left"> Plataforma Virtual Administrativa - MUSERPOL </div>
+    <table>
+      <tr>
+        <td class="text-xxxs" align="left">
+          @if (env("APP_ENV") != "production")
+            VERSIÓN DE PRUEBAS
+          @else
+            Plataforma Virtual Administrativa - MUSERPOL
+          @endif
+        </td>
+        <td class="child" align="right">
+          <img src="data:image/png;base64, {{ DNS2D::getBarcodePNG(bcrypt($date . ' ' . gethostname() . ' ' . env('APP_URL')), 'PDF417') }}" alt="BARCODE!!!" style="height: 20px; width: 125px;" />
+        </td>
+      </tr>
+    </table>
   </div>
   @if($it == 0)
   <div class="scissors-rule">

@@ -532,8 +532,16 @@ export default {
         }
       }
 
-      if (payroll.contract.end_date == null && payroll.contract.retirement_date == null && dateStart.year() <= payrollDate.year() && dateStart.month() < payrollDate.month()) {
-        workedDays = 30;
+      if (payroll.contract.end_date == null && payroll.contract.retirement_date == null && dateStart.year() <= payrollDate.year()) {
+        if (dateStart.year() == payrollDate.year()) {
+          if (dateStart.month() < payrollDate.month()) {
+            workedDays = 30;
+          } else {
+            workedDays = 30 + 1 - dateStart.date();
+          }
+        } else {
+          workedDays = 30;
+        }
       } else if (
         dateStart.year() == dateEnd.year() &&
         dateStart.month() == dateEnd.month()
