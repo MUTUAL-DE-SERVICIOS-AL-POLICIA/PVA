@@ -42,15 +42,6 @@
           </td>
           <td class="text-md-center">
             <v-select
-              :items="types"
-              item-text="name"
-              item-value="id"
-              v-model="props.item.departure_type_id"
-              @change="updateDeparture(props.item)"
-            ></v-select>
-          </td>
-          <td class="text-md-center">
-            <v-select
               :items="groups"
               item-text="name"
               item-value="id"
@@ -60,7 +51,7 @@
           </td>
           <td class="text-md-center">
             <v-checkbox
-              v-model="props.item.pay"
+              v-model="props.item.payable"
               @change="updateDeparture(props.item)"
             ></v-checkbox>
           </td>
@@ -69,7 +60,7 @@
               :items="reset"
               item-text="name"
               item-value="value"
-              v-model="props.item.each"
+              v-model="props.item.reset"
               @change="updateDeparture(props.item)"
             ></v-select>
           </td>
@@ -77,7 +68,7 @@
             <v-text-field
               class="centered-input"
               mask="##"
-              v-model="props.item.day"
+              v-model="props.item.days"
               @keyup.enter="updateDeparture(props.item)"
             ></v-text-field>
           </td>
@@ -85,7 +76,7 @@
             <v-text-field
               class="centered-input"
               mask="##"
-              v-model="props.item.hour"
+              v-model="props.item.hours"
               @keyup.enter="updateDeparture(props.item)"
             ></v-text-field>
           </td>
@@ -118,7 +109,6 @@ export default {
     loading: true,
     search: '',
     reasons: [],
-    types: [],
     groups: [],
     reset: [
       {
@@ -133,8 +123,7 @@ export default {
       }
     ],
     headers: [
-      { align: "center", text: "Razón", class: ["ma-0", "pa-0"], value: "name", width: "35%" },
-      { align: "center", text: "Tipo", class: ["ma-0", "pa-0"], value: "departure_type_id", width: "15%" },
+      { align: "center", text: "Razón", class: ["ma-0", "pa-0"], value: "name", width: "50%" },
       { align: "center", text: "Grupo", class: ["ma-0", "pa-0"], value: "departure_group_id", width: "15%" },
       { align: "center", text: "Pagable", class: ["ma-0", "pa-0"], value: "pay", width: "5%", sortable: false },
       { align: "center", text: "Resetear", class: ["ma-0", "pa-0"], value: "each", width: "10%" },
@@ -144,7 +133,6 @@ export default {
   }),
   mounted() {
     this.getDepartureReasons()
-    this.getDepartureTypes()
     this.getDepartureGroups()
   },
   methods: {
@@ -153,14 +141,6 @@ export default {
         let res = await axios.get(`departure_reason`)
         this.reasons = res.data
         this.loading = false
-      } catch (e) {
-        console.log(e)
-      }
-    },
-    async getDepartureTypes() {
-      try {
-        let res = await axios.get(`departure_type`)
-        this.types = res.data
       } catch (e) {
         console.log(e)
       }

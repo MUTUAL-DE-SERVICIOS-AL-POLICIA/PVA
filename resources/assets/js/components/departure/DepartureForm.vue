@@ -53,13 +53,6 @@
                           </v-flex>
                         </v-layout>
                       </v-flex>
-                      <v-text-field
-                        v-model="selectedItem.destiny"
-                        label="Lugar de destino"
-                        v-validate="'required'"
-                        name="Destino"
-                        :error-messages="errors.collect('Destino')"
-                      ></v-text-field>
                     </fieldset>
                   </v-flex>
                   <v-flex xs6>
@@ -89,11 +82,11 @@
                               autocomplete='cc-exp-month'
                               clearable
                             ></v-text-field>
-                            <v-date-picker 
-                              v-model="selectedItem.departure_date" 
-                              @input="menuDateDeparture = false" 
-                              no-title 
-                              locale="es-bo" 
+                            <v-date-picker
+                              v-model="selectedItem.departure_date"
+                              @input="menuDateDeparture = false"
+                              no-title
+                              locale="es-bo"
                               :min="$moment().subtract(1, 'days').format('YYYY-MM-DD')"
                               :max="$moment().add(2, 'days').format('YYYY-MM-DD')"
                               @change="checkMonthDayYear"
@@ -158,10 +151,10 @@
                               autocomplete='cc-exp-month'
                               clearable
                             ></v-text-field>
-                            <v-date-picker 
-                              v-model="selectedItem.return_date" 
+                            <v-date-picker
+                              v-model="selectedItem.return_date"
                               @input="menuDateReturn = false"
-                              no-title 
+                              no-title
                               locale="es-bo"
                               :min="selectedItem.departure_date"
                               :max="$moment().add(30, 'days').format('YYYY-MM-DD')"
@@ -221,7 +214,7 @@
             </v-flex>
           </v-layout>
         </v-container>
-      </v-card-text>  
+      </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click.native="close"><v-icon>close</v-icon> Cancelar</v-btn>
@@ -258,8 +251,6 @@ export default {
         id: null,
         contract_id: null,
         departure_reason_id: null,
-        certificate_id: null,
-        destiny: null,
         description: null,
         departure_date: null,
         return_date: null,
@@ -276,7 +267,7 @@ export default {
       menuDateDeparture: null,
       dateDeparture: null,
       menuDateReturn: null,
-      dateReturn: null,    
+      dateReturn: null,
       menuTimeDeparture: false,
       menuTimeReturn: false,
       alert: true,
@@ -295,7 +286,7 @@ export default {
   computed: {
     formTitle() {
       return this.selectedIndex === -1? "Nueva solicitud" : "Editar solicitud";
-    }    
+    }
   },
   watch: {
     async 'inputTime.departure.hours'(val) {
@@ -397,8 +388,6 @@ export default {
         id: null,
         contract_id: this.selectedItem.contract_id,
         departure_reason_id: null,
-        certificate_id: null,
-        destiny: null,
         description: null,
         departure_date: null,
         return_date: null,
@@ -422,7 +411,7 @@ export default {
         if (res.data.job_schedules[1]) {
           this.end_time = res.data.job_schedules[1].end_hour + ':' + res.data.job_schedules[1].end_minutes;
         }
-        this.type_reasons = res.data.contract_type.departure_reasons;
+        this.type_reasons = [];
         if (this.type_reasons.some(e => e.departure_type_id==2)) {
           this.type_departures.push(2);
         }
@@ -455,9 +444,6 @@ export default {
         this.checkMonthDayYear();
         if (valid && this.valid) {
           if (this.selectedIndex === -1) {
-            this.selectedCertificate.data = this.selectedItem;
-            let certificate = await axios.post('/certificate', this.selectedCertificate);
-            this.selectedItem.certificate_id = certificate.data.id;
             res = await axios.post('/departure', this.selectedItem);
           } else {
             res = await axios.patch("/departure/" + this.selectedItem.id, this.selectedItem);
@@ -493,17 +479,17 @@ export default {
         var rest_day = 0;
         var h1 = this.selectedItem.departure_time.split(":");
         var h2 = this.selectedItem.return_time.split(":");
-        if (h1[0] <= 12 && h2[0] >= 14) { 
+        if (h1[0] <= 12 && h2[0] >= 14) {
           var rest_hour1 = (12 * 60 + 0) - (h1[0] * 60 + parseInt(h1[1]));
           var rest_hour2 = (h2[0] * 60 + parseInt(h2[1])) - (14 * 60 + 30);
           rest_hour = rest_hour1 + rest_hour2;
         } else {
           rest_hour = (h2[0] * 60 + parseInt(h2[1])) - (h1[0] * 60 + parseInt(h1[1]));
-        } 
+        }
         var f1 = this.$moment(this.selectedItem.departure_date);
         var f2 = this.$moment(this.selectedItem.return_date);
 
-        if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) { 
+        if (this.departure_type_id == 2 && this.selectedItem.departure_reason_id == 16) {
           if (f2.diff(f1, "day") == 0) {
               rest_day = rest_hour;
           } else if (f2.diff(f1, "day") == 1) {
@@ -514,12 +500,12 @@ export default {
           if (rest_day > departure_used.data.total_minutes_year_rest) {
             this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_year_rest / 480) + ' Dias y ' + parseInt(departure_used.data.total_minutes_year_rest % 480 / 60) + ' Horas.';
             this.valid = false;
-          } 
-        } else if (this.departure_type_id == 1 && this.selectedItem.departure_reason_id == 1) { 
+          }
+        } else if (this.departure_type_id == 1 && this.selectedItem.departure_reason_id == 1) {
           if (rest_hour > departure_used.data.total_minutes_month_rest || f2.diff(f1, "day") != 0) {
             this.errorMessages = 'Solo le queda '+ parseInt(departure_used.data.total_minutes_month_rest / 60) + ' Horas y ' + parseInt(departure_used.data.total_minutes_month_rest % 60)+ ' Minutos.';
             this.valid = false;
-          } 
+          }
         } else {
           if (this.departureReason.day != null) {
             if (f2.diff(f1, "day") >= this.departureReason.day) {
@@ -527,7 +513,7 @@ export default {
               this.valid = false;
             }
           } else if (this.departureReason.hour != null) {
-            if (rest_hour > (this.departureReason.hour * 60) || f2.diff(f1, "day") != 0) {              
+            if (rest_hour > (this.departureReason.hour * 60) || f2.diff(f1, "day") != 0) {
               this.errorMessages = 'Solo puede utilizar '+ this.departureReason.hour + ' horas.';
               this.valid = false;
             }

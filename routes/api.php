@@ -11,7 +11,6 @@ Route::group([
   Route::get('payroll/faults/{year}', 'Api\V1\PayrollController@getYearFaults')->name('payroll_year_faults');
   Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
   // Departure
-  Route::resource('departure_type', 'Api\V1\DepartureTypeController')->only(['index', 'show']);
   Route::resource('departure_group', 'Api\V1\DepartureGroupController')->only(['index', 'show']);
   Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
   Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
@@ -35,8 +34,6 @@ Route::group([
   Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
   Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show', 'store']);
   Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
-  // Certificate
-  Route::resource('certificate', 'Api\V1\CertificateController')->only(['index', 'show', 'store', 'update']);
   // With credentials
   Route::group([
     'middleware' => 'jwt.auth'
@@ -58,8 +55,6 @@ Route::group([
         Route::get('', 'Api\V1\EmployeeContractController@get_contract')->name('employee_contracts_details');
       });
     });
-    // Certificate
-    //Route::resource('certificate', 'Api\V1\CertificateController')->only(['index', 'show', 'store', 'update']);
     // City
     Route::resource('city', 'Api\V1\CityController')->only(['index', 'show']);
     // Management Entity

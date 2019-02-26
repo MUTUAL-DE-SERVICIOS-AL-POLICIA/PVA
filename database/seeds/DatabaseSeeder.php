@@ -26,8 +26,6 @@ class DatabaseSeeder extends Seeder
       'contracts',
       'dependency_position_group',
       'dependency_positions',
-      'document_types',
-      'documents',
       'employees',
       'employer_numbers',
       'insurance_companies',
@@ -44,7 +42,7 @@ class DatabaseSeeder extends Seeder
       'users',
       'employee_discounts',
       'employer_contributions',
-      'employer_tributes',
+      'minimum_salaries',
       'months',
       'procedures',
       'payrolls',
@@ -53,7 +51,6 @@ class DatabaseSeeder extends Seeder
       'user_actions',
       'departure',
       'departure_reasons',
-      'departure_types',
       'departure_groups'
     ];
 
@@ -93,7 +90,6 @@ class DatabaseSeeder extends Seeder
     $this->call(UserActionSeeder::class);
     $this->call(DocumentTypeAdd2Seeder::class);
     $this->call(DepartureGroupSeeder::class);
-    $this->call(DepartureTypeSeeder::class);
     $this->call(DepartureReasonSeeder::class);
     $this->call(ContractTypeDepartureReasonSeeder::class);
   }

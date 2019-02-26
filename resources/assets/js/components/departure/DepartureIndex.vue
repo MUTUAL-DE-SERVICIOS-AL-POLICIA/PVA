@@ -1,33 +1,34 @@
 <template>
   <v-container fluid>
     <v-toolbar>
-        <v-toolbar-title>Salidas y Licencias</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-chip color="secondary white--text"> Hrs/mes: {{ hrsxMes }} </v-chip>
-        <v-chip color="secondary white--text"> dias/año: {{ dayxYear }} </v-chip>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <v-toolbar-title>
-          <v-text-field
-              v-model="search"
-              append-icon="search"
-              label="Buscar"
-              clearable
-              single-line
-              hide-details
-              width="20px"
-            ></v-text-field>
-        </v-toolbar-title>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <DepartureForm :bus="bus"/>
-        <RemoveItem :bus="bus"/>
+      <v-toolbar-title>Salidas y Licencias</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-chip color="secondary white--text"> Hrs/mes: {{ hrsxMes }} </v-chip>
+      <v-chip color="secondary white--text"> dias/año: {{ dayxYear }} </v-chip>
+      <v-divider
+        class="mx-2"
+        inset
+        vertical
+      ></v-divider>
+      <v-toolbar-title>
+        <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Buscar"
+            clearable
+            single-line
+            hide-details
+            width="20px"
+          ></v-text-field>
+      </v-toolbar-title>
+      <v-divider
+        class="mx-2"
+        inset
+        vertical
+      ></v-divider>
+      <Form/>
+      <DepartureForm :bus="bus"/>
+      <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table
         :headers="headers"
@@ -38,8 +39,8 @@
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr :class="checkEnd(props.item)">
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.certificate.correlative + '/' + props.item.certificate.year }} </td>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.departure_type.name }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.id }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ $moment(props.item.created_at).format('DD/MM/YYYY') }} </td>
             <td class="text-xs-center"> {{ (props.item.approved == true) ? 'APROBADO' : (props.item.approved == false) ? 'RECHAZADO' : 'PENDIENTE' }} </td>
@@ -71,7 +72,6 @@
               <v-list>
                 <v-list-tile-content><p><strong>Fecha de salida: </strong>{{ $moment(props.item.departure_date).format('DD/MM/YYYY') }} {{ $moment(props.item.departure_time, "HH:mm:ss").format("HH:mm") }} </p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Fecha de retorno: </strong>{{ $moment(props.item.return_date).format('DD/MM/YYYY') }} {{ $moment(props.item.return_time, "HH:mm:ss").format("HH:mm") }} </p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Destino: </strong>{{ props.item.destiny }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Descripción: </strong>{{ props.item.description }}</p></v-list-tile-content>
               </v-list>
             </v-card-text>
@@ -86,11 +86,13 @@
 <script type="text/javascript">
 import Vue from "vue";
 import DepartureForm from "./DepartureForm";
+import Form from "./Form";
 import RemoveItem from "../RemoveItem";
 
 export default {
   name: "ContractIndex",
   components: {
+    Form,
     DepartureForm,
     RemoveItem
   },
@@ -99,17 +101,17 @@ export default {
     headers: [
       {
         text: "No. Solicitud",
-        value: "certificate.correlative",
+        value: "id",
         align: "center"
       },
       {
         text: "Tipo",
-        value: "departure_reason.departure_type.name",
+        value: "departure_reason.name",
         align: "center"
       },
       {
         text: "Razón",
-        value: "departure_reason.name",
+        value: "departure_reason.departure_group.name",
         align: "center"
       },
       {

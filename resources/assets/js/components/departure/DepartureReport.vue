@@ -37,7 +37,7 @@
                       clearable
                       >
                     </v-autocomplete>
-                  </v-flex>                  
+                  </v-flex>
                   <v-flex xs3>
                     <v-select
                       :items="types"
@@ -116,11 +116,11 @@
                   </v-flex>
                 </v-layout>
               </v-form>
-              
+
             </v-flex>
           </v-layout>
         </v-container>
-      </v-card-text>  
+      </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click.native="close"><v-icon>close</v-icon> Cancelar</v-btn>
@@ -168,7 +168,7 @@ export default {
   computed: {
     formTitle() {
       return this.selectedIndex === -1? "Reportes de Salidas/Licencias" : "";
-    }    
+    }
   },
   watch: {
     'selectedItem.start_date'(val) {
@@ -179,12 +179,12 @@ export default {
       this.dateEnd = this.$moment(this.selectedItem.end_date).format("DD/MM/YYYY");
     }
   },
-  methods: {    
+  methods: {
     async initialize() {
       try {
         let position_groups = await axios.get('/position_group');
         this.position_groups = position_groups.data;
-        let types = await axios.get('/departure_type');
+        let types = await axios.get('/departure_group');
         this.types = types.data;
       } catch (e) {
         console.log(e);
@@ -193,7 +193,7 @@ export default {
     close() {
       this.dialog = false;
       this.$validator.reset();
-      this.bus.$emit("closeDialog");      
+      this.bus.$emit("closeDialog");
       this.selectedItem = {
         position_group_id: null,
         employee_id: null,
@@ -201,10 +201,10 @@ export default {
         type: null,
         start_date: this.$moment().format("YYYY-MM-DD"),
         end_date: this.$moment().format("YYYY-MM-DD")
-      };  
+      };
       this.dateStart = this.$moment().format("DD/MM/YYYY");
       this.dateEnd = this.$moment().format("DD/MM/YYYY");
-    },    
+    },
     async getEmployees() {
       try{
         let res = await axios.get('/contract/contract_position_group/' + this.selectedItem.position_group_id);
@@ -213,7 +213,7 @@ export default {
         console.log(e);
       }
     },
-    async checkUsed () {      
+    async checkUsed () {
       let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.id);
 
       var h1 = this.selectedItem.departure_time.split(":");
@@ -235,12 +235,12 @@ export default {
         let blob = new Blob([res.data], {
           type: "application/pdf"
         });
-        printJS(window.URL.createObjectURL(blob));        
+        printJS(window.URL.createObjectURL(blob));
       } catch (e) {
         console.log(e);
       }
     },
-    fullName: 
+    fullName:
       item => item.employee.first_name + ' ' + item.employee.last_name + ' ' + item.employee.mothers_last_name
   },
   mounted() {
@@ -248,7 +248,7 @@ export default {
       this.selectedItem = item;
       this.dialog = true;
       this.selectedIndex = item;
-      this.departure_type_id = item.departure_reason.departure_type_id;
+      this.departure_group_id = item.departure_reason.departure_group_id;
       this.getDepartureReason();
       this.selectedItem.departure_date = this.$moment(item.dateDeparture).format("DD/MM/YYYY");
       this.selectedItem.return_date = this.$moment(item.dateDeparture).format("DD/MM/YYYY");

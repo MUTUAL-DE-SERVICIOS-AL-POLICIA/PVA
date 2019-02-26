@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Certificate;
 use App\Contract;
 use App\Departure;
 use App\PositionGroup;
@@ -26,7 +25,7 @@ class DepartureController extends Controller
      */
   public function index()
   {
-    return Departure::with('contract', 'contract.employee', 'contract.employee.city_identity_card', 'contract.position', 'departure_reason.departure_type', 'departure_reason', 'certificate')
+    return Departure::with('contract', 'contract.employee', 'contract.employee.city_identity_card', 'contract.position', 'departure_reason', 'departure_reason.departure_group')
       ->orderBy('created_at', 'DESC')
       ->get();
   }
@@ -67,7 +66,7 @@ class DepartureController extends Controller
      */
   public function get_departures($contract_id)
   {
-    return Departure::with('contract', 'contract.employee', 'contract.employee.city_identity_card', 'contract.position', 'departure_reason.departure_type', 'departure_reason', 'certificate')
+    return Departure::with('contract', 'contract.employee', 'contract.employee.city_identity_card', 'contract.position', 'departure_reason')
       ->where('contract_id', $contract_id)
       ->orderBy('created_at', 'DESC')
       ->get();
@@ -89,8 +88,8 @@ class DepartureController extends Controller
     $total_minutes_year = 0;
     $dep = [];
     $contracts = Contract::where('employee_id', $employee_id)->get();
-    $departure_hour = DepartureReason::where('departure_type_id', 1)->where('name', 'Personal')->first();
-    $departure_day = DepartureReason::where('departure_type_id', 2)->where('name', 'Personal')->first();
+    $departure_hour = 2;
+    $departure_day = 2;
     foreach ($contracts as $contract) {
       $departures = Departure::where('contract_id', $contract->id)->get();
       foreach ($departures as $departure) {
@@ -108,12 +107,12 @@ class DepartureController extends Controller
         $start_date = Carbon::parse($departure_year . '-0' . $departure_month1 . '-20')->format('Y-m-d');
         $end_date = Carbon::parse($departure_year . '-' . $departure_month2 . '-19')->format('Y-m-d');
         if ($departure->departure_date >= $start_date && $departure->departure_date <= $end_date) {
-          if ($departure->departure_reason->departure_type_id == 1 && $departure->departure_reason->name == 'Personal' && $departure->approved == true) {
+          if ($departure->departure_reason->reset == 'monthly' && $departure->approved == true) {
             $total_minutes_month = $total_minutes_month + $e->departure_minutes;
           }
         }
         if ($year == $departure_year) {
-          if ($departure->departure_reason->departure_type_id == 2 && $departure->departure_reason->name == 'Personal' && $departure->approved == true) {
+          if ($departure->departure_reason->reset == 'annually' && $departure->approved == true) {
             // if ($departure->on_vacation != false) {
             $total_minutes_year = $total_minutes_year + $e->departure_minutes;
             // }
@@ -123,9 +122,9 @@ class DepartureController extends Controller
       }
     }
     $total_departure['total_minutes_month'] = $total_minutes_month;
-    $total_departure['total_minutes_month_rest'] = $departure_hour->hour * 60 - $total_minutes_month;
+    $total_departure['total_minutes_month_rest'] = $departure_hour * 60 - $total_minutes_month;
     $total_departure['total_minutes_year'] = $total_minutes_year;
-    $total_departure['total_minutes_year_rest'] = $departure_day->day * 8 * 60 - $total_minutes_year;
+    $total_departure['total_minutes_year_rest'] = $departure_day * 8 * 60 - $total_minutes_year;
     return $total_departure;
   }
 
@@ -154,8 +153,6 @@ class DepartureController extends Controller
   {
     $departure = Departure::findOrFail($id);
     $departure->delete();
-    $certificate = Certificate::findOrFail($departure->certificate_id);
-    $certificate->delete();
     return $departure;
   }
 
@@ -192,7 +189,6 @@ class DepartureController extends Controller
   function print_report(Request $request)
   {
     $search['state'] = $request->state;
-    $search['type'] = $request->type;
     $search['start_date'] = $request->start_date;
     $search['end_date'] = $request->end_date;
 
@@ -210,9 +206,6 @@ class DepartureController extends Controller
     }
     if ($request->state != null) {
       $query->where('departures.approved', $request->state);
-    }
-    if ($request->type != null) {
-      $query->where('departure_reasons.departure_type_id', $request->type);
     }
     $res = $query->get();
     $pageWidth = '216';

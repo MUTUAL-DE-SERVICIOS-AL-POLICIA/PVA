@@ -73,11 +73,11 @@ use \Milon\Barcode\DNS2D;
             <tbody>
               <tr>
                 <td class="text-center bg-grey-darker text-white">Tipo</td>
-                <td class="uppercase">{{ $departure->departure_reason->departure_type->name }}</td>
+                <td class="uppercase">{{ $departure->departure_reason->departure_group->name }}</td>
               </tr>
               <tr>
                 <td class="text-center bg-grey-darker text-white">Nº </td>
-                <td class="uppercase">{{ $departure->certificate->correlative.'/'.$departure->certificate->year }}</td>
+                <td class="uppercase">{{ $departure->id }}</td>
               </tr>
               <tr>
                 <td class="text-center bg-grey-darker text-white">Fecha</td>
@@ -123,10 +123,10 @@ use \Milon\Barcode\DNS2D;
           <td class="w-50 text-xs data-row py-5" colspan='2'>{{ $departure->departure_reason->name }}</td>
         </tr>
         <tr class="bg-grey-darker text-xxs text-white">
-          <td colspan='2'>DESTINO</td>
+          <td colspan='2'>DETALLE</td>
         </tr>
         <tr>
-          <td class="{{ Util::departure_string_length($departure->destiny) }} data-row py-5" colspan='2'>{{ $departure->destiny }}</td>
+          <td class="{{ Util::departure_string_length($departure->description) }} data-row py-5" colspan='2'>{{ $departure->description }}</td>
         </tr>
         <tr class="bg-grey-darker text-xxs text-white">
           <td class="w-50">DESDE</td>
@@ -163,7 +163,7 @@ use \Milon\Barcode\DNS2D;
             <td class="text-center w-25 font-bold text-xxxs">Solicitante</td>
             <td class="text-center w-25 font-bold text-xxxs">Autorizado</td>
             <td class="text-center w-25 font-bold text-xxxs">RRHH</td>
-            <td class="text-center w-25 font-bold text-xxxs">Destino</td>
+            <td class="text-center w-25 font-bold text-xxxs">Detalle</td>
           </tr>
         </tbody>
       </table>

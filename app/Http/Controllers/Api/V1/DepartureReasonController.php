@@ -73,11 +73,11 @@ class DepartureReasonController extends Controller
   /**
 	 * Display the specified resource.
 	 *
-	 * @param  int  $departure_type_id
+	 * @param  int  $departure_group_id
 	 * @return \Illuminate\Http\Response
 	 */
   public function get_reason($id)
   {
-    return DepartureReason::where('departure_type_id', $id)->get();
+    return DepartureReason::where('departure_group_id', $id)->get();
   }
 }

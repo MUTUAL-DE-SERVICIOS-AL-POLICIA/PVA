@@ -38,9 +38,7 @@ class DatabaseProductionSeeder extends Seeder
     $this->call(MonthSeeder::class);
     $this->call(DocumentTypeAdd2Seeder::class);
     $this->call(DepartureGroupSeeder::class);
-    $this->call(DepartureTypeSeeder::class);
     $this->call(DepartureReasonSeeder::class);
     $this->call(ContractTypeDepartureReasonSeeder::class);
   }
 }
-

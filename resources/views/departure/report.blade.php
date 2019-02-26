@@ -50,7 +50,7 @@
                     </table>
                 </th>
             </tr>
-            <tr><td colspan="3" style="border-bottom: 1px solid #22292f;"></td></tr>                  
+            <tr><td colspan="3" style="border-bottom: 1px solid #22292f;"></td></tr>
         </table>
         <div class="block">
             <br>
@@ -76,7 +76,7 @@
                         <td class="text-left uppercase px-5 py-3"> {{ $departure->contract->position->position_group->name }} </td>
                         <td class="text-left uppercase px-5 py-3"> {{ $departure->contract->position->name }} </td>
                         <td class="text-left uppercase px-5 py-3"> {{ Util::fullName($departure->contract->employee) }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ $departure->departure_reason->departure_type->name }} </td>
+                        <td class="text-left uppercase px-5 py-3"> {{ $departure->departure_reason->departure_group->name }} </td>
                         <td class="text-left uppercase px-5 py-3"> {{ $departure->departure_reason->name }} </td>
                         <td class="text-left uppercase px-5 py-3"> {{ Carbon::parse($departure->departure_date)->format('d/m/Y').' '.Carbon::parse($departure->departure_time)->format('H:i') }} </td>
                         <td class="text-left uppercase px-5 py-3"> {{ Carbon::parse($departure->return_date)->format('d/m/Y').' '.Carbon::parse($departure->return_time)->format('H:i') }} </td>
@@ -84,7 +84,7 @@
                     @endforeach
                 </tbody>
             </table>
-            
+
         </div>
     </div>
 </body>
