@@ -16,6 +16,7 @@ import Dashboard from './components/dashboard/Dashboard'
 import PhonebookIndex from './components/phonebook/PhonebookIndex'
 import SuppliesIndex from './components/supply/SuppliesIndex'
 import SupplyRequestIndex from './components/supply/SupplyRequestIndex'
+import DepartureConfig from './components/configuration/DepartureConfig'
 
 export const routes = [
   {
@@ -146,6 +147,13 @@ export const routes = [
     path: '/supply_requests',
     component: SupplyRequestIndex,
     name: 'supplyRequestIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/departure_config',
+    component: DepartureConfig,
+    name: 'departureConfig',
     meta: {
       requiresAuth: true
     }

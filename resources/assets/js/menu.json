@@ -108,5 +108,18 @@
         "params": {}
       }
     ]
+  }, {
+    "title": "Configuración",
+    "icon": "settings",
+    "permission": "admin",
+    "group": [
+      {
+        "href": "departureConfig",
+        "title": "Permisos",
+        "icon": "directions_walk",
+        "permission": "admin",
+        "params": {}
+      }
+    ]
   }
 ]

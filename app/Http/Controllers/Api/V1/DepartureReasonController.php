@@ -10,64 +10,74 @@ use Illuminate\Http\Request;
  *
  * Resource to retrieve, store and update departure types data
  */
-class DepartureReasonController extends Controller {
-	/**
+class DepartureReasonController extends Controller
+{
+  /**
 	 * Display a listing of the resource.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index() {
-		return DepartureReason::get();
-	}
+  public function index()
+  {
+    return DepartureReason::orderBy('name')->get();
+  }
 
-	/**
+  /**
 	 * Store a newly created resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(Request $request) {
+  public function store(Request $request)
+  {
+    //
+  }
 
-	}
-
-	/**
+  /**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id) {
-		return DepartureReason::findOrFail($id);
-	}
+  public function show($id)
+  {
+    return DepartureReason::findOrFail($id);
+  }
 
-	/**
+  /**
 	 * Update the specified resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id) {
+  public function update(Request $request, $id)
+  {
+    $departure_reason = DepartureReason::findOrFail($id);
+    $departure_reason->fill($request->all());
+    $departure_reason->save();
+    return $departure_reason;
+  }
 
-	}
-
-	/**
+  /**
 	 * Remove the specified resource from storage.
 	 *
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
-		
-	}
+  public function destroy($id)
+  {
+    //
+  }
 
-	/**
+  /**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $departure_type_id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function get_reason($id) {
-		return DepartureReason::where('departure_type_id', $id)->get();
-	}
+  public function get_reason($id)
+  {
+    return DepartureReason::where('departure_type_id', $id)->get();
+  }
 }
