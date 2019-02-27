@@ -15,7 +15,7 @@ class DepartureGroupController extends Controller
    */
   public function index()
   {
-    return DepartureGroup::get();
+    return DepartureGroup::orderBy('id')->get();
   }
 
   /**
@@ -37,9 +37,9 @@ class DepartureGroupController extends Controller
    */
   public function show($id)
   {
-    $group = DepartureGroup::findOrFail($id);
-    $group->departure_reasons;
-    return $group;
+    return DepartureGroup::with(['departure_reasons' => function ($query) {
+      return $query->orderBy('id');
+    }])->findOrFail($id);
   }
 
   /**

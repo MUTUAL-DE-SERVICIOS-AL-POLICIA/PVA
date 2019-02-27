@@ -51,6 +51,18 @@
           </td>
           <td class="text-md-center">
             <v-checkbox
+              v-model="props.item.note"
+              @change="updateDeparture(props.item)"
+            ></v-checkbox>
+          </td>
+          <td class="text-md-center">
+            <v-checkbox
+              v-model="props.item.description_needed"
+              @change="updateDeparture(props.item)"
+            ></v-checkbox>
+          </td>
+          <td class="text-md-center">
+            <v-checkbox
               v-model="props.item.payable"
               @change="updateDeparture(props.item)"
             ></v-checkbox>
@@ -112,7 +124,7 @@ export default {
     groups: [],
     reset: [
       {
-        name: 'No resetear',
+        name: 'No reiniciar',
         value: null
       }, {
         name: 'Mensualmente',
@@ -123,10 +135,12 @@ export default {
       }
     ],
     headers: [
-      { align: "center", text: "Razón", class: ["ma-0", "pa-0"], value: "name", width: "50%" },
+      { align: "center", text: "Razón", class: ["ma-0", "pa-0"], value: "name", width: "40%" },
       { align: "center", text: "Grupo", class: ["ma-0", "pa-0"], value: "departure_group_id", width: "15%" },
+      { align: "center", text: "Mediante nota", class: ["ma-0", "pa-0"], value: "note", width: "5%" },
+      { align: "center", text: "Con descripción", class: ["ma-0", "pa-0"], value: "description_needed", width: "5%" },
       { align: "center", text: "Pagable", class: ["ma-0", "pa-0"], value: "pay", width: "5%", sortable: false },
-      { align: "center", text: "Resetear", class: ["ma-0", "pa-0"], value: "each", width: "10%" },
+      { align: "center", text: "Reiniciar", class: ["ma-0", "pa-0"], value: "each", width: "10%" },
       { align: "center", text: "Días", class: ["ma-0", "pa-0"], value: "day", width: "5%" },
       { align: "center", text: "Horas", class: ["ma-0", "pa-0"], value: "hour", width: "5%" }
     ]

@@ -36,18 +36,32 @@
           <v-stepper-content step="1">
             <v-card>
               <v-card-text>
-                <v-select
-                  :items="groups"
-                  item-text="name"
-                  item-value="id"
-                  v-model="departure.group"
-                ></v-select>
-                <v-select
-                  :items="reasons"
-                  item-text="name"
-                  item-value="id"
-                  v-model="departure.reason"
-                ></v-select>
+                <v-layout>
+                  <v-flex xs5 pr-5>
+                    <v-select
+                      :items="groups"
+                      item-text="name"
+                      item-value="id"
+                      v-model="departure.group"
+                      label="Tipo de permiso"
+                    ></v-select>
+                  </v-flex>
+                  <v-flex xs7>
+                    <v-select
+                      :items="reasons"
+                      item-text="name"
+                      item-value="id"
+                      v-model="departure.departure_reason_id"
+                      label="Razón"
+                      :disabled="!departure.group"
+                    ></v-select>
+                  </v-flex>
+                </v-layout>
+                <v-text-field
+                  label="Detalle"
+                  v-model="departure.description"
+                  :disabled="!departure.departure_reason_id"
+                ></v-text-field>
               </v-card-text>
             </v-card>
           </v-stepper-content>

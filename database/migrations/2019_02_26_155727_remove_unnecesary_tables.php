@@ -14,12 +14,15 @@ class RemoveUnnecesaryTables extends Migration
   public function up()
   {
     Schema::table('departures', function (Blueprint $table) {
-      $table->dropColumn(['certificate_id', 'destiny']);
+      $table->dropColumn(['certificate_id', 'destiny', 'contract_id']);
+      $table->integer('employee_id')->nullable();
+      $table->foreign('employee_id')->references('id')->on('employees');
     });
     Schema::dropIfExists('certificates');
     Schema::table('departure_reasons', function (Blueprint $table) {
       $table->dropColumn(['departure_type_id']);
       $table->boolean('note')->default(0);
+      $table->boolean('description_needed')->default(1);
       $table->renameColumn('hour', 'hours');
       $table->renameColumn('day', 'days');
       $table->renameColumn('each', 'reset');
@@ -100,7 +103,7 @@ class RemoveUnnecesaryTables extends Migration
     Schema::table('departure_reasons', function (Blueprint $table) {
       $table->integer('departure_type_id')->nullable();
       $table->foreign('departure_type_id')->references('id')->on('departure_types');
-      $table->dropColumn(['note']);
+      $table->dropColumn(['note', 'description_needed']);
       $table->renameColumn('hours', 'hour');
       $table->renameColumn('days', 'day');
       $table->renameColumn('reset', 'each');
@@ -116,9 +119,12 @@ class RemoveUnnecesaryTables extends Migration
       $table->timestamps();
     });
     Schema::table('departures', function (Blueprint $table) {
+      $table->dropColumn(['employee_id']);
       $table->integer('certificate_id')->nullable();
       $table->foreign('certificate_id')->references('id')->on('certificates');
       $table->string('destiny')->nullable();
+      $table->integer('contract_id')->nullable();
+      $table->foreign('contract_id')->references('id')->on('contracts');
     });
   }
 }
