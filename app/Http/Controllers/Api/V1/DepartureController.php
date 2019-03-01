@@ -19,22 +19,23 @@ use Illuminate\Http\Request;
 class DepartureController extends Controller
 {
   /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-  public function index()
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index(Request $request)
   {
-    return Departure::with('contract', 'contract.employee', 'contract.employee.city_identity_card', 'contract.position', 'departure_reason', 'departure_reason.departure_group')
-      ->orderBy('created_at', 'DESC')
-      ->get();
+    $employee_id = 0;
+    if ($request->has('employee_id')) $employee_id = intval($request['employee_id']);
+    if (!$employee_id) return Departure::orderBy('approved')->orderBy('created_at')->get();
+    return Departure::where('employee_id', $employee_id)->orderBy('approved')->orderBy('created_at')->get();
   }
   /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+   * Store a newly created resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
   public function store(Request $request)
   {
     if ($request->departure_time == null) {
@@ -55,7 +56,7 @@ class DepartureController extends Controller
      */
   public function show($id)
   {
-    return Departure::findOrFail($id);
+    return Departure::with('employee')->findOrFail($id);
   }
 
   /**

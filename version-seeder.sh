@@ -3,4 +3,5 @@
 # Migration
 php artisan migrate
 php artisan db:seed --class=SupplyPermissionSeeder
+php artisan db:seed --class=DepartureGroupSeeder
 php artisan db:seed --class=DepartureReasonSeeder

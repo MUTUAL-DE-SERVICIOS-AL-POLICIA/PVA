@@ -17,6 +17,7 @@ import PhonebookIndex from './components/phonebook/PhonebookIndex'
 import SuppliesIndex from './components/supply/SuppliesIndex'
 import SupplyRequestIndex from './components/supply/SupplyRequestIndex'
 import DepartureConfig from './components/configuration/DepartureConfig'
+import Departure from './components/departure/Departure'
 
 export const routes = [
   {
@@ -110,7 +111,7 @@ export const routes = [
     }
   }, {
     path: '/departure',
-    component: DepartureIndex,
+    component: Departure,
     name: 'departureIndex',
     meta: {
       requiresAuth: true

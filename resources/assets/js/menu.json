@@ -66,13 +66,17 @@
     "title": "Aprobar Permisos",
     "icon": "alarm_on",
     "permission": "read-departure",
-    "params": {}
+    "params": {
+      "departureType": "all"
+    }
   }, {
     "href": "departureIndex",
     "title": "Permisos",
     "icon": "directions_run",
     "permission": "!admin",
-    "params": {}
+    "params": {
+      "departureType": "user"
+    }
   }, {
     "href": "phonebookIndex",
     "title": "Agenda Telefonica",

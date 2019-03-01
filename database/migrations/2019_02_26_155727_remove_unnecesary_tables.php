@@ -13,10 +13,16 @@ class RemoveUnnecesaryTables extends Migration
    */
   public function up()
   {
+    // Truncate departure tables
+    App\Departure::truncate();
+    App\DepartureReason::truncate();
+
     Schema::table('departures', function (Blueprint $table) {
-      $table->dropColumn(['certificate_id', 'destiny', 'contract_id']);
+      $table->dropColumn(['certificate_id', 'destiny', 'contract_id', 'departure_date', 'departure_time', 'return_date', 'return_time']);
       $table->integer('employee_id')->nullable();
       $table->foreign('employee_id')->references('id')->on('employees');
+      $table->dateTime('departure');
+      $table->dateTime('return');
     });
     Schema::dropIfExists('certificates');
     Schema::table('departure_reasons', function (Blueprint $table) {
@@ -119,12 +125,16 @@ class RemoveUnnecesaryTables extends Migration
       $table->timestamps();
     });
     Schema::table('departures', function (Blueprint $table) {
-      $table->dropColumn(['employee_id']);
+      $table->dropColumn(['employee_id', 'departure', 'return']);
       $table->integer('certificate_id')->nullable();
       $table->foreign('certificate_id')->references('id')->on('certificates');
       $table->string('destiny')->nullable();
       $table->integer('contract_id')->nullable();
       $table->foreign('contract_id')->references('id')->on('contracts');
+      $table->date('departure_date')->nullable();
+      $table->date('return_date')->nullable();
+      $table->time('departure_time')->nullable();
+      $table->time('return_time')->nullable();
     });
   }
 }

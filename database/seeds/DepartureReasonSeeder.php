@@ -11,10 +11,6 @@ class DepartureReasonSeeder extends Seeder
    */
   public function run()
   {
-    // Truncate departure tables
-    App\Departure::truncate();
-    App\DepartureReason::truncate();
-
     // Personal
     $group = App\DepartureGroup::where('name', 'Personal')->first();
     $group->departure_reasons()->saveMany([

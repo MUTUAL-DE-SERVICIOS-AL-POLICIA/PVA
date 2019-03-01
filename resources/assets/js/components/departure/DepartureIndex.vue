@@ -26,7 +26,6 @@
         inset
         vertical
       ></v-divider>
-      <Form/>
       <DepartureForm :bus="bus"/>
       <RemoveItem :bus="bus"/>
     </v-toolbar>
@@ -86,13 +85,11 @@
 <script type="text/javascript">
 import Vue from "vue";
 import DepartureForm from "./DepartureForm";
-import Form from "./Form";
 import RemoveItem from "../RemoveItem";
 
 export default {
   name: "ContractIndex",
   components: {
-    Form,
     DepartureForm,
     RemoveItem
   },
