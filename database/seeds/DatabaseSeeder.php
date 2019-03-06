@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
       'consultant_procedures',
       'consultant_payrolls',
       'user_actions',
-      'departure',
+      'departures',
       'departure_reasons',
       'departure_types',
       'departure_groups'
@@ -96,5 +96,14 @@ class DatabaseSeeder extends Seeder
     $this->call(DepartureTypeSeeder::class);
     $this->call(DepartureReasonSeeder::class);
     $this->call(ContractTypeDepartureReasonSeeder::class);
+    $this->call(UserActionPermissionSeeder::class);
+    $this->call(SupplyPermissionSeeder::class);
+    $this->call(ProcedureEventualPermissionSeeder::class);
+    $this->call(ProcedureConsultantPermissionSeeder::class);
+    $this->call(EventualPermissionSeeder::class);
+    $this->call(EmployeePermissionSeeder::class);
+    $this->call(DeparturePermissionSeeder::class);
+    $this->call(ConsultantPermissionSeeder::class);
+    $this->call(AdminPermissionSeeder::class);
   }
 }

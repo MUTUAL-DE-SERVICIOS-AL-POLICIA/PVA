@@ -41,6 +41,15 @@ class DatabaseProductionSeeder extends Seeder
     $this->call(DepartureTypeSeeder::class);
     $this->call(DepartureReasonSeeder::class);
     $this->call(ContractTypeDepartureReasonSeeder::class);
+    $this->call(UserActionPermissionSeeder::class);
+    $this->call(SupplyPermissionSeeder::class);
+    $this->call(ProcedureEventualPermissionSeeder::class);
+    $this->call(ProcedureConsultantPermissionSeeder::class);
+    $this->call(EventualPermissionSeeder::class);
+    $this->call(EmployeePermissionSeeder::class);
+    $this->call(DeparturePermissionSeeder::class);
+    $this->call(ConsultantPermissionSeeder::class);
+    $this->call(AdminPermissionSeeder::class);
   }
 }
 
