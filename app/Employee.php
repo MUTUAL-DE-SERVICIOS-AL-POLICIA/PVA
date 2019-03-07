@@ -6,6 +6,7 @@ use App\Helpers\Util;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\CarbonImmutable;
 
 class Employee extends Model
 {
@@ -148,5 +149,95 @@ class Employee extends Model
   public function departures()
   {
     return $this->hasMany(Departure::class);
+  }
+
+  public function monthly_departures_remain()
+  {
+    $now = Carbon::today()->day;
+    $start_date = CarbonImmutable::today()->day(20);
+    if ($now < 20) {
+      $start_date = $start_date->subMonths(1);
+    }
+    $end_date = $start_date->addMonths(1);
+
+    $departures = $this->departures()->whereHas('departure_reason', function ($query) {
+      return $query->where('name', 'Permiso por horas');
+    })->whereBetween('departure', [$start_date, $end_date])->get();
+
+    if ($departures->count() == 0) {
+      return [
+        (object)['text' => '00:30', 'value' => 30],
+        (object)['text' => '01:00', 'value' => 60],
+        (object)['text' => '01:30', 'value' => 90]
+      ];
+    } elseif ($departures->count() == 1) {
+      $departure = Carbon::parse($departures[0]->departure);
+      $return = Carbon::parse($departures[0]->return);
+      $total_time = DepartureReason::where('name', 'Permiso por horas')->first()->hours * 60;
+      $remain_time = $departure->diffInMinutes($return);
+      switch ($total_time - $remain_time) {
+        case 30:
+          return [
+            (object)['text' => '00:30', 'value' => 30]
+          ];
+          break;
+        case 60:
+          return [
+            (object)['text' => '01:00', 'value' => 60]
+          ];
+          break;
+        case 90:
+          return [
+            (object)['text' => '01:30', 'value' => 90]
+          ];
+          break;
+        default:
+          return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
+  public function annually_departures_remain()
+  {
+    $start_date = CarbonImmutable::now()->month(1)->startOfMonth();
+    $end_date = $start_date->month(12)->endOfMonth();
+
+    $departures = $this->departures()->whereHas('departure_reason', function ($query) {
+      return $query->where('name', 'Licencia con goce de haberes');
+    })->whereBetween('departure', [$start_date, $end_date])->get();
+
+    if ($departures->count() == 0) {
+      return [
+        (object)['text' => '1/2 día', 'value' => 4],
+        (object)['text' => '1 día', 'value' => 8]
+      ];
+    } else {
+      $total_time = DepartureReason::where('name', 'Licencia con goce de haberes')->first()->hours;
+      $remain_time = 0;
+
+      foreach ($departures as $departure) {
+        $start = Carbon::parse($departure->departure);
+        $return = Carbon::parse($departure->return);
+        $used_time = $start->diffInHours($return);
+        if ($used_time > 8) $used_time = 8;
+        $remain_time += $used_time;
+      }
+
+      $remain_time = $total_time - $remain_time;
+      if ($remain_time == 4) {
+        return [
+          (object)['text' => '1/2 día', 'value' => 4]
+        ];
+      } elseif ($remain_time < $total_time) {
+        return [
+          (object)['text' => '1/2 día', 'value' => 4],
+          (object)['text' => '1 día', 'value' => 8]
+        ];
+      } else {
+        return [];
+      }
+    }
   }
 }

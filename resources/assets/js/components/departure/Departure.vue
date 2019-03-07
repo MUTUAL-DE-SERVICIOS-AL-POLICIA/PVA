@@ -7,10 +7,12 @@
       <v-tooltip color="white" role="button" bottom>
         <v-icon slot="activator" class="ml-4">info</v-icon>
         <div>
-          <v-alert :value="true" type="info">SELECCIONADO</v-alert>
           <v-alert :value="true" type="warning" class="black--text">NO APROBADO</v-alert>
+          <v-alert :value="true" type="info">SELECCIONADO</v-alert>
         </div>
       </v-tooltip>
+      <v-spacer></v-spacer>
+      <DepartureForm></DepartureForm>
     </v-toolbar>
     <v-data-table
       :headers="headers"
@@ -21,8 +23,8 @@
     >
       <template slot="items" slot-scope="props">
         <tr :class="props.expanded ? 'info dark white--text' : (!props.item.approved ? 'warning' : '')">
-          <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ departureGroups.find(o => o.id == departureReasons.find(o => o.id == props.item.departure_reason_id).departure_group_id).name }} </td>
-          <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ departureReasons.find(o => o.id == props.item.departure_reason_id).name }} </td>
+          <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ departureType(props.item).group }} </td>
+          <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ departureType(props.item).reason }} </td>
           <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ $moment(props.item.departure).format('L [a horas] hh:mm') }} </td>
           <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ $moment(props.item.return).format('L [a horas] hh:mm') }} </td>
         </tr>
@@ -45,6 +47,9 @@ import DepartureForm from './Form';
 
 export default {
   name: 'Departure',
+  components: {
+    DepartureForm
+  },
   data() {
     return {
       loading: true,
@@ -87,6 +92,19 @@ export default {
     }
   },
   methods: {
+    departureType(item) {
+      if (this.departureReasons.length > 0 && this.departureGroups.length > 0) {
+        let reason = this.departureReasons.find(o => o.id == item.departure_reason_id)
+        return {
+          reason: reason.name,
+          group: this.departureGroups.find(o => o.id == reason.departure_group_id).name
+        }
+      }
+      return {
+        reason: '',
+        group: ''
+      }
+    },
     async getDepartureGroups() {
       try {
         let res = await axios.get(`departure_group`)

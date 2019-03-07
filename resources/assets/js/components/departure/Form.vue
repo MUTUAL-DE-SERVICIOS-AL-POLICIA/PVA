@@ -6,8 +6,8 @@
     persistent
   >
     <v-tooltip slot="activator" top>
-      <v-icon large slot="activator" dark color="error">close</v-icon>
-      <span>Abrir Form</span>
+      <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
+      <span>Nueva Solicitud</span>
     </v-tooltip>
 
     <v-card>
@@ -44,6 +44,11 @@
                       item-value="id"
                       v-model="departure.group"
                       label="Tipo de permiso"
+                      :hint="groupDescription"
+                      persistent-hint
+                      v-validate="'required'"
+                      name="Tipo de permiso"
+                      :error-messages="errors.collect('Tipo de permiso')"
                     ></v-select>
                   </v-flex>
                   <v-flex xs7>
@@ -53,25 +58,40 @@
                       item-value="id"
                       v-model="departure.departure_reason_id"
                       label="Razón"
+                      :hint="reasonDescription"
+                      persistent-hint
+                      v-validate="'required'"
+                      name="Razón"
+                      :error-messages="errors.collect('Razón')"
                       :disabled="!departure.group"
                     ></v-select>
                   </v-flex>
                 </v-layout>
-                <v-text-field
+                <v-textarea
+                  v-show="departure.description_needed"
                   label="Detalle"
                   v-model="departure.description"
+                  class="mt-4"
+                  rows="3"
+                  v-validate="departure.description_needed ? 'required' : ''"
+                  name="Detalle"
+                  :error-messages="errors.collect('Detalle')"
                   :disabled="!departure.departure_reason_id"
-                ></v-text-field>
+                ></v-textarea>
               </v-card-text>
             </v-card>
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-card
-              class="mb-5"
-              color="grey lighten-2"
-              height="300px"
-            ></v-card>
+            <v-card>
+              <v-card-text>
+                <v-layout>
+                  <v-flex xs12>
+
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
           </v-stepper-content>
 
           <v-stepper-content step="3">
@@ -88,7 +108,7 @@
         <v-btn color="primary" v-if="step > 1" @click.native="step -= 1">
           Volver
         </v-btn>
-        <v-btn color="error" v-if="step < 3" @click.native="step += 1">
+        <v-btn color="error" v-if="step < 3" @click.native="nextStep">
           Siguiente
         </v-btn>
       </div>
@@ -106,20 +126,48 @@ export default {
       groups: [],
       reasons: [],
       departure: {
+        description_needed: false,
         group: null,
-        reason: null
+        departure_reason_id: null,
+        description: null
       }
     }
   },
   mounted() {
     this.getDepartureGroups()
   },
+  computed: {
+    groupDescription() {
+      let group = this.groups.find(o => o.id == this.departure.group)
+      if(group) return group.description
+    },
+    reasonDescription() {
+      let reason = this.reasons.find(o => o.id == this.departure.departure_reason_id)
+      if(reason) return reason.description
+    },
+  },
   watch: {
     'departure.group'(val) {
       this.getDepartureReasons(val)
+      this.departure.description = null
+      this.departure.description_needed = false
+    },
+    'departure.departure_reason_id'(val) {
+      this.departure.description_needed = this.reasons.find(o => o.id == val).description_needed
+      this.departure.description = null
     }
   },
   methods: {
+    async nextStep() {
+      try {
+        let valid = await this.$validator.validateAll();
+        if (valid) {
+          this.step += 1
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
     async getDepartureGroups() {
       try {
         let res = await axios.get(`departure_group`)
