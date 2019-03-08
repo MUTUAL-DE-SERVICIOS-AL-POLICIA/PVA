@@ -151,7 +151,7 @@ class Employee extends Model
     return $this->hasMany(Departure::class);
   }
 
-  public function monthly_departures_remain()
+  public function monthly_remaining_departures()
   {
     $now = Carbon::today()->day;
     $start_date = CarbonImmutable::today()->day(20);
@@ -164,42 +164,44 @@ class Employee extends Model
       return $query->where('name', 'Permiso por horas');
     })->whereBetween('departure', [$start_date, $end_date])->get();
 
+    $total_time = DepartureReason::where('name', 'Permiso por horas')->first()->hours * 60;
+
     if ($departures->count() == 0) {
-      return [
-        (object)['text' => '00:30', 'value' => 30],
-        (object)['text' => '01:00', 'value' => 60],
-        (object)['text' => '01:30', 'value' => 90]
+      $response = [
+        'time_remaining' => $total_time,
+        'options' => [
+          ['text' => '00:30', 'value' => 30],
+          ['text' => '01:00', 'value' => 60],
+          ['text' => '01:30', 'value' => 90]
+        ]
       ];
     } elseif ($departures->count() == 1) {
       $departure = Carbon::parse($departures[0]->departure);
       $return = Carbon::parse($departures[0]->return);
-      $total_time = DepartureReason::where('name', 'Permiso por horas')->first()->hours * 60;
-      $remain_time = $departure->diffInMinutes($return);
-      switch ($total_time - $remain_time) {
+      $time_remaining = $departure->diffInMinutes($return);
+      $response = [
+        'time_remaining' => $total_time - $time_remaining
+      ];
+      switch ($response['time_remaining']) {
         case 30:
-          return [
-            (object)['text' => '00:30', 'value' => 30]
-          ];
+          $response['options'] = [['text' => '00:30', 'value' => 30]];
           break;
         case 60:
-          return [
-            (object)['text' => '01:00', 'value' => 60]
-          ];
+          $response['options'] = [['text' => '01:00', 'value' => 60]];
           break;
         case 90:
-          return [
-            (object)['text' => '01:30', 'value' => 90]
-          ];
+          $response['options'] = [['text' => '01:30', 'value' => 90]];
           break;
         default:
-          return [];
+          $response['options'] = [];
       }
     } else {
-      return [];
+      $response['options'] = [];
     }
+    return $response;
   }
 
-  public function annually_departures_remain()
+  public function annually_remaining_departures()
   {
     $start_date = CarbonImmutable::now()->month(1)->startOfMonth();
     $end_date = $start_date->month(12)->endOfMonth();
@@ -208,36 +210,46 @@ class Employee extends Model
       return $query->where('name', 'Licencia con goce de haberes');
     })->whereBetween('departure', [$start_date, $end_date])->get();
 
+    $total_time = DepartureReason::where('name', 'Licencia con goce de haberes')->first()->hours;
+
     if ($departures->count() == 0) {
-      return [
-        (object)['text' => '1/2 día', 'value' => 4],
-        (object)['text' => '1 día', 'value' => 8]
+      $response = [
+        'time_remaining' => $total_time,
+        'options' => [
+          ['text' => '1/2 día', 'value' => 4],
+          ['text' => '1 día', 'value' => 8]
+        ]
       ];
     } else {
-      $total_time = DepartureReason::where('name', 'Licencia con goce de haberes')->first()->hours;
-      $remain_time = 0;
+      $time_remaining = 0;
 
       foreach ($departures as $departure) {
         $start = Carbon::parse($departure->departure);
         $return = Carbon::parse($departure->return);
         $used_time = $start->diffInHours($return);
         if ($used_time > 8) $used_time = 8;
-        $remain_time += $used_time;
+        $time_remaining += $used_time;
       }
 
-      $remain_time = $total_time - $remain_time;
-      if ($remain_time == 4) {
-        return [
-          (object)['text' => '1/2 día', 'value' => 4]
+      $time_remaining = $total_time - $time_remaining;
+
+      $response = [
+        'time_remaining' => $time_remaining
+      ];
+
+      if ($time_remaining == 4) {
+        $response['options'] = [
+          ['text' => '1/2 día', 'value' => 4]
         ];
-      } elseif ($remain_time < $total_time) {
-        return [
-          (object)['text' => '1/2 día', 'value' => 4],
-          (object)['text' => '1 día', 'value' => 8]
+      } elseif ($time_remaining < $total_time && $time_remaining > 0) {
+        $response['options'] = [
+          ['text' => '1/2 día', 'value' => 4],
+          ['text' => '1 día', 'value' => 8]
         ];
       } else {
-        return [];
+        $response['options'] = [];
       }
     }
+    return $response;
   }
 }

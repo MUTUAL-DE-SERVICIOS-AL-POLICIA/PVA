@@ -12,6 +12,31 @@
         </div>
       </v-tooltip>
       <v-spacer></v-spacer>
+      <v-divider
+        class="mx-2"
+        inset
+        vertical
+      ></v-divider>
+      <v-chip
+        :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'danger'" text-color="white"
+        class="mr-3"
+      >
+        <v-avatar
+          class="body-2 font-weight-black"
+          :color="remainingDepartures.monthly.time_remaining > 0 ? 'primary' : 'error'"
+        >{{ remainingDepartures.monthly.time_remaining / 60 }}</v-avatar>
+        <div class="subheading font-weight-regular">Hrs. Mes</div>
+      </v-chip>
+      <v-chip
+        :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'danger'" text-color="white"
+        class="mr-3"
+      >
+        <v-avatar
+          class="body-2 font-weight-black"
+          :color="remainingDepartures.annually.time_remaining > 0 ? 'info' : 'error'"
+        >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
+        <div class="subheading font-weight-regular">Días Año</div>
+      </v-chip>
       <DepartureForm></DepartureForm>
     </v-toolbar>
     <v-data-table
@@ -56,6 +81,16 @@ export default {
       departures: [],
       departureReasons: [],
       departureGroups: [],
+      remainingDepartures: {
+        monthly: {
+          time_remaining: 0,
+          options: []
+        },
+        annually: {
+          time_remaining: 0,
+          options: []
+        }
+      },
       headers: [
         {
           text: 'Tipo',
@@ -82,6 +117,7 @@ export default {
     }
   },
   mounted() {
+    this.getRemainingDepartures()
     this.getDepartureGroups()
     this.getDepartureReasons()
     this.getDepartures(this.$route.query.departureType)
@@ -92,6 +128,14 @@ export default {
     }
   },
   methods: {
+    async getRemainingDepartures() {
+      try {
+        let res = await axios.get(`employee/${this.$store.getters.id}`)
+        this.remainingDepartures = res.data.remaining_departures
+      } catch (e) {
+        console.log(e)
+      }
+    },
     departureType(item) {
       if (this.departureReasons.length > 0 && this.departureGroups.length > 0) {
         let reason = this.departureReasons.find(o => o.id == item.departure_reason_id)
@@ -109,7 +153,6 @@ export default {
       try {
         let res = await axios.get(`departure_group`)
         this.departureGroups = res.data
-
       } catch (e) {
         console.log(e)
       }
@@ -118,7 +161,6 @@ export default {
       try {
         let res = await axios.get(`departure_reason`)
         this.departureReasons = res.data
-
       } catch (e) {
         console.log(e)
       }

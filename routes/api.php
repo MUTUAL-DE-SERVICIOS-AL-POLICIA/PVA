@@ -10,15 +10,6 @@ Route::group([
   // Public resource
   Route::get('payroll/faults/{year}', 'Api\V1\PayrollController@getYearFaults')->name('payroll_year_faults');
   Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
-  // Departure
-  Route::resource('departure_group', 'Api\V1\DepartureGroupController')->only(['index', 'show']);
-  Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
-  Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
-  Route::get('departure/get_departures/{id}', 'Api\V1\DepartureController@get_departures')->name('get_departures');
-  Route::get('departure/get_departures_used/{id}', 'Api\V1\DepartureController@get_departures_used')->name('get_departures_used');
-  Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
-  Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
-  Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
   // Employee
   Route::get('employee', 'Api\V1\EmployeeController@index')->name('employees_list');
   // Position Group
@@ -27,13 +18,6 @@ Route::group([
   Route::get('location/list', 'Api\V1\LocationController@list')->name('location_lists');
   Route::get('location', 'Api\V1\LocationController@index')->name('location_list');
   Route::get('location/{id}', 'Api\V1\LocationController@show')->name('location_details');
-  // Material
-  Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
-  Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
-  // SupplyUser
-  Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
-  Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show', 'store']);
-  Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
   // With credentials
   Route::group([
     'middleware' => 'jwt.auth'
@@ -42,6 +26,22 @@ Route::group([
     Route::get('auth', 'Api\V1\AuthController@show')->name('profile');
     Route::delete('auth', 'Api\V1\AuthController@destroy')->name('logout');
     Route::patch('auth', 'Api\V1\AuthController@update')->name('refresh');
+    // Departure
+    Route::resource('departure_group', 'Api\V1\DepartureGroupController')->only(['index', 'show']);
+    Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
+    Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
+    Route::get('departure/get_departures/{id}', 'Api\V1\DepartureController@get_departures')->name('get_departures');
+    Route::get('departure/get_departures_used/{id}', 'Api\V1\DepartureController@get_departures_used')->name('get_departures_used');
+    Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
+    Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
+    Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
+    // Material
+    Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
+    Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
+    // SupplyUser
+    Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
+    Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show', 'store']);
+    Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
     // Employee
     Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
     // Employee-Contract
