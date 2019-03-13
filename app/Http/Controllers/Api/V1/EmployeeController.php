@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Employee;
 use App\Payroll;
+use App\DepartureReason;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeEditForm;
 use App\Http\Requests\EmployeeStoreForm;
@@ -63,13 +64,19 @@ class EmployeeController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-  public function show($id)
+  public function show(Request $request, $id)
   {
     $employee = Employee::findOrFail($id);
+
+    if (!$request->has('departure_reason')) {
+      $request['departure_reason'] = DepartureReason::whereName('Licencia con goce de haberes')->first()->id;
+    }
+
     $employee->remaining_departures = [
       'monthly' => $employee->monthly_remaining_departures(),
-      'annually' => $employee->annually_remaining_departures()
+      'annually' => $employee->annually_remaining_departures($request['departure_reason'])
     ];
+
     return $employee;
   }
 

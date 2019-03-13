@@ -164,15 +164,21 @@ class Employee extends Model
       return $query->where('name', 'Permiso por horas');
     })->whereBetween('departure', [$start_date, $end_date])->get();
 
+    $records = $this->departures()->whereHas('departure_reason', function ($query) {
+      return $query->where('name', 'Regularización de marcado');
+    })->whereBetween('departure', [$start_date, $end_date])->count();
+
     $total_time = DepartureReason::where('name', 'Permiso por horas')->first()->hours * 60;
+    $total_time_records = DepartureReason::where('name', 'Regularización de marcado')->first()->hours;
 
     if ($departures->count() == 0) {
       $response = [
+        'remaining_records' => $total_time_records - $records,
         'time_remaining' => $total_time,
         'options' => [
-          ['text' => '00:30', 'value' => 30],
-          ['text' => '01:00', 'value' => 60],
-          ['text' => '01:30', 'value' => 90]
+          ['text' => 'Media hora', 'value' => 0.5],
+          ['text' => 'Una hora', 'value' => 1],
+          ['text' => 'Hora y media', 'value' => 1.5]
         ]
       ];
     } elseif ($departures->count() == 1) {
@@ -180,17 +186,18 @@ class Employee extends Model
       $return = Carbon::parse($departures[0]->return);
       $time_remaining = $departure->diffInMinutes($return);
       $response = [
+        'remaining_records' => $total_time_records - $records,
         'time_remaining' => $total_time - $time_remaining
       ];
       switch ($response['time_remaining']) {
         case 30:
-          $response['options'] = [['text' => '00:30', 'value' => 30]];
+          $response['options'] = [['text' => 'Media hora', 'value' => 0.5]];
           break;
         case 60:
-          $response['options'] = [['text' => '01:00', 'value' => 60]];
+          $response['options'] = [['text' => 'Una hora', 'value' => 1]];
           break;
         case 90:
-          $response['options'] = [['text' => '01:30', 'value' => 90]];
+          $response['options'] = [['text' => 'Hora y media', 'value' => 1.5]];
           break;
         default:
           $response['options'] = [];
@@ -201,24 +208,39 @@ class Employee extends Model
     return $response;
   }
 
-  public function annually_remaining_departures()
+  public function annually_remaining_departures($id)
   {
+    $reason = DepartureReason::findOrFail($id);
+    $total_time = $reason->hours;
+    if (!$total_time || $reason->reset != 'annually') return null;
+
     $start_date = CarbonImmutable::now()->month(1)->startOfMonth();
     $end_date = $start_date->month(12)->endOfMonth();
 
-    $departures = $this->departures()->whereHas('departure_reason', function ($query) {
-      return $query->where('name', 'Licencia con goce de haberes');
+    $departures = $this->departures()->whereHas('departure_reason', function ($query) use ($id) {
+      return $query->whereId($id);
     })->whereBetween('departure', [$start_date, $end_date])->get();
 
-    $total_time = DepartureReason::where('name', 'Licencia con goce de haberes')->first()->hours;
+    $response = [
+      'time_remaining' => 0,
+      'options' => []
+    ];
 
     if ($departures->count() == 0) {
+      $options = [];
+      if ($total_time == 4) {
+        $options = [
+          ['text' => 'Media jornada', 'value' => 4]
+        ];
+      } elseif ($total_time >= 8) {
+        $options = [
+          ['text' => 'Media jornada', 'value' => 4],
+          ['text' => 'Una jornada', 'value' => 8]
+        ];
+      }
       $response = [
         'time_remaining' => $total_time,
-        'options' => [
-          ['text' => '1/2 día', 'value' => 4],
-          ['text' => '1 día', 'value' => 8]
-        ]
+        'options' => $options
       ];
     } else {
       $time_remaining = 0;
@@ -239,12 +261,12 @@ class Employee extends Model
 
       if ($time_remaining == 4) {
         $response['options'] = [
-          ['text' => '1/2 día', 'value' => 4]
+          ['text' => 'Media jornada', 'value' => 4]
         ];
       } elseif ($time_remaining < $total_time && $time_remaining > 0) {
         $response['options'] = [
-          ['text' => '1/2 día', 'value' => 4],
-          ['text' => '1 día', 'value' => 8]
+          ['text' => 'Media jornada', 'value' => 4],
+          ['text' => 'Una jornada', 'value' => 8]
         ];
       } else {
         $response['options'] = [];

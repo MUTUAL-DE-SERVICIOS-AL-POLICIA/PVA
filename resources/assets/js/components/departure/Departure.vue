@@ -18,24 +18,24 @@
         vertical
       ></v-divider>
       <v-chip
-        :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'danger'" text-color="white"
+        :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
         class="mr-3"
       >
         <v-avatar
           class="body-2 font-weight-black"
           :color="remainingDepartures.monthly.time_remaining > 0 ? 'primary' : 'error'"
         >{{ remainingDepartures.monthly.time_remaining / 60 }}</v-avatar>
-        <div class="subheading font-weight-regular">Hrs. Mes</div>
+        <div class="subheading font-weight-regular">Hrs/Mes</div>
       </v-chip>
       <v-chip
-        :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'danger'" text-color="white"
+        :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
         class="mr-3"
       >
         <v-avatar
           class="body-2 font-weight-black"
           :color="remainingDepartures.annually.time_remaining > 0 ? 'info' : 'error'"
         >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
-        <div class="subheading font-weight-regular">Días Año</div>
+        <div class="subheading font-weight-regular">Días/Año</div>
       </v-chip>
       <DepartureForm></DepartureForm>
     </v-toolbar>
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import DepartureForm from './Form';
+import DepartureForm from './Form'
 
 export default {
   name: 'Departure',
@@ -180,7 +180,7 @@ export default {
             })
             break;
         }
-        this.departures = res.data
+        if (res) this.departures = res.data
       } catch (e) {
         console.log(e)
       }
