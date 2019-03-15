@@ -527,7 +527,12 @@ export default {
     },
     'departure.departure'(val) {
       if (val && this.reasonSelected.days) {
-        this.departure.return = this.$moment(val).startOf('day').add('days', this.reasonSelected.days - 1).format('YYYY-MM-DD')
+        let inWeekend = !this.$moment(val).isBusinessDay()
+        if (this.reasonSelected.name != 'Maternidad') {
+          this.departure.return = this.$moment(val).startOf('day').businessAdd(this.reasonSelected.days - (inWeekend ? 0 : 1)).format('YYYY-MM-DD')
+        } else {
+          this.departure.return = this.$moment(val).startOf('day').add('days', this.reasonSelected.days - (inWeekend ? 0 : 1)).format('YYYY-MM-DD')
+        }
       }
     },
     async 'departure.departure_reason_id'(val) {

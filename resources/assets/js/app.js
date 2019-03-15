@@ -42,8 +42,11 @@ Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Vuex)
 
-import moment from 'moment'
-moment.updateLocale('es', require('moment/locale/es'))
+import moment from 'moment-business-days'
+
+moment.updateLocale('es', require('moment/locale/es'), {
+  workingWeekdays: [1, 2, 3, 4, 5]
+})
 Vue.use(require('vue-moment'), {
   moment
 })
