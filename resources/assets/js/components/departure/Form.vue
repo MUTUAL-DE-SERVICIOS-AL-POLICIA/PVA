@@ -113,7 +113,7 @@
               </v-flex>
               <v-flex xs8>
                 <v-layout>
-                  <v-flex xs6 v-show="reasonSelected.period && departure.record < 3">
+                  <v-flex xs6 v-show="reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8">
                     <v-card class="text-xs-center" height="150px">
                       <v-toolbar-title>Período</v-toolbar-title>
                       <v-card-actions>
@@ -121,7 +121,7 @@
                           class="justify-center"
                           column
                           v-model="departure.period"
-                          v-validate="(step == 2 && departure.timeToAdd == -1) ? 'required' : ''"
+                          v-validate="(step == 2 && reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8) ? 'required' : ''"
                           name="Período"
                           :error-messages="errors.collect('Período')"
                         >
@@ -176,6 +176,7 @@
                           full-width
                           max-width="290px"
                           min-width="290px"
+                          :disabled="!reasonSelected.date.end.editable"
                         >
                           <template v-slot:activator="{ on }">
                             <v-text-field
@@ -186,7 +187,7 @@
                               prepend-icon="event"
                               readonly
                               v-on="on"
-                              v-validate="departure.timeToAdd == -1 ? 'required' : ''"
+                              v-validate="step == 2 ? departure.timeToAdd == -1 ? 'required' : '' : ''"
                               name="Fecha de Retorno"
                               :error-messages="errors.collect('Fecha de Retorno')"
                             ></v-text-field>
@@ -253,7 +254,7 @@
                               :min="departure.period == 1 ? '8' : '14'"
                               :max="departure.period == 1 ? '12' : '18'"
                               class="right-input pl-1"
-                              :readonly="(!reasonSelected.time.end.editable && departure.record != 3) || departure.timeToAdd > 0"
+                              :readonly="(!reasonSelected.time.end.editable && departure.record != 3) || (departure.timeToAdd > 0 && reasonSelected.options != null)"
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs1 class="mt-3 pt-1">
@@ -269,7 +270,7 @@
                               min="0"
                               max="59"
                               :disabled="!departure.time.end.hours"
-                              :readonly="(!reasonSelected.time.end.editable && departure.record != 3) || departure.timeToAdd > 0"
+                              :readonly="(!reasonSelected.time.end.editable && departure.record != 3) || (departure.timeToAdd > 0 && reasonSelected.options != null)"
                             ></v-text-field>
                           </v-flex>
                         </v-layout>
@@ -512,6 +513,11 @@ export default {
         }
       }
     },
+    'departure.departure'(val) {
+      if (val && this.reasonSelected.days) {
+        this.departure.return = this.$moment(val).startOf('day').add('days', this.reasonSelected.days - 1).format('YYYY-MM-DD')
+      }
+    },
     async 'departure.departure_reason_id'(val) {
       try {
         if (val != null) {
@@ -524,13 +530,11 @@ export default {
           this.reasonSelected.date = {
             start: {
               editable: true,
-              visible: true,
-              default: this.$store.getters.dateNow
+              visible: true
             },
             end: {
               editable: false,
-              visible: false,
-              default: this.$store.getters.dateNow
+              visible: false
             }
           }
           this.reasonSelected.time = {
@@ -579,8 +583,16 @@ export default {
                 }
               }
             }
-            if (['Cumpleaños'].includes(this.reasonSelected.name)) {
+            if (['Cumpleaños', 'Jurado electoral'].includes(this.reasonSelected.name)) {
               this.reasonSelected.records = null
+              if (this.reasonSelected.name == 'Jurado electoral') {
+                this.reasonSelected.options = [
+                  {
+                    text: 'Una jornada',
+                    value: 8
+                  }
+                ]
+              }
             }
             if (['Licencia con goce de haberes', 'Mamografía/Papanicolao', 'Examen de próstata', 'Examen de colón'].includes(this.reasonSelected.name)) {
               this.reasonSelected.records = null
@@ -603,13 +615,11 @@ export default {
               this.reasonSelected.date = {
                 start: {
                   editable: true,
-                  visible: true,
-                  default: this.$store.getters.dateNow
+                  visible: true
                 },
                 end: {
                   editable: true,
-                  visible: true,
-                  default: this.$store.getters.dateNow
+                  visible: true
                 }
               }
             }
@@ -619,7 +629,8 @@ export default {
               this.reasonSelected.options = null
               this.reasonSelected.records = this.reasonSelected.records.filter(o => o.value != 3)
             }
-            if (['Diligencia'].includes(this.reasonSelected.name)) {
+            if (['Diligencia', 'Reunión', 'Curso/taller', 'Tolerancia para docencia, becas, cursos, seminarios, postgrados', 'Consulta médica', 'Actividad cultural o deportiva'].includes(this.reasonSelected.name)) {
+              this.departure.timeToAdd = 2
               this.reasonSelected.options = null
               this.reasonSelected.time = {
                 start: {
@@ -631,6 +642,22 @@ export default {
                   visible: true
                 }
               }
+            }
+            if (['Matrimonio', 'Nacimiento de hijos', 'Maternidad', 'Fallecimiento de padres, conyuge, hermanos o hijos', 'Fallecimiento de suegros o cuñados', ''].includes(this.reasonSelected.name)) {
+              this.departure.timeToAdd = -1
+              this.reasonSelected.records = null
+              this.reasonSelected.period = false
+              this.reasonSelected.date = {
+                start: {
+                  editable: true,
+                  visible: true
+                },
+                end: {
+                  editable: false,
+                  visible: true
+                }
+              }
+              this.departure.departure = null
             }
           }
 
@@ -676,13 +703,11 @@ export default {
               this.reasonSelected.date = {
                 start: {
                   editable: false,
-                  visible: true,
-                  default: birthDate
+                  visible: true
                 },
                 end: {
                   editable: false,
-                  visible: false,
-                  default: birthDate
+                  visible: false
                 }
               }
             }
@@ -753,12 +778,12 @@ export default {
         return: null,
         time: {
           start: {
-            hours: null,
-            minutes: null
+            hours: 8,
+            minutes: 0
           },
           end: {
-            hours: null,
-            minutes: null
+            hours: 18,
+            minutes: 30
           }
         },
         period: null,
