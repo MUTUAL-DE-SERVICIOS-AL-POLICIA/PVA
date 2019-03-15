@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     v-model="dialog"
-    max-width="900px"
+    max-width="700px"
     @keydown.esc="dialog = false"
     persistent
   >
@@ -78,12 +78,19 @@
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-layout>
-              <v-flex xs4>
-                <v-card v-show="reasonSelected.options" class="text-xs-center">
+            <v-layout row justify-space-between>
+              <v-flex xs-4 v-if="reasonSelected.options">
+                <v-card flat class="text-xs-center">
                   <v-toolbar-title>Opciones</v-toolbar-title>
                   <v-card-actions>
-                    <v-radio-group class="justify-center" column v-model="departure.timeToAdd">
+                    <v-radio-group
+                      class="justify-center"
+                      column
+                      v-model="departure.timeToAdd"
+                      v-validate="(step == 2 && Array.isArray(reasonSelected.options)) ? 'required' : ''"
+                      name="Opciones"
+                      :error-messages="errors.collect('Opciones')"
+                    >
                       <v-radio
                         v-for="option in reasonSelected.options"
                         :key="option.value"
@@ -93,13 +100,18 @@
                     </v-radio-group>
                   </v-card-actions>
                 </v-card>
-                <v-card v-show="reasonSelected.records" class="text-xs-center">
+              </v-flex>
+              <v-flex xs-4 v-if="reasonSelected.records">
+                <v-card flat class="text-xs-center">
                   <v-toolbar-title>Marcado</v-toolbar-title>
                   <v-card-actions>
                     <v-radio-group
                       class="justify-center"
                       column
                       v-model="departure.record"
+                      v-validate="(step == 2 && reasonSelected.records) ? 'required' : ''"
+                      name="Marcado"
+                      :error-messages="errors.collect('Marcado')"
                     >
                       <v-radio
                         v-for="record in reasonSelected.records"
@@ -111,94 +123,92 @@
                   </v-card-actions>
                 </v-card>
               </v-flex>
-              <v-flex xs8>
-                <v-layout>
-                  <v-flex xs6 v-show="reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8">
-                    <v-card class="text-xs-center" height="150px">
-                      <v-toolbar-title>Período</v-toolbar-title>
-                      <v-card-actions>
-                        <v-radio-group
-                          class="justify-center"
-                          column
-                          v-model="departure.period"
-                          v-validate="(step == 2 && reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8) ? 'required' : ''"
-                          name="Período"
-                          :error-messages="errors.collect('Período')"
-                        >
-                          <v-radio
-                            v-for="period in periods"
-                            :key="period.value"
-                            :label="period.text"
-                            :value="period.value"
-                          ></v-radio>
-                        </v-radio-group>
-                      </v-card-actions>
-                    </v-card>
-                  </v-flex>
-                  <v-flex :class="(departure.record!=3 && departure.record) ? 'xs6' : 'xs12'" v-show="reasonSelected.date.start.visible || reasonSelected.date.end.visible">
-                    <v-card class="text-xs-center" height="150px">
-                      <v-toolbar-title>Fecha</v-toolbar-title>
-                      <v-card-actions>
-                        <v-menu
-                          v-show="reasonSelected.date.start.visible"
-                          v-model="showStartDate"
-                          :close-on-content-click="false"
-                          :nudge-right="40"
-                          lazy
-                          transition="scale-transition"
-                          offset-y
-                          full-width
-                          max-width="290px"
-                          min-width="290px"
-                          :disabled="!reasonSelected.date.start.editable"
-                        >
-                          <template v-slot:activator="{ on }">
-                            <v-text-field
-                              v-model="startDateFormatted"
-                              label="Fecha de Solicitud"
-                              hint="día/mes/año"
-                              persistent-hint
-                              prepend-icon="event"
-                              readonly
-                              v-on="on"
-                            ></v-text-field>
-                          </template>
-                          <v-date-picker v-model="departure.departure" no-title @input="showStartDate = false" locale="es-bo"></v-date-picker>
-                        </v-menu>
-                        <v-menu
-                          v-if="reasonSelected.date.end.visible && departure.timeToAdd == -1"
-                          v-model="showEndDate"
-                          :close-on-content-click="false"
-                          :nudge-right="40"
-                          lazy
-                          transition="scale-transition"
-                          offset-y
-                          full-width
-                          max-width="290px"
-                          min-width="290px"
-                          :disabled="!reasonSelected.date.end.editable"
-                        >
-                          <template v-slot:activator="{ on }">
-                            <v-text-field
-                              v-model="endDateFormatted"
-                              label="Fecha de Retorno"
-                              hint="día/mes/año"
-                              persistent-hint
-                              prepend-icon="event"
-                              readonly
-                              v-on="on"
-                              v-validate="step == 2 ? departure.timeToAdd == -1 ? 'required' : '' : ''"
-                              name="Fecha de Retorno"
-                              :error-messages="errors.collect('Fecha de Retorno')"
-                            ></v-text-field>
-                          </template>
-                          <v-date-picker v-model="departure.return" no-title @input="showEndDate = false" :min="$moment(departure.departure).startOf('day').add('days', 1).format('YYYY-MM-DD')" locale="es-bo"></v-date-picker>
-                        </v-menu>
-                      </v-card-actions>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-                <v-card v-show="reasonSelected.time.start.visible || reasonSelected.time.end.visible" class="text-xs-center mt-5" height="158px">
+              <v-flex xs-4 v-if="reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8">
+                <v-card flat class="text-xs-center">
+                  <v-toolbar-title>Período</v-toolbar-title>
+                  <v-card-actions>
+                    <v-radio-group
+                      class="justify-center"
+                      column
+                      v-model="departure.period"
+                      v-validate="(step == 2 && reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8) ? 'required' : ''"
+                      name="Período"
+                      :error-messages="errors.collect('Período')"
+                    >
+                      <v-radio
+                        v-for="period in periods"
+                        :key="period.value"
+                        :label="period.text"
+                        :value="period.value"
+                      ></v-radio>
+                    </v-radio-group>
+                  </v-card-actions>
+                </v-card>
+              </v-flex>
+            </v-layout>
+            <v-layout mt-4>
+              <v-flex xs-6 v-if="reasonSelected.date.start.visible || reasonSelected.date.end.visible">
+                <v-card flat class="text-xs-center">
+                  <v-toolbar-title>Fecha</v-toolbar-title>
+                  <v-card-actions>
+                    <v-menu
+                      v-show="reasonSelected.date.start.visible"
+                      v-model="showStartDate"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="290px"
+                      min-width="290px"
+                      :disabled="!reasonSelected.date.start.editable"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="startDateFormatted"
+                          label="Fecha de Salida"
+                          hint="día/mes/año"
+                          persistent-hint
+                          prepend-icon="event"
+                          readonly
+                          v-on="on"
+                          v-validate="(step == 2 && reasonSelected.date.start.editable) ? 'required' : ''"
+                          name="Fecha de Salida"
+                          :error-messages="errors.collect('Fecha de Salida')"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="departure.departure" no-title @input="showStartDate = false" locale="es-bo"></v-date-picker>
+                    </v-menu>
+                    <v-menu
+                      v-if="reasonSelected.date.end.visible && departure.timeToAdd == -1"
+                      v-model="showEndDate"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                      :disabled="!reasonSelected.date.end.editable"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="endDateFormatted"
+                          label="Fecha de Retorno"
+                          hint="día/mes/año"
+                          persistent-hint
+                          prepend-icon="event"
+                          readonly
+                          v-on="on"
+                          v-validate="step == 2 ? departure.timeToAdd == -1 ? 'required' : '' : ''"
+                          name="Fecha de Retorno"
+                          :error-messages="errors.collect('Fecha de Retorno')"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="departure.return" no-title @input="showEndDate = false" :min="$moment(departure.departure).startOf('day').add('days', 1).format('YYYY-MM-DD')" locale="es-bo"></v-date-picker>
+                    </v-menu>
+                  </v-card-actions>
+                </v-card>
+              </v-flex>
+              <v-flex xs-6 v-if="reasonSelected.time.start.visible || reasonSelected.time.end.visible">
+                <v-card flat class="text-xs-center">
                   <v-toolbar-title>Hora</v-toolbar-title>
                   <v-card-actions>
                     <v-layout wrap>
@@ -212,12 +222,13 @@
                               hint="(24 hrs.)"
                               prepend-icon="alarm"
                               type="number"
-                              name="Hora de salida"
+                              name="Salida"
                               v-validate="limitHour"
                               :min="departure.period == 1 ? '8' : '14'"
                               :max="departure.period == 1 ? '12' : '18'"
                               class="right-input pl-1"
                               :readonly="!reasonSelected.time.start.editable && departure.record != 3"
+                              :error-messages="errors.collect('Salida')"
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs1 class="mt-3 pt-1">
@@ -228,7 +239,7 @@
                               v-model="departure.time.start.minutes"
                               step="1"
                               type="number"
-                              name="Hora de salida"
+                              name="Salida"
                               v-validate="step == 2 ? 'required|min_value:0|max_value:59' : ''"
                               min="0"
                               max="59"
@@ -249,12 +260,13 @@
                               hint="(24 hrs.)"
                               prepend-icon="alarm"
                               type="number"
-                              name="Hora de retorno"
+                              name="Retorno"
                               v-validate="limitHour"
                               :min="departure.period == 1 ? '8' : '14'"
                               :max="departure.period == 1 ? '12' : '18'"
                               class="right-input pl-1"
                               :readonly="(!reasonSelected.time.end.editable && departure.record != 3) || (departure.timeToAdd > 0 && reasonSelected.options != null)"
+                              :error-messages="errors.collect('Retorno')"
                             ></v-text-field>
                           </v-flex>
                           <v-flex xs1 class="mt-3 pt-1">
@@ -265,7 +277,7 @@
                               v-model="departure.time.end.minutes"
                               step="1"
                               type="number"
-                              name="Hora de retorno"
+                              name="Retorno"
                               v-validate="step == 2 ? `required|min_value:0|max_value:59` : ''"
                               min="0"
                               max="59"
@@ -277,10 +289,6 @@
                       </v-flex>
                     </v-layout>
                   </v-card-actions>
-                  <v-layout wrap class="caption red--text">
-                    <v-flex xs6 v-if="errors.has('Hora de salida')">{{ errors.first('Hora de salida') }}</v-flex>
-                    <v-flex xs5 offset-xs1 v-if="errors.has('Hora de retorno')">{{ errors.first('Hora de retorno') }}</v-flex>
-                  </v-layout>
                 </v-card>
               </v-flex>
             </v-layout>
