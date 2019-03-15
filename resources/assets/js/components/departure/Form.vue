@@ -79,7 +79,7 @@
 
           <v-stepper-content step="2">
             <v-layout row justify-space-between>
-              <v-flex xs-4 v-if="reasonSelected.options">
+              <v-flex grow v-if="reasonSelected.options">
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Opciones</v-toolbar-title>
                   <v-card-actions>
@@ -96,28 +96,6 @@
                         :key="option.value"
                         :label="option.text"
                         :value="option.value"
-                      ></v-radio>
-                    </v-radio-group>
-                  </v-card-actions>
-                </v-card>
-              </v-flex>
-              <v-flex xs-4 v-if="reasonSelected.records">
-                <v-card flat class="text-xs-center">
-                  <v-toolbar-title>Marcado</v-toolbar-title>
-                  <v-card-actions>
-                    <v-radio-group
-                      class="justify-center"
-                      column
-                      v-model="departure.record"
-                      v-validate="(step == 2 && reasonSelected.records) ? 'required' : ''"
-                      name="Marcado"
-                      :error-messages="errors.collect('Marcado')"
-                    >
-                      <v-radio
-                        v-for="record in reasonSelected.records"
-                        :key="record.value"
-                        :label="record.text"
-                        :value="record.value"
                       ></v-radio>
                     </v-radio-group>
                   </v-card-actions>
@@ -145,65 +123,91 @@
                   </v-card-actions>
                 </v-card>
               </v-flex>
-            </v-layout>
-            <v-layout mt-4>
-              <v-flex xs-6 v-if="reasonSelected.date.start.visible || reasonSelected.date.end.visible">
+              <v-flex grow v-if="reasonSelected.date.start.visible || reasonSelected.date.end.visible">
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Fecha</v-toolbar-title>
                   <v-card-actions>
-                    <v-menu
-                      v-show="reasonSelected.date.start.visible"
-                      v-model="showStartDate"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
-                      min-width="290px"
-                      :disabled="!reasonSelected.date.start.editable"
+                    <v-layout column>
+                      <v-flex v-if="reasonSelected.date.start.visible">
+                        <v-menu
+                          v-model="showStartDate"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-y
+                          max-width="290px"
+                          min-width="290px"
+                          :disabled="!reasonSelected.date.start.editable"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-text-field
+                              v-model="startDateFormatted"
+                              label="Fecha de Salida"
+                              hint="día/mes/año"
+                              persistent-hint
+                              prepend-icon="event"
+                              readonly
+                              v-on="on"
+                              v-validate="(step == 2 && reasonSelected.date.start.editable) ? 'required' : ''"
+                              name="Fecha de Salida"
+                              :error-messages="errors.collect('Fecha de Salida')"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker v-model="departure.departure" no-title @input="showStartDate = false" locale="es-bo"></v-date-picker>
+                        </v-menu>
+                      </v-flex>
+                      <v-flex mt-4 v-if="reasonSelected.date.end.visible && departure.timeToAdd == -1">
+                        <v-menu
+                          v-model="showEndDate"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-y
+                          full-width
+                          max-width="290px"
+                          min-width="290px"
+                          :disabled="!reasonSelected.date.end.editable"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-text-field
+                              v-model="endDateFormatted"
+                              label="Fecha de Retorno"
+                              hint="día/mes/año"
+                              persistent-hint
+                              prepend-icon="event"
+                              readonly
+                              v-on="on"
+                              v-validate="step == 2 ? departure.timeToAdd == -1 ? 'required' : '' : ''"
+                              name="Fecha de Retorno"
+                              :error-messages="errors.collect('Fecha de Retorno')"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker v-model="departure.return" no-title @input="showEndDate = false" :min="$moment(departure.departure).startOf('day').add('days', 1).format('YYYY-MM-DD')" locale="es-bo"></v-date-picker>
+                        </v-menu>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-actions>
+                </v-card>
+              </v-flex>
+            </v-layout>
+            <v-layout mt-4>
+              <v-flex xs-6 v-if="reasonSelected.records">
+                <v-card flat class="text-xs-center">
+                  <v-toolbar-title>Marcado</v-toolbar-title>
+                  <v-card-actions>
+                    <v-radio-group
+                      class="justify-center"
+                      column
+                      v-model="departure.record"
+                      v-validate="(step == 2 && reasonSelected.records) ? 'required' : ''"
+                      name="Marcado"
+                      :error-messages="errors.collect('Marcado')"
                     >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="startDateFormatted"
-                          label="Fecha de Salida"
-                          hint="día/mes/año"
-                          persistent-hint
-                          prepend-icon="event"
-                          readonly
-                          v-on="on"
-                          v-validate="(step == 2 && reasonSelected.date.start.editable) ? 'required' : ''"
-                          name="Fecha de Salida"
-                          :error-messages="errors.collect('Fecha de Salida')"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="departure.departure" no-title @input="showStartDate = false" locale="es-bo"></v-date-picker>
-                    </v-menu>
-                    <v-menu
-                      v-if="reasonSelected.date.end.visible && departure.timeToAdd == -1"
-                      v-model="showEndDate"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      max-width="290px"
-                      min-width="290px"
-                      :disabled="!reasonSelected.date.end.editable"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="endDateFormatted"
-                          label="Fecha de Retorno"
-                          hint="día/mes/año"
-                          persistent-hint
-                          prepend-icon="event"
-                          readonly
-                          v-on="on"
-                          v-validate="step == 2 ? departure.timeToAdd == -1 ? 'required' : '' : ''"
-                          name="Fecha de Retorno"
-                          :error-messages="errors.collect('Fecha de Retorno')"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="departure.return" no-title @input="showEndDate = false" :min="$moment(departure.departure).startOf('day').add('days', 1).format('YYYY-MM-DD')" locale="es-bo"></v-date-picker>
-                    </v-menu>
+                      <v-radio
+                        v-for="record in reasonSelected.records"
+                        :key="record.value"
+                        :label="record.text"
+                        :value="record.value"
+                      ></v-radio>
+                    </v-radio-group>
                   </v-card-actions>
                 </v-card>
               </v-flex>
