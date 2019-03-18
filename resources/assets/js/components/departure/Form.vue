@@ -744,20 +744,24 @@ export default {
   },
   methods: {
     async makeRequest() {
-      let valid = await this.$validator.validateAll()
-      let departureDate
-      let returnDate = this.$moment(this.departure.return)
-      if (valid && !this.loading) {
-        departureDate = this.$moment(this.departure.departure).hour(this.departure.time.start.hours).minutes(this.departure.time.start.minutes)
-        if (!this.departure.return) returnDate = departureDate.clone()
-        returnDate.hour(this.departure.time.end.hours).minutes(this.departure.time.end.minutes)
-        console.log({
-          departure_reason_id: this.departure.departure_reason_id,
-          description: this.departure.description,
-          employee_id: this.$store.getters.id,
-          departure: departureDate.format('LLL'),
-          return: returnDate.format('LLL')
-        })
+      try {
+        let valid = await this.$validator.validateAll()
+        let departureDate
+        let returnDate = this.$moment(this.departure.return)
+        if (valid && !this.loading) {
+          departureDate = this.$moment(this.departure.departure).hour(this.departure.time.start.hours).minutes(this.departure.time.start.minutes)
+          if (!this.departure.return) returnDate = departureDate.clone()
+          returnDate.hour(this.departure.time.end.hours).minutes(this.departure.time.end.minutes)
+          let res = await axios.post(`departure`, {
+            departure_reason_id: this.departure.departure_reason_id,
+            description: this.departure.description,
+            employee_id: this.$store.getters.id,
+            departure: departureDate.format(),
+            return: returnDate.format()
+          })
+        }
+      } catch (e) {
+        console.log(e)
       }
     },
     closeDialog() {

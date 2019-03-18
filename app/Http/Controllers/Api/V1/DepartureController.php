@@ -8,6 +8,7 @@ use App\PositionGroup;
 use App\Employee;
 use App\DepartureReason;
 use App\EmployeeDeparture;
+use App\Http\Requests\DepartureForm;
 use App\Http\Controllers\Controller;
 use Carbon;
 use Illuminate\Http\Request;
@@ -30,41 +31,36 @@ class DepartureController extends Controller
     if (!$employee_id) return Departure::orderBy('approved')->orderBy('created_at')->get();
     return Departure::where('employee_id', $employee_id)->orderBy('approved')->orderBy('created_at')->get();
   }
+
   /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(DepartureForm $request)
   {
-    if ($request->departure_time == null) {
-      $request->departure_time = '08:00';
-    }
-    if ($request->return_time == null) {
-      $request->return_time = '18:30';
-    }
     $departure = Departure::create($request->all());
     return $departure;
   }
 
   /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   * Display the specified resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
   public function show($id)
   {
     return Departure::with('employee')->findOrFail($id);
   }
 
   /**
-     * Display the specified contract resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   * Display the specified contract resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
   public function get_departures($contract_id)
   {
     return Departure::with('contract', 'contract.employee', 'contract.employee.city_identity_card', 'contract.position', 'departure_reason')
@@ -74,11 +70,11 @@ class DepartureController extends Controller
   }
 
   /**
-     * Display the specified contract resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   * Display the specified contract resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
   public function get_departures_used($employee_id)
   {
     $month = Carbon::now()->month;
@@ -130,12 +126,12 @@ class DepartureController extends Controller
   }
 
   /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
   public function update(Request $request, $id)
   {
     $departure = Departure::findOrFail($id);
@@ -145,11 +141,11 @@ class DepartureController extends Controller
   }
 
   /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   * Remove the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
   public function destroy($id)
   {
     $departure = Departure::findOrFail($id);
@@ -158,11 +154,11 @@ class DepartureController extends Controller
   }
 
   /**
-     * PDF the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return pdf
-     */
+   * PDF the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return pdf
+   */
   function print($departure_id)
   {
     $data = array('departure' => Departure::findOrFail($departure_id));
