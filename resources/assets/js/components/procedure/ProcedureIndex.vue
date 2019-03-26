@@ -275,6 +275,11 @@
                         </v-list-tile>
                       </v-list>
                       <v-list>
+                        <v-list-tile @click="print(`/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=S&report_name=S-1&valid_contracts=0&with_account=0`)">
+                          <span class="caption">S-1 (S.)</span>
+                        </v-list-tile>
+                      </v-list>
+                      <v-list>
                         <v-list-tile @click="print(`/payroll/print/pdf/${procedure.year}/${procedure.month_order}?report_type=T&report_name=A-3&valid_contracts=0&with_account=0`)">
                           <span class="caption">A-3 (T.)</span>
                         </v-list-tile>

@@ -29,15 +29,10 @@ class PayrollPrintController extends Controller
   {
     $procedure = Procedure::where('month_id', $month)->where('year', $year)->select()->first();
 
-    $previous_month = $month - 1;
-    $previous_year = $year;
-    if ($previous_month == 0) {
-      $previous_month = 12;
-      $previous_year = $year - 1;
-    }
-    $previous_procedure = Procedure::where('month_id', $previous_month)->where('year', $previous_year)->select()->first();
-
     if (isset($procedure->id)) {
+      $previous_date = Carbon::create($procedure->year, $procedure->month->order)->subMonths(1);
+      $previous_procedure = Procedure::where('month_id', $previous_date->month)->where('year', $previous_date->year)->select()->first();
+
       $employees = array();
       $total_discounts = new TotalPayrollEmployee();
       $total_contributions = new TotalPayrollEmployer();
@@ -99,8 +94,8 @@ class PayrollPrintController extends Controller
         'total_contributions' => $total_contributions,
         'employees' => $employees,
         'procedure' => $procedure,
-        'previous_procedure' => $previous_procedure,
-        'tribute' => $procedure->employer_tribute,
+        'previous_procedure' => $previous_procedure ? $previous_procedure : $procedure,
+        'minimum_salary' => $procedure->minimum_salary,
         'company' => $company,
         'title' => (object)array(
           'year' => $year,
@@ -181,12 +176,16 @@ class PayrollPrintController extends Controller
       case 'T':
         $response->data['title']->name = 'PLANILLA TRIBUTARIA';
         $response->data['title']->table_header = 'S.M.N.';
-        $response->data['title']->table_header2 = $response->data['tribute']->minimum_salary;
+        $response->data['title']->table_header2 = $response->data['minimum_salary']->value;
         $response->data['title']->table_header3 = 'Saldo a favor de:';
         $response->data['title']->table_header4 = 'Saldo anterior a favor del dependiente';
-        $response->data['title']->minimun_salary = $response->data['tribute']->minimum_salary;
+        $response->data['title']->minimun_salary = $response->data['minimum_salary']->value;
         $response->data['title']->ufv = $response->data['procedure']->ufv;
         $response->data['title']->previous_ufv = $response->data['previous_procedure']->ufv;
+        break;
+      case 'S':
+        $response->data['title']->name = 'PLANILLA FONDO SOLIDARIO';
+        $response->data['title']->table_header = 'TOTAL GANADO SOLIDARIO';
         break;
       default:
         abort(404);

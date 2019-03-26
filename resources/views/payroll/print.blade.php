@@ -39,6 +39,10 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
             <thead>
                 <tr>
                 @switch ($title->report_type)
+                    @case ('S')
+                        @php ($table_header_space1 = 9)
+                        @php ($table_header_space2 = 3)
+                        @break
                     @case ('H')
                         @php ($table_header_space1 = 15)
                         @php ($table_header_space2 = 6)
@@ -127,6 +131,13 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         <th width="1%">Aporte Patronal Solidario {{ $procedure->employer_contribution->solidary * 100 }}%</th>
                         <th width="1%">Aporte Patronal para Vivienda {{ $procedure->employer_contribution->housing * 100 }}%</th>
                         <th width="3%">TOTAL A PAGAR</th>
+                    @endif
+                    @if ($title->report_type == 'S')
+                        @php ($limits = json_decode($procedure->minimum_salary->limits))
+                        @foreach ($limits as &$limit)
+                            @php ($limit = $limit * $procedure->minimum_salary->value)
+                            <th width="1%">Mayor a {{ $limit }} Bs.</th>
+                        @endforeach
                     @endif
                 @endif
                 </tr>
@@ -274,12 +285,31 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         <td>{{ Util::format_number($employee->contribution_employer_housing) }}</td>
                         <td>{{ Util::format_number($employee->total_contributions) }}</td>
                     @endif
+                    @if ($title->report_type == 'S')
+                        @foreach ($limits as $key => $limit)
+                            @php ($current_limit = $limit * $procedure->minimum_salary->value)
+                            @php ($next_limit = 0)
+                            @if ($limit != end($limits))
+                                @php ($next_limit = $limits[$key+1] * $procedure->minimum_salary->value)
+                            @endif
+                            @if ($limit === end($limits))
+                                <td>{{ number_format($employee->quotable - $current_limit, 2) }}</td>
+                            @elseif ($employee->quotable > $current_limit && $employee->quotable <= $next_limit)
+                                <td>{{ number_format($employee->quotable - $current_limit, 2) }}</td>
+                            @else
+                                <td>-</td>
+                            @endif
+                        @endforeach
+                    @endif
                 @endif
                 </tr>
                 @endif
             @endforeach
                 <tr class="total" style="height: 45px;">
                 @switch ($title->report_type)
+                    @case ('S')
+                        @php ($table_footer_space1 = 12)
+                        @break
                     @case ('H')
                         @if ($title->position_group)
                             @php ($table_footer_space1 = 11)

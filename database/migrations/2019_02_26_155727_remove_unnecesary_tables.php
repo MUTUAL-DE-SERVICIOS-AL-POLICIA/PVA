@@ -47,10 +47,17 @@ class RemoveUnnecesaryTables extends Migration
     Schema::table('employer_tributes', function (Blueprint $table) {
       $table->dropColumn(['ufv']);
       $table->renameColumn('minimum_salary', 'value');
+      $table->json('limits')->default('[1]');
     });
     Schema::rename('employer_tributes', 'minimum_salaries');
     Schema::table('users', function (Blueprint $table) {
       $table->dropColumn(['remember_token']);
+    });
+    Schema::table('procedures', function (Blueprint $table) {
+      $table->dropForeign(['employer_tribute_id']);
+      $table->dropColumn(['employer_tribute_id']);
+      $table->integer('minimum_salary_id')->nullable();
+      $table->foreign('minimum_salary_id')->references('id')->on('minimum_salaries');
     });
   }
 
@@ -68,6 +75,7 @@ class RemoveUnnecesaryTables extends Migration
     Schema::table('employer_tributes', function (Blueprint $table) {
       $table->decimal('ufv', 7, 5)->default(0);
       $table->renameColumn('value', 'minimum_salary');
+      $table->dropColumn(['limits']);
     });
     Schema::create('contract_type_departure_reason', function (Blueprint $table) {
       $table->integer('contract_type_id')->unsigned();
@@ -135,6 +143,12 @@ class RemoveUnnecesaryTables extends Migration
       $table->date('return_date')->nullable();
       $table->time('departure_time')->nullable();
       $table->time('return_time')->nullable();
+    });
+    Schema::table('procedures', function (Blueprint $table) {
+      $table->dropForeign(['minimum_salary_id']);
+      $table->dropColumn(['minimum_salary_id']);
+      $table->integer('employer_tribute_id')->nullable();
+			$table->foreign('employer_tribute_id')->references('id')->on('employer_tributes');
     });
   }
 }

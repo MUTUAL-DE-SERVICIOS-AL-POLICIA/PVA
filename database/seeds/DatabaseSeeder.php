@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
     $this->call(ConsultantContractSeeder::class);
     $this->call(EmployeeDiscountSeeder::class);
     $this->call(EmployerContributionSeeder::class);
-    $this->call(EmployerTributeSeeder::class);
+    $this->call(MinimumSalarySeeder::class);
     $this->call(MonthSeeder::class);
     $this->call(ProcedureSeeder::class);
     $this->call(PayrollSeeder::class);

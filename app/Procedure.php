@@ -27,9 +27,9 @@ class Procedure extends Model
 	{
 		return $this->belongsTo(EmployerContribution::class);
 	}
-	public function employer_tribute()
+	public function minimum_salary()
 	{
-		return $this->belongsTo(EmployerTribute::class);
+		return $this->belongsTo(MinimumSalary::class);
 	}
 
 	public function payrolls()

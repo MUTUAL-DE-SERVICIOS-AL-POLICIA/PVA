@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use Carbon\Carbon;
 use App\EmployeeDiscount;
 use App\EmployerContribution;
-use App\EmployerTribute;
+use App\MinimumSalary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProcedureForm;
 use App\Procedure;
@@ -40,13 +40,13 @@ class ProcedureController extends Controller
 			if (Procedure::where('year', $request['year'])->where('month_id', $request['month_id'])->count() == 0) {
 				$discount = EmployeeDiscount::where('active', true)->first();
 				$contribution = EmployerContribution::where('active', true)->first();
-				$tribute = EmployerTribute::orderBy('id', 'desc')->first();
+				$minimum_salary = MinimumSalary::latest()->first();
 				$procedure = new Procedure();
 				$procedure->year = $request['year'];
 				$procedure->month_id = $request['month_id'];
 				$procedure->employee_discount_id = $discount->id;
 				$procedure->employer_contribution_id = $contribution->id;
-				$procedure->employer_tribute_id = $tribute->id;
+				$procedure->minimum_salary_id = $minimum_salary->id;
 				$procedure->active = true;
 				$procedure->save();
 				return $procedure;
