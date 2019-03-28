@@ -27,11 +27,11 @@ class PayrollPrintController extends Controller
 {
   private function getFormattedData($year, $month, $valid_contracts, $with_account, $management_entity, $position_group, $employer_number)
   {
-    $procedure = Procedure::where('month_id', $month)->where('year', $year)->select()->first();
+    $procedure = Procedure::where('month_id', $month)->where('year', $year)->whereNull('deleted_at')->first();
 
     if (isset($procedure->id)) {
       $previous_date = Carbon::create($procedure->year, $procedure->month->order)->subMonths(1);
-      $previous_procedure = Procedure::where('month_id', $previous_date->month)->where('year', $previous_date->year)->select()->first();
+      $previous_procedure = Procedure::where('month_id', $previous_date->month)->where('year', $previous_date->year)->whereNull('deleted_at')->first();
 
       $employees = array();
       $total_discounts = new TotalPayrollEmployee();

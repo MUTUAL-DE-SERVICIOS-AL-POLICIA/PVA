@@ -36,8 +36,8 @@ class ProcedureController extends Controller
 	 */
 	public function store(ProcedureForm $request)
 	{
-		if (Procedure::where('active', true)->count() == 0) {
-			if (Procedure::where('year', $request['year'])->where('month_id', $request['month_id'])->count() == 0) {
+		if (Procedure::where('active', true)->whereNull('deleted_at')->count() == 0) {
+			if (Procedure::where('year', $request['year'])->where('month_id', $request['month_id'])->whereNull('deleted_at')->count() == 0) {
 				$discount = EmployeeDiscount::where('active', true)->first();
 				$contribution = EmployerContribution::where('active', true)->first();
 				$minimum_salary = MinimumSalary::latest()->first();

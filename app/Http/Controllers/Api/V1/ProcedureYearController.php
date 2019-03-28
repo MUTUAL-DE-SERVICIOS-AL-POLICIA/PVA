@@ -26,6 +26,6 @@ class ProcedureYearController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function with_year($year) {
-		return Procedure::where('year', $year)->leftjoin('months', 'months.id', '=', 'procedures.month_id')->orderBy('months.order', 'DESC')->select('procedures.*', 'months.name as month_name', 'months.order as month_order', 'months.order as month_shortened')->get();
+		return Procedure::where('year', $year)->leftjoin('months', 'months.id', '=', 'procedures.month_id')->orderBy('months.order', 'DESC')->select('procedures.*', 'months.name as month_name', 'months.order as month_order', 'months.order as month_shortened')->whereNull('deleted_at')->get();
 	}
 }
