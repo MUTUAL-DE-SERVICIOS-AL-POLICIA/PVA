@@ -162,7 +162,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
             @php ($index2 = 0)
 
             @foreach ($employees as $i => $employee)
-                @if ($title->report_name == 'A-8')                    
+                @if ($title->report_name == 'A-8')
                     @if ($title->minimun_salary * 4 <= $employee->net_salary)
                     <tr>
                         <td>{{ ++$index2 }}</td>
@@ -334,7 +334,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         @endif
                         @break
                 @endswitch
-                <td class="footer" colspan="{{ $table_footer_space1 }}">TOTAL PLANILLA ({{ $index }} {{ ($index == 1) ? 'FUNCIONARIO' : 'FUNCIONARIOS'}})</td>
+                <td class="footer" colspan="{{ $table_footer_space1 }}">TOTAL PLANILLA ({{ count($employees) == 0 ? 0 : $index }} {{ count($employees) == 0 ? 'FUNCIONARIOS' : ($index == 1 ? 'FUNCIONARIO' : 'FUNCIONARIOS')}})</td>
                 @if ($title->report_type == 'H')
                     <td class="footer">{{ Util::format_number($total_discounts->base_wage) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->quotable) }}</td>
