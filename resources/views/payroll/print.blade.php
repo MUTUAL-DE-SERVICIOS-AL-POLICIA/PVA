@@ -39,6 +39,10 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
             <thead>
                 <tr>
                 @switch ($title->report_type)
+                    @case ('S')
+                        @php ($table_header_space1 = 9)
+                        @php ($table_header_space2 = 3)
+                        @break
                     @case ('H')
                         @php ($table_header_space1 = 15)
                         @php ($table_header_space2 = 6)
@@ -128,6 +132,14 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         <th width="1%">Aporte Patronal para Vivienda {{ $procedure->employer_contribution->housing * 100 }}%</th>
                         <th width="3%">TOTAL A PAGAR</th>
                     @endif
+                    @if ($title->report_type == 'S')
+                        @php ($limits = json_decode($procedure->minimum_salary->limits))
+                        @php ($total_percentages = array_fill(0, count($limits), 0))
+                        @php ($percentages = json_decode($procedure->minimum_salary->percentages))
+                        @foreach ($limits as $limit)
+                            <th width="1%">Mayor a {{ Util::format_number($limit) }} Bs.</th>
+                        @endforeach
+                    @endif
                 @endif
                 </tr>
             </thead>
@@ -151,7 +163,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
             @php ($index2 = 0)
 
             @foreach ($employees as $i => $employee)
-                @if ($title->report_name == 'A-8')                    
+                @if ($title->report_name == 'A-8')
                     @if ($title->minimun_salary * 4 <= $employee->net_salary)
                     <tr>
                         <td>{{ ++$index2 }}</td>
@@ -193,8 +205,12 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                     @endif
                 @else
                 <tr>
-                    @if (($i > 0) && ($employee->employee_id != $employees[$i-1]->employee_id))
-                        @php (++$index)
+                    @if (count($employees) > 1)
+                        @if (($i > 0) && ($employee->employee_id != $employees[$i-1]->employee_id))
+                            @php (++$index)
+                        @endif
+                    @else
+                        @php ($i = 0)
                     @endif
                     <td>{{ ++$i }}</td>
                     <td>{{ $employee->ci_ext }}</td>
@@ -274,12 +290,30 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         <td>{{ Util::format_number($employee->contribution_employer_housing) }}</td>
                         <td>{{ Util::format_number($employee->total_contributions) }}</td>
                     @endif
+                    @if ($title->report_type == 'S')
+                        @foreach ($limits as $key => $limit)
+                            @php ($next_limit = 0)
+                            @if ($limit != end($limits))
+                                @php ($next_limit = $limits[$key+1])
+                            @endif
+                            @if (($limit === end($limits) && $employee->quotable > $limit) || ($employee->quotable > $limit && $employee->quotable <= $next_limit))
+                                @php ($value = ($employee->quotable - $limit) * $percentages[$key] / 100)
+                                @php ($total_percentages[$key] += $value)
+                                <td>{{ Util::format_number($value) }}</td>
+                            @else
+                                <td>-</td>
+                            @endif
+                        @endforeach
+                    @endif
                 @endif
                 </tr>
                 @endif
             @endforeach
                 <tr class="total" style="height: 45px;">
                 @switch ($title->report_type)
+                    @case ('S')
+                        @php ($table_footer_space1 = 9)
+                        @break
                     @case ('H')
                         @if ($title->position_group)
                             @php ($table_footer_space1 = 11)
@@ -304,7 +338,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         @endif
                         @break
                 @endswitch
-                <td class="footer" colspan="{{ $table_footer_space1 }}">TOTAL PLANILLA ({{ $index }} {{ ($index == 1) ? 'FUNCIONARIO' : 'FUNCIONARIOS'}})</td>
+                <td class="footer" colspan="{{ $table_footer_space1 }}">TOTAL PLANILLA ({{ count($employees) == 0 ? 0 : $index }} {{ count($employees) == 0 ? 'FUNCIONARIOS' : ($index == 1 ? 'FUNCIONARIO' : 'FUNCIONARIOS')}})</td>
                 @if ($title->report_type == 'H')
                     <td class="footer">{{ Util::format_number($total_discounts->base_wage) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->quotable) }}</td>
@@ -346,6 +380,11 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                     <td class="footer"> {{ Util::format_number(round($total_saldo_utilizado)) }} </td>
                     <td class="footer"> {{ Util::format_number(round($total_impuesto_pagar)) }} </td>
                     <td class="footer"> {{ Util::format_number($total_saldo_mes_siguiente) }} </td>
+                @endif
+                @if ($title->report_type == 'S')
+                    @foreach ($total_percentages as $total_percentage)
+                        <td class="footer">{{ Util::format_number($total_percentage) }}</td>
+                    @endforeach
                 @endif
                 </tr>
             </tbody>

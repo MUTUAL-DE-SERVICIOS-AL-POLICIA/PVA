@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-toolbar>
         <v-toolbar-title>Compañia</v-toolbar-title>
-        <v-spacer></v-spacer>        
+        <v-spacer></v-spacer>
         <v-divider
           class="mx-2"
           inset
@@ -38,7 +38,7 @@
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.name }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.shortened }} </td>
             <td class="text-xs-left" @click="props.expanded = !props.expanded"> {{ props.item.tax_number }}</td>
-            <td class="justify-center layout">              
+            <td class="justify-center layout">
               <v-tooltip top v-if="$store.getters.role == 'admin'">
                 <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, props.item.document)">
                   <v-icon>edit</v-icon>
@@ -47,17 +47,6 @@
               </v-tooltip>
             </td>
           </tr>
-        </template>
-        <template slot="expand" slot-scope="props" v-if="props.item.document_id">
-          <v-card flat>
-            <v-card-text>
-              <v-list>
-                <v-list-tile-content><p><strong>Tipo de documento: </strong>{{ props.item.document.document_type.name }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Documento: </strong>{{ props.item.document.name }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Descripcion de documento: </strong>{{ props.item.document.description }}</p></v-list-tile-content>
-              </v-list>
-            </v-card-text>
-          </v-card>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="fa fa-times">
           Tu Busqueda de "{{ search }}" no encontró resultados.
@@ -96,7 +85,7 @@ export default {
         value: "tax_number",
         align: "center"
       },
-      
+
       {
         text: "Opciones",
         align: "center",

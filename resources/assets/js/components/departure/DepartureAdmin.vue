@@ -31,11 +31,11 @@
         class="elevation-1">
         <template slot="items" slot-scope="props">
           <tr :class="checkEnd(props.item)">
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.certificate.correlative + '/' + props.item.certificate.year }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.id }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.contract.employee.identity_card }} {{ props.item.contract.employee.city_identity_card.shortened }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ fullName(props.item.contract.employee) }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.contract.position.name }} </td>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.departure_type.name }} </td>
+            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.departure_group.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.name }} </td>
             <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ $moment(props.item.created_at).format('DD/MM/YYYY') }} </td>
             <td class="text-md-center">
@@ -54,7 +54,6 @@
               <v-list>
                 <v-list-tile-content><p><strong>Fecha de salida: </strong>{{ $moment(props.item.departure_date).format('DD/MM/YYYY') }} {{ $moment(props.item.departure_time, "HH:mm:ss").format("HH:mm") }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Fecha de retorno: </strong>{{ $moment(props.item.return_date).format('DD/MM/YYYY') }} {{ $moment(props.item.return_time, "HH:mm:ss").format("HH:mm") }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Destino: </strong>{{ props.item.destiny }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Descripción: </strong>{{ props.item.description }}</p></v-list-tile-content>
               </v-list>
             </v-card-text>
@@ -63,7 +62,7 @@
         <v-alert slot="no-results" :value="true" color="error">
           La búsqueda de "{{ search }}" no encontró resultados.
         </v-alert>
-    </v-data-table> 
+    </v-data-table>
   </v-container>
 </template>
 <script type="text/javascript">
@@ -82,7 +81,7 @@ export default {
     headers: [
       {
         text: "No Solicitud",
-        value: "certificate.correlative",
+        value: "id",
         align: "center"
       },
       {
@@ -102,14 +101,14 @@ export default {
       },
       {
         text: "Tipo",
-        value: "departure_reason.departure_type.name",
+        value: "departure_reason.departure_group.name",
         align: "center"
       },
       {
-        text: "Razón",
+        text: "Detalle",
         value: "contract.position.name",
         align: "center"
-      },      
+      },
       {
         text: "Fecha de Solicitud",
         value: "description",
@@ -127,8 +126,8 @@ export default {
     departureComision: [],
     departureLicence: []
   }),
-  computed: {    
-    
+  computed: {
+
   },
   async created() {
     this.getDepartures();

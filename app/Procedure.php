@@ -13,6 +13,14 @@ class Procedure extends Model
 	public $guarded = ['id'];
 	protected $fillable = ['year', 'month_id', 'employee_discount_id', 'employer_contribution_id', 'active', 'pay_date', 'ufv'];
 
+  function __construct()
+  {
+    $minimum_salary = MinimumSalary::latest()->first();
+    if ($minimum_salary) {
+      $this->minimum_salary_id = $minimum_salary->id;
+    }
+  }
+
 	public function month()
 	{
 		return $this->belongsTo(Month::class);
@@ -27,9 +35,9 @@ class Procedure extends Model
 	{
 		return $this->belongsTo(EmployerContribution::class);
 	}
-	public function employer_tribute()
+	public function minimum_salary()
 	{
-		return $this->belongsTo(EmployerTribute::class);
+		return $this->belongsTo(MinimumSalary::class);
 	}
 
 	public function payrolls()

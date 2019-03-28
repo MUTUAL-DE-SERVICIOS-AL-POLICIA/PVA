@@ -31,7 +31,5 @@ class CreateDepartureTypesTable extends Migration
   public function down()
   {
     Schema::dropIfExists('departure_types');
-    App\DocumentType::where('name', 'Salida')->first()->delete();
-    App\DocumentType::where('name', 'Licencia')->first()->delete();
   }
 }

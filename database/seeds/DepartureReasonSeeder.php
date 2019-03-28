@@ -4,42 +4,58 @@ use Illuminate\Database\Seeder;
 
 class DepartureReasonSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        $types = [
-            ['id'=>1, 'departure_type_id' => 1, 'name' => 'Personal', 'day' => null, 'hour' => 2, 'each' => 'mes', 'pay' => true, 'description' => 'Para asuntos de índole personal podran usar un máximo de 2 horas en el mes en salidas particulares en horas de oficina, las que no serán acumulativas.'],
-            ['id'=>2, 'departure_type_id' => 1, 'name' => 'Comisión por viaje', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Comisión por viaje'],
-            ['id'=>3, 'departure_type_id' => 1, 'name' => 'Comisión por reunión', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Comisión por reunión'],
-            ['id'=>4, 'departure_type_id' => 1, 'name' => 'Comisión por curso/taller', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Comisión por curso/taller'],
-            ['id'=>5, 'departure_type_id' => 1, 'name' => 'Comisión por diligencia', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Comisión por diligencia'],
-            ['id'=>6, 'departure_type_id' => 1, 'name' => 'Salida a la CNS', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Salidas para atención médica serán aceptadas con el registro de la hora de ingreso, salida y la firma del médico que le atendió, del ente gestor al que esta afiliado.'],            
-            ['id'=>7, 'departure_type_id' => 1, 'name' => 'Otros', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Otros motivos'],
-            
+  /**
+   * Run the database seeds.
+   *
+   * @return void
+   */
+  public function run()
+  {
+    // Personal
+    $group = App\DepartureGroup::where('name', 'Personal')->first();
+    $group->departure_reasons()->saveMany([
+      new App\DepartureReason(['name' => 'Permiso por horas', 'days' => null, 'hours' => 2, 'reset' => 'monthly', 'payable' => true, 'note' => false, 'description_needed' => false, 'description' => 'Para asuntos de índole personal podrá solicitar 30 minutos, 1 hora o 1 hora y media, sumando un máximo de 2 permisos a partir del día 20 de cada mes.']),
+      new App\DepartureReason(['name' => 'Cumpleaños', 'days' => null, 'hours' => 4, 'reset' => 'annually', 'payable' => true, 'note' => false, 'description_needed' => false, 'description' => 'Las y los servidores gozarán de medio día cuando la fecha de su cumpleaños coincida con un día laboral.']),
+      new App\DepartureReason(['name' => 'Licencia con goce de haberes', 'days' => null, 'hours' => 16, 'reset' => 'annually', 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Para la resolución de asuntos de indole personal podrá solicitar 2 días hábiles fraccionados en el transcurso de 1 año, previa autorización del inmediato superior, los cuales no podrán ser consecutivos, ni anteriores o posteriores a las vacaciones o feriados.']),
+      new App\DepartureReason(['name' => 'Licencia sin goce de haberes', 'days' => null, 'hours' => null, 'reset' => 'annually', 'payable' => false, 'note' => true, 'description_needed' => false, 'description' => 'Otros motivos sin goce de haberes con un maximo de 10 días habiles ']),
+      new App\DepartureReason(['name' => 'Regularización de marcado', 'days' => null, 'hours' => 3, 'reset' => 'monthly', 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Regulación por olvido de marcado al ingreso o salida.'])
+    ]);
 
-            ['id'=>8, 'departure_type_id' => 2, 'name' => 'Fallecimiento de padres, conyuge, hermanos o hijos', 'day' => 3, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Por fallecimiento de padres, cónyuge, hermanos o hijos, gozará de (3) días hábilies de licencia, debiendo presentar certificado de defuncion hasta los 5 dias de finalizada la licencia.'],
-            ['id'=>9, 'departure_type_id' => 2, 'name' => 'Fallecimiento de suegros o cuñados', 'day' => 2, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Por fallecimiento de suegros y cuñados, gozará de (2) días hábiles de licencia, debiendo presentar certificado de defuncion hasta los 5 dias de finalizada la licencia.'],
-            ['id'=>10, 'departure_type_id' => 2, 'name' => 'Nacimiento de hijos', 'day' => 3, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Por nacimiento de hijos, el padre gozará de (3) días de hábiles de licencia, con obligación de presentar el certificado de nacimiento correspondiente'],
-            ['id'=>11, 'departure_type_id' => 2, 'name' => 'Asistencia a becas, cursos, seminarios, posgrado', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Siempre que se encuentre vinculada al logro de objetivos establecidos en el Programa de Operaciones Anual Institucional'],
-            ['id'=>12, 'departure_type_id' => 2, 'name' => 'Enfermedad', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Enfermedad'],
-            ['id'=>13, 'departure_type_id' => 2, 'name' => 'Maternidad', 'day' => 90, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Baja prenatal y posnatal por un periodo de 90 días calendario, 45 días antes y 45 días despues del alumbramiento'],
-            ['id'=>14, 'departure_type_id' => 2, 'name' => 'Matrimonio', 'day' => 3, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Por matrimonio, gozará de (3) días hábiles de licencia, previa presentación de la certificación de inscripción expedida por el oficial de registro civil que acredite la fecha de realización del matrimonio.'],
-            ['id'=>15, 'departure_type_id' => 2, 'name' => 'Cumpleaños', 'day' => null, 'hour' => 4, 'each' => null, 'pay' => true, 'description' => 'Por aniversario natal de las o los servidores gozarán de medio día, cuando la fecha coincida con un día laborable.'],
-            ['id'=>16, 'departure_type_id' => 2, 'name' => 'Personal', 'day' => 2, 'hour' => null, 'each' => 'anio', 'pay' => true, 'description' => 'Para la resolución de asuntos de indole personal, se otorgarán 2 días hábiles fraccionados en el transcurso de 1 año, previa autorización del inmediato superior, los cuales no podrán ser consecutivos (ni anteriores o posteriores) a las vacaciones o feriados.'],
-            ['id'=>17, 'departure_type_id' => 2, 'name' => 'Actividad cultural o deportiva', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'A las o los servidores que cumplan con actividades culturales o deportivas que sean realizadas en el país en representación de la institución, se les otorgará las licencias respectivas mediante comunicación interna suscrita por el jefe de la Unidad de Recursos Humanos'],
-            ['id'=>18, 'departure_type_id' => 2, 'name' => 'Jurado electoral', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'En caso de haber sido designado jurado electoral'],
-            ['id'=>19, 'departure_type_id' => 2, 'name' => 'Mamografía/Papanicolao', 'day' => 1, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Las servidoras públicas gozarán de un día para examenes de Mamogradía y Papanicolao'],
-            ['id'=>20, 'departure_type_id' => 2, 'name' => 'Compensación', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Por Compensación'],
-            ['id'=>21, 'departure_type_id' => 2, 'name' => 'Otros c/g Haberes', 'day' => null, 'hour' => null, 'each' => null, 'pay' => true, 'description' => 'Otros motivos con justificación aprobada por la autoridad correspondiente'],
-            ['id'=>22, 'departure_type_id' => 2, 'name' => 'Otros s/g Haberes', 'day' => null, 'hour' => null, 'each' => null, 'pay' => false, 'description' => 'Otros motivos sin goce de haberes con un maximo de 10 días habiles ']
-        ];
+    // Comisión
+    $group = App\DepartureGroup::where('name', 'Comisión')->first();
+    $group->departure_reasons()->saveMany([
+      new App\DepartureReason(['name' => 'Diligencia', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => true, 'description' => 'Comisión por diligencia']),
+      new App\DepartureReason(['name' => 'Reunión', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => true, 'description' => 'Comisión por reunión']),
+      new App\DepartureReason(['name' => 'Curso/taller', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => true, 'description' => 'Comisión por curso/taller']),
+      new App\DepartureReason(['name' => 'Viaje', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => false, 'description' => 'Comisión por viaje'])
+    ]);
 
-        foreach ($types as $type) {
-            App\DepartureReason::create($type);
-        }
-    }
+    // Salud
+    $group = App\DepartureGroup::where('name', 'Salud')->first();
+    $group->departure_reasons()->saveMany([
+      new App\DepartureReason(['name' => 'Consulta médica', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => false, 'description' => 'Salidas para atención médica serán aceptadas con el registro de la hora de ingreso, salida y la firma del médico que le atendió.']),
+      new App\DepartureReason(['name' => 'Baja médica', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => false, 'description' => 'Baja por enfermedad']),
+      new App\DepartureReason(['name' => 'Mamografía/Papanicolao', 'days' => null, 'hours' => 8, 'reset' => 'annually', 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Las servidoras públicas gozarán de 1 día para exámenes de mamogradía y papanicolau que puede ser fraccionado en 2 medias jornadas.']),
+      new App\DepartureReason(['name' => 'Examen de próstata', 'days' => null, 'hours' => 8, 'reset' => 'annually', 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Los servidores públicos gozarán de 1 día para exámenes de próstata que puede ser fraccionado en 2 medias jornadas.']),
+      new App\DepartureReason(['name' => 'Examen de colón', 'days' => null, 'hours' => 8, 'reset' => 'annually', 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Las y los servidores públicos gozarán de un 1 para exámenes de colón que puede ser fraccionado en 2 medias jornadas.'])
+    ]);
+
+    // Familiar
+    $group = App\DepartureGroup::where('name', 'Familiar')->first();
+    $group->departure_reasons()->saveMany([
+      new App\DepartureReason(['name' => 'Matrimonio', 'days' => 3, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Por matrimonio, gozará de 3 días hábiles de licencia, previa presentación de la certificación de inscripción expedida por el oficial de registro civil que acredite la fecha de realización del matrimonio.']),
+      new App\DepartureReason(['name' => 'Nacimiento de hijos', 'days' => 3, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Por nacimiento de hijos, el padre gozará de 3 días de hábiles de licencia, con obligación de presentar el certificado de nacimiento correspondiente']),
+      new App\DepartureReason(['name' => 'Maternidad', 'days' => 90, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => false, 'description' => 'Baja prenatal y posnatal por un periodo de 90 días calendario, 45 días antes y 45 días despues del alumbramiento']),
+      new App\DepartureReason(['name' => 'Fallecimiento de padres, conyuge, hermanos o hijos', 'days' => 3, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Por fallecimiento de padres, cónyuge, hermanos o hijos, gozará de 3 días hábilies de licencia, debiendo presentar certificado de defuncion hasta los 5 dias de finalizada la licencia.']),
+      new App\DepartureReason(['name' => 'Fallecimiento de suegros o cuñados', 'days' => 2, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Por fallecimiento de suegros y cuñados, gozará de 2 días hábiles de licencia, debiendo presentar certificado de defuncion hasta los 5 dias de finalizada la licencia.'])
+    ]);
+
+    // Extracurricular
+    $group = App\DepartureGroup::where('name', 'Extracurricular')->first();
+    $group->departure_reasons()->saveMany([
+      new App\DepartureReason(['name' => 'Tolerancia para docencia, becas, cursos, seminarios, postgrados', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => true, 'description_needed' => false, 'description' => 'Siempre que se encuentre vinculada al logro de objetivos establecidos en el Programa de Operaciones Anual Institucional']),
+      new App\DepartureReason(['name' => 'Jurado electoral', 'days' => 1, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => false, 'description' => 'En caso de haber sido designado jurado electoral']),
+      new App\DepartureReason(['name' => 'Actividad cultural o deportiva', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => false, 'description' => 'A las o los servidores que cumplan con actividades culturales o deportivas que sean realizadas en el país en representación de la institución, se les otorgará las licencias respectivas mediante comunicación interna suscrita por el jefe de la Unidad de Recursos Humanos'])
+    ]);
+  }
 }

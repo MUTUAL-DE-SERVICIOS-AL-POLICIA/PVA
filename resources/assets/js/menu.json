@@ -66,13 +66,17 @@
     "title": "Aprobar Permisos",
     "icon": "alarm_on",
     "permission": "read-departure",
-    "params": {}
+    "params": {
+      "departureType": "all"
+    }
   }, {
     "href": "departureIndex",
     "title": "Permisos",
     "icon": "directions_run",
     "permission": "!admin",
-    "params": {}
+    "params": {
+      "departureType": "user"
+    }
   }, {
     "href": "phonebookIndex",
     "title": "Agenda Telefonica",
@@ -105,6 +109,19 @@
         "title": "Materiales",
         "icon": "receipt",
         "permission": "read-supplies",
+        "params": {}
+      }
+    ]
+  }, {
+    "title": "Configuración",
+    "icon": "settings",
+    "permission": "admin",
+    "group": [
+      {
+        "href": "departureConfig",
+        "title": "Permisos",
+        "icon": "directions_walk",
+        "permission": "admin",
         "params": {}
       }
     ]

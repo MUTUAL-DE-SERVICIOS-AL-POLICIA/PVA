@@ -11,11 +11,18 @@ class UserSeeder extends Seeder
 	 */
 	public function run()
 	{
+		$user = App\User::create([
+			'username' => 'admin',
+			'password' => bcrypt('admin'),
+		]);
+
 		$role = App\Role::create([
 			'name' => 'admin',
 			'display_name' => 'Administrador',
 			'description' => 'Administrador',
 		]);
+
+		$user->attachRole($role);
 
 		$role = App\Role::create([
 			'name' => 'rrhh',
@@ -35,35 +42,13 @@ class UserSeeder extends Seeder
 			'description' => 'Impresión de Planillas',
 		]);
 
-		$user = App\User::create([
-			'username' => 'admin',
-			'password' => bcrypt('admin'),
+		$role = App\Role::create([
+			'name' => 'almacenes',
+			'display_name' => 'Almacenes',
+			'description' => 'Gestión de almacenes',
 		]);
 
-		$user->attachRole($role);
-
 		if (config('app.debug')) {
-			$permission = App\Permission::create([
-				'name' => 'view',
-				'display_name' => 'Vista',
-				'description' => 'Permiso para obtener datos sin modificarlos',
-			]);
-
-			$role = App\Role::create([
-				'name' => 'guest',
-				'display_name' => 'Invitado',
-				'description' => 'Rol invitado',
-			]);
-
-			$role->attachPermission($permission);
-
-			$user = App\User::create([
-				'username' => 'guest',
-				'password' => bcrypt('guest'),
-			]);
-
-			$user->attachRole($role);
-
 			factory(App\User::class, 5)->create();
 		}
 	}

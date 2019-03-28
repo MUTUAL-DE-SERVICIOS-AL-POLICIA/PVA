@@ -4,17 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ContractType extends Model {
-	public $timestamps = true;
-	public $guarded = ['id'];
-	protected $fillable = ['ovt_id', 'name'];
+class ContractType extends Model
+{
+  public $timestamps = true;
+  public $guarded = ['id'];
+  protected $fillable = ['ovt_id', 'name'];
 
-	public function contract() {
-		return $this->hasMany(Contract::class);
-	}
-
-	public function departure_reasons()
-	{
-		return $this->belongsToMany(DepartureReason::class);
-	}
+  public function contract()
+  {
+    return $this->hasMany(Contract::class);
+  }
 }
