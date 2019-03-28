@@ -189,7 +189,7 @@ class PayrollPrintController extends Controller
         $limits = json_decode($response->data['procedure']->minimum_salary->limits);
         if (count($limits) > 0) {
           $response->data['employees'] = array_filter($response->data['employees'], function ($e) use ($limits, $response) {
-            if ($e->quotable > ($limits[0] * $response->data['procedure']->minimum_salary->value)) {
+            if ($e->quotable > $limits[0]) {
               return true;
             }
             return false;

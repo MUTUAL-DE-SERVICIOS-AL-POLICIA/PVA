@@ -38,7 +38,9 @@ class ProcedureObserver
         } elseif ($key == 'employer_contribution_id') {
           $changes .= (' [' . $key . '] ' . $old->employer_contribution->toArray() . ' => ' . $changed->employer_contribution->toArray() . ',');
         } elseif ($key == 'minimum_salary_id') {
-          $changes .= (' [' . $key . '] ' . $old->minimum_salary->toArray() . ' => ' . $changed->minimum_salary->toArray() . ',');
+          if ($old->minimum_salary) {
+            $changes .= (' [' . $key . '] ' . $old->minimum_salary->toArray() . ' => ' . $changed->minimum_salary->toArray() . ',');
+          }
         } elseif ($key == 'active') {
           $changes .= (' [' . $key . '] ' . json_encode($old->active) . ' => ' . json_encode($value) . ',');
         } else {

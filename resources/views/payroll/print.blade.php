@@ -134,9 +134,10 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                     @endif
                     @if ($title->report_type == 'S')
                         @php ($limits = json_decode($procedure->minimum_salary->limits))
-                        @foreach ($limits as &$limit)
-                            @php ($limit = $limit * $procedure->minimum_salary->value)
-                            <th width="1%">Mayor a {{ $limit }} Bs.</th>
+                        @php ($total_percentages = array_fill(0, count($limits), 0))
+                        @php ($percentages = json_decode($procedure->minimum_salary->percentages))
+                        @foreach ($limits as $limit)
+                            <th width="1%">Mayor a {{ Util::format_number($limit) }} Bs.</th>
                         @endforeach
                     @endif
                 @endif
@@ -204,8 +205,12 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                     @endif
                 @else
                 <tr>
-                    @if (($i > 0) && ($employee->employee_id != $employees[$i-1]->employee_id))
-                        @php (++$index)
+                    @if (count($employees) > 1)
+                        @if (($i > 0) && ($employee->employee_id != $employees[$i-1]->employee_id))
+                            @php (++$index)
+                        @endif
+                    @else
+                        @php ($i = 0)
                     @endif
                     <td>{{ ++$i }}</td>
                     <td>{{ $employee->ci_ext }}</td>
@@ -287,15 +292,14 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                     @endif
                     @if ($title->report_type == 'S')
                         @foreach ($limits as $key => $limit)
-                            @php ($current_limit = $limit * $procedure->minimum_salary->value)
                             @php ($next_limit = 0)
                             @if ($limit != end($limits))
-                                @php ($next_limit = $limits[$key+1] * $procedure->minimum_salary->value)
+                                @php ($next_limit = $limits[$key+1])
                             @endif
-                            @if ($limit === end($limits))
-                                <td>{{ number_format($employee->quotable - $current_limit, 2) }}</td>
-                            @elseif ($employee->quotable > $current_limit && $employee->quotable <= $next_limit)
-                                <td>{{ number_format($employee->quotable - $current_limit, 2) }}</td>
+                            @if (($limit === end($limits) && $employee->quotable > $limit) || ($employee->quotable > $limit && $employee->quotable <= $next_limit))
+                                @php ($value = ($employee->quotable - $limit) * $percentages[$key] / 100)
+                                @php ($total_percentages[$key] += $value)
+                                <td>{{ Util::format_number($value) }}</td>
                             @else
                                 <td>-</td>
                             @endif
@@ -308,7 +312,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                 <tr class="total" style="height: 45px;">
                 @switch ($title->report_type)
                     @case ('S')
-                        @php ($table_footer_space1 = 12)
+                        @php ($table_footer_space1 = 9)
                         @break
                     @case ('H')
                         @if ($title->position_group)
@@ -376,6 +380,11 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                     <td class="footer"> {{ Util::format_number(round($total_saldo_utilizado)) }} </td>
                     <td class="footer"> {{ Util::format_number(round($total_impuesto_pagar)) }} </td>
                     <td class="footer"> {{ Util::format_number($total_saldo_mes_siguiente) }} </td>
+                @endif
+                @if ($title->report_type == 'S')
+                    @foreach ($total_percentages as $total_percentage)
+                        <td class="footer">{{ Util::format_number($total_percentage) }}</td>
+                    @endforeach
                 @endif
                 </tr>
             </tbody>

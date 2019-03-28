@@ -48,6 +48,7 @@ class RemoveUnnecesaryTables extends Migration
       $table->dropColumn(['ufv']);
       $table->renameColumn('minimum_salary', 'value');
       $table->json('limits')->default('[1]');
+      $table->json('percentages')->default('[1]');
     });
     Schema::rename('employer_tributes', 'minimum_salaries');
     Schema::table('users', function (Blueprint $table) {
@@ -59,6 +60,10 @@ class RemoveUnnecesaryTables extends Migration
       $table->integer('minimum_salary_id')->nullable();
       $table->foreign('minimum_salary_id')->references('id')->on('minimum_salaries');
     });
+    // Set minimum salary on all procedures
+    Auth::login(App\User::first());
+    App\MinimumSalary::latest()->first()->procedures()->saveMany(App\Procedure::get());
+    Auth::logout();
   }
 
   /**
@@ -75,7 +80,7 @@ class RemoveUnnecesaryTables extends Migration
     Schema::table('employer_tributes', function (Blueprint $table) {
       $table->decimal('ufv', 7, 5)->default(0);
       $table->renameColumn('value', 'minimum_salary');
-      $table->dropColumn(['limits']);
+      $table->dropColumn(['limits', 'percentages']);
     });
     Schema::create('contract_type_departure_reason', function (Blueprint $table) {
       $table->integer('contract_type_id')->unsigned();
