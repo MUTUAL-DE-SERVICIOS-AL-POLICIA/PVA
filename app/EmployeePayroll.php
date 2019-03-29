@@ -116,7 +116,21 @@ class EmployeePayroll
     $this->discount_common_risk = $this->quotable * $payroll->procedure->employee_discount->common_risk;
     $this->discount_commission = $this->quotable * $payroll->procedure->employee_discount->comission;
     $this->discount_solidary = $this->quotable * $payroll->procedure->employee_discount->solidary;
-    $this->discount_national = $this->quotable * $payroll->procedure->employee_discount->national;
+    $this->discount_national = 0;
+    // Verify if quotable exceds the limit
+    $limits = json_decode($payroll->procedure->minimum_salary->limits);
+    $percentages = json_decode($payroll->procedure->minimum_salary->percentages);
+    if (count($limits) > 1 && count($percentages) > 1 && count($limits) == count($percentages)) {
+      if ($this->quotable > $limits[0]) {
+        foreach ($limits as $key => $limit) {
+          $next_limit = 0;
+          if ($limit != end($limits)) $next_limit = $limits[$key+1];
+          if (($limit === end($limits) && $this->quotable > $limit) || ($this->quotable > $limit && $this->quotable <= $next_limit)) {
+            $this->discount_national = ($this->quotable - $limit) * $percentages[$key] / 100;
+          }
+        }
+      }
+    }
     $this->total_amount_discount_law = $this->discount_old + $this->discount_common_risk + $this->discount_commission + $this->discount_solidary + $this->discount_national;
     $this->net_salary = $this->quotable - $this->total_amount_discount_law;
     $this->discount_rc_iva = $payroll->rc_iva;
