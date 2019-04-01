@@ -125,9 +125,7 @@ class EmployeePayroll
         foreach ($limits as $key => $limit) {
           $next_limit = 0;
           if ($limit != end($limits)) $next_limit = $limits[$key+1];
-          if (($limit === end($limits) && $this->quotable > $limit) || ($this->quotable > $limit && $this->quotable <= $next_limit)) {
-            $this->discount_national = ($this->quotable - $limit) * $percentages[$key] / 100;
-          }
+          if (($limit == end($limits) && $this->quotable > $limit) || ($this->quotable > $limit && $this->quotable <= $next_limit)) $this->discount_national = ($this->quotable - $limit) * $percentages[$key] / 100;
         }
       }
     }
