@@ -133,9 +133,9 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         <th width="3%">TOTAL A PAGAR</th>
                     @endif
                     @if ($title->report_type == 'S')
-                        @php ($limits = json_decode($procedure->minimum_salary->limits))
+                        @php ($limits = $procedure->employee_discount->national_limits)
                         @php ($total_percentages = array_fill(0, count($limits), 0))
-                        @php ($percentages = json_decode($procedure->minimum_salary->percentages))
+                        @php ($percentages = $procedure->employee_discount->national_percentages)
                         @foreach ($limits as $limit)
                             <th width="1%">Mayor a {{ Util::format_number($limit) }} Bs.</th>
                         @endforeach
