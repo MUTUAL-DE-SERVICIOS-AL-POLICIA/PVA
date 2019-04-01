@@ -159,11 +159,13 @@ class DepartureController extends Controller
    * @param  int  $id
    * @return pdf
    */
-  function print($departure_id)
+  public function print($id)
   {
-    $data = array('departure' => Departure::findOrFail($departure_id));
+    $data = array('departure' => $departure = Departure::with(['departure_reason' => function($query) {
+      return $query->with('departure_group');
+    }])->findOrFail($id));
 
-    $file_name = implode('_', ['solicitud', 'salida', $data['departure']->id]) . '.pdf';
+    $file_name = implode('_', ['solicitud', 'salida', $data['departure']->employee->first_name, $data['departure']->employee->last_name, $departure->departure]) . '.pdf';
 
     $options = [
       'orientation' => 'portrait',

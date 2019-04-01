@@ -12,11 +12,11 @@ class DepartureGroupSeeder extends Seeder
   public function run()
   {
     $types = [
-      ['name' => 'Personal', 'description' => 'Asuntos personales'],
-      ['name' => 'Comisión', 'description' => 'Viajes, reuniones, diligencias'],
-      ['name' => 'Salud', 'description' => 'Atención médica, bajas'],
-      ['name' => 'Familiar', 'description' => 'Matrimonio, nacimientos, fallecimientos'],
-      ['name' => 'Extracurricular', 'description' => 'Otros']
+      ['name' => 'PERSONAL', 'description' => 'Asuntos personales'],
+      ['name' => 'COMISIÓN', 'description' => 'VIAJEs, reuniones, diligencias'],
+      ['name' => 'SALUD', 'description' => 'Consulta médica, bajas'],
+      ['name' => 'FAMILIAR', 'description' => 'Matrimonio, nacimientos, fallecimientos'],
+      ['name' => 'EXTRACURRICULAR', 'description' => 'Otros']
     ];
 
     foreach ($types as $type) {

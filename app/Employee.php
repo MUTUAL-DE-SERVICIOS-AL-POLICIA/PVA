@@ -41,6 +41,11 @@ class Employee extends Model
     return $this->hasMany(Contract::class);
   }
 
+  public function contract_in_date($date)
+  {
+    return Contract::whereEmployeeId($this->id)->where('start_date', '<=', $date)->orderBy('start_date', 'DESC')->first();
+  }
+
   public function consultant_contracts()
   {
     return $this->hasMany(ConsultantContract::class);
@@ -161,15 +166,15 @@ class Employee extends Model
     $end_date = $start_date->addMonths(1);
 
     $departures = $this->departures()->whereHas('departure_reason', function ($query) {
-      return $query->where('name', 'Permiso por horas');
+      return $query->where('name', 'PERMISO POR HORAS');
     })->whereBetween('departure', [$start_date, $end_date])->get();
 
     $records = $this->departures()->whereHas('departure_reason', function ($query) {
-      return $query->where('name', 'Regularización de marcado');
+      return $query->where('name', 'REGULARIZACIÓN DE MARCADO');
     })->whereBetween('departure', [$start_date, $end_date])->count();
 
-    $total_time = DepartureReason::where('name', 'Permiso por horas')->first()->hours * 60;
-    $total_time_records = DepartureReason::where('name', 'Regularización de marcado')->first()->hours;
+    $total_time = DepartureReason::where('name', 'PERMISO POR HORAS')->first()->hours * 60;
+    $total_time_records = DepartureReason::where('name', 'REGULARIZACIÓN DE MARCADO')->first()->hours;
 
     if ($departures->count() == 0) {
       $response = [

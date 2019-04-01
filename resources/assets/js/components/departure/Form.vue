@@ -534,7 +534,7 @@ export default {
         }
       }
       if (val && this.reasonSelected.days) {
-        if (this.reasonSelected.name != 'Maternidad') {
+        if (this.reasonSelected.name != 'MATERNIDAD') {
           this.departure.return = this.$moment(val).startOf('day').businessAdd(this.reasonSelected.days - (inWeekend ? 0 : 1)).format('YYYY-MM-DD')
         } else {
           this.departure.return = this.$moment(val).startOf('day').add('days', this.reasonSelected.days - (inWeekend ? 0 : 1)).format('YYYY-MM-DD')
@@ -594,7 +594,7 @@ export default {
           }
 
           if (this.reasonSelected.timeRemaining > 0 || this.reasonSelected.reset == null) {
-            if (['Permiso por horas'].includes(this.reasonSelected.name)) {
+            if (['PERMISO POR HORAS'].includes(this.reasonSelected.name)) {
               this.reasonSelected.time = {
                 start: {
                   editable: false,
@@ -606,9 +606,9 @@ export default {
                 }
               }
             }
-            if (['Cumpleaños', 'Jurado electoral'].includes(this.reasonSelected.name)) {
+            if (['CUMPLEAÑOS', 'JURADO ELECTORAL'].includes(this.reasonSelected.name)) {
               this.reasonSelected.records = null
-              if (this.reasonSelected.name == 'Jurado electoral') {
+              if (this.reasonSelected.name == 'JURADO ELECTORAL') {
                 this.reasonSelected.options = [
                   {
                     text: 'Una jornada',
@@ -617,10 +617,10 @@ export default {
                 ]
               }
             }
-            if (['Licencia con goce de haberes', 'Mamografía/Papanicolao', 'Examen de próstata', 'Examen de colón'].includes(this.reasonSelected.name)) {
+            if (['LICENCIA CON GOCE DE HABERES', 'MAMOGRAFÍA/PAPANICOLAO', 'EXAMEN DE PRÓSTATA', 'EXAMEN DE COLON'].includes(this.reasonSelected.name)) {
               this.reasonSelected.records = null
             }
-            if (['Licencia sin goce de haberes', 'Viaje', 'Baja médica'].includes(this.reasonSelected.name)) {
+            if (['LICENCIA SIN GOCE DE HABERES', 'VIAJE', 'BAJA MÉDICA'].includes(this.reasonSelected.name)) {
               this.reasonSelected.options = [
                 {
                   text: 'Media jornada',
@@ -646,13 +646,13 @@ export default {
                 }
               }
             }
-            if (['Regularización de marcado'].includes(this.reasonSelected.name)) {
+            if (['REGULARIZACIÓN DE MARCADO'].includes(this.reasonSelected.name)) {
               this.departure.timeToAdd = 1
               this.reasonSelected.timeRemaining = this.reasonSelected.recordsRemaining
               this.reasonSelected.options = null
               this.reasonSelected.records = this.reasonSelected.records.filter(o => o.value != 3)
             }
-            if (['Diligencia', 'Reunión', 'Curso/taller', 'Tolerancia para docencia, becas, cursos, seminarios, postgrados', 'Consulta médica', 'Actividad cultural o deportiva'].includes(this.reasonSelected.name)) {
+            if (['DILIGENCIA', 'REUNIÓN', 'CURSO/TALLER', 'TOLERANCIA PARA DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS', 'CONSULTA MÉDICA', 'ACTIVIDAD CULTURAL O DEPORTIVA'].includes(this.reasonSelected.name)) {
               this.departure.timeToAdd = 2
               this.reasonSelected.options = null
               this.reasonSelected.time = {
@@ -666,7 +666,7 @@ export default {
                 }
               }
             }
-            if (['Matrimonio', 'Nacimiento de hijos', 'Maternidad', 'Fallecimiento de padres, conyuge, hermanos o hijos', 'Fallecimiento de suegros o cuñados', ''].includes(this.reasonSelected.name)) {
+            if (['MATRIMONIO', 'NACIMIENTO DE HIJOS', 'MATERNIDAD', 'FALLECIMIENTO DE PADRES, CONYUGE, HERMANOS O HIJOS', 'FALLECIMIENTO DE SUEGROS O CUÑADOS', ''].includes(this.reasonSelected.name)) {
               this.departure.timeToAdd = -1
               this.reasonSelected.records = null
               this.reasonSelected.period = false
@@ -688,7 +688,7 @@ export default {
           if (this.reasonSelected.timeRemaining == 0 && this.reasonSelected.reset) {
             if (this.reasonSelected.reset == 'annually') message = 'No le quedán permisos disponibles para este mes'
             if (this.reasonSelected.reset == 'monthly') message = 'No le quedán licencias disponibles para el año en curso'
-            if (this.reasonSelected.name == 'Cumpleaños') {
+            if (this.reasonSelected.name == 'CUMPLEAÑOS') {
               let birthDate = remainingDepartures.birth_date
               birthDate = this.birthDate.birth_date
               let dateNow = this.$moment(this.$store.getters.dateNow)
@@ -702,7 +702,7 @@ export default {
             }
             this.step = 1
           }
-          if (this.reasonSelected.name == 'Cumpleaños') {
+          if (this.reasonSelected.name == 'CUMPLEAÑOS') {
             let dateNow = this.$moment(this.$store.getters.dateNow)
             let birthDate = this.$moment(remainingDepartures.birth_date).year(dateNow.year())
             let startDate = birthDate.clone().subtract(8, 'days')

@@ -69,7 +69,7 @@ class EmployeeController extends Controller
     $employee = Employee::findOrFail($id);
 
     if (!$request->has('departure_reason')) {
-      $request['departure_reason'] = DepartureReason::whereName('Licencia con goce de haberes')->first()->id;
+      $request['departure_reason'] = DepartureReason::whereName('LICENCIA CON GOCE DE HABERES')->first()->id;
     }
 
     $employee->remaining_departures = [
