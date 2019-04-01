@@ -186,7 +186,7 @@ class PayrollPrintController extends Controller
       case 'S':
         $response->data['title']->name = 'PLANILLA FONDO SOLIDARIO';
         $response->data['title']->table_header = 'TOTAL GANADO SOLIDARIO';
-        $limits = json_decode($response->data['procedure']->minimum_salary->limits);
+        $limits = $response->data['procedure']->employee_discount->national_limits;
         if (count($limits) > 0) {
           $response->data['employees'] = array_filter($response->data['employees'], function ($e) use ($limits, $response) {
             if ($e->quotable > $limits[0]) {

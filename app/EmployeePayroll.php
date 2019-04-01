@@ -118,8 +118,8 @@ class EmployeePayroll
     $this->discount_solidary = $this->quotable * $payroll->procedure->employee_discount->solidary;
     $this->discount_national = 0;
     // Verify if quotable exceds the limit
-    $limits = json_decode($payroll->procedure->minimum_salary->limits);
-    $percentages = json_decode($payroll->procedure->minimum_salary->percentages);
+    $limits = $payroll->procedure->employee_discount->national_limits;
+    $percentages = $payroll->procedure->employee_discount->national_percentages;
     if (count($limits) > 1 && count($percentages) > 1 && count($limits) == count($percentages)) {
       if ($this->quotable > $limits[0]) {
         foreach ($limits as $key => $limit) {
