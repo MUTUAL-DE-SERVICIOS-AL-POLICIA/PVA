@@ -39,7 +39,11 @@
       </v-chip>
       <DepartureForm></DepartureForm>
     </v-toolbar>
+    <div v-if="loading">
+      <Loading/>
+    </div>
     <v-data-table
+      v-else
       :headers="headers"
       :items="departures"
       :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
@@ -48,10 +52,15 @@
     >
       <template slot="items" slot-scope="props">
         <tr :class="props.expanded ? 'info dark white--text' : (!props.item.approved ? 'warning' : '')">
-          <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ departureType(props.item).group }} </td>
-          <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ departureType(props.item).reason }} </td>
-          <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ $moment(props.item.departure).format('L [a horas] hh:mm') }} </td>
-          <td class="text-xs-center bordered" @click="props.expanded = !props.expanded"> {{ $moment(props.item.return).format('L [a horas] hh:mm') }} </td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).group }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).reason }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] hh:mm') }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] hh:mm') }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">
+            <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
+              <v-icon>print</v-icon>
+            </v-btn>
+          </td>
         </tr>
       </template>
       <template slot="expand" slot-scope="props">
@@ -68,11 +77,13 @@
 </template>
 
 <script>
+import Loading from '../Loading'
 import DepartureForm from './Form'
 
 export default {
   name: 'Departure',
   components: {
+    Loading,
     DepartureForm
   },
   data() {
@@ -112,6 +123,11 @@ export default {
           value: 'return',
           align: 'center',
           sortable: true
+        }, {
+          text: 'Acciones',
+          value: '',
+          align: 'center',
+          sortable: false
         }
       ]
     }
@@ -128,6 +144,31 @@ export default {
     }
   },
   methods: {
+    expand(props) {
+      if (props.item.description) {
+        props.expanded = !props.expanded
+      } else {
+        props.expanded = false
+      }
+    },
+    async print(id) {
+      try {
+        this.loading = true
+        let res = await axios({
+          method: 'GET',
+          url: `departure/print/${id}`,
+          responseType: "arraybuffer"
+        });
+        let blob = new Blob([res.data], {
+          type: "application/pdf"
+        });
+        printJS(window.URL.createObjectURL(blob));
+        this.loading = false
+      } catch (e) {
+        console.log(e);
+        this.loading = false
+      }
+    },
     async getRemainingDepartures() {
       try {
         let res = await axios.get(`employee/${this.$store.getters.id}`)
@@ -167,6 +208,7 @@ export default {
     },
     async getDepartures(type) {
       try {
+        this.loading = true
         let res
         switch (type) {
           case 'all':
@@ -181,8 +223,10 @@ export default {
             break;
         }
         if (res) this.departures = res.data
+        this.loading = false
       } catch (e) {
         console.log(e)
+        this.loading = false
       }
     }
   }
