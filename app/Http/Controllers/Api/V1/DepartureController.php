@@ -27,7 +27,7 @@ class DepartureController extends Controller
   public function index(Request $request)
   {
     if ($request->has('employee_id')) {
-      return Departure::where('employee_id', intval($request['employee_id']))->orderBy('approved')->orderBy('created_at')->get();
+      return Departure::where('employee_id', intval($request['employee_id']))->orderBy('approved')->orderBy('created_at', 'desc')->get();
     } else {
       return Departure::orderBy('approved')->orderBy('created_at')->get();
     }
@@ -168,20 +168,38 @@ class DepartureController extends Controller
 
     $file_name = implode('_', ['solicitud', 'salida', $data['departure']->employee->first_name, $data['departure']->employee->last_name, $departure->departure]) . '.pdf';
 
-    $options = [
-      'orientation' => 'portrait',
-      'page-width' => '216',
-      'page-height' => '356',
-      'margin-top' => '1',
-      'margin-bottom' => '0',
-      'margin-left' => '2.5',
-      'margin-right' => '2.5',
-      'encoding' => 'UTF-8',
-      'user-style-sheet' => public_path('css/report-print.min.css')
-    ];
+    if ($data['departure']->departure_reason->note) {
+      $options = [
+        'orientation' => 'portrait',
+        'page-width' => '216',
+        'page-height' => '279',
+        'margin-top' => '10',
+        'margin-bottom' => '10',
+        'margin-left' => '25',
+        'margin-right' => '25',
+        'encoding' => 'UTF-8',
+        'user-style-sheet' => public_path('css/report-print.min.css')
+      ];
 
-    $pdf = \PDF::loadView('departure.print', $data);
-    $pdf->setOptions($options);
+      $pdf = \PDF::loadView('departure.note', $data);
+      $pdf->setOptions($options);
+    } else {
+      $options = [
+        'orientation' => 'portrait',
+        'page-width' => '216',
+        'page-height' => '356',
+        'margin-top' => '1',
+        'margin-bottom' => '0',
+        'margin-left' => '2.5',
+        'margin-right' => '2.5',
+        'encoding' => 'UTF-8',
+        'user-style-sheet' => public_path('css/report-print.min.css')
+      ];
+
+      $pdf = \PDF::loadView('departure.print', $data);
+      $pdf->setOptions($options);
+    }
+
 
     return $pdf->stream($file_name);
   }

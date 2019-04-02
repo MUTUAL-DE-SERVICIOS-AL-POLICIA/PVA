@@ -115,7 +115,7 @@
                 </v-card>
               </v-flex>
               <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
-                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex' }" style="cursor: pointer" class="card-box">
+                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex', query: {departureType: 'user'} }" style="cursor: pointer" class="card-box">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
                       <v-icon size="80">directions_run</v-icon>
