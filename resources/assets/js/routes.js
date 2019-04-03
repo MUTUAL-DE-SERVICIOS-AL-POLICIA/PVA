@@ -10,14 +10,12 @@ import ProcedureEdit from './components/procedure/ProcedureEdit'
 import ConsultantProcedureEdit from './components/procedure/ConsultantProcedureEdit'
 import UserAction from './components/userAction/UserActionIndex'
 import UserIndex from './components/user/UserIndex'
-import DepartureIndex from './components/departure/DepartureIndex'
-import DepartureAdmin from './components/departure/DepartureAdmin'
 import Dashboard from './components/dashboard/Dashboard'
 import PhonebookIndex from './components/phonebook/PhonebookIndex'
 import SuppliesIndex from './components/supply/SuppliesIndex'
 import SupplyRequestIndex from './components/supply/SupplyRequestIndex'
 import DepartureConfig from './components/configuration/DepartureConfig'
-import Departure from './components/departure/Departure'
+import DepartureIndex from './components/departure/DepartureIndex'
 
 export const routes = [
   {
@@ -111,19 +109,12 @@ export const routes = [
     }
   }, {
     path: '/departure',
-    component: Departure,
+    component: DepartureIndex,
     name: 'departureIndex',
     meta: {
       requiresAuth: true
     }
   }, {
-    path: '/departure_admin',
-    component: DepartureAdmin,
-    name: 'departureAdmin',
-    meta: {
-      requiresAuth: true
-    }
-  },{
     path: '/dashboard',
     component: Dashboard,
     name: 'dashboard',
