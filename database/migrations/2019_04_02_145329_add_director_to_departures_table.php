@@ -15,8 +15,6 @@ class AddDirectorToDeparturesTable extends Migration
   {
     Schema::table('departures', function (Blueprint $table) {
       $table->string('cite')->unique()->nullable();
-      $table->integer('director_id')->nullable();
-      $table->foreign('director_id')->references('id')->on('employees');
     });
   }
 
@@ -28,7 +26,7 @@ class AddDirectorToDeparturesTable extends Migration
   public function down()
   {
     Schema::table('departures', function (Blueprint $table) {
-      $table->dropColumn(['cite', 'director_id']);
+      $table->dropColumn(['cite']);
     });
   }
 }
