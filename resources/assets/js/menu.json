@@ -62,7 +62,7 @@
     "permission": "read-user-action",
     "params": {}
   }, {
-    "href": "departureAdmin",
+    "href": "departureIndex",
     "title": "Aprobar Permisos",
     "icon": "alarm_on",
     "permission": "read-departure",
