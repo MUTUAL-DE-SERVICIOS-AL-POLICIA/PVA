@@ -27,9 +27,9 @@ class DepartureController extends Controller
   public function index(Request $request)
   {
     if ($request->has('employee_id')) {
-      return Departure::where('employee_id', intval($request['employee_id']))->orderBy('approved')->orderBy('created_at', 'desc')->get();
+      return Departure::where('employee_id', intval($request['employee_id']))->join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed')->orderBy('departures.created_at')->get();
     } else {
-      return Departure::orderBy('approved')->orderBy('created_at')->get();
+      return Departure::with('employee')->join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed')->orderBy('departures.created_at')->get();
     }
   }
 
@@ -53,7 +53,7 @@ class DepartureController extends Controller
    */
   public function show($id)
   {
-    return Departure::with('employee')->findOrFail($id);
+    return Departure::with('employee')->join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed')->orderBy('departures.created_at')->findOrFail($id);
   }
 
   /**

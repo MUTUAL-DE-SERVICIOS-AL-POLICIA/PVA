@@ -40,7 +40,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
     </table>
     <div class="text-right" style="margin-top: 1cm;">
       <div>
-        {{ ucwords(mb_strtolower($contract->position->position_group->company_address->city->name)) }}, {{ Carbon::parse($departure->created_at)->isoFormat('LL') }}
+        {{ ucwords(mb_strtolower($contract->position->position_group->company_address->city->name)) }}, {{ Carbon::parse($departure->created_at)->ISOFormat('LL') }}
       </div>
       <div>
         {{ $departure->cite }}
@@ -69,7 +69,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
       </div>
       <div>
         <span>
-          Mediante la presente, tengo a bien dirigirme a su Autoridad a objeto de solicitar se me autorice {{ $departure->departure_reason->name }}, para el día {{ Carbon::parse($departure->departure)->format('LL') }}. Amparado por el Reglamento Interno de Personal de la Mutual de Servicio al Policía,
+          Mediante la presente, tengo a bien dirigirme a su Autoridad a objeto de solicitar se me autorice {{ $departure->departure_reason->name }}, para el día {{ Carbon::parse($departure->departure)->ISOFormat('LL') }}. Amparado por el Reglamento Interno de Personal de la Mutual de Servicio al Policía,
         </span>
         @switch ($departure->departure_reason->name)
           @case('LICENCIA CON GOCE DE HABERES')

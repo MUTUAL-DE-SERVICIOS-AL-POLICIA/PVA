@@ -24,7 +24,7 @@
           <v-stepper-content step="1">
             <v-card>
               <v-card-text>
-                <v-layout>
+                <v-layout v-if="!updateDeparture">
                   <v-flex xs5 pr-5>
                     <v-select
                       :items="groups"
@@ -77,7 +77,7 @@
             </v-card>
           </v-stepper-content>
 
-          <v-stepper-content step="2">
+          <v-stepper-content step="2" v-if="!updateDeparture">
             <v-layout row justify-space-between>
               <v-flex grow v-if="reasonSelected.options">
                 <v-card flat class="text-xs-center">
@@ -304,11 +304,11 @@
         <v-btn color="primary" v-if="step > 1" @click.native="step -= 1; clearForm()" :disabled="loading">
           Volver
         </v-btn>
-        <v-btn color="error" v-if="step < 2 && !error.value" @click.native="nextStep" :disabled="loading">
+        <v-btn color="error" v-if="step < 2 && !error.value && !updateDeparture" @click.native="nextStep" :disabled="loading">
           Siguiente
         </v-btn>
-        <v-btn color="error" v-if="step == 2 && !error.value" @click.native="makeRequest" :disabled="loading">
-          Guardar
+        <v-btn color="error" v-if="(step == 2 && !error.value) || updateDeparture" @click.native="makeRequest" :disabled="loading">
+          Imprimir
         </v-btn>
       </div>
     </v-card>
@@ -318,6 +318,7 @@
 <script>
 export default {
   name: 'Form',
+  props: ['bus'],
   data() {
     return {
       loading: true,
@@ -328,6 +329,7 @@ export default {
       birthDate: null,
       showStartDate: false,
       showEndDate: false,
+      updateDeparture: false,
       reasonSelected: {
         description_needed: null,
         name: null,
@@ -404,6 +406,16 @@ export default {
   },
   mounted() {
     this.getDepartureGroups()
+    this.bus.$on('updateDeparture', departure => {
+      this.step = 1
+      this.clearForm()
+      this.updateDeparture = true
+      this.getDepartureReason(departure.departure_reason_id)
+      this.departure.departure_reason_id = departure.departure_reason_id
+      this.departure.description = departure.description
+      this.departure.id = departure.id
+      this.dialog = true
+    })
   },
   computed: {
     limitHour() {
@@ -543,7 +555,7 @@ export default {
     },
     async 'departure.departure_reason_id'(val) {
       try {
-        if (val != null) {
+        if (val != null && !this.updateDeparture) {
           this.loading = true
           this.error = {
             text: null,
@@ -744,32 +756,43 @@ export default {
   },
   methods: {
     async makeRequest() {
+      let res
       try {
-        let valid = await this.$validator.validateAll()
-        let departureDate
-        let returnDate = this.$moment(this.departure.return)
-        if (valid && !this.loading) {
-          departureDate = this.$moment(this.departure.departure).hour(this.departure.time.start.hours).minutes(this.departure.time.start.minutes)
-          if (!this.departure.return) returnDate = departureDate.clone()
-          returnDate.hour(this.departure.time.end.hours).minutes(this.departure.time.end.minutes)
-          let res = await axios.post(`departure`, {
-            departure_reason_id: this.departure.departure_reason_id,
-            description: this.departure.description,
-            employee_id: this.$store.getters.id,
-            departure: departureDate.format(),
-            return: returnDate.format()
+        if (!this.updateDeparture) {
+          let valid = await this.$validator.validateAll()
+          let departureDate
+          let returnDate = this.$moment(this.departure.return)
+          if (valid && !this.loading) {
+            departureDate = this.$moment(this.departure.departure).hour(this.departure.time.start.hours).minutes(this.departure.time.start.minutes)
+            if (!this.departure.return) returnDate = departureDate.clone()
+            returnDate.hour(this.departure.time.end.hours).minutes(this.departure.time.end.minutes)
+            res = await axios.post(`departure`, {
+              departure_reason_id: this.departure.departure_reason_id,
+              description: this.departure.description,
+              employee_id: this.$store.getters.id,
+              departure: departureDate.format(),
+              return: returnDate.format()
+            })
+          }
+        } else {
+          res = await axios.patch(`departure/${this.departure.id}`, {
+            description: this.departure.description
           })
         }
       } catch (e) {
         console.log(e)
+      } finally {
+        this.bus.$emit('printDeparture', res.data.id)
+        this.closeDialog()
       }
     },
     closeDialog() {
-      this.dialog = false
-      this.step = 1
       this.clearForm()
+      this.step = 1
+      this.dialog = false
     },
     clearForm() {
+      this.updateDeparture = false
       this.reasonSelected = {
         description: null,
         name: null,
@@ -930,6 +953,16 @@ export default {
           this.reasons = res.data.departure_reasons
           this.loading = false
         }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async getDepartureReason(reasonId) {
+      try {
+        this.loading = true
+        let res = await axios.get(`departure_reason/${reasonId}`)
+        this.reasonSelected = res.data
+        this.loading = false
       } catch (e) {
         console.log(e)
       }

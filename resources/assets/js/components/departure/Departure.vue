@@ -37,7 +37,7 @@
         >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
         <div class="subheading font-weight-regular">Días/Año</div>
       </v-chip>
-      <DepartureForm></DepartureForm>
+      <DepartureForm :bus="bus"></DepartureForm>
     </v-toolbar>
     <div v-if="loading">
       <Loading/>
@@ -57,8 +57,11 @@
           <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] hh:mm') }}</td>
           <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] hh:mm') }}</td>
           <td class="text-xs-center bordered" @click="expand(props)">
-            <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
+            <v-btn v-if="$route.query.departureType == 'user'" slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
               <v-icon>print</v-icon>
+            </v-btn>
+            <v-btn v-if="props.item.description_needed" slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click="bus.$emit('updateDeparture', props.item)">
+              <v-icon>edit</v-icon>
             </v-btn>
           </td>
         </tr>
@@ -77,6 +80,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import Loading from '../Loading'
 import DepartureForm from './Form'
 
@@ -89,6 +93,7 @@ export default {
   data() {
     return {
       loading: true,
+      bus: new Vue(),
       departures: [],
       departureReasons: [],
       departureGroups: [],
@@ -133,6 +138,13 @@ export default {
     }
   },
   mounted() {
+    this.bus.$on('printDeparture', departureId => {
+      console.log(departureId)
+
+      this.print(departureId)
+      this.getDeparture(departureId)
+      this.getRemainingDepartures()
+    })
     this.getRemainingDepartures()
     this.getDepartureGroups()
     this.getDepartureReasons()
@@ -223,6 +235,24 @@ export default {
             break;
         }
         if (res) this.departures = res.data
+        this.loading = false
+      } catch (e) {
+        console.log(e)
+        this.loading = false
+      }
+    },
+    async getDeparture(id) {
+      try {
+        this.loading = true
+        let index = this.departures.findIndex(o => o.id == id)
+        let res = await axios.get(`departure/${id}`)
+        if (res) {
+          if (index == -1) {
+            this.departures.unshift(res.data)
+          } else {
+            this.departures[index] = res.data
+          }
+        }
         this.loading = false
       } catch (e) {
         console.log(e)
