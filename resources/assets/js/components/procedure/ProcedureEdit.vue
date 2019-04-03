@@ -479,6 +479,20 @@ export default {
     calculateDiscount(payroll, discount) {
       return this.quotable(payroll) * Number(discount);
     },
+    calculateNationalDiscount(payroll, limits, percentages) {
+      let quotable = this.quotable(payroll)
+      let next_limit = 0
+      let key = 0
+      let limit = limits[0]
+      do {
+        if (!Object.is(limits.length - 1, key)) next_limit = Number(limits[key + 1])
+        if ((Object.is(limits.length - 1, key) && quotable > limits[key]) || (quotable > limits[key] && quotable <= next_limit)) {
+          return (quotable - Number(limit)) * Number(percentages[key]) / 100
+        } else {
+          return 0
+        }
+      } while (quotable > limits[key])
+    },
     calculateTotalDiscountLaw(payroll) {
       return (
         this.calculateDiscount(
@@ -497,9 +511,10 @@ export default {
           payroll,
           this.procedure.employee_discount.solidary
         ) +
-        this.calculateDiscount(
+        this.calculateNationalDiscount(
           payroll,
-          this.procedure.employee_discount.national
+          this.procedure.employee_discount.national_limits,
+          this.procedure.employee_discount.national_percentages
         )
       );
     },

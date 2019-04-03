@@ -132,6 +132,7 @@ class AuthController extends Controller
       $role = $user->roles[0]->name;
       $permissions = array_unique(array_merge($user->roles[0]->permissions->pluck('name')->toArray(), $user->permissions->pluck('name')->toArray()));
     } else {
+      $user = null;
       $id = $employee->id;
       $username = $employee->username;
       $role = 'guest';
@@ -139,10 +140,13 @@ class AuthController extends Controller
     }
 
     $ip = request()->ip();
-    UserAction::create([
-      'user_id' => $user->id,
-      'action' => "Usuario $username autenticado desde la dirección $ip"
-    ]);
+
+    if ($user) {
+      UserAction::create([
+        'user_id' => $user->id,
+        'action' => "Usuario $username autenticado desde la dirección $ip"
+      ]);
+    }
 
     return response()->json([
       'token' => $token,
