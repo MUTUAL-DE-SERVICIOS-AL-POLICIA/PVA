@@ -14,6 +14,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
     <style>
       body {
         border: 0;
+        line-height: 2;
       }
     </style>
   </head>
@@ -60,27 +61,34 @@ $contract = $departure->employee->contract_in_date($departure->departure);
         Presente.-
       </div>
     </div>
+    <div class="py-15">
     <div class="text-right font-bold uppercase" style="margin-top: 1cm;">
       REF.: SOLICITUD DE {{ $departure->departure_reason->name }}
+    </div>
     </div>
     <div class="text-left" style="margin-top: 1cm;">
       <div>
         De mi mayor consideración:
       </div>
-      <div>
-        <span>
-          Mediante la presente, tengo a bien dirigirme a su Autoridad a objeto de solicitar se me autorice {{ $departure->departure_reason->name }}, para el día {{ Carbon::parse($departure->departure)->ISOFormat('LL') }}. Amparado por el Reglamento Interno de Personal de la Mutual de Servicio al Policía,
-        </span>
-        @switch ($departure->departure_reason->name)
-          @case('LICENCIA CON GOCE DE HABERES')
-            <span>
-              Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso g), Para la resolución de asuntos de índole personal se otorgaran 2 días hábiles fraccionados en el transcurso de 1 año, previa autorización del inmediato superior, los cuales no podrán ser consecutivos (ni anteriores ni posteriores) a las vacaciones o feriados.
-            </span>
-          @break
-        @endswitch
+      <div class="py-15">
+        <div class ="text-justify">
+          <span>
+              Mediante la presente, tengo a bien dirigirme a su Autoridad a objeto de solicitar se me autorice {{ $departure->departure_reason->name }}, para el día {{ Carbon::parse($departure->departure)->ISOFormat('LL') }}. Amparado por el Reglamento Interno de Personal de la Mutual de Servicio al Policía,
+          </span>
+            @switch ($departure->departure_reason->name)
+              @case('LICENCIA CON GOCE DE HABERES')
+                <span>
+                  Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso g) Para la resolución de asuntos de índole personal se otorgaran 2 días hábiles fraccionados en el transcurso de 1 año, previa autorización del inmediato superior, los cuales no podrán ser consecutivos (ni anteriores ni posteriores) a las vacaciones o feriados.
+                </span>
+              @break
+            @endswitch
+        </div>
       </div>
-      <div>
+      <div class="py-15">
         Sin otro particular, saludo a Ud. con las consideraciones más distinguidas.
+      </div>
+      <div class="py-15">
+        Atentamente,
       </div>
     </div>
   </body>

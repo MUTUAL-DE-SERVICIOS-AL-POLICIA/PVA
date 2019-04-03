@@ -139,8 +139,6 @@ export default {
   },
   mounted() {
     this.bus.$on('printDeparture', departureId => {
-      console.log(departureId)
-
       this.print(departureId)
       this.getDeparture(departureId)
       this.getRemainingDepartures()
