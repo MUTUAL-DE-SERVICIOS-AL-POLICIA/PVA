@@ -47,7 +47,7 @@ class DepartureController extends Controller
     }
 
     if ($request['date_range'] == 'monthly') {
-      $query = $query->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
+      $query = $query->whereDate('departure', '>=', $date->from);
     }
 
     if ($request->has('employee_id')) {

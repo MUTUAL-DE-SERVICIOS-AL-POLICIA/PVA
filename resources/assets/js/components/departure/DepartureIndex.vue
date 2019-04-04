@@ -126,7 +126,7 @@ export default {
           dateRange: 'monthly',
           dislayName: 'MES ACTUAL'
         }, {
-          dateRange: 'all',
+          dateRange: 'annually',
           dislayName: 'TODAS'
         }
       ],
@@ -222,6 +222,7 @@ export default {
       try {
         let res = await axios.get(`employee/${this.$store.getters.id}`)
         this.remainingDepartures = res.data.remaining_departures
+
       } catch (e) {
         console.log(e)
       }

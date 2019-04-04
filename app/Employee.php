@@ -208,7 +208,11 @@ class Employee extends Model
           $response['options'] = [];
       }
     } else {
-      $response['options'] = [];
+      $response = [
+        'remaining_records' => 0,
+        'time_remaining' => 0,
+        'options' => []
+      ];
     }
     return $response;
   }
