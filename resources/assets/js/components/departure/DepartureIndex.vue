@@ -222,7 +222,6 @@ export default {
       try {
         let res = await axios.get(`employee/${this.$store.getters.id}`)
         this.remainingDepartures = res.data.remaining_departures
-
       } catch (e) {
         console.log(e)
       }

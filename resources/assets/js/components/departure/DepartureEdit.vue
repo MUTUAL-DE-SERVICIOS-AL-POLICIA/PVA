@@ -698,8 +698,8 @@ export default {
 
           let message
           if (this.reasonSelected.timeRemaining == 0 && this.reasonSelected.reset) {
-            if (this.reasonSelected.reset == 'annually') message = 'No le quedán permisos disponibles para este mes'
-            if (this.reasonSelected.reset == 'monthly') message = 'No le quedán licencias disponibles para el año en curso'
+            if (this.reasonSelected.reset == 'monthly') message = 'No le quedán permisos disponibles para este mes'
+            if (this.reasonSelected.reset == 'annually') message = 'No le quedán licencias disponibles para el año en curso'
             if (this.reasonSelected.name == 'CUMPLEAÑOS') {
               let birthDate = remainingDepartures.birth_date
               birthDate = this.birthDate.birth_date
