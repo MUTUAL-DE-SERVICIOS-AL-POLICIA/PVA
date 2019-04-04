@@ -2,12 +2,20 @@
   <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>
-        Permisos y Licencias
+        <v-select
+          v-model="departureTypeSelected"
+          :items="departureTypes"
+          item-text="dislayName"
+          item-value="dateRange"
+          class="subheading font-weight-medium"
+          label="Solicitudes"
+        ></v-select>
       </v-toolbar-title>
       <v-tooltip color="white" role="button" bottom>
         <v-icon slot="activator" class="ml-4">info</v-icon>
         <div>
-          <v-alert :value="true" type="warning" class="black--text">NO APROBADO</v-alert>
+          <v-alert :value="true" type="warning" class="black--text">PENDIENTE DE APROBACIÓN</v-alert>
+          <v-alert :value="true" type="error">RECHAZADO</v-alert>
           <v-alert :value="true" type="info">SELECCIONADO</v-alert>
         </div>
       </v-tooltip>
@@ -52,22 +60,25 @@
       v-else
       :headers="headers"
       :items="departures"
-      :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
+      :loading="loading"
+      :rows-per-page-items="[20,30,40,{text:'TODO',value:-1}]"
       disable-initial-sort
+      expand
       class="elevation-1"
     >
       <template slot="items" slot-scope="props">
-        <tr :class="props.expanded ? 'info dark white--text' : (!props.item.approved ? 'warning' : '')">
+        <tr :class="props.expanded ? 'info dark white--text' : (props.item.approved == null ? 'warning' : (props.item.approved == false ? 'error dark white--text' : ''))">
           <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).group }}</td>
           <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).reason }}</td>
           <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] hh:mm') }}</td>
           <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] hh:mm') }}</td>
           <td class="text-xs-center bordered">
-            <v-layout align-center justify-center v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
+            <v-layout align-center justify-center column fill-height v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
               <v-switch
-                v-model="props.item.approved"
+                value
+                :input-value="props.item.approved"
                 color="info"
-                @click.native="switchActive(props.item)"
+                @change="switchActive(props.item)"
               ></v-switch>
             </v-layout>
             <div v-else>
@@ -109,6 +120,16 @@ export default {
     return {
       loading: true,
       bus: new Vue(),
+      departureTypeSelected: 'monthly',
+      departureTypes: [
+        {
+          dateRange: 'monthly',
+          dislayName: 'MES ACTUAL'
+        }, {
+          dateRange: 'all',
+          dislayName: 'TODAS'
+        }
+      ],
       departures: [],
       departureReasons: [],
       departureGroups: [],
@@ -166,6 +187,9 @@ export default {
   watch: {
     '$route.query.departureType'(val) {
       this.getDepartures(val)
+    },
+    'departureTypeSelected'(val) {
+      this.getDepartures(this.$route.query.departureType)
     }
   },
   methods: {
@@ -237,12 +261,17 @@ export default {
         let res
         switch (type) {
           case 'all':
-            res = await axios.get(`departure`)
+            res = await axios.get(`departure`, {
+              params: {
+                date_range: this.departureTypeSelected
+              }
+            })
             break;
           case 'user':
             res = await axios.get(`departure`, {
               params: {
-                employee_id: this.$store.getters.id
+                employee_id: this.$store.getters.id,
+                date_range: this.departureTypeSelected
               }
             })
             break;
@@ -259,7 +288,7 @@ export default {
         let res = await axios.patch(`departure/${departure.id}`, {
           approved: !departure.approved
         })
-        this.departures[this.departures.findIndex(o => o.id == departure.id)] = res.data
+        this.departures[this.departures.findIndex(o => o.id == departure.id)].approved = !departure.approved
       } catch (e) {
         console.log(e)
       }
@@ -289,10 +318,5 @@ export default {
 <style>
 .bordered {
   border-bottom: 1px solid black;
-}
-.centered-input input {
-  text-align: center;
-  margin-bottom: -5px;
-  padding-top: 15px;
 }
 </style>

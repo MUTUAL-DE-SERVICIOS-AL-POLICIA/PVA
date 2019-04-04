@@ -11,6 +11,7 @@ use App\EmployeeDeparture;
 use App\Http\Requests\DepartureForm;
 use App\Http\Controllers\Controller;
 use Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 
 /** @resource Departure
@@ -26,10 +27,33 @@ class DepartureController extends Controller
    */
   public function index(Request $request)
   {
-    if ($request->has('employee_id')) {
-      return Departure::where('employee_id', intval($request['employee_id']))->join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed')->orderBy('departures.created_at')->get();
+    $current = CarbonImmutable::now();
+    if ($current->day <= 19) {
+      $date = (object)[
+        'from' => $current->subMonths(1)->days(20)->startOfDay(),
+        'to' => $current->endOfDay()
+      ];
     } else {
-      return Departure::with('employee')->join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed')->orderBy('departures.created_at')->get();
+      $date = (object)[
+        'from' => $current->days(20)->startOfDay(),
+        'to' => $current->endOfDay()
+      ];
+    }
+
+    $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed')->orderBy('approved', 'DESC')->orderBy('departures.created_at');
+
+    if (!$request->has('date_range')) {
+      $request['date_range'] = 'monthly';
+    }
+
+    if ($request['date_range'] == 'monthly') {
+      $query = $query->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
+    }
+
+    if ($request->has('employee_id')) {
+      return $query->where('employee_id', intval($request['employee_id']))->get();
+    } else {
+      return $query->with('employee')->get();
     }
   }
 
