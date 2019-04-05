@@ -55,6 +55,17 @@
                     ></v-select>
                   </v-flex>
                 </v-layout>
+                <v-text-field
+                  v-show="reasonSelected.note"
+                  label="Cite"
+                  v-model="departure.cite"
+                  class="mt-4"
+                  rows="1"
+                  v-validate="reasonSelected.note ? 'required' : ''"
+                  name="Cite"
+                  :error-messages="errors.collect('Cite')"
+                  :disabled="!departure.departure_reason_id"
+                ></v-text-field>
                 <v-textarea
                   v-show="reasonSelected.description_needed"
                   label="Detalle"
@@ -381,6 +392,7 @@ export default {
         group: null,
         departure_reason_id: null,
         description: null,
+        cite: null,
         timeToAdd: 0,
         days: 0,
         departure: this.$store.getters.dateNow,
@@ -413,6 +425,7 @@ export default {
       this.getDepartureReason(departure.departure_reason_id)
       this.departure.departure_reason_id = departure.departure_reason_id
       this.departure.description = departure.description
+      this.departure.cite = departure.cite
       this.departure.id = departure.id
       this.dialog = true
     })
@@ -455,6 +468,9 @@ export default {
     }
   },
   watch: {
+    'departure.cite'(val) {
+      if (this.departure.cite) this.departure.cite = val.toUpperCase()
+    },
     'departure.timeToAdd' (val) {
       if (this.departure.timeToAdd == -1) {
         this.departure.time.start.hours = 8
@@ -698,8 +714,8 @@ export default {
 
           let message
           if (this.reasonSelected.timeRemaining == 0 && this.reasonSelected.reset) {
-            if (this.reasonSelected.reset == 'annually') message = 'No le quedán permisos disponibles para este mes'
-            if (this.reasonSelected.reset == 'monthly') message = 'No le quedán licencias disponibles para el año en curso'
+            if (this.reasonSelected.reset == 'monthly') message = 'No le quedán permisos disponibles para este mes'
+            if (this.reasonSelected.reset == 'annually') message = 'No le quedán licencias disponibles para el año en curso'
             if (this.reasonSelected.name == 'CUMPLEAÑOS') {
               let birthDate = remainingDepartures.birth_date
               birthDate = this.birthDate.birth_date
@@ -757,33 +773,36 @@ export default {
   methods: {
     async makeRequest() {
       let res
-      try {
-        if (!this.updateDeparture) {
-          let valid = await this.$validator.validateAll()
-          let departureDate
-          let returnDate = this.$moment(this.departure.return)
-          if (valid && !this.loading) {
+      let valid = await this.$validator.validateAll()
+      if (valid && !this.loading) {
+        try {
+          if (!this.updateDeparture) {
+            let departureDate
+            let returnDate = this.$moment(this.departure.return)
             departureDate = this.$moment(this.departure.departure).hour(this.departure.time.start.hours).minutes(this.departure.time.start.minutes)
             if (!this.departure.return) returnDate = departureDate.clone()
             returnDate.hour(this.departure.time.end.hours).minutes(this.departure.time.end.minutes)
             res = await axios.post(`departure`, {
               departure_reason_id: this.departure.departure_reason_id,
               description: this.departure.description,
+              cite: this.departure.cite,
               employee_id: this.$store.getters.id,
               departure: departureDate.format(),
               return: returnDate.format()
             })
+          } else {
+            res = await axios.patch(`departure/${this.departure.id}`, {
+              cite: this.departure.cite,
+              description: this.departure.description
+            })
           }
-        } else {
-          res = await axios.patch(`departure/${this.departure.id}`, {
-            description: this.departure.description
-          })
         }
-      } catch (e) {
-        console.log(e)
-      } finally {
-        this.bus.$emit('printDeparture', res.data.id)
-        this.closeDialog()
+          catch (e) {
+          console.log(e)
+        } finally {
+          this.bus.$emit('printDeparture', res.data.id)
+          this.closeDialog()
+        }
       }
     },
     closeDialog() {
@@ -821,6 +840,7 @@ export default {
         group: null,
         departure_reason_id: null,
         description: null,
+        cite: null,
         minutes: 0,
         hours: 0,
         days: 0,
