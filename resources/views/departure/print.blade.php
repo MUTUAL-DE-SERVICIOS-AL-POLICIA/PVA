@@ -58,8 +58,8 @@ $contract = $departure->employee->contract_in_date($departure->departure);
     <div class="page-break px-4" style="border-radius: 0.75em; border: 1px solid #22292f; padding-top: 3px;">
     <table class="w-100">
       <tr>
-        <th class="w-15 text-left no-padding no-margins align-middle">
-          <div class="text-center">
+        <th class="w-25 text-left no-padding no-margins align-middle">
+          <div class="text-left">
             <img src="{{ public_path("/img/logo.png") }}" class="w-65">
           </div>
         </th>
@@ -70,7 +70,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
             <div>UNIDAD DE RECURSOS HUMANOS</div>
           </div>
         </th>
-        <th class="w-20 no-padding no-margins align-top">
+        <th class="w-25 no-padding no-margins align-top">
           <table class="table-code no-padding no-margins text-xxxs">
             <tbody>
               <tr>

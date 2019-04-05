@@ -67,7 +67,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
     </div>
     </div>
     <div class="text-left" style="margin-top: 1cm;">
-      <div>
+      <div class="py-15">
         De mi mayor consideración:
       </div>
       <div class="py-15">

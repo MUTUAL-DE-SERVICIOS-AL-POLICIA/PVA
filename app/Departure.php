@@ -12,7 +12,7 @@ class Departure extends Model
 
   public $timestamps  = true;
   public $guarded     = ['id'];
-  protected $fillable = ['departure_reason_id', 'description', 'approved', 'on_vacation', 'employee_id', 'departure', 'return'];
+  protected $fillable = ['departure_reason_id', 'description', 'approved', 'on_vacation', 'employee_id', 'departure', 'return', 'cite'];
 
   public function employee()
   {
@@ -22,10 +22,5 @@ class Departure extends Model
   public function departure_reason()
   {
     return $this->belongsTo(DepartureReason::class);
-  }
-
-  public function director()
-  {
-    return $this->belongsTo(Employee::class, 'director_id', 'id');
   }
 }

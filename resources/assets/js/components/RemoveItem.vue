@@ -36,6 +36,7 @@ export default {
       try {
         let res = await axios.delete(this.path);
         this.toastr.success('Eliminado correctamente')
+        this.bus.$emit("removed", Number(this.path.split('/').pop()));
         this.close()
       } catch (e) {
         console.log(e);

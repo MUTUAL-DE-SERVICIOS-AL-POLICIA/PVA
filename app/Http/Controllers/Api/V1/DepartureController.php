@@ -40,7 +40,7 @@ class DepartureController extends Controller
       ];
     }
 
-    $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed')->orderBy('approved', 'DESC')->orderBy('departures.created_at');
+    $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note')->orderBy('approved', 'DESC')->orderBy('departures.created_at');
 
     if (!$request->has('date_range')) {
       $request['date_range'] = 'monthly';
@@ -77,7 +77,7 @@ class DepartureController extends Controller
    */
   public function show($id)
   {
-    return Departure::with('employee')->join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed')->orderBy('departures.created_at')->findOrFail($id);
+    return Departure::with('employee')->join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note')->orderBy('departures.created_at')->findOrFail($id);
   }
 
   /**
@@ -174,7 +174,7 @@ class DepartureController extends Controller
   public function destroy($id)
   {
     $departure = Departure::findOrFail($id);
-    $departure->delete();
+    if ($departure->approved === null) $departure->delete();
     return $departure;
   }
 

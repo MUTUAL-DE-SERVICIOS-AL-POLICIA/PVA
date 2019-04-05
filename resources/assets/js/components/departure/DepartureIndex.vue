@@ -51,6 +51,7 @@
           <div class="subheading font-weight-regular">Días/Año</div>
         </v-chip>
         <DepartureEdit :bus="bus"></DepartureEdit>
+        <RemoveItem :bus="bus"/>
       </div>
     </v-toolbar>
     <div v-if="loading">
@@ -82,12 +83,24 @@
               ></v-switch>
             </v-layout>
             <div v-else>
-              <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
-                <v-icon>print</v-icon>
-              </v-btn>
-              <v-btn v-if="props.item.description_needed" slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click="bus.$emit('updateDeparture', props.item)">
-                <v-icon>edit</v-icon>
-              </v-btn>
+              <v-tooltip top>
+                <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
+                  <v-icon>print</v-icon>
+                </v-btn>
+                <span>Imprimir</span>
+              </v-tooltip>
+              <v-tooltip top v-if="props.item.description_needed || props.item.note">
+                <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click="bus.$emit('updateDeparture', props.item)">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+                <span>Editar</span>
+              </v-tooltip>
+              <v-tooltip top v-if="props.item.approved == null">
+                <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item.id)">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+                <span>Eliminar</span>
+              </v-tooltip>
             </div>
           </td>
         </tr>
@@ -108,12 +121,14 @@
 <script>
 import Vue from 'vue'
 import Loading from '../Loading'
+import RemoveItem from "../RemoveItem"
 import DepartureEdit from './DepartureEdit'
 
 export default {
   name: 'Departure',
   components: {
     Loading,
+    RemoveItem,
     DepartureEdit
   },
   data() {
@@ -179,6 +194,9 @@ export default {
       this.getDeparture(departureId)
       this.getRemainingDepartures()
     })
+    this.bus.$on('removed', departureId => {
+      this.departures = this.departures.filter(o => o.id != departureId)
+    })
     this.getRemainingDepartures()
     this.getDepartureGroups()
     this.getDepartureReasons()
@@ -193,6 +211,9 @@ export default {
     }
   },
   methods: {
+    removeItem(id) {
+      this.bus.$emit("openDialogRemove", `departure/${id}`);
+    },
     expand(props) {
       if (props.item.description) {
         props.expanded = !props.expanded
