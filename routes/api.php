@@ -34,9 +34,7 @@ Route::group([
     Route::delete('auth', 'Api\V1\AuthController@destroy')->name('logout');
     Route::patch('auth', 'Api\V1\AuthController@update')->name('refresh');
     Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
-    Route::get('departure/get_departures/{id}', 'Api\V1\DepartureController@get_departures')->name('get_departures');
-    Route::get('departure/get_departures_used/{id}', 'Api\V1\DepartureController@get_departures_used')->name('get_departures_used');
-    Route::post('departure/print_report', 'Api\V1\DepartureController@print_report')->name('print_report');
+    Route::get('departure/report/print', 'Api\V1\DepartureController@report_print')->name('report_print');
     // Material
     Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
     Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);

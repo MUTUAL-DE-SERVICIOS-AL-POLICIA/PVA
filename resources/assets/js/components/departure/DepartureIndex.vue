@@ -25,7 +25,7 @@
         inset
         vertical
       ></v-divider>
-      <v-btn color="error" v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
+      <v-btn color="error" v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" @click.native="print('report')">
         <v-icon>print</v-icon>
         <div class="pl-2">Reporte</div>
       </v-btn>
@@ -226,7 +226,7 @@ export default {
         this.loading = true
         let res = await axios({
           method: 'GET',
-          url: `departure/print/${id}`,
+          url: id == 'report' ? `departure/report/print` : `departure/print/${id}`,
           responseType: "arraybuffer"
         });
         let blob = new Blob([res.data], {
