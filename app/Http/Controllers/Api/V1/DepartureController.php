@@ -175,7 +175,7 @@ class DepartureController extends Controller
 
     $file_name = implode('_', ['solicitudes', 'salidas', $date->from, $date->to]) . '.pdf';
 
-    $footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => true, 'date' => Carbon::now()->ISOFormat('L H:m')))->render();
+    $footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => true, 'date' => Carbon::now()->ISOFormat('L H:i')))->render();
 
     $options = [
       'orientation' => 'landscape',

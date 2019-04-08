@@ -18,7 +18,7 @@
                 <h2>
                     {{ $title->name }}
                 </h2>
-                <h3>DESDE {{ $title->date->from }} HASTA {{ $title->date->to }}</h3>
+                <h3>DESDE {{ $from }} HASTA {{ $to }}</h3>
             </div>
         </div>
 
@@ -49,9 +49,9 @@
                         @php ($from = Carbon::parse($departure->departure))
                         @php ($to = Carbon::parse($departure->return))
                         <td>{{ $from->ISOFormat('L') }}</td>
-                        <td>{{ $from->format('H:m') }}</td>
+                        <td>{{ $from->format('H:i') }}</td>
                         <td>{{ $to->ISOFormat('L') }}</td>
-                        <td>{{ $to->format('H:m') }}</td>
+                        <td>{{ $to->format('H:i') }}</td>
                         <td>
                             @switch($departure->approved)
                                 @case(null)
