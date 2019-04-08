@@ -23,6 +23,13 @@ Route::group([
   Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
   Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
   Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
+  // Material
+  Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
+  Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
+  // SupplyUser
+  Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
+  Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show', 'store']);
+  Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
   // Employee
   Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
   // With credentials
@@ -33,15 +40,6 @@ Route::group([
     Route::get('auth', 'Api\V1\AuthController@show')->name('profile');
     Route::delete('auth', 'Api\V1\AuthController@destroy')->name('logout');
     Route::patch('auth', 'Api\V1\AuthController@update')->name('refresh');
-    Route::get('departure_reason/get_reason/{id}', 'Api\V1\DepartureReasonController@get_reason')->name('departure_reason_list_type');
-    Route::get('departure/report/print', 'Api\V1\DepartureController@report_print')->name('report_print');
-    // Material
-    Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
-    Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
-    // SupplyUser
-    Route::resource('supply_user', 'Api\V1\SupplyUserController')->only(['show']);
-    Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['show', 'store']);
-    Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
     // Employee-Contract
     Route::group([
       'prefix' => 'employee/{employee_id}/contract',
@@ -427,6 +425,8 @@ Route::group([
       Route::post('employee_discount', 'Api\V1\EmployeeDiscountController@store')->name('employee_discount_store');
       Route::patch('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@update')->name('employee_discount_update');
       Route::delete('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@destroy')->name('employee_discount_delete');
+      // Departure
+      Route::get('departure/report/print', 'Api\V1\DepartureController@report_print')->name('report_print');
     });
 
     // FINANCIERA-RRHH routes
