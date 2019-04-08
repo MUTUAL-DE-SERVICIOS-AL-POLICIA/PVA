@@ -105,18 +105,18 @@ class PayrollPrintController extends Controller
   }
 
   /**
-	 * Print PDF payroll reports.
-	 *
-	 * @param  integer  $year
-	 * @param  integer  $month
-	 * @param  string  $report_type
-	 * @param  string  $report_name
-	 * @param  boolean $valid_contracts
-	 * @param  integer  $management_entity_id
-	 * @param  integer  $position_group_id
-	 * @param  integer  $employer_number_id
-	 * @return \PDF
-	 */
+   * Print PDF payroll reports.
+   *
+   * @param  integer  $year
+   * @param  integer  $month
+   * @param  string  $report_type
+   * @param  string  $report_name
+   * @param  boolean $valid_contracts
+   * @param  integer  $management_entity_id
+   * @param  integer  $position_group_id
+   * @param  integer  $employer_number_id
+   * @return \PDF
+   */
   public function print_pdf(Request $params, $year, $month)
   {
     $month = Month::where('id', $month)->select()->first();
@@ -238,12 +238,12 @@ class PayrollPrintController extends Controller
   }
 
   /**
-	 * Print TXT payroll reports.
-	 *
-	 * @param  integer  $year
-	 * @param  integer  $month
-	 * @return \TXT
-	 */
+   * Print TXT payroll reports.
+   *
+   * @param  integer  $year
+   * @param  integer  $month
+   * @return \TXT
+   */
   public function print_txt($year, $month)
   {
     $month = Month::findorFail($month);

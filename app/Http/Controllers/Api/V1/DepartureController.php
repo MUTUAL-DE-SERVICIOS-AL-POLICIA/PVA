@@ -27,18 +27,7 @@ class DepartureController extends Controller
    */
   public function index(Request $request)
   {
-    $current = CarbonImmutable::now();
-    if ($current->day <= 19) {
-      $date = (object)[
-        'from' => $current->subMonths(1)->days(20)->startOfDay(),
-        'to' => $current->endOfDay()
-      ];
-    } else {
-      $date = (object)[
-        'from' => $current->days(20)->startOfDay(),
-        'to' => $current->endOfDay()
-      ];
-    }
+    $date = $this->current_date();
 
     $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note')->orderBy('approved', 'DESC')->orderBy('departures.created_at');
 
@@ -47,7 +36,18 @@ class DepartureController extends Controller
     }
 
     if ($request['date_range'] == 'monthly') {
-      $query = $query->whereDate('departure', '>=', $date->from);
+      if ($request->has('from_date') && $request->has('to_date')) {
+        $date->from = Carbon::parse($request['from_date'])->startOfDay();
+        $date->to = Carbon::parse($request['to_date'])->endOfDay();
+      }
+
+      $query = $query->where(function ($q) use ($date) {
+        return $q->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
+      })->orWhere(function ($q) use ($date) {
+        return $q->whereDate('return', '>=', $date->from)->whereDate('return', '<=', $date->to);
+      })->orWhere(function ($q) use ($date) {
+        return $q->whereDate('departure', '<=', $date->from)->whereDate('return', '>=', $date->to);
+      });
     }
 
     if ($request->has('employee_id')) {
@@ -270,5 +270,21 @@ class DepartureController extends Controller
       ->setOption('encoding', 'utf-8')
       ->setOption('user-style-sheet', public_path('css/report-print.min.css'))
       ->stream($pageName);
+  }
+
+  private function current_date()
+  {
+    $current = CarbonImmutable::now();
+    if ($current->day <= 19) {
+      return (object)[
+        'from' => $current->subMonths(1)->days(20)->startOfDay(),
+        'to' => $current->days(19)->endOfDay()
+      ];
+    } else {
+      return (object)[
+        'from' => $current->days(20)->startOfDay(),
+        'to' => $current->addMonths(1)->days(19)->endOfDay()
+      ];
+    }
   }
 }
