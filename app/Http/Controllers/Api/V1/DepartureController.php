@@ -29,7 +29,11 @@ class DepartureController extends Controller
   {
     $date = $this->current_date();
 
-    $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note')->orderBy('approved', 'DESC')->orderBy('departures.created_at');
+    if ($request->query->has('employee_id')) {
+      $query = Departure::where('employee_id', intval($request['employee_id']));
+    } else {
+      $query = Departure::with('employee');
+    }
 
     if (!$request->has('date_range')) {
       $request['date_range'] = 'monthly';
@@ -41,20 +45,20 @@ class DepartureController extends Controller
         $date->to = $request['to_date'];
       }
 
-      $query = $query->where(function ($q) use ($date) {
-        return $q->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
-      })->orWhere(function ($q) use ($date) {
-        return $q->whereDate('return', '>=', $date->from)->whereDate('return', '<=', $date->to);
-      })->orWhere(function ($q) use ($date) {
-        return $q->whereDate('departure', '<=', $date->from)->whereDate('return', '>=', $date->to);
+      $query = $query->where(function ($subQuery) use ($date) {
+        $subQuery->where(function ($q) use ($date) {
+          return $q->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
+        })->orWhere(function ($q) use ($date) {
+          return $q->whereDate('return', '>=', $date->from)->whereDate('return', '<=', $date->to);
+        })->orWhere(function ($q) use ($date) {
+          return $q->whereDate('departure', '<=', $date->from)->whereDate('return', '>=', $date->to);
+        });
       });
     }
 
-    if ($request->has('employee_id')) {
-      return $query->where('employee_id', intval($request['employee_id']))->get();
-    } else {
-      return $query->with('employee')->get();
-    }
+    $query = $query->join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note')->orderBy('approved', 'DESC')->orderBy('departures.created_at');
+
+    return $query->get();
   }
 
   /**
