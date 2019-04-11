@@ -196,6 +196,7 @@ export default {
       this.getRemainingDepartures()
     })
     this.bus.$on('removed', departureId => {
+      this.getRemainingDepartures()
       this.departures = this.departures.filter(o => o.id != departureId)
     })
     this.setHeaders()

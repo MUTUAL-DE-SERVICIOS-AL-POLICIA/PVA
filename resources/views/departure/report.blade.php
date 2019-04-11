@@ -43,7 +43,7 @@
                 @foreach ($departures as $i => $departure)
                     <tr>
                         <td>{{ ++$i }}</td>
-                        <td class="name">{{ $departure->employee->fullName() }}</td>
+                        <td class="name">{{ $departure->employee->fullName("uppercase", "last_name_first") }}</td>
                         <td>{{ $departure->departure_reason->departure_group->name }}</td>
                         <td>{{ $departure->departure_reason->name }}</td>
                         @php ($from = Carbon::parse($departure->departure))

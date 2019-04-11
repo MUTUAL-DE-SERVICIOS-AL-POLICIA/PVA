@@ -53,9 +53,9 @@ class DepartureController extends Controller
     }
 
     if ($request->query->has('employee_id')) {
-      $query = Departure::where('employee_id', intval($request['employee_id']));
+      $query = $query->where('employee_id', intval($request['employee_id']));
     } else {
-      $query = Departure::join('employees', 'departures.employee_id', '=', 'employees.id')->orderBy('employees.last_name', 'ASC');
+      $query = $query->join('employees', 'departures.employee_id', '=', 'employees.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note', 'employees.last_name', 'employees.mothers_last_name', 'employees.first_name', 'employees.second_name')->orderBy('employees.last_name', 'ASC');
     }
 
     return $query->orderBy('departures.departure', 'ASC')->orderBy('departures.return', 'ASC')->get();
@@ -69,7 +69,10 @@ class DepartureController extends Controller
    */
   public function store(DepartureForm $request)
   {
-    if ($request->has('cite')) $departure = Departure::whereCite($request['cite'])->first();
+    $departure = null;
+    if ($request->has('cite')) {
+      if ($request['cite'] != null) $departure = Departure::whereCite($request['cite'])->first();
+    }
     if (!$departure) {
       $departure = Departure::create($request->all());
       return $departure;

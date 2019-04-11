@@ -525,6 +525,7 @@ export default {
     'departure.group'(val) {
       this.getDepartureReasons(val)
       this.departure.description = null
+      this.departure.cite = null
       this.departure.departure_reason_id = null
       this.reasonSelected = {
         description_needed: null,
@@ -578,6 +579,8 @@ export default {
         text: null,
         value: false
       }
+      this.departure.description = null
+      this.departure.cite = null
       try {
         if (val != null && !this.updateDeparture) {
           this.loading = true
@@ -920,6 +923,12 @@ export default {
       }
     },
     formatTime(time) {
+      if (this.departure.time.start.hours > 23 || this.departure.time.start.hours < 0 || this.departure.time.end.hours > 23 || this.departure.time.end.hours < 0 || this.departure.time.start.minutes > 59 || this.departure.time.start.minutes < 0 || this.departure.time.end.minutes > 59 || this.departure.time.end.minutes < 0) {
+        this.error.value = true
+        this.toastr.error('Formato de hora inválido')
+      } else {
+        this.error.value = false
+      }
       return new Promise((resolve, reject) => {
         if (time.hours != null && time.minutes != null) {
           let hours = time.hours.toString()
