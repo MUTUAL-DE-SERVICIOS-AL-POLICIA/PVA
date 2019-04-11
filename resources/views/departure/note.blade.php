@@ -73,7 +73,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
       <div class="py-15">
         <div class ="text-justify">
           <span>
-              Mediante la presente, tengo a bien dirigirme a su Autoridad a objeto de solicitar se me autorice {{ $departure->departure_reason->name }}, para el día {{ Carbon::parse($departure->departure)->ISOFormat('LL') }}. Amparado por el Reglamento Interno de Personal de la Mutual de Servicio al Policía,
+              Mediante la presente, tengo a bien dirigirme a su Autoridad a objeto de solicitar se me autorice {{ $departure->departure_reason->name }}, amparado por el Reglamento Interno de Personal de la Mutual de Servicio al Policía,
           </span>
             @switch ($departure->departure_reason->name)
               @case('LICENCIA CON GOCE DE HABERES')
@@ -81,8 +81,87 @@ $contract = $departure->employee->contract_in_date($departure->departure);
                   Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso g) Para la resolución de asuntos de índole personal se otorgaran 2 días hábiles fraccionados en el transcurso de 1 año, previa autorización del inmediato superior, los cuales no podrán ser consecutivos (ni anteriores ni posteriores) a las vacaciones o feriados.
                 </span>
               @break
+              @case('LICENCIA CON GOCE DE HABERES')
+                <span>
+
+                </span>
+              @break
+              @case('LICENCIA SIN GOCE DE HABERES')
+                <span>
+
+                </span>
+              @break
+              @case('REGULARIZACIÓN DE MARCADO')
+                <span>
+
+                </span>
+              @break
+              @case('MAMOGRAFÍA/PAPANICOLAO')
+                <span>
+
+                </span>
+              @break
+              @case('EXAMEN DE PRÓSTATA')
+                <span>
+
+                </span>
+              @break
+              @case('EXAMEN DE COLON')
+                <span>
+
+                </span>
+              @break
+              @case('MATRIMONIO')
+                <span>
+
+                </span>
+              @break
+              @case('NACIMIENTO DE HIJOS')
+                <span>
+
+                </span>
+              @break
+              @case('FALLECIMIENTO DE PADRES, CONYUGE, HERMANOS O HIJOS')
+                <span>
+
+                </span>
+              @break
+              @case('FALLECIMIENTO DE SUEGROS O CUÑADOS')
+                <span>
+
+                </span>
+              @break
+              @case('TOLERANCIA PARA DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS')
+                <span>
+
+                </span>
+              @break
             @endswitch
         </div>
+        <div>
+            Para dicho efecto solicito la licencia
+            @php ($from = Carbon::parse($departure->departure))
+            @php ($to = Carbon::parse($departure->return))
+            @if ($from->toDateString() == $to->toDateString())
+              el día
+              <span class="font-bold">{{ $from->ISOFormat('LL') }}</span>
+              de horas
+              <span class="font-bold">{{ $from->format('H:i') }}</span>
+              a horas
+              <span class="font-bold">{{ $to->format('H:i') }}</span>
+            @else
+              desde el día
+              <span class="font-bold">{{ $from->ISOFormat('LL') }} {{ $from->format('H:i') }}</span>
+              al día
+              <span class="font-bold">{{ $to->ISOFormat('LL') }} {{ $to->format('H:i') }}</span>
+            @endif
+            .
+        </div>
+        @if ($departure->description)
+          <div>
+            {{ $departure->description }}
+          </div>
+        @endif
       </div>
       <div class="py-15">
         Sin otro particular, saludo a Ud. con las consideraciones más distinguidas.
