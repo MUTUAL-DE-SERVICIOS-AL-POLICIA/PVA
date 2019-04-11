@@ -69,10 +69,11 @@
     >
       <template slot="items" slot-scope="props">
         <tr :class="props.expanded ? 'info dark white--text' : (props.item.approved == null ? 'warning' : (props.item.approved == false ? 'error dark white--text' : ''))">
+          <td class="text-xs-center bordered" @click="expand(props)" v-if="$route.query.departureType == 'all'">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${props.item.second_name}` }}</td>
           <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).group }}</td>
           <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).reason }}</td>
-          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] hh:mm') }}</td>
-          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] hh:mm') }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] HH:mm') }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] HH:mm') }}</td>
           <td class="text-xs-center bordered">
             <v-layout align-center justify-center column fill-height v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
               <v-switch
@@ -181,9 +182,9 @@ export default {
           sortable: true
         }, {
           text: 'Acciones',
-          value: '',
+          value: this.$route.query.departureType == 'all' ? 'approved' : '',
           align: 'center',
-          sortable: false
+          sortable: this.$route.query.departureType == 'all' ? true : false
         }
       ]
     }
@@ -197,6 +198,7 @@ export default {
     this.bus.$on('removed', departureId => {
       this.departures = this.departures.filter(o => o.id != departureId)
     })
+    this.setHeaders()
     this.getRemainingDepartures()
     this.getDepartureGroups()
     this.getDepartureReasons()
@@ -205,14 +207,34 @@ export default {
   watch: {
     '$route.query.departureType'(val) {
       this.getDepartures(val)
+      this.setHeaders()
     },
     'departureTypeSelected'(val) {
       this.getDepartures(this.$route.query.departureType)
     }
   },
   methods: {
+    setHeaders() {
+      if (this.$route.query.departureType == 'all'){
+        if (this.headers.findIndex(o => o.text == 'Nombres') == -1) {
+          this.headers.unshift({
+            text: 'Nombres',
+            value: 'employee.last_name',
+            align: 'center',
+            sortable: true
+          })
+        }
+      } else {
+        if (this.headers.findIndex(o => o.text == 'Nombres') != -1) {
+          this.headers = this.headers.filter(el => {
+            return el.text != 'Nombres';
+          });
+        }
+      }
+    },
     removeItem(id) {
       this.bus.$emit("openDialogRemove", `departure/${id}`);
+      this.getRemainingDepartures()
     },
     expand(props) {
       if (props.item.description) {
@@ -306,10 +328,16 @@ export default {
     },
     async switchActive(departure) {
       try {
+        let state = (departure.approved === null || departure.approved === false) ? true : false
         let res = await axios.patch(`departure/${departure.id}`, {
-          approved: !departure.approved
+          approved: state
         })
-        this.departures[this.departures.findIndex(o => o.id == departure.id)].approved = !departure.approved
+        this.departures[this.departures.findIndex(o => o.id == departure.id)].approved = state
+        if (state === true) {
+          this.toastr.success('Aprobado')
+        } else {
+          this.toastr.error('Rechazado')
+        }
       } catch (e) {
         console.log(e)
       }

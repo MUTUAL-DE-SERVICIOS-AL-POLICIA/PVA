@@ -29,11 +29,7 @@ class DepartureController extends Controller
   {
     $date = $this->current_date();
 
-    if ($request->query->has('employee_id')) {
-      $query = Departure::where('employee_id', intval($request['employee_id']));
-    } else {
-      $query = Departure::with('employee');
-    }
+    $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note');
 
     if (!$request->has('date_range')) {
       $request['date_range'] = 'monthly';
@@ -56,9 +52,13 @@ class DepartureController extends Controller
       });
     }
 
-    $query = $query->join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note')->orderBy('approved', 'DESC')->orderBy('departures.created_at');
+    if ($request->query->has('employee_id')) {
+      $query = Departure::where('employee_id', intval($request['employee_id']));
+    } else {
+      $query = Departure::join('employees', 'departures.employee_id', '=', 'employees.id')->orderBy('employees.last_name', 'ASC');
+    }
 
-    return $query->get();
+    return $query->orderBy('departures.departure', 'ASC')->orderBy('departures.return', 'ASC')->get();
   }
 
   /**
@@ -69,8 +69,18 @@ class DepartureController extends Controller
    */
   public function store(DepartureForm $request)
   {
-    $departure = Departure::create($request->all());
-    return $departure;
+    if ($request->has('cite')) $departure = Departure::whereCite($request['cite'])->first();
+    if (!$departure) {
+      $departure = Departure::create($request->all());
+      return $departure;
+    } else {
+      return response()->json([
+        'message' => 'bad database formed',
+        'errors' => [
+          'type' => ['El CITE ya existe'],
+        ]
+      ], 409);
+    }
   }
 
   /**

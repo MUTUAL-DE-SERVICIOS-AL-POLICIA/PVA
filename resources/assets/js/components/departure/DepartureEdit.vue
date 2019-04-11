@@ -552,6 +552,10 @@ export default {
           }
         }
       }
+      this.error = {
+        text: null,
+        value: false
+      }
     },
     'departure.departure'(val) {
       let inWeekend = !this.$moment(val).isBusinessDay()
@@ -570,6 +574,10 @@ export default {
       }
     },
     async 'departure.departure_reason_id'(val) {
+      this.error = {
+        text: null,
+        value: false
+      }
       try {
         if (val != null && !this.updateDeparture) {
           this.loading = true

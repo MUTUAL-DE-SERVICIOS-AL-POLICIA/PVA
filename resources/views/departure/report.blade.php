@@ -53,17 +53,13 @@
                         <td>{{ $to->ISOFormat('L') }}</td>
                         <td>{{ $to->format('H:i') }}</td>
                         <td>
-                            @switch($departure->approved)
-                                @case(null)
-                                    {{ 'PENDIENTE' }}
-                                    @break
-                                @case(false)
-                                    {{ 'RECHAZADO' }}
-                                    @break
-                                @case(true)
-                                    {{ 'APROBADO' }}
-                                    @break
-                            @endswitch
+                            @if($departure->approved === true)
+                                {{ 'APROBADO' }}
+                            @elseif($departure->approved === false)
+                                {{ 'RECHAZADO' }}
+                            @elseif($departure->approved === null)
+                                {{ 'PENDIENTE' }}
+                            @endif
                         </td>
                     </tr>
                 @endforeach
