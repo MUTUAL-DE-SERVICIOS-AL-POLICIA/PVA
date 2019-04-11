@@ -5,10 +5,10 @@ use Illuminate\Database\Seeder;
 class DepartureGroupSeeder extends Seeder
 {
   /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+   * Run the database seeds.
+   *
+   * @return void
+   */
   public function run()
   {
     $types = [
@@ -19,6 +19,7 @@ class DepartureGroupSeeder extends Seeder
       ['name' => 'EXTRACURRICULAR', 'description' => 'Otros']
     ];
 
+    App\DepartureGroup::truncate();
     foreach ($types as $type) {
       App\DepartureGroup::create($type);
     }
