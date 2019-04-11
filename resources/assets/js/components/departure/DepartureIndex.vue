@@ -90,7 +90,7 @@
                 </v-btn>
                 <span>Imprimir</span>
               </v-tooltip>
-              <v-tooltip top v-if="props.item.description_needed || props.item.note">
+              <v-tooltip top v-if="props.item.approved === null && (props.item.description_needed || props.item.note)">
                 <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click="bus.$emit('updateDeparture', props.item)">
                   <v-icon>edit</v-icon>
                 </v-btn>
