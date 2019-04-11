@@ -153,7 +153,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
             <td class="text-center w-25 font-bold text-xxxs">Solicitante</td>
             <td class="text-center w-25 font-bold text-xxxs">Autorizado</td>
             <td class="text-center w-25 font-bold text-xxxs">RRHH</td>
-            <td class="text-center w-25 font-bold text-xxxs">Detalle</td>
+            <td class="text-center w-25 font-bold text-xxxs">Destino</td>
           </tr>
         </tbody>
       </table>
