@@ -28,7 +28,7 @@ class AddConsultantToDependencyPositionsTable extends Migration
   public function down()
   {
     Schema::table('dependency_positions', function (Blueprint $table) {
-      $table->integer('dependent_id')->nullable(false)->change();
+      $table->integer('dependent_id')->nullable()->change();
       $table->dropColumn('consultant_id');
     });
   }

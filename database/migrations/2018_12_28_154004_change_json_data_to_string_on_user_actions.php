@@ -27,9 +27,9 @@ class ChangeJsonDataToStringOnUserActions extends Migration
   public function down()
   {
     Schema::table('user_actions', function (Blueprint $table) {
-      $table->string('method');
-      $table->string('path');
-      $table->json('data');
+      $table->string('method')->nullable();
+      $table->string('path')->nullable();
+      $table->json('data')->nullable();
       $table->dropColumn(['action']);
     });
   }

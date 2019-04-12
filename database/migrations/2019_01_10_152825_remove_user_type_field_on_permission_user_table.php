@@ -26,7 +26,7 @@ class RemoveUserTypeFieldOnPermissionUserTable extends Migration
   public function down()
   {
     Schema::table('permission_user', function (Blueprint $table) {
-      $table->string('user_type')->primary();
+      $table->string('user_type')->nullable();
     });
   }
 }

@@ -27,7 +27,7 @@ class AddEmployeesLandlineNumber extends Migration
   public function down()
   {
     Schema::table('employees', function (Blueprint $table) {
-      $table->integer('phone_number')->nullable(true)->change();
+      $table->integer('phone_number')->nullable()->change();
       $table->dropColumn('landline_number');
     });
   }

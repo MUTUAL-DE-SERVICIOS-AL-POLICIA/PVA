@@ -3,7 +3,7 @@
 ## INGRESO AL SISTEMA.
 
 Este sistema es compatible con los navegadores Firefox y Chrome, para acceder al sistema se debe acceder al enlace:
-[http://rrhh.muserpol.gob.bo](http://rrhh.muserpol.gob.bo).
+[http://rrhh.muserpol.gob.bo](http://pva.muserpol.gob.bo).
 Una vez dentro se deben ingresar las credenciales en los campos de usuario y contraseña adquiridas por el responsable de la Unidad de Sistemas y Soporte Técnico.
 
 ![IMAGE](./img/login.png)

@@ -100,7 +100,7 @@
                   </v-layout>
                 </v-card>
               </v-flex>
-              <v-flex xs12 sm6>
+              <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
                 <v-card color="teal darken-4" dark :to="{ name: 'supplyRequestIndex', query: { requestType: 'user' }}" style="cursor: pointer" class="card-box">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
