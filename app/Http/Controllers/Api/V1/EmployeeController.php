@@ -18,10 +18,10 @@ use Illuminate\Http\Request;
 class EmployeeController extends Controller
 {
   /**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
   public function index()
   {
     $employees = Employee::with('city_identity_card')
@@ -47,11 +47,11 @@ class EmployeeController extends Controller
   }
 
   /**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
+   * Store a newly created resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
   public function store(EmployeeStoreForm $request)
   {
     $employee = Employee::create($request->all());
@@ -59,17 +59,17 @@ class EmployeeController extends Controller
   }
 
   /**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
+   * Display the specified resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
   public function show(Request $request, $id)
   {
     $employee = Employee::findOrFail($id);
 
     if (!$request->has('departure_reason')) {
-      $request['departure_reason'] = DepartureReason::whereName('LICENCIA CON GOCE DE HABERES')->first()->id;
+      $request['departure_reason'] = DepartureReason::whereName('CON GOCE DE HABERES')->first()->id;
     }
 
     $employee->remaining_departures = [
@@ -81,12 +81,12 @@ class EmployeeController extends Controller
   }
 
   /**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
   public function update(EmployeeEditForm $request, $id)
   {
     $employee = Employee::findOrFail($id);
@@ -96,11 +96,11 @@ class EmployeeController extends Controller
   }
 
   /**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
+   * Remove the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
   public function destroy($id)
   {
     if (Payroll::where('employee_id', $id)->count() > 0) {

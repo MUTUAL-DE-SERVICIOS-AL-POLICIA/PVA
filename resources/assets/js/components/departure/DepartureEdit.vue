@@ -166,7 +166,7 @@
                           <v-date-picker v-model="departure.departure" no-title @input="showStartDate = false" locale="es-bo"></v-date-picker>
                         </v-menu>
                       </v-flex>
-                      <v-flex mt-4 v-if="reasonSelected.date.end.visible && departure.timeToAdd == -1">
+                      <v-flex mt-4 v-if="(reasonSelected.date.end.visible && departure.timeToAdd == -1) || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS'">
                         <v-menu
                           v-model="showEndDate"
                           :close-on-content-click="false"
@@ -186,7 +186,7 @@
                               prepend-icon="event"
                               readonly
                               v-on="on"
-                              v-validate="step == 2 ? departure.timeToAdd == -1 ? 'required' : '' : ''"
+                              v-validate="step == 2 ? (departure.timeToAdd == -1 || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS') ? 'required' : '' : ''"
                               name="Fecha de Retorno"
                               :error-messages="errors.collect('Fecha de Retorno')"
                             ></v-text-field>
@@ -524,8 +524,10 @@ export default {
     },
     'departure.group'(val) {
       this.getDepartureReasons(val)
-      this.departure.description = null
-      this.departure.cite = null
+      if (!this.updateDeparture) {
+        this.departure.description = null
+        this.departure.cite = null
+      }
       this.departure.departure_reason_id = null
       this.reasonSelected = {
         description_needed: null,
@@ -579,8 +581,10 @@ export default {
         text: null,
         value: false
       }
-      this.departure.description = null
-      this.departure.cite = null
+      if (!this.updateDeparture) {
+        this.departure.description = null
+        this.departure.cite = null
+      }
       try {
         if (val != null && !this.updateDeparture) {
           this.loading = true
@@ -656,10 +660,10 @@ export default {
                 ]
               }
             }
-            if (['LICENCIA CON GOCE DE HABERES', 'MAMOGRAFÍA/PAPANICOLAO', 'EXAMEN DE PRÓSTATA', 'EXAMEN DE COLON'].includes(this.reasonSelected.name)) {
+            if (['CON GOCE DE HABERES', 'MAMOGRAFÍA/PAPANICOLAOU', 'EXAMEN DE PRÓSTATA', 'EXAMEN DE COLON'].includes(this.reasonSelected.name)) {
               this.reasonSelected.records = null
             }
-            if (['LICENCIA SIN GOCE DE HABERES', 'VIAJE', 'BAJA MÉDICA'].includes(this.reasonSelected.name)) {
+            if (['SIN GOCE DE HABERES', 'VIAJE', 'BAJA MÉDICA'].includes(this.reasonSelected.name)) {
               this.reasonSelected.options = [
                 {
                   text: 'Media jornada',
@@ -691,7 +695,19 @@ export default {
               this.reasonSelected.options = null
               this.reasonSelected.records = this.reasonSelected.records.filter(o => o.value != 3)
             }
-            if (['DILIGENCIA', 'REUNIÓN', 'CURSO/TALLER', 'TOLERANCIA PARA DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS', 'CONSULTA MÉDICA', 'ACTIVIDAD CULTURAL O DEPORTIVA'].includes(this.reasonSelected.name)) {
+            if (['DILIGENCIA', 'REUNIÓN', 'CURSO/TALLER', 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS', 'CONSULTA MÉDICA', 'ACTIVIDAD CULTURAL O DEPORTIVA'].includes(this.reasonSelected.name)) {
+              if (this.reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS') {
+                this.reasonSelected.date = {
+                  start: {
+                    editable: true,
+                    visible: true
+                  },
+                  end: {
+                    editable: true,
+                    visible: true
+                  }
+                }
+              }
               this.departure.timeToAdd = 2
               this.reasonSelected.options = null
               this.reasonSelected.time = {
