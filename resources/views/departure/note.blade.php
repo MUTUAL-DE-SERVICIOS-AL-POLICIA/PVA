@@ -34,11 +34,9 @@ $contract = $departure->employee->contract_in_date($departure->departure);
             </div>
           </th>
         </tr>
-        <tr>
-          <td colspan="2" style="border-top: 1px solid gray;"></td>
-        </tr>
       </thead>
     </table>
+    <hr width="100%">
     <div class="text-right" style="margin-top: 1cm;">
       <div>
         {{ ucwords(mb_strtolower($contract->position->position_group->company_address->city->name)) }}, {{ Carbon::parse($departure->created_at)->ISOFormat('LL') }}
@@ -138,6 +136,11 @@ $contract = $departure->employee->contract_in_date($departure->departure);
               @break
             @endswitch
         </div>
+        @if ($departure->description)
+          <div>
+            {{ $departure->description }}
+          </div>
+        @endif
         <div>
             Para dicho efecto solicito la licencia
             @php ($from = Carbon::parse($departure->departure))
@@ -157,17 +160,31 @@ $contract = $departure->employee->contract_in_date($departure->departure);
             @endif
             .
         </div>
-        @if ($departure->description)
-          <div>
-            {{ $departure->description }}
-          </div>
-        @endif
       </div>
       <div class="py-15">
         Sin otro particular, saludo a Ud. con las consideraciones más distinguidas.
       </div>
       <div class="py-15">
         Atentamente,
+      </div>
+      <div class="text-center m-t-100">
+        @php($employee = $departure->employee)
+        <div>
+          <hr width="{{ strlen($employee->fullName())*10 }}">
+        </div>
+        <div>
+          {{ $employee->fullName() }}
+        </div>
+        <div>
+          @if ($employee->consultant())
+            {{ $employee->last_consultant_contract()->position->name }}
+          @else
+            {{ $employee->last_contract()->position->name }}
+          @endif
+        </div>
+        <div>
+          C.I.: {{ Util::ciExt($employee) }}
+        </div>
       </div>
     </div>
   </body>
