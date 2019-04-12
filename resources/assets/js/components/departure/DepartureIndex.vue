@@ -8,7 +8,7 @@
           item-text="dislayName"
           item-value="dateRange"
           class="subheading font-weight-medium"
-          label="Solicitudes"
+          :label="$route.query.departureType == 'all' ? `Aprobar Solicitudes` : `Solicitud de Permisos`"
         ></v-select>
       </v-toolbar-title>
       <v-tooltip color="white" role="button" bottom>
@@ -107,10 +107,12 @@
         </tr>
       </template>
       <template slot="expand" slot-scope="props">
-        <v-card flat class="grey lighten-3" v-if="props.item.description">
+        <v-card flat class="grey lighten-3">
           <v-card-text class="bordered">
             <v-list class="grey lighten-3">
-              <v-list-tile-content><p><strong>Detalle: </strong>{{ props.item.description }}</p></v-list-tile-content>
+              <v-list-tile-content v-if="props.item.description"><p><strong>Detalle: </strong>{{ props.item.description }}</p></v-list-tile-content>
+              <v-list-tile-content><p><strong>Puesto: </strong>{{ props.item.position }}</p></v-list-tile-content>
+              <v-list-tile-content><p><strong>Unidad: </strong>{{ props.item.positionGroup }}</p></v-list-tile-content>
             </v-list>
           </v-card-text>
         </v-card>
@@ -237,12 +239,21 @@ export default {
       this.bus.$emit("openDialogRemove", `departure/${id}`);
       this.getRemainingDepartures()
     },
-    expand(props) {
-      if (props.item.description) {
-        props.expanded = !props.expanded
-      } else {
-        props.expanded = false
+    async getLastContract(id) {
+      try {
+        let res = await axios.get(`employee/${id}/contract`)
+        return res.data
+      } catch (e) {
+        console.log(e)
       }
+    },
+    async expand(props) {
+      if (!props.expanded) {
+        let contract = await this.getLastContract(props.item.employee_id)
+        props.item.position = contract.position.name,
+        props.item.positionGroup = contract.position.position_group.name
+      }
+      props.expanded = !props.expanded
     },
     async print(id) {
       try {

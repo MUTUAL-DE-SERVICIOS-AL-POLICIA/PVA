@@ -10,6 +10,7 @@ Route::group([
   // Public resource
   Route::get('payroll/faults/{year}', 'Api\V1\PayrollController@getYearFaults')->name('payroll_year_faults');
   Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
+  Route::get('employee/{employee_id}/contract', 'Api\V1\EmployeeContractController@get_last_contract')->name('employee_last_contract');
   // Employee
   Route::get('employee', 'Api\V1\EmployeeController@index')->name('employees_list');
   // Position Group
@@ -42,7 +43,7 @@ Route::group([
     Route::patch('auth', 'Api\V1\AuthController@update')->name('refresh');
     // Employee-Contract
     Route::group([
-      'prefix' => 'employee/{employee_id}/contract',
+      'prefix' => 'employee/{employee_id}/contracts',
     ], function () {
       Route::get('', 'Api\V1\EmployeeContractController@get_contracts')->name('employee_contracts_list');
       Route::group([
