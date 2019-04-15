@@ -38,7 +38,7 @@
                     <th width="5%">ESTADO</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody style="font-size: 1.3em;">
             @if (count($departures) > 0)
                 @foreach ($departures as $i => $departure)
                     <tr>

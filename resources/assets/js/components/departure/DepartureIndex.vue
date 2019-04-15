@@ -202,7 +202,9 @@ export default {
       this.departures = this.departures.filter(o => o.id != departureId)
     })
     this.setHeaders()
-    this.getRemainingDepartures()
+    if (this.$route.query.departureType != 'all') {
+      this.getRemainingDepartures()
+    }
     this.getDepartureGroups()
     this.getDepartureReasons()
     this.getDepartures(this.$route.query.departureType)

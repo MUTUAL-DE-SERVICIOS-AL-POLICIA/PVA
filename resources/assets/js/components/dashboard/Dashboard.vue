@@ -6,7 +6,7 @@
           <v-flex md12 lg8>
             <v-layout row wrap>
               <template v-for="filter in filteredEmployees">
-                <v-flex xs12 sm6 :key="filter.title" v-if="filter.role == null || $store.getters.role == filter.role || $store.getters.role == 'admin'">
+                <v-flex xs12 sm6 :key="filter.title" v-if="$store.getters.role == 'admin' || $store.getters.role == 'rrhh'">
                   <v-card :color="filter.color" dark class="mb-2 card-box">
                     <v-layout row wrap>
                       <v-flex xs4 class="text-xs-center" mt-4>
