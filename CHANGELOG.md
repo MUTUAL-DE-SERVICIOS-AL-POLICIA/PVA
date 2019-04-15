@@ -2,7 +2,31 @@
 
 ---
 
-## [3.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.1) - 2018-01-29
+## [4.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.0) - 2019-04-16
+
+### Added
+
+* Cite to departures
+* Solidary printable payroll template
+* Printable departure notes
+* Validations to departure form
+* Updatable options to set group, reset, days, hours and note on every departure reason
+
+### Fixed
+
+* Double page when printing a supply request
+* Annually and monthly departures remaining
+* Admin invalid requests when an employee was required
+
+### Changed
+
+* National value to limits and percentages arrays on employee_discounts table
+* Removed certificates, documents, document_types, departure_types and contract_type_departure_reason tables
+* Left menu items order
+* Printable departure forms
+* Printable departures report
+
+## [3.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.1) - 2019-01-29
 
 ### Fixed
 
@@ -12,7 +36,7 @@
 
 * Changed RR.HH. text to P.V.A.
 
-## [3.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.0) - 2018-01-28
+## [3.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.0) - 2019-01-28
 
 ### Added
 
@@ -30,13 +54,13 @@
 
 * Splitted roles and permissions on users view
 
-## [2.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.1.0) - 2018-01-11
+## [2.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.1.0) - 2019-01-11
 
 ### Added
 
 * Ticket print option for bonus procedures
 
-## [2.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.1) - 2018-01-10
+## [2.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.1) - 2019-01-10
 
 ### Fixed
 
@@ -47,7 +71,7 @@
 * Reflowed contract form
 * Name to shortened with hint on insurance company
 
-## [2.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.0) - 2018-01-05
+## [2.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.0) - 2019-01-05
 
 ### Added
 
