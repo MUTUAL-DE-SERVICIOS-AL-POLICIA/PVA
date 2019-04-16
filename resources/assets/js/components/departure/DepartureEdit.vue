@@ -24,7 +24,7 @@
           <v-stepper-content step="1">
             <v-card>
               <v-card-text>
-                <v-layout>
+                <v-layout v-if="!updateDeparture">
                   <v-flex xs5 pr-5>
                     <v-select
                       :items="groups"
@@ -55,6 +55,17 @@
                     ></v-select>
                   </v-flex>
                 </v-layout>
+                <v-text-field
+                  v-show="reasonSelected.note"
+                  label="Cite"
+                  v-model="departure.cite"
+                  class="mt-4"
+                  rows="1"
+                  v-validate="reasonSelected.note ? 'required' : ''"
+                  name="Cite"
+                  :error-messages="errors.collect('Cite')"
+                  :disabled="!departure.departure_reason_id"
+                ></v-text-field>
                 <v-textarea
                   v-show="reasonSelected.description_needed"
                   label="Detalle"
@@ -77,7 +88,7 @@
             </v-card>
           </v-stepper-content>
 
-          <v-stepper-content step="2">
+          <v-stepper-content step="2" v-if="!updateDeparture">
             <v-layout row justify-space-between>
               <v-flex grow v-if="reasonSelected.options">
                 <v-card flat class="text-xs-center">
@@ -155,7 +166,7 @@
                           <v-date-picker v-model="departure.departure" no-title @input="showStartDate = false" locale="es-bo"></v-date-picker>
                         </v-menu>
                       </v-flex>
-                      <v-flex mt-4 v-if="reasonSelected.date.end.visible && departure.timeToAdd == -1">
+                      <v-flex mt-4 v-if="(reasonSelected.date.end.visible && departure.timeToAdd == -1) || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS'">
                         <v-menu
                           v-model="showEndDate"
                           :close-on-content-click="false"
@@ -175,7 +186,7 @@
                               prepend-icon="event"
                               readonly
                               v-on="on"
-                              v-validate="step == 2 ? departure.timeToAdd == -1 ? 'required' : '' : ''"
+                              v-validate="step == 2 ? (departure.timeToAdd == -1 || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS') ? 'required' : '' : ''"
                               name="Fecha de Retorno"
                               :error-messages="errors.collect('Fecha de Retorno')"
                             ></v-text-field>
@@ -304,11 +315,11 @@
         <v-btn color="primary" v-if="step > 1" @click.native="step -= 1; clearForm()" :disabled="loading">
           Volver
         </v-btn>
-        <v-btn color="error" v-if="step < 2 && !error.value" @click.native="nextStep" :disabled="loading">
+        <v-btn color="error" v-if="step < 2 && !error.value && !updateDeparture" @click.native="nextStep" :disabled="loading">
           Siguiente
         </v-btn>
-        <v-btn color="error" v-if="step == 2 && !error.value" @click.native="makeRequest" :disabled="loading">
-          Guardar
+        <v-btn color="error" v-if="(step == 2 && !error.value) || updateDeparture" @click.native="makeRequest" :disabled="loading">
+          Imprimir
         </v-btn>
       </div>
     </v-card>
@@ -318,6 +329,7 @@
 <script>
 export default {
   name: 'Form',
+  props: ['bus'],
   data() {
     return {
       loading: true,
@@ -328,6 +340,7 @@ export default {
       birthDate: null,
       showStartDate: false,
       showEndDate: false,
+      updateDeparture: false,
       reasonSelected: {
         description_needed: null,
         name: null,
@@ -379,6 +392,7 @@ export default {
         group: null,
         departure_reason_id: null,
         description: null,
+        cite: null,
         timeToAdd: 0,
         days: 0,
         departure: this.$store.getters.dateNow,
@@ -404,6 +418,17 @@ export default {
   },
   mounted() {
     this.getDepartureGroups()
+    this.bus.$on('updateDeparture', departure => {
+      this.step = 1
+      this.clearForm()
+      this.updateDeparture = true
+      this.getDepartureReason(departure.departure_reason_id)
+      this.departure.departure_reason_id = departure.departure_reason_id
+      this.departure.description = departure.description
+      this.departure.cite = departure.cite
+      this.departure.id = departure.id
+      this.dialog = true
+    })
   },
   computed: {
     limitHour() {
@@ -443,6 +468,9 @@ export default {
     }
   },
   watch: {
+    'departure.cite'(val) {
+      if (this.departure.cite) this.departure.cite = val.toUpperCase()
+    },
     'departure.timeToAdd' (val) {
       if (this.departure.timeToAdd == -1) {
         this.departure.time.start.hours = 8
@@ -496,7 +524,10 @@ export default {
     },
     'departure.group'(val) {
       this.getDepartureReasons(val)
-      this.departure.description = null
+      if (!this.updateDeparture) {
+        this.departure.description = null
+        this.departure.cite = null
+      }
       this.departure.departure_reason_id = null
       this.reasonSelected = {
         description_needed: null,
@@ -524,6 +555,10 @@ export default {
           }
         }
       }
+      this.error = {
+        text: null,
+        value: false
+      }
     },
     'departure.departure'(val) {
       let inWeekend = !this.$moment(val).isBusinessDay()
@@ -534,7 +569,7 @@ export default {
         }
       }
       if (val && this.reasonSelected.days) {
-        if (this.reasonSelected.name != 'Maternidad') {
+        if (this.reasonSelected.name != 'MATERNIDAD') {
           this.departure.return = this.$moment(val).startOf('day').businessAdd(this.reasonSelected.days - (inWeekend ? 0 : 1)).format('YYYY-MM-DD')
         } else {
           this.departure.return = this.$moment(val).startOf('day').add('days', this.reasonSelected.days - (inWeekend ? 0 : 1)).format('YYYY-MM-DD')
@@ -542,8 +577,16 @@ export default {
       }
     },
     async 'departure.departure_reason_id'(val) {
+      this.error = {
+        text: null,
+        value: false
+      }
+      if (!this.updateDeparture) {
+        this.departure.description = null
+        this.departure.cite = null
+      }
       try {
-        if (val != null) {
+        if (val != null && !this.updateDeparture) {
           this.loading = true
           this.error = {
             text: null,
@@ -594,7 +637,7 @@ export default {
           }
 
           if (this.reasonSelected.timeRemaining > 0 || this.reasonSelected.reset == null) {
-            if (['Permiso por horas'].includes(this.reasonSelected.name)) {
+            if (['PERMISO POR HORAS'].includes(this.reasonSelected.name)) {
               this.reasonSelected.time = {
                 start: {
                   editable: false,
@@ -606,9 +649,9 @@ export default {
                 }
               }
             }
-            if (['Cumpleaños', 'Jurado electoral'].includes(this.reasonSelected.name)) {
+            if (['CUMPLEAÑOS', 'JURADO ELECTORAL'].includes(this.reasonSelected.name)) {
               this.reasonSelected.records = null
-              if (this.reasonSelected.name == 'Jurado electoral') {
+              if (this.reasonSelected.name == 'JURADO ELECTORAL') {
                 this.reasonSelected.options = [
                   {
                     text: 'Una jornada',
@@ -617,10 +660,10 @@ export default {
                 ]
               }
             }
-            if (['Licencia con goce de haberes', 'Mamografía/Papanicolao', 'Examen de próstata', 'Examen de colón'].includes(this.reasonSelected.name)) {
+            if (['CON GOCE DE HABERES', 'MAMOGRAFÍA/PAPANICOLAOU', 'EXAMEN DE PRÓSTATA', 'EXAMEN DE COLON'].includes(this.reasonSelected.name)) {
               this.reasonSelected.records = null
             }
-            if (['Licencia sin goce de haberes', 'Viaje', 'Baja médica'].includes(this.reasonSelected.name)) {
+            if (['SIN GOCE DE HABERES', 'VIAJE', 'BAJA MÉDICA'].includes(this.reasonSelected.name)) {
               this.reasonSelected.options = [
                 {
                   text: 'Media jornada',
@@ -646,13 +689,25 @@ export default {
                 }
               }
             }
-            if (['Regularización de marcado'].includes(this.reasonSelected.name)) {
+            if (['REGULARIZACIÓN DE MARCADO'].includes(this.reasonSelected.name)) {
               this.departure.timeToAdd = 1
               this.reasonSelected.timeRemaining = this.reasonSelected.recordsRemaining
               this.reasonSelected.options = null
               this.reasonSelected.records = this.reasonSelected.records.filter(o => o.value != 3)
             }
-            if (['Diligencia', 'Reunión', 'Curso/taller', 'Tolerancia para docencia, becas, cursos, seminarios, postgrados', 'Consulta médica', 'Actividad cultural o deportiva'].includes(this.reasonSelected.name)) {
+            if (['DILIGENCIA', 'REUNIÓN', 'CURSO/TALLER', 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS', 'CONSULTA MÉDICA', 'ACTIVIDAD CULTURAL O DEPORTIVA'].includes(this.reasonSelected.name)) {
+              if (this.reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS') {
+                this.reasonSelected.date = {
+                  start: {
+                    editable: true,
+                    visible: true
+                  },
+                  end: {
+                    editable: true,
+                    visible: true
+                  }
+                }
+              }
               this.departure.timeToAdd = 2
               this.reasonSelected.options = null
               this.reasonSelected.time = {
@@ -666,7 +721,7 @@ export default {
                 }
               }
             }
-            if (['Matrimonio', 'Nacimiento de hijos', 'Maternidad', 'Fallecimiento de padres, conyuge, hermanos o hijos', 'Fallecimiento de suegros o cuñados', ''].includes(this.reasonSelected.name)) {
+            if (['MATRIMONIO', 'NACIMIENTO DE HIJOS', 'MATERNIDAD', 'FALLECIMIENTO DE PADRES, CONYUGE, HERMANOS O HIJOS', 'FALLECIMIENTO DE SUEGROS O CUÑADOS', ''].includes(this.reasonSelected.name)) {
               this.departure.timeToAdd = -1
               this.reasonSelected.records = null
               this.reasonSelected.period = false
@@ -686,9 +741,9 @@ export default {
 
           let message
           if (this.reasonSelected.timeRemaining == 0 && this.reasonSelected.reset) {
-            if (this.reasonSelected.reset == 'annually') message = 'No le quedán permisos disponibles para este mes'
-            if (this.reasonSelected.reset == 'monthly') message = 'No le quedán licencias disponibles para el año en curso'
-            if (this.reasonSelected.name == 'Cumpleaños') {
+            if (this.reasonSelected.reset == 'monthly') message = 'No le quedán permisos disponibles para este mes'
+            if (this.reasonSelected.reset == 'annually') message = 'No le quedán licencias disponibles para el año en curso'
+            if (this.reasonSelected.name == 'CUMPLEAÑOS') {
               let birthDate = remainingDepartures.birth_date
               birthDate = this.birthDate.birth_date
               let dateNow = this.$moment(this.$store.getters.dateNow)
@@ -702,7 +757,7 @@ export default {
             }
             this.step = 1
           }
-          if (this.reasonSelected.name == 'Cumpleaños') {
+          if (this.reasonSelected.name == 'CUMPLEAÑOS') {
             let dateNow = this.$moment(this.$store.getters.dateNow)
             let birthDate = this.$moment(remainingDepartures.birth_date).year(dateNow.year())
             let startDate = birthDate.clone().subtract(8, 'days')
@@ -744,32 +799,46 @@ export default {
   },
   methods: {
     async makeRequest() {
-      try {
-        let valid = await this.$validator.validateAll()
-        let departureDate
-        let returnDate = this.$moment(this.departure.return)
-        if (valid && !this.loading) {
-          departureDate = this.$moment(this.departure.departure).hour(this.departure.time.start.hours).minutes(this.departure.time.start.minutes)
-          if (!this.departure.return) returnDate = departureDate.clone()
-          returnDate.hour(this.departure.time.end.hours).minutes(this.departure.time.end.minutes)
-          let res = await axios.post(`departure`, {
-            departure_reason_id: this.departure.departure_reason_id,
-            description: this.departure.description,
-            employee_id: this.$store.getters.id,
-            departure: departureDate.format(),
-            return: returnDate.format()
-          })
+      let res
+      let valid = await this.$validator.validateAll()
+      if (valid && !this.loading) {
+        try {
+          if (!this.updateDeparture) {
+            let departureDate
+            let returnDate = this.$moment(this.departure.return)
+            departureDate = this.$moment(this.departure.departure).hour(this.departure.time.start.hours).minutes(this.departure.time.start.minutes)
+            if (!this.departure.return) returnDate = departureDate.clone()
+            returnDate.hour(this.departure.time.end.hours).minutes(this.departure.time.end.minutes)
+            res = await axios.post(`departure`, {
+              departure_reason_id: this.departure.departure_reason_id,
+              description: this.departure.description,
+              cite: this.departure.cite,
+              employee_id: this.$store.getters.id,
+              departure: departureDate.format(),
+              return: returnDate.format()
+            })
+          } else {
+            res = await axios.patch(`departure/${this.departure.id}`, {
+              cite: this.departure.cite,
+              description: this.departure.description
+            })
+          }
         }
-      } catch (e) {
-        console.log(e)
+          catch (e) {
+          console.log(e)
+        } finally {
+          this.bus.$emit('printDeparture', res.data.id)
+          this.closeDialog()
+        }
       }
     },
     closeDialog() {
-      this.dialog = false
-      this.step = 1
       this.clearForm()
+      this.step = 1
+      this.dialog = false
     },
     clearForm() {
+      this.updateDeparture = false
       this.reasonSelected = {
         description: null,
         name: null,
@@ -798,6 +867,7 @@ export default {
         group: null,
         departure_reason_id: null,
         description: null,
+        cite: null,
         minutes: 0,
         hours: 0,
         days: 0,
@@ -869,6 +939,12 @@ export default {
       }
     },
     formatTime(time) {
+      if (this.departure.time.start.hours > 23 || this.departure.time.start.hours < 0 || this.departure.time.end.hours > 23 || this.departure.time.end.hours < 0 || this.departure.time.start.minutes > 59 || this.departure.time.start.minutes < 0 || this.departure.time.end.minutes > 59 || this.departure.time.end.minutes < 0) {
+        this.error.value = true
+        this.toastr.error('Formato de hora inválido')
+      } else {
+        this.error.value = false
+      }
       return new Promise((resolve, reject) => {
         if (time.hours != null && time.minutes != null) {
           let hours = time.hours.toString()
@@ -930,6 +1006,16 @@ export default {
           this.reasons = res.data.departure_reasons
           this.loading = false
         }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async getDepartureReason(reasonId) {
+      try {
+        this.loading = true
+        let res = await axios.get(`departure_reason/${reasonId}`)
+        this.reasonSelected = res.data
+        this.loading = false
       } catch (e) {
         console.log(e)
       }

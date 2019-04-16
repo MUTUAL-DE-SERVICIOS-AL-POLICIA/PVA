@@ -1,6 +1,8 @@
 <?php
 use \Carbon\Carbon;
 use \Milon\Barcode\DNS2D;
+
+$contract = $departure->employee->contract_in_date($departure->departure);
 ?>
 
 <!DOCTYPE html>
@@ -56,8 +58,8 @@ use \Milon\Barcode\DNS2D;
     <div class="page-break px-4" style="border-radius: 0.75em; border: 1px solid #22292f; padding-top: 3px;">
     <table class="w-100">
       <tr>
-        <th class="w-15 text-left no-padding no-margins align-middle">
-          <div class="text-center">
+        <th class="w-25 text-left no-padding no-margins align-middle">
+          <div class="text-left">
             <img src="{{ public_path("/img/logo.png") }}" class="w-65">
           </div>
         </th>
@@ -68,16 +70,16 @@ use \Milon\Barcode\DNS2D;
             <div>UNIDAD DE RECURSOS HUMANOS</div>
           </div>
         </th>
-        <th class="w-20 no-padding no-margins align-top">
+        <th class="w-25 no-padding no-margins align-top">
           <table class="table-code no-padding no-margins text-xxxs">
             <tbody>
               <tr>
-                <td class="text-center bg-grey-darker text-white">Tipo</td>
-                <td class="uppercase">{{ $departure->departure_reason->departure_group->name }}</td>
-              </tr>
-              <tr>
                 <td class="text-center bg-grey-darker text-white">Nº </td>
                 <td class="uppercase">{{ $departure->id }}</td>
+              </tr>
+              <tr>
+                <td class="text-center bg-grey-darker text-white">Tipo</td>
+                <td class="uppercase">{{ $departure->departure_reason->departure_group->name }}</td>
               </tr>
               <tr>
                 <td class="text-center bg-grey-darker text-white">Fecha</td>
@@ -93,40 +95,28 @@ use \Milon\Barcode\DNS2D;
       </tr>
     </table>
     <div class="block">
-      <div class="font-semibold leading-tight text-xs text-center m-b-5">SOLICITUD DE PERMISO</div>
+      <div class="font-semibold leading-tight text-xs text-center m-b-5">{{ $departure->departure_reason->name }}</div>
       <table class="table-info w-50 m-b-5 text-center uppercase" style="float: left; margin-left: 1px;">
         <tr class="bg-grey-darker text-xxs text-white">
           <td>NOMBRE</td>
         </tr>
         <tr>
-          @php ($name = Util::fullName($departure->contract->employee, 'uppercase'))
+          @php ($name = $departure->employee->fullName())
           <td class="{{ Util::departure_string_length($name) }} data-row py-5">{{ $name }}</td>
-        </tr>
-        <tr class="bg-grey-darker text-xxs text-white">
-          <td>CARGO</td>
-        </tr>
-        <tr>
-          <td class="{{ Util::departure_string_length($departure->contract->position->name) }} data-row py-5">{{ $departure->contract->position->name }}</td>
         </tr>
         <tr class="bg-grey-darker text-xxs text-white">
           <td>ÁREA</td>
         </tr>
         <tr>
-          <td class="{{ Util::departure_string_length($departure->contract->position->position_group->name) }} data-row py-5">{{ $departure->contract->position->position_group->name }}</td>
+          <td class="{{ Util::departure_string_length($contract->position->position_group->name) }} data-row py-5">{{ $contract->position->position_group->name }}</td>
         </tr>
       </table>
       <table class="table-info w-49 m-b-5 text-center uppercase" style="float: right; margin-left: 1px;">
         <tr class="bg-grey-darker text-xxs text-white">
-          <td class="w-50" colspan='2'>MOTIVO</td>
+          <td class="w-50" colspan='2'>CARGO</td>
         </tr>
         <tr>
-          <td class="w-50 text-xs data-row py-5" colspan='2'>{{ $departure->departure_reason->name }}</td>
-        </tr>
-        <tr class="bg-grey-darker text-xxs text-white">
-          <td colspan='2'>DETALLE</td>
-        </tr>
-        <tr>
-          <td class="{{ Util::departure_string_length($departure->description) }} data-row py-5" colspan='2'>{{ $departure->description }}</td>
+          <td class="{{ Util::departure_string_length($contract->position->name) }} data-row py-5" colspan='2'>{{ $contract->position->name }}</td>
         </tr>
         <tr class="bg-grey-darker text-xxs text-white">
           <td class="w-50">DESDE</td>
@@ -134,14 +124,14 @@ use \Milon\Barcode\DNS2D;
         </tr>
         <tr class="text-xs">
           <td class="w-50 py-5">
-            <span>{{ Carbon::parse($departure->departure_date)->format('d/m/Y') }}</span>
+            <span>{{ Carbon::parse($departure->departure)->format('d/m/Y') }}</span>
             <span>&nbsp;</span>
-            <span>{{ Carbon::parse($departure->departure_time)->format('H:i') }}</span>
+            <span>{{ Carbon::parse($departure->departure)->format('H:i') }}</span>
           </td>
           <td class="w-50 py-5">
-            <span>{{ Carbon::parse($departure->return_date)->format('d/m/Y') }}</span>
+            <span>{{ Carbon::parse($departure->return)->format('d/m/Y') }}</span>
             <span>&nbsp;</span>
-            <span>{{ Carbon::parse($departure->return_time)->format('H:i') }}</span>
+            <span>{{ Carbon::parse($departure->return)->format('H:i') }}</span>
           </td>
         </tr>
       </table>
@@ -152,7 +142,7 @@ use \Milon\Barcode\DNS2D;
           </tr>
         </thead>
         <tbody>
-          <tr class="{{ Util::departure_string_length($departure->description) }} text-left" style="height: 30px;">
+          <tr class="{{ Util::departure_string_length($departure->description) }} text-left" style="height: 70px;">
             <td>{{ $departure->description }}</td>
           </tr>
         </tbody>
@@ -163,7 +153,7 @@ use \Milon\Barcode\DNS2D;
             <td class="text-center w-25 font-bold text-xxxs">Solicitante</td>
             <td class="text-center w-25 font-bold text-xxxs">Autorizado</td>
             <td class="text-center w-25 font-bold text-xxxs">RRHH</td>
-            <td class="text-center w-25 font-bold text-xxxs">Detalle</td>
+            <td class="text-center w-25 font-bold text-xxxs">Destino</td>
           </tr>
         </tbody>
       </table>
@@ -173,9 +163,9 @@ use \Milon\Barcode\DNS2D;
       <tr>
         <td class="text-xxxs" align="left">
           @if (env("APP_ENV") == "production")
-            VERSIÓN DE PRUEBAS
+            Este documento oficial queda invalidado al contener rayaduras, correcciones o raspones
           @else
-            Este documento oficial queda inválido al contener rayaduras, correcciones o raspones
+            VERSIÓN DE PRUEBAS
           @endif
         </td>
         <td class="child" align="right">

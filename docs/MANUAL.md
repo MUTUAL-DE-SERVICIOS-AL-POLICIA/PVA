@@ -3,7 +3,7 @@
 ## INGRESO AL SISTEMA.
 
 Este sistema es compatible con los navegadores Firefox y Chrome, para acceder al sistema se debe acceder al enlace:
-[http://rrhh.muserpol.gob.bo](http://rrhh.muserpol.gob.bo).
+[http://pva.muserpol.gob.bo](http://pva.muserpol.gob.bo).
 Una vez dentro se deben ingresar las credenciales en los campos de usuario y contraseña adquiridas por el responsable de la Unidad de Sistemas y Soporte Técnico.
 
 ![IMAGE](./img/login.png)
@@ -29,7 +29,7 @@ Debe llenar el formulario que anterior, de la siguiente manera:
 
 Después del login, debe hacer click en el botón ubicado en la parte superior derecha de la ventana con el nombre de usuario ADMIN, esta acción abrirá el menú lateral:
 
-![IMAGE](./img/menu_top.png)
+![IMAGE](./img/menu_top_profile.png)
 
 A continuación debe hacer click en la opción de Perfil que se muestra a continuación.
 
@@ -41,7 +41,7 @@ Debe llenar el formulario que aparecerá en la nueva ventana, con lo cual, tras 
 
 Para salir de la sesión actual bastará con hacer click en la opción Cerrar Sesión del menú superior derecho.
 
-![IMAGE](./img/menu_top.png)
+![IMAGE](./img/menu_top_close.png)
 
 ## ESTADÍSTICAS
 
@@ -49,10 +49,10 @@ Para salir de la sesión actual bastará con hacer click en la opción Cerrar Se
 
 Esta primera ventana muestra el resumen de:
 
-* Personal eventual activo e inactivo, y nuevos ingresos del mes
-* Consultores activos e inactivos, y nuevos ingresos del mes
-* Personal sin contrato actual
-* Recaudación del fondo social hasta la fecha de acuerdo a las planillas generadas
+* Personal eventual activo e inactivo, y nuevos ingresos y bajas del mes
+* Consultores activos e inactivos, y nuevos ingresos y bajas del mes
+* Personal sin contrato o con contrato vencido
+* Recaudación del fondo social y detalle mensual hasta la fecha de acuerdo a las planillas generadas
 * Cumpleañeros del mes
 
 Cada resumen tiene la opción de descarga en formato CSV editable como hoja de cálculo.
@@ -83,8 +83,7 @@ Por otra parte, cada registro cuenta con 4 opciones:
 
 - **1)** Dar de baja a un funcionario, éste registro será visible en la pestaña de *INACTIVOS*
 - **2)** Editar los datos del funcionario
-- **3)** Eliminar registro (siempre y cuando no se encuentre registrado en planillas ni contratos)
-- **4)** Imprimir el Certificado de Haberes y Aportes Laborales
+- **3)** Imprimir el Certificado de Haberes y Aportes Laborales
 
 ![IMAGE](./img/print_certificate.png)
 
@@ -118,7 +117,7 @@ En la pestaña de contratos eventuales se despliegan 4 opciones:
   * Impresión de contrato, alta y baja del seguro
   * Recontratar personal
   * Editar contrato
-  * Eliminar, válido solo en caso de que el contrato no figure en ninguna planilla
+  * Eliminar, visible solo en caso de que el contrato no figure en ninguna planilla
 
 ### GESTIÓN DE PLANILLAS DE PERSONAL EVENTUAL
 
@@ -170,7 +169,7 @@ La edición de planillas contempla el registro de:
 
 Al registrar cualquiera de estos valores bastará con pulsar la tecla *ENTER* para que sean guardados. Alternativamente se puede llenar toda una fila y pulsar el botón *GUARDAR*.
 
-Las opciones de Eliminar Planilla, Eliminar Registro y Añadir un Nuevo Registro están habilitadas solo para el rol de administrador. La última de estas opciones abre un formulario
+Las opciones de Eliminar Planilla y Eliminar Registro están habilitadas solo para el rol de administrador. La última de estas opciones abre un formulario:
 
 ![IMAGE](./img/form_edit_procedure.png)
 
@@ -218,18 +217,6 @@ Esta pestaña cuenta con las mismas opciones que el módulo de planillas de pers
 
 ![IMAGE](./img/consultant_payroll_index.png)
 
-## ADMINISTRACIÓN DE USUARIOS
-
-Gestión de roles para cada cuenta de usuario con acceso al sistema, esta lista es generada mediante la lista de usuarios disponible en el servidor de identificación centralizada LDAP.
-
-![IMAGE](./img/users.png)
-
-## REGISTRO DE ACTIVIDADES
-
-Cada acción generada por los usuarios es guardada como respaldo de la actividad en caso de ser necesaria la evidencia de los cambios que realizó algún usuario.
-
-![IMAGE](./img/activities.png)
-
 ## SALIDAS Y LICENCIAS
 
 ### SOLICITUD DE SALIDAS Y LICENCIAS
@@ -242,82 +229,121 @@ Seleccione la opción de nueva solicitud, aparecera el siguiente formulario dond
 
 ![IMAGE](./img/departure.png)
 
-- **1)** Horas por mes restantes.
-- **2)** Días por año restantes.
-- **3)** Selección de salida o licencias.
-- **4)** Busqueda.
-- **5)** Solicitar salida o licencia.
-- **6)** Lista de solicitudes.
-Para solicitar una salida o licencia llenar el siguiente formulario.
+- **1)** Horas restantes del mes en curso.
+- **2)** Días restantes del año en curso.
+- **3)** Solicitar salida o licencia.
+- **4)** Filtro de visualización de solicitudes del mes en curso o todas.
+- **5)** Imprimir solicitud o nota dependiendo del tipo de solicitud.
+- **6)** Editar CITE y/o DETALLE de solicitud, no visible para solicitudes aceptadas o rechazadas.
+- **7)** Eliminar solicitud, solo disponible en caso de solicitudes pendientes, no visible para solicitudes aceptadas o rechazadas.
 
-![IMAGE](./img/form_departure.png)
+Para solicitar una salida o licencia llenar el siguiente formulario divido en dos pasos:
 
-- **1)** Seleccione el tipo de solicitud.
-- **2)** Seleccione el motivo de su salida.
-- **3)** Escriba el destino (puede escribir particular).
-- **4)** Escriba alguna observación o descripcion si corresponde.
-- **5)** Fecha y hora de salida (si no realizará marcado debe registrar hora de salida 8:00 por la mañana o 14:30 por la tarde).
-- **6)** Fecha y hora de retorno (si no realizará marcado debe registrar hora de retorno 12:00 por la mañana o 18:30 por la tarde).
+![IMAGE](./img/form_departure_1.png)
 
-Proceda a imprimir la solicitud.
+- **1)** Seleccione el tipo de permiso.
+- **2)** Seleccione la razón de la solicitud.
+- **3)** Pulse el botón siguiente para pasar al paso 2.
+
+![IMAGE](./img/form_departure_2.png)
+
+Seleccione las opciones de acuerdo a su solicitud y proceda a imprimir la solicitud. La impresión debe realizarse en una hoja tamaño oficio, está será dividida en tres a fin de obtener un ejemplar para el solicitante, otra para el personal de Recursos Humanos y otra para constancia en caso de ser presentada para devolución de pasajes con Caja Chica.
 
 ![IMAGE](./img/print_departure.png)
 
-Una vez solicitado debe dirigirse a Recursos humanos con la documentación correspondiente para que la solicitud sea aprobada.
+Si la solicitud debe ser presentada mediante nota al Director General Ejecutivo, se generará una carta prediseñada lista para su presentación.
+
+![IMAGE](./img/print_departure_note.png)
+
+Una vez solicitada la licencia o permiso debe adjuntar el respaldo (en caso de existir) y dirigirse a la Unidad de Recursos Humanos con la documentación correspondiente para que la solicitud sea aprobada.
 
 ### ADMINISTRACIÓN DE SALIDAS Y LICENCIAS
 
-Seleccione la opción de "Administración de salidas y licencias" el cual le mostrara la siguiente vista:
+Seleccione la opción de "Aprobar Permisos" que mostrará la siguiente vista:
 
 ![IMAGE](./img/admin_departure.png)
 
-- **1)** Reportes.
-- **2)** Selección de salida o licencias.
-- **3)** Busqueda.
-- **4)** Lista de solicitudes.
+Aquí se muestra un listado de todas las solicitudes generadas, para aprobar basta con cambiar el interruptor ubicado en la parte derecha de cada solicitud. El código de colores que se muestra en la pestaña de información es el siguiente:
+
+* <span style="color:yellow">**AMARILLO**</span>: Solicitudes pendientes de aprobación o rechazo.
+* <span style="color:red">**ROJO**</span>: Solicitudes rechazadas.
+* <span style="color:blue">**AZUL**</span>: Solicitud seleccionada.
+* <span style="color:black">**BLANCO**</span>: Solicitudes aprobadas.
+
+El botón *REPORTE* imprime un reporte de las solicitudes generadas entre el día 20 del mes anterior y el día 19 del mes en curso.
 
 ![IMAGE](./img/report_departure.png)
 
-- **1)** Seleccione Direccion o unidad.
-- **2)** Seleccione al empleado.
-- **3)** Seleccione tipo de solicitud (salida, licencia).
-- **4)** Seleccione estado de solicitud.
-- **5)** Seleccione rango de fechas de solicitud.
-
 ## ALMACENES
 
-### SOLICITUDES DE PEDIDOS
+### SOLICITUDES DE PEDIDOS DE ALMACÉN
 
-Seleccione la opción de `Pedidos` del grupo *Almacén*, el cual le mostrara la siguiente vista:
+Seleccione la opción de `Solicitud de Material` del menú lateral, la cual le mostrara la siguiente vista:
 
 ![IMAGE](./img/supply_request.png)
 
-- **1)** Filtro de pedidos que muestra los Todos los pedidos, pedidos Nuevos, Entregados y Cancelados.
-- **2)** Detalles de un pedido.
-- **3)** Impresión de la solicitud.
+- **1)** Generar nueva solicitud de material.
+- **2)** Búsqueda de solicitud.
+- **3)** Filtro de pedidos *NUEVOS*, *ENTREGADOS* y *CANCELADOS*.
 
-![IMAGE](./img/supply_request_print.png)
+### GENERAR SOLICITUD
 
-### SOLICITUD DE ARTÍCULOS EN STOCK
-
-Seleccione la opción de `Artículos` del grupo *Almacén*, el cual le mostrara la siguiente vista:
+Seleccione la botón `+` el cual le mostrara el siguiente formulario:
 
 ![IMAGE](./img/supply_index.png)
 
-- **1)** Filtro de artículos agrupados por tipo.
+- **1)** Cantidad de artículos pedidos.
 - **2)** Buscador por nombre.
-- **3)** Cantidad de artículos pedidos.
-- **4)** En caso de que el stock de un artículo sea 0, no se podrá realizar pedido del mismo.
+- **3)** Filtro de artículos agrupados por tipo.
 
-Una vez seleccionada la cantidad de artículos del pedido (15 artículos como máximo) se habilitará la opción de `VER PEDIDO`.
+Una vez seleccionada la cantidad de artículos del pedido (15 artículos como máximo) se continua al siguiente paso.
 
 ![IMAGE](./img/supply_show.png)
 
-En esta vista se mostrarán todos los artículos pedidos y las cantidades, para eliminar un artículo bastará con reducir la cantidad pedida a `0`.
+En este formulario se mostrarán todos los artículos pedidos y las cantidades (aún se pueden modificar). Para eliminar un artículo bastará con reducir la cantidad pedida a `0`.
 
-![IMAGE](./img/supply_send.png)
+![IMAGE](./img/supply_request_print.png)
 
-- **1)** Enviar e imprimir pedido.
-- **2)** Modificar cantidad.
+La impresión debe realizarse en una hoja tamaño oficio, está será dividida en dos a fin de obtener un ejemplar para el solicitante y otro para el encargado de almacén.
 
-La impresión debe ser en una hoja tamaño carta, está será dividida en dos a fin de obtener dos ejemplares impresos del pedido.
+### REGISTRAR ENTREGA DE MATERIAL
+
+Esta opción solo está disponible para el encargado de almacén.
+
+![IMAGE](./img/request_index.png)
+
+- **1)** Registrar entrega de materiales solicitados.
+- **2)** Filtro de solicitudes *NUEVAS*, *ENTREGADAS* y *CANCELADAS*.
+
+Para registrar la entrega de materiales o anular la solicitud se debe presionar el botón de Entrega en la parte de derecha de cada solicitud, esto abrirá un formulario:
+
+![IMAGE](./img/request_show.png)
+
+- **1)** Anular solicitud.
+- **2)** Cambiar cantidad entregada.
+- **3)** Registrar e imprimir entrega.
+
+![IMAGE](./img/request_print.png)
+
+La impresión debe realizarse en una hoja tamaño oficio, está será dividida en dos a fin de obtener un ejemplar para el solicitante y otro para el encargado de almacén.
+
+### STOCK DE MATERIALES
+
+Esta opción solo está disponible para el encargado de almacén.
+
+![IMAGE](./img/material_index.png)
+
+- **1)** Buscar material por nombre.
+- **2)** Filtro de materiales por grupo.
+
+## ADMINISTRACIÓN DE USUARIOS
+
+Gestión de roles para cada cuenta de usuario con acceso al sistema, esta lista es generada mediante la lista de usuarios disponible en el servidor de identificación centralizada LDAP.
+
+![IMAGE](./img/users.png)
+
+## REGISTRO DE ACTIVIDADES
+
+Cada acción generada por los usuarios es guardada como respaldo de la actividad en caso de ser necesaria la evidencia de los cambios que realizó algún usuario.
+
+![IMAGE](./img/activities.png)

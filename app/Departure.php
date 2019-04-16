@@ -12,7 +12,7 @@ class Departure extends Model
 
   public $timestamps  = true;
   public $guarded     = ['id'];
-  protected $fillable = ['contract_id', 'departure_reason_id', 'description', 'departure_date', 'return_date', 'departure_time', 'return_time', 'approved'];
+  protected $fillable = ['departure_reason_id', 'description', 'approved', 'on_vacation', 'employee_id', 'departure', 'return', 'cite'];
 
   public function employee()
   {

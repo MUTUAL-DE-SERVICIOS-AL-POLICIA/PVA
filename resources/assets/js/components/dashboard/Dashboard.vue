@@ -6,7 +6,7 @@
           <v-flex md12 lg8>
             <v-layout row wrap>
               <template v-for="filter in filteredEmployees">
-                <v-flex xs12 sm6 :key="filter.title" v-if="filter.role == null || $store.getters.role == filter.role || $store.getters.role == 'admin'">
+                <v-flex xs12 sm6 :key="filter.title" v-if="$store.getters.role == 'admin' || $store.getters.role == 'rrhh'">
                   <v-card :color="filter.color" dark class="mb-2 card-box">
                     <v-layout row wrap>
                       <v-flex xs4 class="text-xs-center" mt-4>
@@ -100,7 +100,7 @@
                   </v-layout>
                 </v-card>
               </v-flex>
-              <v-flex xs12 sm6>
+              <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
                 <v-card color="teal darken-4" dark :to="{ name: 'supplyRequestIndex', query: { requestType: 'user' }}" style="cursor: pointer" class="card-box">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
@@ -115,7 +115,7 @@
                 </v-card>
               </v-flex>
               <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
-                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex' }" style="cursor: pointer" class="card-box">
+                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex', query: {departureType: 'user'} }" style="cursor: pointer" class="card-box">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>
                       <v-icon size="80">directions_run</v-icon>

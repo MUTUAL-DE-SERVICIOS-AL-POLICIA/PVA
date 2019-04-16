@@ -123,7 +123,7 @@ class ConsultantPayrollPrintController extends Controller
     $response->data['title']->report_type = $report_type;
     $response->data['title']->month = $month->name;
 
-    $response->data['title']->name = 'PLANILLA DE HABERES CONSULTORES EN LÍNEA';
+    $response->data['title']->name = 'PLANILLA DE HONORARIOS CONSULTORES EN LÍNEA';
 
     if ($position_group) {
       $position_group = PositionGroup::find($position_group);

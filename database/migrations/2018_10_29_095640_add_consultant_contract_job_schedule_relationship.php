@@ -28,7 +28,7 @@ class AddConsultantContractJobScheduleRelationship extends Migration
   public function down()
   {
     Schema::table('contract_job_schedule', function (Blueprint $table) {
-      $table->integer('contract_id')->nullable(false)->change();
+      $table->integer('contract_id')->nullable()->change();
       $table->dropColumn('consultant_contract_id');
     });
   }

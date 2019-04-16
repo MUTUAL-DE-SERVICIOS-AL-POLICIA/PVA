@@ -6,10 +6,10 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
   /**
-	 * Seed the application's database.
-	 *
-	 * @return void
-	 */
+   * Seed the application's database.
+   *
+   * @return void
+   */
   public function run()
   {
     $this->command->info('Unguarding models');
@@ -64,8 +64,6 @@ class DatabaseSeeder extends Seeder
     $this->call(CitySeeder::class);
     $this->call(InsuranceCompanySeeder::class);
     $this->call(ManagementEntitySeeder::class);
-    $this->call(DocumentTypeSeeder::class);
-    $this->call(DocumentSeeder::class);
     $this->call(CompanySeeder::class);
     $this->call(CompanyAddressSeeder::class);
     $this->call(PositionGroupSeeder::class);
@@ -88,10 +86,8 @@ class DatabaseSeeder extends Seeder
     $this->call(ConsultantProcedureSeeder::class);
     $this->call(ConsultantPayrollSeeder::class);
     $this->call(UserActionSeeder::class);
-    $this->call(DocumentTypeAdd2Seeder::class);
     $this->call(DepartureGroupSeeder::class);
     $this->call(DepartureReasonSeeder::class);
-    $this->call(ContractTypeDepartureReasonSeeder::class);
     $this->call(UserActionPermissionSeeder::class);
     $this->call(SupplyPermissionSeeder::class);
     $this->call(ProcedureEventualPermissionSeeder::class);

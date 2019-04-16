@@ -61,9 +61,12 @@ class RemoveUnnecesaryTables extends Migration
       $table->foreign('minimum_salary_id')->references('id')->on('minimum_salaries');
     });
     // Set minimum salary on all procedures
-    Auth::login(App\User::first());
-    App\MinimumSalary::latest()->first()->procedures()->saveMany(App\Procedure::get());
-    Auth::logout();
+    $user = App\User::first();
+    if ($user) {
+      Auth::login($user);
+      App\MinimumSalary::latest()->first()->procedures()->saveMany(App\Procedure::get());
+      Auth::logout();
+    }
   }
 
   /**
@@ -153,7 +156,7 @@ class RemoveUnnecesaryTables extends Migration
       $table->dropForeign(['minimum_salary_id']);
       $table->dropColumn(['minimum_salary_id']);
       $table->integer('employer_tribute_id')->nullable();
-			$table->foreign('employer_tribute_id')->references('id')->on('employer_tributes');
+      $table->foreign('employer_tribute_id')->references('id')->on('employer_tributes');
     });
   }
 }

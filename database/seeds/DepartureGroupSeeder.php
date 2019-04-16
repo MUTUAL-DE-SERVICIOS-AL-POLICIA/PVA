@@ -5,20 +5,21 @@ use Illuminate\Database\Seeder;
 class DepartureGroupSeeder extends Seeder
 {
   /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+   * Run the database seeds.
+   *
+   * @return void
+   */
   public function run()
   {
     $types = [
-      ['name' => 'Personal', 'description' => 'Asuntos personales'],
-      ['name' => 'Comisión', 'description' => 'Viajes, reuniones, diligencias'],
-      ['name' => 'Salud', 'description' => 'Atención médica, bajas'],
-      ['name' => 'Familiar', 'description' => 'Matrimonio, nacimientos, fallecimientos'],
-      ['name' => 'Extracurricular', 'description' => 'Otros']
+      ['name' => 'PERSONAL', 'description' => 'Asuntos personales'],
+      ['name' => 'COMISIÓN', 'description' => 'VIAJEs, reuniones, diligencias'],
+      ['name' => 'SALUD', 'description' => 'Consulta médica, bajas'],
+      ['name' => 'FAMILIAR', 'description' => 'Matrimonio, nacimientos, fallecimientos'],
+      ['name' => 'EXTRACURRICULAR', 'description' => 'Otros']
     ];
 
+    App\DepartureGroup::truncate();
     foreach ($types as $type) {
       App\DepartureGroup::create($type);
     }

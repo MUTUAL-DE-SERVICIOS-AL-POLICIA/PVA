@@ -50,19 +50,7 @@
       }
     ]
   }, {
-    "href": "userIndex",
-    "title": "Usuarios",
-    "icon": "security",
-    "permission": "admin",
-    "params": {}
-  }, {
-    "href": "userActionIndex",
-    "title": "Actividad",
-    "icon": "timeline",
-    "permission": "read-user-action",
-    "params": {}
-  }, {
-    "href": "departureAdmin",
+    "href": "departureIndex",
     "title": "Aprobar Permisos",
     "icon": "alarm_on",
     "permission": "read-departure",
@@ -76,20 +64,6 @@
     "permission": "!admin",
     "params": {
       "departureType": "user"
-    }
-  }, {
-    "href": "phonebookIndex",
-    "title": "Agenda Telefonica",
-    "icon": "contact_phone",
-    "permission": "admin",
-    "params": {}
-  }, {
-    "href": "supplyRequestIndex",
-    "title": "Solicitud de Material",
-    "icon": "add_shopping_cart",
-    "permission": "!admin",
-    "params": {
-      "requestType": "user"
     }
   }, {
     "title": "Almacén",
@@ -113,11 +87,25 @@
       }
     ]
   }, {
+    "href": "supplyRequestIndex",
+    "title": "Solicitud de Material",
+    "icon": "add_shopping_cart",
+    "permission": "!admin",
+    "params": {
+      "requestType": "user"
+    }
+  }, {
     "title": "Configuración",
     "icon": "settings",
     "permission": "admin",
     "group": [
       {
+        "href": "phonebookIndex",
+        "title": "Agenda Telefonica",
+        "icon": "contact_phone",
+        "permission": "admin",
+        "params": {}
+      }, {
         "href": "departureConfig",
         "title": "Permisos",
         "icon": "directions_walk",
@@ -125,5 +113,17 @@
         "params": {}
       }
     ]
+  }, {
+    "href": "userIndex",
+    "title": "Usuarios",
+    "icon": "security",
+    "permission": "admin",
+    "params": {}
+  }, {
+    "href": "userActionIndex",
+    "title": "Actividad",
+    "icon": "timeline",
+    "permission": "read-user-action",
+    "params": {}
   }
 ]
