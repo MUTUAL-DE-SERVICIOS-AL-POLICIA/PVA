@@ -84,7 +84,7 @@ class SupplyRequestController extends Controller
    */
   public function show($id)
   {
-    $request = SupplyRequest::find($id);
+    $request = SupplyRequest::with('employee')->find($id);
     $request->subarticles;
     foreach ($request->subarticles as $subarticle) {
       $subarticle->stock();
@@ -140,11 +140,11 @@ class SupplyRequestController extends Controller
     $filename = $request->query()['type'] == 'delivery' ? 'entrega_almacen_' : 'solicitud_almacen_' . $supply_request->nro_solicitud . '.pdf';
     return \PDF::loadView('supply.print', $data)
       ->setOption('page-width', '216')
-      ->setOption('page-height', '356')
+      ->setOption('page-height', '279')
       ->setOption('margin-top', '4')
+      ->setOption('margin-bottom', '4')
+      ->setOption('margin-left', '5')
       ->setOption('margin-right', '5')
-      ->setOption('margin-bottom', '0')
-      ->setOption('margin-left', '10')
       ->setOption('encoding', 'utf-8')
       ->stream($filename);
   }

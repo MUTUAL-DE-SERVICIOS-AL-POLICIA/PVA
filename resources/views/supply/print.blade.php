@@ -16,7 +16,7 @@ use \Milon\Barcode\DNS2D;
       overflow: hidden;
       white-space: nowrap;
       margin-top: 6px;
-      margin-bottom: 18px;
+      margin-bottom: 17px;
     }
     .scissors-rule > span {
       position: relative;
@@ -48,19 +48,19 @@ use \Milon\Barcode\DNS2D;
     <div class="page-break p-10" style="border-radius: 0.75em; border: 1px solid #22292f;">
       <table class="w-100 uppercase">
         <tr>
-          <th class="w-15 text-left no-padding no-margins align-middle">
-            <div class="text-center">
-              <img src="{{ public_path("/img/logo.png") }}" class="w-65">
+          <th class="w-25 text-left no-padding no-margins align-middle">
+            <div class="text-left">
+              <img src="{{ public_path("/img/logo.png") }}" class="w-40">
             </div>
           </th>
           <th class="w-50 align-top">
-            <div class="font-thin leading-tight text-xs" >
+            <div class="font-thin leading-tight text-xxs" >
               <div>MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</div>
               <div>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</div>
               <div>UNIDAD ADMINISTRATIVA</div>
             </div>
           </th>
-            <th class="w-20 no-padding no-margins align-top">
+          <th class="w-25 no-padding no-margins align-top">
             <table class="table-code no-padding no-margins text-xxxs uppercase">
               <tbody>
                 <tr>
@@ -80,10 +80,10 @@ use \Milon\Barcode\DNS2D;
         <tr><td colspan="3" style="border-bottom: 1px solid #22292f;"></td></tr>
       </table>
       <div class="block">
-        <div class="font-semibold leading-tight text-md text-center" style="margin-bottom: 5px">{{ $type == 'delivery' ? 'ENTREGA DE MATERIAL DE ALMACÉN' : 'SOLICITUD DE MATERIAL DE ALMACÉN' }}</div>
-        <table class="table-info w-100 m-b-10 uppercase">
+        <div class="font-semibold leading-tight text-xs text-center" style="margin-bottom: 5px">{{ $type == 'delivery' ? 'ENTREGA DE MATERIAL DE ALMACÉN' : 'SOLICITUD DE MATERIAL DE ALMACÉN' }}</div>
+        <table class="table-info w-100 m-b-10 uppercase text-xs">
           <thead>
-            <tr class="bg-grey-darker text-xs text-white font-light">
+            <tr class="bg-grey-darker text-white font-light">
               <th class="text-center">ITEM</th>
               <th class="text-center">DESCRIPCIÓN</th>
               <th class="text-center">UNIDAD</th>
@@ -95,7 +95,7 @@ use \Milon\Barcode\DNS2D;
           </thead>
           <tbody class="table-striped">
             @foreach ($supply_request->subarticles as $i => $supply)
-            <tr class="text-sm font-thin">
+            <tr class="font-thin">
               <td class="text-center">{{ ++$i }}</td>
               <td class="text-center">{{ $supply['description'] }}</td>
               <td class="text-center">{{ $supply['unit'] }}</td>
@@ -106,7 +106,7 @@ use \Milon\Barcode\DNS2D;
             </tr>
             @endforeach
             @for($i=sizeof($supply_request->subarticles)+1;$i<=15;$i++)
-              <tr class="text-sm">
+              <tr>
                 <td class="text-center" colspan="{{ $type == 'delivery' ? 5 : 4}}" >&nbsp;</td>
               </tr>
             @endfor
@@ -114,7 +114,7 @@ use \Milon\Barcode\DNS2D;
         </table>
         <table class="w-100" border="1" frame="void" rules="all">
           <tbody class="">
-            <tr class="" style="height: 200px; vertical-align: bottom;">
+            <tr class="" style="height: 150px; vertical-align: bottom;">
               <td class="text-center w-50 font-bold text-xxs">{{ $type == 'delivery' ? 'Recibí conforme' : 'Solicitante' }}</td>
               <td class="text-center w-50 font-bold text-xxs">{{ $type == 'delivery' ? 'Entregado por' : 'Autorizado' }}</td>
             </tr>

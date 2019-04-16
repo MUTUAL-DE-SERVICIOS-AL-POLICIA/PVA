@@ -12,6 +12,14 @@
             label="Pedidos"
           ></v-select>
         </v-toolbar-title>
+        <v-tooltip color="white" role="button" bottom>
+          <v-icon slot="activator" class="ml-4">info</v-icon>
+          <div>
+            <v-alert :value="true" type="warning" class="black--text">PENDIENTE DE ENTREGA</v-alert>
+            <v-alert :value="true" type="error">ANULADO</v-alert>
+            <v-alert :value="true" type="info">SELECCIONADO</v-alert>
+          </div>
+        </v-tooltip>
         <v-spacer></v-spacer>
         <v-divider
           class="mx-2"
@@ -42,23 +50,24 @@
         :rows-per-page-items="[10,20,30,{text:'TODO', value:-1}]"
         disable-initial-sort
         expand
+        class="elevation-1"
       >
         <template slot="items" slot-scope="props">
-          <tr :class="props.expanded ? 'expanded' : ''">
-            <td class="text-md-center" @click="getSubarticles(props)">{{ props.item.nro_solicitud }}</td>
-            <td class="text-md-center" @click="getSubarticles(props)">{{ $moment(props.item.created_at).format('L') }}</td>
-            <td v-if="requestTypeSelected == 'initiation' && $route.query.requestType == 'all' && 'employee' in props.item" class="text-md-center" @click="getSubarticles(props)">
+          <tr :class="props.expanded ? 'info dark white--text' : (props.item.status == 'initiation' ? 'warning' : (props.item.status == 'canceled' ? 'error dark white--text' : ''))">
+            <td class="text-md-center bordered" @click="getSubarticles(props)">{{ props.item.nro_solicitud }}</td>
+            <td class="text-md-center bordered" @click="getSubarticles(props)">{{ $moment(props.item.created_at).format('L') }}</td>
+            <td class="text-md-center bordered" v-if="requestTypeSelected == 'initiation' && $route.query.requestType == 'all' && 'employee' in props.item" @click="getSubarticles(props)">
               <v-tooltip top>
                 <span slot="activator">{{ props.item.employee.name }}</span>
                 <span>{{ props.item.employee.title }}</span>
               </v-tooltip>
             </td>
-            <td v-else class="text-md-center" @click="getSubarticles(props)">{{ props.item.delivery_date ? $moment(props.item.delivery_date).format('L') : '-' }}</td>
-            <td class="text-md-center" @click="getSubarticles(props)">{{ props.item.observacion }}</td>
-            <td class="text-md-center">
+            <td class="text-md-center bordered" v-else @click="getSubarticles(props)">{{ props.item.delivery_date ? $moment(props.item.delivery_date).format('L') : '-' }}</td>
+            <td class="text-md-center bordered" @click="getSubarticles(props)">{{ props.item.observacion }}</td>
+            <td class="text-md-center bordered">
               <template v-if="props.item.status == 'initiation' && ($store.getters.role == 'admin' || $store.getters.role == 'almacenes') && $route.query.requestType == 'all'">
                 <v-tooltip top>
-                  <v-btn slot="activator" flat icon color="primary" @click.native="openDialogSupply('delivery', props.item.id)">
+                  <v-btn slot="activator" flat icon :color="props.expanded ? `white` : `primary`" @click.native="openDialogSupply('delivery', props.item.id)">
                     <v-icon>local_shipping</v-icon>
                   </v-btn>
                   <span>Entregar</span>
@@ -81,14 +90,14 @@
             class="elevation-4"
           >
             <template slot="items" slot-scope="props">
-              <tr class="sub-table">
-                <td class="text-md-center">
+              <tr>
+                <td class="text-md-center caption font-weight-light bordered">
                   {{ props.item.description }}
                 </td>
-                <td class="text-md-center">
+                <td class="text-md-center caption font-weight-light bordered">
                   {{ props.item.pivot.amount }}
                 </td>
-                <td class="text-md-center">
+                <td class="text-md-center caption font-weight-light bordered">
                   {{ props.item.pivot.total_delivered }}
                 </td>
               </tr>
@@ -154,7 +163,7 @@ export default {
         dislayName: 'ENTREGADOS'
       }, {
         type: 'canceled',
-        dislayName: 'CANCELADOS'
+        dislayName: 'ANULADOS'
       }
     ],
     requestTypeSelected: 'initiation',
@@ -299,11 +308,7 @@ export default {
 </script>
 
 <style>
-.expanded {
-  border-top: 1px solid black;
-  background-color: #42B2A6;
-}
-.sub-table {
+.bordered {
   border-bottom: 1px solid black;
 }
 </style>
