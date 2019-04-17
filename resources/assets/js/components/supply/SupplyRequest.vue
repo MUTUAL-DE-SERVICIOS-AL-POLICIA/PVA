@@ -33,7 +33,7 @@
 
     <v-card>
       <v-toolbar dark color="secondary">
-        <v-toolbar-title class="white--text">Solicitud de Material {{ requestNumber ? `Nº ${requestNumber}` : '' }}</v-toolbar-title>
+        <v-toolbar-title class="white--text">Solicitud de Material {{ request.number ? `Nº ${request.number} - ${request.employee}` : '' }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn color="error" v-if="$route.query.requestType == 'all'" @click.native="dialogNullify = true">
           Anular
@@ -155,7 +155,7 @@ export default {
     return {
       dialog: false,
       dialogNullify: false,
-      maxRequest: 15,
+      maxRequest: 14,
       search: '',
       supplyRequest: [],
       materialSelected: 0,
@@ -168,8 +168,11 @@ export default {
         { n: 1,title: 'Materiales' },
         { n: 2, title: 'Pedido'}
       ],
-      requestNumber: '',
-      requestId: '',
+      request: {
+        id: null,
+        number: null,
+        employee: null
+      },
       step: 1,
       headers: [
         { text: 'Material', value: 'description', align: 'center', sortable: false },
@@ -180,7 +183,7 @@ export default {
   },
   watch: {
     supplyRequest: function (val) {
-      if (val.length >= this.maxRequest) this.toastr.warning('El número máximo de pedidos es 15')
+      if (val.length >= this.maxRequest) this.toastr.warning(`El número máximo de pedidos es ${maxRequest}`)
     }
   },
   computed: {
@@ -217,8 +220,11 @@ export default {
             subarticle.amount = subarticle.pivot.amount
             subarticle.total_delivered = subarticle.pivot.amount
           })
-          this.requestNumber = data.supplyRequest.nro_solicitud
-          this.requestId = data.supplyRequest.id
+          this.request = {
+            id: data.supplyRequest.id,
+            number: data.supplyRequest.nro_solicitud,
+            employee: data.supplyRequest.employee.name
+          }
           this.step = 1
           steps = [
             {
@@ -266,8 +272,11 @@ export default {
     closeDialog() {
       this.step = 1
       this.search = ''
-      this.requestNumber = ''
-      this.requestId = ''
+      this.request = {
+        id: null,
+        number: null,
+        employee: null
+      }
       this.supplyRequest = []
       this.subarticles = []
       this.dialogNullify = false
@@ -313,7 +322,7 @@ export default {
                   subarticle.pivot.total_delivered = subarticle.total_delivered
                   subarticle.pivot.amount_delivered = subarticle.total_delivered
                 })
-                res = await axios.patch(`supply_request/${this.requestId}`, {
+                res = await axios.patch(`supply_request/${this.request.id}`, {
                   subarticles: subarticles,
                   status: 'delivered'
                 })
@@ -346,7 +355,7 @@ export default {
                   subarticle.pivot.amount_delivered = 0
                 })
               }
-              res = await axios.patch(`supply_request/${this.requestId}`, {
+              res = await axios.patch(`supply_request/${this.request.id}`, {
                 subarticles: subarticles,
                 status: 'canceled'
               })

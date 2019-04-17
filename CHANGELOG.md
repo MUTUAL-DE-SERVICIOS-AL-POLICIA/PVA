@@ -2,6 +2,23 @@
 
 ---
 
+## [4.0.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.2) - 2019-04-17
+
+### Added
+
+* Added signature slot on the bottom of the print form
+
+## [4.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.1) - 2019-04-17
+
+### Added
+
+* Employee name to supply request form
+* Colors to supply request index
+
+### Changed
+
+* Paper size to printable supply request
+
 ## [4.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.0) - 2019-04-16
 
 ### Added

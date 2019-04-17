@@ -8,9 +8,9 @@ $contract = $departure->employee->contract_in_date($departure->departure);
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>PLATAFORMA VIRTUAL - MUSERPOL</title>
-    <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all" />
+    <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all"/>
     <style>
       .data-row {
         height: 17px;
