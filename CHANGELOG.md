@@ -2,6 +2,12 @@
 
 ---
 
+## [4.0.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.2) - 2019-04-17
+
+### Added
+
+* Added signature slot on the bottom of the print form
+
 ## [4.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.1) - 2019-04-17
 
 ### Added
