@@ -134,18 +134,27 @@ class SupplyRequestController extends Controller
     $supply_request = SupplyRequest::find($id);
 
     $data = [
+      'date' => Carbon::now()->ISOFormat('L'),
       'supply_request' => $supply_request,
       'type' => $request->query()['type']
     ];
-    $filename = $request->query()['type'] == 'delivery' ? 'entrega_almacen_' : 'solicitud_almacen_' . $supply_request->nro_solicitud . '.pdf';
-    return \PDF::loadView('supply.print', $data)
-      ->setOption('page-width', '216')
-      ->setOption('page-height', '279')
-      ->setOption('margin-top', '4')
-      ->setOption('margin-bottom', '4')
-      ->setOption('margin-left', '5')
-      ->setOption('margin-right', '5')
-      ->setOption('encoding', 'utf-8')
-      ->stream($filename);
+
+    $file_name = $request->query()['type'] == 'delivery' ? 'entrega_almacen_' : 'solicitud_almacen_' . $supply_request->nro_solicitud . '.pdf';
+
+    $options = [
+      'orientation' => 'portrait',
+      'page-width' => '216',
+      'page-height' => '279',
+      'margin-top' => '4',
+      'margin-bottom' => '4',
+      'margin-left' => '5',
+      'margin-right' => '5',
+      'encoding' => 'UTF-8',
+      'user-style-sheet' => public_path('css/report-print.min.css')
+    ];
+
+    $pdf = \PDF::loadView('supply.print', $data);
+    $pdf->setOptions($options);
+    return $pdf->stream($file_name);
   }
 }

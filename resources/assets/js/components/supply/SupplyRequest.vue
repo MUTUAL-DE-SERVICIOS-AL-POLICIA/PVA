@@ -155,7 +155,7 @@ export default {
     return {
       dialog: false,
       dialogNullify: false,
-      maxRequest: 15,
+      maxRequest: 14,
       search: '',
       supplyRequest: [],
       materialSelected: 0,
@@ -183,7 +183,7 @@ export default {
   },
   watch: {
     supplyRequest: function (val) {
-      if (val.length >= this.maxRequest) this.toastr.warning('El número máximo de pedidos es 15')
+      if (val.length >= this.maxRequest) this.toastr.warning(`El número máximo de pedidos es ${maxRequest}`)
     }
   },
   computed: {
