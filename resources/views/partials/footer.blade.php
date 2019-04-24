@@ -14,7 +14,7 @@ use \Milon\Barcode\DNS2D;
         }
         .child{
             display: inline-block;
-            width: 32%;
+            width: 33%;
         }
     </style>
     <script>
@@ -43,21 +43,35 @@ use \Milon\Barcode\DNS2D;
 </head>
 
 <body onload="substitutePdfVariables()">
-    <div class="parent" style="padding-top: {{ $footer_margin }};">
+    <div class="parent" style="padding-top: {{ isset($footer_margin) ? $footer_margin : 0 }};">
         <div class="child" align="left">
         @if (env("APP_ENV") != "production")
             VERSIÓN DE PRUEBAS
         @else
-            @if ($print_date)
-                Impreso el {{ $date }}
+            @if (isset($print_message))
+                @if ($print_message)
+                    {{ $print_message }}
+                @endif
+            @endif
+            @if (isset($print_date))
+                @if ($print_date)
+                    Impreso el
+                    @if (isset($date))
+                        {{ $date }}
+                    @else
+                        {{ Carbon::now()->ISOFormat('LLL') }}
+                    @endif
+                @endif
             @endif
         @endif
         </div>
         <div class="child" align="center">
-        @if ($paginator)
-            <span size="3">
-                Página <span class="page"></span> de <span class="topage"></span>
-            </span>
+        @if (isset($paginator))
+            @if ($paginator)
+                <span size="3">
+                    Página <span class="page"></span> de <span class="topage"></span>
+                </span>
+            @endif
         @endif
         </div>
         <div class="child" align="right">
