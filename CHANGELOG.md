@@ -2,6 +2,12 @@
 
 ---
 
+## [4.0.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.3) - 2019-04-24
+
+### Added
+
+* Draft message to printed procedure templates without closed date
+
 ## [4.0.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.2) - 2019-04-17
 
 ### Added
