@@ -216,7 +216,7 @@ class PayrollPrintController extends Controller
 
     $file_name = implode(" ", [$response->data['title']->name, $report_name, $year, mb_strtoupper($month->name)]) . ".pdf";
 
-    $footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => false, 'date' => null))->render();
+    $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_message' => $response->data['procedure']->active ? 'Borrador' : null, 'print_date' => $response->data['procedure']->active, 'date' => null))->render();
 
     $options = [
       'orientation' => 'landscape',

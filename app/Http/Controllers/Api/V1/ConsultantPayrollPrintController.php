@@ -75,17 +75,17 @@ class ConsultantPayrollPrintController extends Controller
   }
 
   /**
-	 * Print PDF payroll reports.
-	 *
-	 * @param  integer  $year
-	 * @param  integer  $month
-	 * @param  string  $report_type
-	 * @param  string  $report_name
-	 * @param  boolean $valid_contracts
-	 * @param  integer  $management_entity_id
-	 * @param  integer  $position_group_id
-	 * @return \PDF
-	 */
+   * Print PDF payroll reports.
+   *
+   * @param  integer  $year
+   * @param  integer  $month
+   * @param  string  $report_type
+   * @param  string  $report_name
+   * @param  boolean $valid_contracts
+   * @param  integer  $management_entity_id
+   * @param  integer  $position_group_id
+   * @return \PDF
+   */
   public function print_pdf(Request $params, $year, $month)
   {
     $month = Month::where('id', $month)->select()->first();
@@ -132,7 +132,7 @@ class ConsultantPayrollPrintController extends Controller
 
     $file_name = implode(" ", [$response->data['title']->name, $report_name, $year, mb_strtoupper($month->name)]) . ".pdf";
 
-    $footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => true, 'print_date' => true, 'date' => $response->data['procedure']->pay_date ? Carbon::parse($response->data['procedure']->pay_date)->format('d/m/Y') : Carbon::now()->format('d/m/Y H:i')))->render();
+    $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_message' => $response->data['procedure']->active ? 'Borrador' : null, 'print_date' => $response->data['procedure']->active, 'date' => null))->render();
 
     $options = [
       'orientation' => 'landscape',
@@ -152,12 +152,12 @@ class ConsultantPayrollPrintController extends Controller
   }
 
   /**
-	 * Print TXT payroll reports.
-	 *
-	 * @param  integer  $year
-	 * @param  integer  $month
-	 * @return \TXT
-	 */
+   * Print TXT payroll reports.
+   *
+   * @param  integer  $year
+   * @param  integer  $month
+   * @return \TXT
+   */
   public function print_txt($year, $month)
   {
     $month = Month::findorFail($month);
