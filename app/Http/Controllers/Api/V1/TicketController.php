@@ -44,7 +44,7 @@ class TicketController extends Controller
     $options = [
       'orientation' => 'portrait',
       'page-width' => '216',
-      'page-height' => '356',
+      'page-height' => '427',
       'margin-left' => '0',
       'margin-right' => '0',
       'margin-top' => '0',

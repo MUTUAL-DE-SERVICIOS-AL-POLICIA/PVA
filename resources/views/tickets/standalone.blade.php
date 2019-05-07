@@ -11,6 +11,15 @@
 </head>
 
 <body>
+  <div class="page">
+    <div class="cover-border">
+      <div class="cover-title">
+        <h1>PLANILLA DE PAGO</h1>
+        <h1>MUSERPOL</h1>
+        <h2>{{ $procedure->month->name }} - {{ $procedure->year }}</h2>
+      </div>
+    </div>
+  </div>
   @foreach ($payrolls as $payroll)
   <div class="ticket">
     <!-- LEFT-TICKET -->
