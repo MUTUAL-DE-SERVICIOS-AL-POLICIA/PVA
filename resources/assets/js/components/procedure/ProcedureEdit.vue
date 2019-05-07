@@ -98,7 +98,7 @@
           clearable
         ></v-text-field>
       </v-flex>
-      <PayrollAdd :contracts="contracts" :procedure="procedure" :bus="bus"/>
+      <PayrollAdd v-if="procedure.active" :contracts="contracts" :procedure="procedure" :bus="bus"/>
       <RemoveItem :bus="bus"/>
     </v-toolbar>
     <v-data-table

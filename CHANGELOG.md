@@ -2,6 +2,12 @@
 
 ---
 
+## [4.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.1.0) - 2019-05-07
+
+### Added
+
+* Standalone print tickets
+
 ## [4.0.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.3) - 2019-04-24
 
 ### Added

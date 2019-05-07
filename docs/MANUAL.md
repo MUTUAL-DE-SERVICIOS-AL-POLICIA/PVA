@@ -139,8 +139,10 @@ A continuación se muestra la lista de planillas de cada mes de la gestión sele
 
 Las planillas mensuales cuentan con las opciones de:
 
-* Editar Planilla
+* Editar Planilla (Para planillas abiertas)
+* Ver Planilla (Para planillas cerradas)
 * Imprimir boletas de pago
+* Imprimir boleta de pago separada
 * Descargar archivo TXT para débito automático en Banco
 * Descargar archivo CSV para declaración en la ![Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
 * Descargar registro de novedades para las AFPs
