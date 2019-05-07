@@ -7,7 +7,7 @@
         persistent
         v-model="dialog"
         width="500"
-        @keydown.esc="$router.go({name:'userIndex', params: $store.getters.options})"
+        @keydown.esc="$router.go({name:'userIndex'})"
         :fullscreen="loading"
       >
         <v-btn
@@ -94,7 +94,7 @@
             <v-divider></v-divider>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="success" small @click.native="$router.go({name:'userIndex', params: $store.getters.options})"><v-icon small>check</v-icon> Cerrar</v-btn>
+              <v-btn color="success" small @click.native="$router.go({name:'userIndex'})"><v-icon small>check</v-icon> Cerrar</v-btn>
             </v-card-actions>
           </div>
         </v-card>
@@ -108,24 +108,27 @@
         ></v-select>
       </v-flex>
     </v-toolbar>
-    <UserRegistered v-if="sourceSelected == 'Registrados'" ref="UserRegistered"/>
+    <UserRole v-if="sourceSelected == 'Roles'" ref="UserRole"/>
+    <UserPermission v-if="sourceSelected == 'Permisos'" ref="UserPermission"/>
     <UserLdap v-if="sourceSelected == 'LDAP'"/>
   </v-container>
 </template>
 
 <script>
-import UserRegistered from "./UserRegistered";
+import UserRole from "./UserRole";
+import UserPermission from "./UserPermission";
 import UserLdap from "./UserLdap";
 
 export default {
   name: "userIndex",
   components: {
-    UserRegistered,
+    UserRole,
+    UserPermission,
     UserLdap
   },
   data() {
     return {
-      sources: ["Registrados", "LDAP"],
+      sources: ["Roles", "Permisos", "LDAP"],
       sourceSelected: "",
       message: {
         employees: {
@@ -155,7 +158,7 @@ export default {
         let res = await axios.post(`/ldap`);
         this.message = res.data;
         this.loading = false;
-        this.$refs.UserRegistered.open = true
+        this.$refs.UserRole.open = true
       } catch (e) {
         console.log(e);
       }

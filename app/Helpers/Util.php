@@ -44,7 +44,7 @@ class Util
 
     $string = str_replace(
       array('ñ', 'Ñ', 'ç', 'Ç'),
-      array('n', 'N', 'c', 'C', ),
+      array('n', 'N', 'c', 'C',),
       $string
     );
 
@@ -74,7 +74,7 @@ class Util
 
   public static function removeSpaces($text)
   {
-    $re = ' / \s + / ';
+    $re = '/[\s]+/';
     $subst = ' ';
     $result = preg_replace($re, $subst, $text);
     return $result ? trim($result) : null;
@@ -83,7 +83,7 @@ class Util
   public static function fullName($object, $style = "uppercase", $order = "name_first")
   {
     $name = null;
-    if ($order == ' lastname_first ') {
+    if ($order == 'last_name_first') {
       switch ($style) {
         case 'uppercase':
           $name = mb_strtoupper($object->last_name ?? ' ') . ' ' . mb_strtoupper($object->mothers_last_name ?? ' ') . ' ' . mb_strtoupper($object->surname_husband ?? ' ') . ' ' . mb_strtoupper($object->first_name ?? ' ') . ' ' . mb_strtoupper($object->second_name ?? ' ');
@@ -171,7 +171,7 @@ class Util
     }
     $func = (!is_string($key) && is_callable($key) ? $key : null);
     $_key = $key;
-		// Load the new array, splitting by the target key
+    // Load the new array, splitting by the target key
     $grouped = [];
     foreach ($array as $value) {
       $key = null;
@@ -187,8 +187,8 @@ class Util
       }
       $grouped[$key][] = $value;
     }
-		// Recursively build a nested grouping if more parameters are supplied
-		// Each grouped array value is grouped according to the next sequential key
+    // Recursively build a nested grouping if more parameters are supplied
+    // Each grouped array value is grouped according to the next sequential key
     if (func_num_args() > 2) {
       $args = func_get_args();
       foreach ($grouped as $key => $value) {
@@ -361,11 +361,11 @@ class Util
       }
     }
     if (empty($decimales)) {
-            // $valor_convertido = $converted . strtoupper($moneda);
+      // $valor_convertido = $converted . mb_strtoupper($moneda);
       $valor_convertido = $converted . '00/100';
     } else {
-      $valor_convertido = $converted . strtoupper($moneda) . ($div_decimales[1]) . '/100';
-            // $valor_convertido = $converted . strtoupper($moneda) . ' CON ' . $decimales . ' ' . strtoupper($centimos);
+      $valor_convertido = $converted . mb_strtoupper($moneda) . ($div_decimales[1]) . '/100';
+      // $valor_convertido = $converted . mb_strtoupper($moneda) . ' CON ' . $decimales . ' ' . mb_strtoupper($centimos);
     }
     return $valor_convertido;
   }
@@ -396,5 +396,12 @@ class Util
       'user_id' => Auth::user()->id,
       'action' => $action
     ]);
+  }
+
+  public static function departure_string_length($text)
+  {
+    if (strlen($text) > 80) return 'text-xxxs';
+    if (strlen($text) > 60) return 'text-xxs';
+    return 'text-xs';
   }
 }

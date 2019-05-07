@@ -120,8 +120,6 @@ class BonusController extends Controller
       }
     }
 
-    // return response()->json($employees);
-
     switch ($request['report_type']) {
       case 'txt':
         $total = 0;
@@ -176,6 +174,41 @@ class BonusController extends Controller
         return Response::make($content, 200, $headers);
 
         break;
+      case 'ticket':
+        $procedure->month = (object)array('name' => $procedure->name, 'shortened' => $procedure->name);
+
+        foreach ($employees as $e) {
+          $worked_days = $e->worked_days->months * 30 + $e->worked_days->days;
+          $e->worked_days = $worked_days;
+          $e->quotable = $e->average;
+          $e->discount_old = 0;
+          $e->discount_common_risk = 0;
+          $e->discount_commission = 0;
+          $e->discount_solidary = 0;
+          $e->discount_rc_iva = 0;
+          $e->discount_faults = 0;
+          $e->total_discounts = 0;
+          $e->payable_liquid = $procedure->split_percentage ? $e->bonus_percentage->first_split->value : $e->bonus;
+          $e = $e->generateImage($procedure);
+        }
+
+        $file_name = "Boletas de Pago de " . $procedure->month->name . " de " . $procedure->year . ".pdf";
+        $data = [
+          'payrolls' => $employees,
+          'procedure' => $procedure,
+        ];
+
+        return \PDF::loadView('tickets.print', $data)
+          ->setOption('page-width', '216')
+          ->setOption('page-height', '356')
+          ->setOption('margin-top', 0)
+          ->setOption('margin-bottom', 0)
+          ->setOption('margin-left', 4)
+          ->setOption('margin-right', 4)
+          ->setOption('encoding', 'utf-8')
+          ->stream($file_name);
+
+        break;
       default:
         $response = (object)array(
           "data" => [
@@ -195,7 +228,7 @@ class BonusController extends Controller
 
         $file_name = implode(" ", ['PLANILLA', $response->data['title']->subtitle, $year]) . ".pdf";
 
-        $footerHtml = view()->make('partials.footer')->with(array('footer_margin' => 0, 'paginator' => false, 'print_date' => true, 'date' => $pay_date ? Carbon::parse($pay_date)->format('d/m/Y') : Carbon::now()->format('d/m/Y H:i')))->render();
+        $footerHtml = view()->make('partials.footer')->with(array('print_date' => true, 'date' => $pay_date ? Carbon::parse($pay_date)->format('d/m/Y') : Carbon::now()->format('d/m/Y H:i')))->render();
 
         $options = [
           'orientation' => 'landscape',

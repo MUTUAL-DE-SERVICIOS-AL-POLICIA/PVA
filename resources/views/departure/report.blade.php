@@ -1,91 +1,71 @@
-
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>PLATAFORMA VIRTUAL - MUSERPOL </title>
-    {{-- <link rel="stylesheet" href="{{ asset('css/materialicons.min.css') }}" media="all" /> --}}
-    <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all" />
-</head>
-<body>
-    <div class="page-break">
-        <table class="w-100 ">
-            <tr>
-                <th class="w-20 text-left no-padding no-margins align-middle">
-                    <div class="text-center">
-                        <img src="{{ public_path("/img/logo.png") }}" class="w-100">
-                    </div>
-                </th>
-                <th class="w-50 align-top">
-                    <span class="font-semibold uppercase leading-tight text-md" >
-                        {{  'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"' }} <br>
-                        {{  'DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS' }} <br>
-                        {{  'UNIDAD DE RECURSOS HUMANOS' }}
-                    </span>
-                </th>
-                <th class="w-20 no-padding no-margins align-top">
-                    <table class="table-code no-padding no-margins">
-                        <tbody>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Oficina</td>
-                                <td class="text-xxs font-hairline"> {{ (!isset($search->position_group))?'TODOS':$search->position_group->name }} </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Empleado</td>
-                                <td class="text-xxs font-hairline"> {{ (!isset($search->employee))?'TODOS':(Util::fullName($search->employee)) }} </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Tipo</td>
-                                <td class="text-xxs font-hairline"> {{ ($search->type == null)? 'TODOS':(($search->type == 1)?'Salidas':'Licencias') }} </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Estado</td>
-                                <td class="text-xxs font-hairline"> {{ ($search->state == null)? 'TODOS':(($search->state == true)?'APROBADO':'RECHAZADO') }} </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Fechas</td>
-                                <td class="text-xxs font-hairline"> {{ $search->start_date.' hasta '.$search->end_date }} </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </th>
-            </tr>
-            <tr><td colspan="3" style="border-bottom: 1px solid #22292f;"></td></tr>                  
-        </table>
-        <div class="block">
-            <br>
-            <div class="font-semibold leading-tight text-md text-center">REPORTE DE SALIDAS Y LICENCIAS</div>
-            <table class="table-info w-100 m-b-10">
-                <thead class="bg-grey-darker">
-                    <tr class="font-medium text-white text-xs uppercase">
-                        <td class="px-15 text-center">#</td>
-                        <td class="px-15 text-center">Oficina</td>
-                        <td class="px-15 text-center">Cargo</td>
-                        <td class="px-15 text-center">Nombre</td>
-                        <td class="px-15 text-center">Tipo</td>
-                        <td class="px-15 text-center">Razón</td>
-                        <td class="px-15 text-center">Salida</td>
-                        <td class="px-15 text-center">Retorno</td>
-                        <td class="px-15 text-center">Estado</td>
-                    </tr>
-                </thead>
-                <tbody class="table-striped">
-                    @foreach($departures as $key => $departure)
-                    <tr class="text-xs">
-                        <td class="text-left uppercase px-5 py-3"> {{ ++$key }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ $departure->contract->position->position_group->name }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ $departure->contract->position->name }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ Util::fullName($departure->contract->employee) }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ $departure->departure_reason->departure_type->name }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ $departure->departure_reason->name }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ Carbon::parse($departure->departure_date)->format('d/m/Y').' '.Carbon::parse($departure->departure_time)->format('H:i') }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ Carbon::parse($departure->return_date)->format('d/m/Y').' '.Carbon::parse($departure->return_time)->format('H:i') }} </td>
-                        <td class="text-left uppercase px-5 py-3"> {{ (is_null($departure->approved))? 'PENDIENTE': (($departure->approved == true)? 'APROBADO':'RECHAZADO') }} </td>
-                    @endforeach
-                </tbody>
-            </table>
-            
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        @php($from = Carbon::parse($title->date->from)->ISOFormat('L'))
+        @php($to = Carbon::parse($title->date->to)->ISOFormat('L'))
+        <title>{{ $title->name }} {{ $from }} {{ $to }}</title>
+    </head>
+
+    <body>
+        <div>
+            <div class="header-left">
+                <img id="header-image" src="{{ public_path().'/img/logo.png'}}">
+            </div>
+            <div class="header-center">
+                <h2>
+                    {{ $title->name }}
+                </h2>
+                <h3>DESDE {{ $from }} HASTA {{ $to }}</h3>
+            </div>
         </div>
-    </div>
-</body>
+
+        <table align="center">
+            <thead>
+                <tr>
+                    <th colspan="2" style="border-left: 1px solid white; border-top: 1px solid white; background-color: white;"></th>
+                    <th colspan="7">SOLICITUD</th>
+                </tr>
+                <tr>
+                    <th width="1%">N°</th>
+                    <th width="20%">TRABAJADOR</th>
+                    <th width="5%">TIPO</th>
+                    <th width="10%">MOTIVO</th>
+                    <th width="10%" colspan="2">DESDE</th>
+                    <th width="10%" colspan="2">HASTA</th>
+                    <th width="5%">ESTADO</th>
+                </tr>
+            </thead>
+            <tbody style="font-size: 1.3em;">
+            @if (count($departures) > 0)
+                @foreach ($departures as $i => $departure)
+                    <tr>
+                        <td>{{ ++$i }}</td>
+                        <td class="name">{{ $departure->employee->fullName("uppercase", "last_name_first") }}</td>
+                        <td>{{ $departure->departure_reason->departure_group->name }}</td>
+                        <td>{{ $departure->departure_reason->name }}</td>
+                        @php ($from = Carbon::parse($departure->departure))
+                        @php ($to = Carbon::parse($departure->return))
+                        <td>{{ $from->ISOFormat('L') }}</td>
+                        <td>{{ $from->format('H:i') }}</td>
+                        <td>{{ $to->ISOFormat('L') }}</td>
+                        <td>{{ $to->format('H:i') }}</td>
+                        <td>
+                            @if($departure->approved === true)
+                                {{ 'APROBADO' }}
+                            @elseif($departure->approved === false)
+                                {{ 'RECHAZADO' }}
+                            @elseif($departure->approved === null)
+                                {{ 'PENDIENTE' }}
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            @endif
+            </tbody>
+        </table>
+    </body>
+
 </html>

@@ -42,8 +42,11 @@ Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Vuex)
 
-import moment from 'moment'
-moment.updateLocale('es', require('moment/locale/es'))
+import moment from 'moment-business-days'
+
+moment.updateLocale('es', require('moment/locale/es'), {
+  workingWeekdays: [1, 2, 3, 4, 5]
+})
 Vue.use(require('vue-moment'), {
   moment
 })
@@ -83,13 +86,13 @@ axios.interceptors.response.use(response => {
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const currentUser = store.state.currentUser
+  const user = store.state.user
 
-  if (requiresAuth && !currentUser) {
+  if (requiresAuth && !user) {
     next({
       path: '/login'
     })
-  } else if (to.path == '/login' && currentUser) {
+  } else if (to.path == '/login' && user) {
     next({
       path: '/'
     })

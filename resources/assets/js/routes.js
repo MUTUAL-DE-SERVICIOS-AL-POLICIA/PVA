@@ -10,10 +10,12 @@ import ProcedureEdit from './components/procedure/ProcedureEdit'
 import ConsultantProcedureEdit from './components/procedure/ConsultantProcedureEdit'
 import UserAction from './components/userAction/UserActionIndex'
 import UserIndex from './components/user/UserIndex'
-import DepartureIndex from './components/departure/DepartureIndex'
-import DepartureAdmin from './components/departure/DepartureAdmin'
 import Dashboard from './components/dashboard/Dashboard'
 import PhonebookIndex from './components/phonebook/PhonebookIndex'
+import SuppliesIndex from './components/supply/SuppliesIndex'
+import SupplyRequestIndex from './components/supply/SupplyRequestIndex'
+import DepartureConfig from './components/configuration/DepartureConfig'
+import DepartureIndex from './components/departure/DepartureIndex'
 
 export const routes = [
   {
@@ -30,10 +32,7 @@ export const routes = [
   }, {
     path: '*',
     redirect: {
-      name: 'dashboard',
-      params: {
-        active: true
-      },
+      name: 'dashboard'
     },
     meta: {
       requiresAuth: true
@@ -116,13 +115,6 @@ export const routes = [
       requiresAuth: true
     }
   }, {
-    path: '/departure_admin',
-    component: DepartureAdmin,
-    name: 'departureAdmin',
-    meta: {
-      requiresAuth: true
-    }
-  },{
     path: '/dashboard',
     component: Dashboard,
     name: 'dashboard',
@@ -133,6 +125,27 @@ export const routes = [
     path: '/phonebook',
     component: PhonebookIndex,
     name: 'phonebookIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/supplies',
+    component: SuppliesIndex,
+    name: 'suppliesIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/supply_requests',
+    component: SupplyRequestIndex,
+    name: 'supplyRequestIndex',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/departure_config',
+    component: DepartureConfig,
+    name: 'departureConfig',
     meta: {
       requiresAuth: true
     }

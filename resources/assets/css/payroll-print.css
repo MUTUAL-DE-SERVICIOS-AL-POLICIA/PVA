@@ -21,31 +21,28 @@ th, td {
 
 .header-left {
   float: left;
-  width: 20em;
+  clear: both;
+  width: 33%;
 }
 
 .header-right {
-  width: 50%;
-  float: right;
   text-align: right;
+  float: right;
+  width: 33%;
 }
 
 .header-center {
-  padding-top: 1%;
   margin-bottom: 1%;
   text-align: center;
   align-content: center;
-  float: center;
-  clear: both;
+  float: left;
+  width: 33%;
 }
 
 #header-image {
   float: left;
-  clear: both;
-  margin-top: -35%;
-  margin-left: 15%;
-  width: 20em;
-  height: 6em;
+  width: 15em;
+  height: 5em;
 }
 
 th {

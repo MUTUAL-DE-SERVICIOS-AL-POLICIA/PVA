@@ -17,7 +17,7 @@
         class="elevation-1"
         style="width:2500px;height:500px;">
           <template slot="items" slot-scope="props">
-            <tr v-model="props.selected">
+            <tr>
               <td class="cell text-xs-center"> {{ props.item.month_shortened }}-{{ props.item.year }} </td>
               <td class="cell text-xs-left"> {{ props.item.position }} </td>
               <td class="cell text-xs-center"> {{ props.item.worked_days }} </td>
@@ -59,67 +59,80 @@ export default {
         {
           text: "MES-AÑO",
           align: "center",
-          class: "cell"         
+          class: "cell",
+          value: ""
         },
         {
           text: "CARGO",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "DIAS TRAB.",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "HABER BASICO",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "TOTAL GANADO",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "RENTA VEJEZ 10%",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "RIESGO COMUN 1.71%",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "COMISION 0.5%",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "AP. SOL. DEL ASEGURADO 0.5%",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "AP. NAL. SOL. 1% 5% 10%",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "OTROS DESC.",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "TOTAL DESC.",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         },
         {
           text: "LIQ. PAGABLE",
           align: "center",
-          class: "cell"
+          class: "cell",
+          value: ""
         }
       ],
     };

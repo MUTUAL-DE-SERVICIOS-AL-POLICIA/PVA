@@ -46,7 +46,7 @@
           slot="activator"
           color="error"
           dark
-          v-if="$store.getters.currentUser.roles[0].name == 'admin'"
+          v-if="$store.getters.role == 'admin'"
         >
           Eliminar Planilla
         </v-btn>
@@ -202,7 +202,7 @@
                     <span>Validar</span>
                   </v-tooltip>
                 </v-flex>
-                <v-flex xs6 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
+                <v-flex xs6 v-if="$store.getters.role == 'admin'">
                   <v-tooltip top>
                     <v-btn slot="activator" flat icon color="error" @click="deletePayroll(props.item)">
                       <v-icon>delete</v-icon>
@@ -440,8 +440,7 @@ export default {
             .toUpperCase()} de ${res.data.procedure.year}`
         );
         this.$router.push({
-          name: "procedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Eventuales' }).group.find(obj => { return obj.href ==  'procedureIndex'}).params
+          name: "procedureIndex"
         });
       } catch (e) {
         console.log(e);
@@ -512,6 +511,20 @@ export default {
     calculateDiscount(payroll, discount) {
       return this.quotable(payroll) * Number(discount);
     },
+    calculateNationalDiscount(payroll, limits, percentages) {
+      let quotable = this.quotable(payroll)
+      let next_limit = 0
+      let key = 0
+      let limit = limits[0]
+      do {
+        if (!Object.is(limits.length - 1, key)) next_limit = Number(limits[key + 1])
+        if ((Object.is(limits.length - 1, key) && quotable > limits[key]) || (quotable > limits[key] && quotable <= next_limit)) {
+          return (quotable - Number(limit)) * Number(percentages[key]) / 100
+        } else {
+          return 0
+        }
+      } while (quotable > limits[key])
+    },
     calculateTotalDiscountLaw(payroll) {
       return (
         this.calculateDiscount(
@@ -530,9 +543,10 @@ export default {
           payroll,
           this.procedure.employee_discount.solidary
         ) +
-        this.calculateDiscount(
+        this.calculateNationalDiscount(
           payroll,
-          this.procedure.employee_discount.national
+          this.procedure.employee_discount.national_limits,
+          this.procedure.employee_discount.national_percentages
         )
       );
     },
@@ -565,8 +579,16 @@ export default {
         }
       }
 
-      if (payroll.contract.end_date == null && payroll.contract.retirement_date == null && dateStart.year() <= payrollDate.year() && dateStart.month() < payrollDate.month()) {
-        workedDays = 30;
+      if (payroll.contract.end_date == null && payroll.contract.retirement_date == null && dateStart.year() <= payrollDate.year()) {
+        if (dateStart.year() == payrollDate.year()) {
+          if (dateStart.month() < payrollDate.month()) {
+            workedDays = 30;
+          } else {
+            workedDays = 30 + 1 - dateStart.date();
+          }
+        } else {
+          workedDays = 30;
+        }
       } else if (
         dateStart.year() == dateEnd.year() &&
         dateStart.month() == dateEnd.month()
@@ -623,8 +645,7 @@ export default {
           `Planilla de mes de ${res.data.month.name} cerrada`
         );
         this.$router.push({
-          name: "procedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Eventuales' }).group.find(obj => { return obj.href ==  'procedureIndex'}).params
+          name: "procedureIndex"
         });
       } catch (e) {
         console.log(e);

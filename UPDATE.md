@@ -2,7 +2,68 @@
 
 ---
 
-## From [1.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.0) to [2.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.0)
+## From [4.0.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.2) to [4.0.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.3)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
+## From [4.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.1) to [4.0.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.2)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
+## From [4.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.0) to [4.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.1)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
+## From [3.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.1) to [4.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.0)
+
+```sh
+composer install --prefer-dist --no-dev
+composer run-script version-seeder
+```
+
+## From [3.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.0) to [3.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.1)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
+## From [2.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.1.0) to [3.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/3.0.0)
+
+* Enable PHP's mysql extension within file `/etc/php/php.ini`
+
+```sh
+extension=pdo_mysql
+```
+
+* Modify `.env` and set credentials to connect with the nsiaf database like the example
+
+* Synchronize `departments` table on Nsiaf database with the data of `position_groups` table on RRHH database
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
+* Set user's permissions according to a related role
+
+## From [2.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.1) to [2.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.1.0)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
+## From [2.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.0) to [2.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.1)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
+## From [1.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/1.3.1) to [2.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/2.0.0)
 
 ```sh
 composer install --prefer-dist --no-dev

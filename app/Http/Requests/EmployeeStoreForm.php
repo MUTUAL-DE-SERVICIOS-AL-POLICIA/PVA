@@ -42,27 +42,27 @@ class EmployeeStoreForm extends FormRequest
 	{
 		$input = $this->all();
 
-		$input['gender'] = strtoupper($input['gender']);
-		$input['first_name'] = strtoupper($input['first_name']);
+		$input['gender'] = mb_strtoupper($input['gender']);
+		$input['first_name'] = mb_strtoupper($input['first_name']);
 		if (array_key_exists('second_name', $input)) {
-			$input['second_name'] = strtoupper($input['second_name']);
+			$input['second_name'] = mb_strtoupper($input['second_name']);
 		}
 		if (array_key_exists('last_name', $input)) {
-			$input['last_name'] = strtoupper($input['last_name']);
+			$input['last_name'] = mb_strtoupper($input['last_name']);
 		}
 
 		if (array_key_exists('mothers_last_name', $input)) {
-			$input['mothers_last_name'] = strtoupper($input['mothers_last_name']);
+			$input['mothers_last_name'] = mb_strtoupper($input['mothers_last_name']);
 		}
 
 		if (array_key_exists('country_birth', $input)) {
-			$input['country_birth'] = strtoupper($input['country_birth']);
+			$input['country_birth'] = mb_strtoupper($input['country_birth']);
 		}
 
-		$input['location'] = strtoupper($input['location']);
-		$input['zone'] = strtoupper($input['zone']);
-		$input['street'] = strtoupper($input['street']);
-		$input['address_number'] = strtoupper($input['address_number']);
+		$input['location'] = mb_strtoupper($input['location']);
+		$input['zone'] = mb_strtoupper($input['zone']);
+		$input['street'] = mb_strtoupper($input['street']);
+		$input['address_number'] = mb_strtoupper($input['address_number']);
 
 		$this->replace($input);
 	}

@@ -54,7 +54,6 @@ tr {
 	border-spacing: 0;
 	thead tr td {
 		border-left: 1px solid $white;
-		
 		border-top: 1px solid $color_shuttle_gray_approx;
 		border-bottom: 1px solid $color_shuttle_gray_approx;
 		&:first-child {
@@ -265,6 +264,9 @@ tr {
 .w-45 {
 	width: 45%;
 }
+.w-49 {
+	width: 49%;
+}
 .w-50 {
 	width: 50%;
 }
@@ -279,6 +281,9 @@ tr {
 }
 .w-75 {
 	width: 75%;
+}
+.w-85 {
+	width: 85%;
 }
 .w-100 {
 	width: 100%;
@@ -576,6 +581,9 @@ tr {
 }
 .text-white {
 	color: $white;
+}
+.text-xxxxs {
+	font-size: 6px;
 }
 .text-xxxs {
 	font-size: 8px;

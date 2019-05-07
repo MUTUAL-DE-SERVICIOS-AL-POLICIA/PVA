@@ -15,7 +15,7 @@
   <div class="ticket">
     <!-- LEFT-TICKET -->
     <div class="left-ticket">
-      <div class="font-normal left-header left-header-title">{{ mb_strtoupper($company->name) }}</div>
+      <div class="font-tiny left-header left-header-title">{{ mb_strtoupper($company->name) }}</div>
       <div class="font-tiny left-header">{{ ucwords(strtolower($company->address)) }}</div>
       <div class="left-header-subtitle">
         <table>
@@ -28,37 +28,37 @@
       <div class="left-employee-box">
         <table>
           <tr>
-            <td class="font-normal left-box-code">{{ $payroll->code }}</td>
+            <td class="font-tiny left-box-code">{{ $payroll->code }}</td>
             <td class="left-employee-space-normal"></td>
-            <td class="font-normal" style="white-space: nowrap;">{{ $payroll->account_number ? 'ABONO EN CUENTA' : 'PAGO EN CHEQUE' }}</td>
+            <td class="font-tiny" style="white-space: nowrap;">{{ $payroll->account_number ? 'ABONO EN CUENTA' : 'PAGO EN CHEQUE' }}</td>
           </tr>
           <tr>
-            <td class="font-normal left-box-code">PAGO DE HABERES {{ $payroll->month_shortened }} {{ $payroll->year }}</td>
+            <td class="font-tiny left-box-code">PAGO DE HABERES {{ $payroll->month_shortened }} {{ $payroll->year }}</td>
             <td class="left-employee-space-normal"></td>
-            <td class="font-normal">{{ $payroll->worked_days }}</td>
+            <td class="font-tiny">{{ $payroll->worked_days }}</td>
           </tr>
           <tr>
             <td class="left-employee-space-tiny"></td>
           </tr>
           <tr>
-            <td class="font-normal left-box-code">{{ $payroll->ci_ext }}</td>
-            <td class="font-normal" colspan="2">{{ $payroll->full_name }}</td>
+            <td class="font-tiny left-box-code">{{ $payroll->ci_ext }}</td>
+            <td class="font-tiny" colspan="2">{{ $payroll->full_name }}</td>
           </tr>
           <tr>
           @if ($payroll->account_number)
-            <td class="font-normal left-box-code">{{ $payroll->account_number }}</td>
+            <td class="font-tiny left-box-code">{{ $payroll->account_number }}</td>
           @else
-            <td class="font-normal left-box-code">S/N</td>
+            <td class="font-tiny left-box-code">S/N</td>
           @endif
-            <td class="font-normal" colspan="2">{{ $payroll->birth_date }}</td>
+            <td class="font-tiny" colspan="2">{{ $payroll->birth_date }}</td>
           </tr>
           <tr>
-            <td class="font-normal left-box-code">{{ $payroll->management_entity }}</td>
-            <td class="font-normal" colspan="2">{{ $payroll->nua_cua }}</td>
+            <td class="font-tiny left-box-code">{{ $payroll->management_entity }}</td>
+            <td class="font-tiny" colspan="2">{{ $payroll->nua_cua }}</td>
           </tr>
         </table>
       </div>
-      <div class="font-normal left-charge">{{ mb_strtoupper($payroll->position) }}</div>
+      <div class="font-tiny left-charge">{{ mb_strtoupper($payroll->position) }}</div>
       <div class="left-discounts-box">
         <table>
           <tr>
@@ -115,40 +115,40 @@
         </table>
       </div>
       <div class="left-image">
-        <img src="data:image/png;base64, {{ $payroll->code_image }}" width="180pt" height="38pt">
+        <img src="data:image/png;base64, {{ $payroll->code_image }}" width="180pt" height="37pt">
       </div>
     </div>
 
     <!-- RIGHT-TICKET -->
     <div class="right-ticket">
-      <div class="font-normal right-text right-header-title">{{ mb_strtoupper($company->name) }}</div>
-      <div class="font-normal right-text right-header-title">{{ ucwords(strtolower($company->address)) }}</div>
+      <div class="font-tiny right-text right-header-title">{{ mb_strtoupper($company->name) }}</div>
+      <div class="font-tiny right-text right-header-title">{{ ucwords(strtolower($company->address)) }}</div>
       <div class="right-header-subtitle">
         <table>
           <tr>
-            <td class="font-normal right-text right-nit">{{ $payroll->employer_number }}</td>
-            <td class="font-normal right-text">{{ $company->tax_number }}</td>
+            <td class="font-tiny right-text right-nit">{{ $payroll->employer_number }}</td>
+            <td class="font-tiny right-text">{{ $company->tax_number }}</td>
           </tr>
         </table>
       </div>
       <div class="right-content">
-        <div class="font-normal right-text right-text-right">{{ $payroll->code }}</div>
-        <div class="font-normal right-text right-text-right">{{ $payroll->account_number ? 'ABONO EN CUENTA' : 'PAGO EN CHEQUE' }}</div>
-        <div class="font-normal right-text right-text-right">PAGO DE HABERES {{ $payroll->month_shortened }} {{ $payroll->year }}</div>
-        <div class="font-normal right-text right-text-right right-worked-days">{{ $payroll->worked_days }}</div>
-        <div class="font-normal right-text right-text-right">{{ $payroll->ci_ext }}</div>
-        <div class="font-normal right-text-left right-name">{{ $payroll->full_name }}</div>
+        <div class="font-tiny right-text right-text-right">{{ $payroll->code }}</div>
+        <div class="font-tiny right-text right-text-right">{{ $payroll->account_number ? 'ABONO EN CUENTA' : 'PAGO EN CHEQUE' }}</div>
+        <div class="font-tiny right-text right-text-right">PAGO DE HABERES {{ $payroll->month_shortened }} {{ $payroll->year }}</div>
+        <div class="font-tiny right-text right-text-right right-worked-days">{{ $payroll->worked_days }}</div>
+        <div class="font-tiny right-text right-text-right">{{ $payroll->ci_ext }}</div>
+        <div class="font-tiny right-text-left right-name">{{ $payroll->full_name }}</div>
         @if ($payroll->account_number)
-        <div class="font-normal right-text-left">{{ $payroll->account_number }}</div>
+        <div class="font-tiny right-text-left">{{ $payroll->account_number }}</div>
         @else
-        <div class="font-normal right-text-left">S/N</div>
+        <div class="font-tiny right-text-left">S/N</div>
         @endif
-        <div class="font-normal right-text-left">{{ $payroll->birth_date }}</div>
-        <div class="font-normal right-text-left">{{ $payroll->management_entity }}</div>
-        <div class="font-normal right-text-left right-nua">{{ $payroll->nua_cua }}</div>
-        <div class="font-normal right-text-left right-charge">{{ mb_strtoupper($payroll->position) }}</div>
+        <div class="font-tiny right-text-left">{{ $payroll->birth_date }}</div>
+        <div class="font-tiny right-text-left">{{ $payroll->management_entity }}</div>
+        <div class="font-tiny right-text-left right-nua">{{ $payroll->nua_cua }}</div>
+        <div class="font-tiny right-text-left right-charge">{{ mb_strtoupper($payroll->position) }}</div>
       </div>
-      <div class="font-huge" align="right">{{ Util::formatMoney($payroll->payable_liquid) }}</div>
+      <div class="font-huge" align="right" style="margin-top: 1px;">{{ Util::formatMoney($payroll->payable_liquid) }}</div>
       <div>
           <img class="right-image" src="data:image/png;base64, {{ $payroll->code_image }}"  width="180pt" height="38pt">
         </div>

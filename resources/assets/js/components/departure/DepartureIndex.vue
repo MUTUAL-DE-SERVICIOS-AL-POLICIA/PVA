@@ -1,227 +1,385 @@
 <template>
   <v-container fluid>
     <v-toolbar>
-        <v-toolbar-title>Salidas y Licencias</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-chip color="secondary white--text"> Hrs/mes: {{ hrsxMes }} </v-chip>
-        <v-chip color="secondary white--text"> dias/año: {{ dayxYear }} </v-chip>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <v-btn  @click="getDepartures(1)" :class="departureType == 1 ? 'primary white--text' : 'normal'" class="mr-0">
-          <div class="font-weight-regular subheading pa-2">SALIDAS</div>
-        </v-btn>
-        <v-btn  @click="getDepartures(2)" :class="departureType == 2 ? 'primary white--text' : 'normal'" class="ml-0">
-          <div class="font-weight-regular subheading pa-2">LICENCIAS</div>
-        </v-btn>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <v-toolbar-title>
-          <v-text-field
-              v-model="search"
-              append-icon="search"
-              label="Buscar"
-              clearable
-              single-line
-              hide-details
-              width="20px"
-            ></v-text-field>
-        </v-toolbar-title>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <DepartureForm :bus="bus"/>
+      <v-toolbar-title>
+        <v-select
+          v-model="departureTypeSelected"
+          :items="departureTypes"
+          item-text="dislayName"
+          item-value="dateRange"
+          class="subheading font-weight-medium"
+          :label="$route.query.departureType == 'all' ? `Aprobar Solicitudes` : `Solicitud de Permisos`"
+        ></v-select>
+      </v-toolbar-title>
+      <v-tooltip color="white" role="button" bottom>
+        <v-icon slot="activator" class="ml-4">info</v-icon>
+        <div>
+          <v-alert :value="true" type="warning" class="black--text">PENDIENTE DE APROBACIÓN</v-alert>
+          <v-alert :value="true" type="error">RECHAZADO</v-alert>
+          <v-alert :value="true" type="info">SELECCIONADO</v-alert>
+        </div>
+      </v-tooltip>
+      <v-spacer></v-spacer>
+      <v-divider
+        class="mx-2"
+        inset
+        vertical
+      ></v-divider>
+      <v-btn color="error" v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" @click.native="print('report')">
+        <v-icon>print</v-icon>
+        <div class="pl-2">Reporte</div>
+      </v-btn>
+      <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
+        <v-chip
+          :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
+          class="mr-3"
+        >
+          <v-avatar
+            class="body-2 font-weight-black"
+            :color="remainingDepartures.monthly.time_remaining > 0 ? 'primary' : 'error'"
+          >{{ remainingDepartures.monthly.time_remaining / 60 }}</v-avatar>
+          <div class="subheading font-weight-regular">Hrs/Mes</div>
+        </v-chip>
+        <v-chip
+          :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
+          class="mr-3"
+        >
+          <v-avatar
+            class="body-2 font-weight-black"
+            :color="remainingDepartures.annually.time_remaining > 0 ? 'info' : 'error'"
+          >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
+          <div class="subheading font-weight-regular">Días/Año</div>
+        </v-chip>
+        <DepartureEdit :bus="bus"></DepartureEdit>
         <RemoveItem :bus="bus"/>
+      </div>
     </v-toolbar>
+    <div v-if="loading">
+      <Loading/>
+    </div>
     <v-data-table
-        :headers="headers"
-        :items="departures"
-        :search="search"
-        :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
-        disable-initial-sort
-        class="elevation-1">
-        <template slot="items" slot-scope="props">
-          <tr :class="checkEnd(props.item)">
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.certificate.correlative + '/' + props.item.certificate.year }} </td>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.departure_type.name }} </td>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ props.item.departure_reason.name }} </td>
-            <td class="text-xs-center" @click="props.expanded = !props.expanded"> {{ $moment(props.item.created_at).format('DD/MM/YYYY') }} </td>
-            <td class="text-xs-center"> {{ (props.item.approved == true)? 'APROBADO' : (props.item.approved == false)? 'RECHAZADO' : 'PENDIENTE' }} </td>
-            <td class="justify-center layout">
+      v-else
+      :headers="headers"
+      :items="departures"
+      :loading="loading"
+      :rows-per-page-items="[20,30,40,{text:'TODO',value:-1}]"
+      disable-initial-sort
+      expand
+      class="elevation-1"
+    >
+      <template slot="items" slot-scope="props">
+        <tr :class="props.expanded ? 'info dark white--text' : (props.item.approved == null ? 'warning' : (props.item.approved == false ? 'error dark white--text' : ''))">
+          <td class="text-xs-center bordered" @click="expand(props)" v-if="$route.query.departureType == 'all'">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${props.item.second_name}` }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).group }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).reason }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] HH:mm') }}</td>
+          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] HH:mm') }}</td>
+          <td class="text-xs-center bordered">
+            <v-layout align-center justify-center column fill-height v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
+              <v-switch
+                value
+                :input-value="props.item.approved"
+                color="info"
+                @change="switchActive(props.item)"
+              ></v-switch>
+            </v-layout>
+            <div v-else>
               <v-tooltip top>
-                <v-btn slot="activator" flat icon color="accent" @click="print(props.item)">
+                <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
                   <v-icon>print</v-icon>
                 </v-btn>
                 <span>Imprimir</span>
               </v-tooltip>
-              <v-tooltip top v-if="props.item.approved == null">
-                <v-btn slot="activator" flat icon color="accent" @click="editItem(props.item, 'edit')">
+              <v-tooltip top v-if="props.item.approved === null && (props.item.description_needed || props.item.note)">
+                <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click="bus.$emit('updateDeparture', props.item)">
                   <v-icon>edit</v-icon>
                 </v-btn>
                 <span>Editar</span>
               </v-tooltip>
               <v-tooltip top v-if="props.item.approved == null">
-                <v-btn slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
+                <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item.id)">
                   <v-icon>delete</v-icon>
                 </v-btn>
                 <span>Eliminar</span>
               </v-tooltip>
-            </td>
-          </tr>
-        </template>
-        <template slot="expand" slot-scope="props">
-          <v-card flat>
-            <v-card-text>
-              <v-list>
-                <v-list-tile-content><p><strong>Fecha de salida: </strong>{{ $moment(props.item.departure_date).format('DD/MM/YYYY') }} {{ $moment(props.item.departure_time, "HH:mm:ss").format("HH:mm") }} </p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Fecha de retorno: </strong>{{ $moment(props.item.return_date).format('DD/MM/YYYY') }} {{ $moment(props.item.return_time, "HH:mm:ss").format("HH:mm") }} </p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Destino: </strong>{{ props.item.destiny }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Descripción: </strong>{{ props.item.description }}</p></v-list-tile-content>
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </template>
-        <v-alert slot="no-results" :value="true" color="error">
-          La búsqueda de "{{ search }}" no encontró resultados.
-        </v-alert>
+            </div>
+          </td>
+        </tr>
+      </template>
+      <template slot="expand" slot-scope="props">
+        <v-card flat class="grey lighten-3">
+          <v-card-text class="bordered">
+            <v-list class="grey lighten-3">
+              <v-list-tile-content v-if="props.item.description"><p><strong>Detalle: </strong>{{ props.item.description }}</p></v-list-tile-content>
+              <v-list-tile-content><p><strong>Puesto: </strong>{{ props.item.position }}</p></v-list-tile-content>
+              <v-list-tile-content><p><strong>Unidad: </strong>{{ props.item.positionGroup }}</p></v-list-tile-content>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </template>
     </v-data-table>
   </v-container>
 </template>
-<script type="text/javascript">
-import Vue from "vue";
-import DepartureForm from "./DepartureForm";
-import RemoveItem from "../RemoveItem";
-import { admin, rrhh, juridica } from "../../menu.js";
+
+<script>
+import Vue from 'vue'
+import Loading from '../Loading'
+import RemoveItem from "../RemoveItem"
+import DepartureEdit from './DepartureEdit'
+
 export default {
-  name: "ContractIndex",
+  name: 'Departure',
   components: {
-    DepartureForm,
-    RemoveItem
+    Loading,
+    RemoveItem,
+    DepartureEdit
   },
-  data: () => ({
-    departureType: 1,
-    bus: new Vue(),
-    headers: [
-      {
-        text: "No. Solicitud",
-        value: "certificate.correlative",
-        align: "center"
+  data() {
+    return {
+      loading: true,
+      bus: new Vue(),
+      departureTypeSelected: 'monthly',
+      departureTypes: [
+        {
+          dateRange: 'monthly',
+          dislayName: 'MES ACTUAL'
+        }, {
+          dateRange: 'annually',
+          dislayName: 'TODAS'
+        }
+      ],
+      departures: [],
+      departureReasons: [],
+      departureGroups: [],
+      remainingDepartures: {
+        monthly: {
+          time_remaining: 0,
+          options: []
+        },
+        annually: {
+          time_remaining: 0,
+          options: []
+        }
       },
-      {
-        text: "Tipo",
-        value: "departure_reason.departure_type.name",
-        align: "center"
-      },
-      {
-        text: "Razón",
-        value: "departure_reason.name",
-        align: "center"
-      },      
-      {
-        text: "Fecha de Solicitud",
-        value: "created_at",
-        align: "center"
-      },
-      {
-        text: "Estado",
-        value: "approved",
-        align: "center"
-      },
-      {
-        text: "Acciones",
-        value: "",
-        align: "center",
-        sortable: false
-      }
-    ],
-    departures: [],
-    departureComision: [],
-    departureLicence: [],
-    search: "",
-    switch1: true,
-    contracState: "vigentes",
-    hrsxMes: null,
-    dayxYear: null
-  }),  
-  async mounted() {
-    this.getDepartures();
-    this.bus.$on("closeDialog", departureType => {
-      if (departureType == null) {
-        departureType = this.departureType;
-      } 
-      this.getDepartures(departureType);      
-    });
+      headers: [
+        {
+          text: 'Tipo',
+          value: '',
+          align: 'center',
+          sortable: false
+        }, {
+          text: 'Motivo',
+          value: 'departure_reason_id',
+          align: 'center',
+          sortable: true
+        }, {
+          text: 'Desde',
+          value: 'departure',
+          align: 'center',
+          sortable: true
+        }, {
+          text: 'Hasta',
+          value: 'return',
+          align: 'center',
+          sortable: true
+        }, {
+          text: 'Acciones',
+          value: this.$route.query.departureType == 'all' ? 'approved' : '',
+          align: 'center',
+          sortable: this.$route.query.departureType == 'all' ? true : false
+        }
+      ]
+    }
+  },
+  mounted() {
+    this.bus.$on('printDeparture', departureId => {
+      this.print(departureId)
+      this.getDeparture(departureId)
+      this.getRemainingDepartures()
+    })
+    this.bus.$on('removed', departureId => {
+      this.getRemainingDepartures()
+      this.departures = this.departures.filter(o => o.id != departureId)
+    })
+    this.setHeaders()
+    if (this.$route.query.departureType != 'all') {
+      this.getRemainingDepartures()
+    }
+    this.getDepartureGroups()
+    this.getDepartureReasons()
+    this.getDepartures(this.$route.query.departureType)
+  },
+  watch: {
+    '$route.query.departureType'(val) {
+      this.getDepartures(val)
+      this.setHeaders()
+    },
+    'departureTypeSelected'(val) {
+      this.getDepartures(this.$route.query.departureType)
+    }
   },
   methods: {
-    async getDepartures(departureType = this.departureType) {
+    setHeaders() {
+      if (this.$route.query.departureType == 'all'){
+        if (this.headers.findIndex(o => o.text == 'Nombres') == -1) {
+          this.headers.unshift({
+            text: 'Nombres',
+            value: 'employee.last_name',
+            align: 'center',
+            sortable: true
+          })
+        }
+      } else {
+        if (this.headers.findIndex(o => o.text == 'Nombres') != -1) {
+          this.headers = this.headers.filter(el => {
+            return el.text != 'Nombres';
+          });
+        }
+      }
+    },
+    removeItem(id) {
+      this.bus.$emit("openDialogRemove", `departure/${id}`);
+      this.getRemainingDepartures()
+    },
+    async getLastContract(id) {
       try {
-        let contract = await axios.get('/contract/last_contract/' + this.$store.getters.currentUser.employee_id);
-        let res = await axios.get(`/departure/get_departures/${contract.data.id}`);
-        this.departureType = departureType;
-        this.departures = res.data.filter(e => e.departure_reason.departure_type_id == departureType);
-
-        let departure_used = await axios.get('/departure/get_departures_used/' + this.$store.getters.currentUser.employee_id);
-        this.hrsxMes = Math.trunc((departure_used.data.total_minutes_month_rest / 60)) + " hr. y " + (departure_used.data.total_minutes_month_rest % 60) + " min.";
-        this.dayxYear = Math.trunc((departure_used.data.total_minutes_year_rest / 480)) + " dia. y " + (departure_used.data.total_minutes_year_rest % 480 / 60) + " hr.";
+        let res = await axios.get(`employee/${id}/contract`)
+        return res.data
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
-    editItem(item, mode) {
-      this.bus.$emit("openDialog", $.extend({}, item, { mode: mode }));
-    },
-    async removeItem(item) {
-      let departure = await axios.get("/departure/" + item.id
-      );
-      if (departure.data.approved == true) {
-        alert(
-          "No se puede eliminar. Porque esta solicitud ya se encuentra aprobada"
-        );
-      } else {
-        this.bus.$emit("openDialogRemove", `/departure/${item.id}`);
+    async expand(props) {
+      if (!props.expanded) {
+        let contract = await this.getLastContract(props.item.employee_id)
+        props.item.position = contract.position.name,
+        props.item.positionGroup = contract.position.position_group.name
       }
+      props.expanded = !props.expanded
     },
-    fullName(employee) {
-      let names = `${employee.last_name || ""} ${employee.mothers_last_name ||
-        ""} ${employee.surname_husband || ""} ${employee.first_name ||
-        ""} ${employee.second_name || ""} `;
-      names = names
-        .replace(/\s+/gi, " ")
-        .trim()
-        .toUpperCase();
-      return names;
-    },
-    checkEnd(departure) {
-      if (departure.approved == true) {
-        return "";
-      } else if (departure.approved == false){
-        return "danger";
-      } else {
-        return "warning";
-      }
-    },
-    async print(item) {
+    async print(id) {
       try {
+        this.loading = true
         let res = await axios({
-          method: "GET",
-          url: `/departure/print/${item.id}`,
+          method: 'GET',
+          url: id == 'report' ? `departure/report/print` : `departure/print/${id}`,
           responseType: "arraybuffer"
         });
         let blob = new Blob([res.data], {
           type: "application/pdf"
         });
         printJS(window.URL.createObjectURL(blob));
+        this.loading = false
       } catch (e) {
         console.log(e);
+        this.loading = false
+      }
+    },
+    async getRemainingDepartures() {
+      try {
+        let res = await axios.get(`employee/${this.$store.getters.id}`)
+        this.remainingDepartures = res.data.remaining_departures
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    departureType(item) {
+      if (this.departureReasons.length > 0 && this.departureGroups.length > 0) {
+        let reason = this.departureReasons.find(o => o.id == item.departure_reason_id)
+        return {
+          reason: reason.name,
+          group: this.departureGroups.find(o => o.id == reason.departure_group_id).name
+        }
+      }
+      return {
+        reason: '',
+        group: ''
+      }
+    },
+    async getDepartureGroups() {
+      try {
+        let res = await axios.get(`departure_group`)
+        this.departureGroups = res.data
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async getDepartureReasons() {
+      try {
+        let res = await axios.get(`departure_reason`)
+        this.departureReasons = res.data
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async getDepartures(type) {
+      try {
+        this.loading = true
+        let res
+        switch (type) {
+          case 'all':
+            res = await axios.get(`departure`, {
+              params: {
+                date_range: this.departureTypeSelected
+              }
+            })
+            break;
+          case 'user':
+            res = await axios.get(`departure`, {
+              params: {
+                employee_id: this.$store.getters.id,
+                date_range: this.departureTypeSelected
+              }
+            })
+            break;
+        }
+        if (res) this.departures = res.data
+        this.loading = false
+      } catch (e) {
+        console.log(e)
+        this.loading = false
+      }
+    },
+    async switchActive(departure) {
+      try {
+        let state = (departure.approved === null || departure.approved === false) ? true : false
+        let res = await axios.patch(`departure/${departure.id}`, {
+          approved: state
+        })
+        this.departures[this.departures.findIndex(o => o.id == departure.id)].approved = state
+        if (state === true) {
+          this.toastr.success('Aprobado')
+        } else {
+          this.toastr.error('Rechazado')
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async getDeparture(id) {
+      try {
+        this.loading = true
+        let index = this.departures.findIndex(o => o.id == id)
+        let res = await axios.get(`departure/${id}`)
+        if (res) {
+          if (index == -1) {
+            this.departures.unshift(res.data)
+          } else {
+            this.departures[index] = res.data
+          }
+        }
+        this.loading = false
+      } catch (e) {
+        console.log(e)
+        this.loading = false
       }
     }
   }
-};
+}
 </script>
+
+<style>
+.bordered {
+  border-bottom: 1px solid black;
+}
+</style>

@@ -44,7 +44,7 @@
           slot="activator"
           color="error"
           dark
-          v-if="$store.getters.currentUser.roles[0].name == 'admin'"
+          v-if="$store.getters.role == 'admin'"
         >
           Eliminar Planilla
         </v-btn>
@@ -169,14 +169,20 @@
             <td class="text-md-center">
               <v-layout wrap>
                 <v-flex xs6>
-                  <v-btn small class="accent" @click="savePayroll(props.item)">
-                    Guardar
-                  </v-btn>
+                  <v-tooltip top>
+                    <v-btn slot="activator" flat icon color="primary" @click="savePayroll(props.item)">
+                      <v-icon>check</v-icon>
+                    </v-btn>
+                    <span>Validar</span>
+                  </v-tooltip>
                 </v-flex>
-                <v-flex xs6 v-if="$store.getters.currentUser.roles[0].name == 'admin'">
-                  <v-btn small class="error" @click="deletePayroll(props.item)">
-                    Eliminar
-                  </v-btn>
+                <v-flex xs6 v-if="$store.getters.role == 'admin'">
+                  <v-tooltip top>
+                    <v-btn slot="activator" flat icon color="error" @click="deletePayroll(props.item)">
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                    <span>Eliminar</span>
+                  </v-tooltip>
                 </v-flex>
               </v-layout>
             </td>
@@ -341,8 +347,7 @@ export default {
             .toUpperCase()} de ${res.data.procedure.year}`
         );
         this.$router.push({
-          name: "consultantProcedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Consultores' }).group.find(obj => { return obj.href ==  'consultantProcedureIndex'}).params
+          name: "consultantProcedureIndex"
         });
       } catch (e) {
         console.log(e);
@@ -486,8 +491,7 @@ export default {
           `Planilla de mes de ${res.data.month.name} cerrada`
         );
         this.$router.push({
-          name: "consultantProcedureIndex",
-          params: this.$store.getters.menuLeft.find(obj => { return obj.title == 'Consultores' }).group.find(obj => { return obj.href ==  'consultantProcedureIndex'}).params
+          name: "consultantProcedureIndex"
         });
       } catch (e) {
         console.log(e);

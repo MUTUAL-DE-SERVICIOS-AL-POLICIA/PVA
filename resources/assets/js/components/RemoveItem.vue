@@ -1,8 +1,8 @@
 <template>
-  <v-dialog persistent v-model="dialog" max-width="28%" @keydown.esc="close">
+  <v-dialog persistent v-model="dialog" max-width="30%" @keydown.esc="close">
     <v-card>
       <v-card-text>
-        <div class="headline font-weight-regular">¿Está seguro que desea eliminar el registro?</div>
+        <div class="title font-weight-regular">¿Seguro que desea eliminar el registro?</div>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -36,6 +36,7 @@ export default {
       try {
         let res = await axios.delete(this.path);
         this.toastr.success('Eliminado correctamente')
+        this.bus.$emit("removed", Number(this.path.split('/').pop()));
         this.close()
       } catch (e) {
         console.log(e);

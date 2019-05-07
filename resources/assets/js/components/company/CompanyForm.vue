@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="close">
-    <v-tooltip slot="activator" top v-if="$store.params.options.includes('new')">
+    <v-tooltip slot="activator" top v-if="$store.getters.role == 'admin'">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Contrato</span>
     </v-tooltip>
@@ -8,7 +8,7 @@
       <v-toolbar dark color="secondary">
         <v-toolbar-title class="white--text">{{ formTitle }}</v-toolbar-title>
       </v-toolbar>
-      <v-card-text>        
+      <v-card-text>
         <v-form ref="form">
           <v-layout wrap>
             <v-flex xs12 sm6 md6>
@@ -33,8 +33,8 @@
                 <v-select
                     v-model="selectedDocument.document_type_id"
                     :items="documentTypes"
-                    item-text="name" 
-                    item-value="id"                    
+                    item-text="name"
+                    item-value="id"
                     label="Tipo de documento"
                   ></v-select>
                 <v-text-field
@@ -49,7 +49,7 @@
             </v-flex>
           </v-layout>
         </v-form>
-      </v-card-text>  
+      </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click.native="close"><v-icon>close</v-icon> Cancelar</v-btn>
@@ -68,31 +68,31 @@ export default {
       documentTypes:    [],
       valid: true,
       dialog: false,
-      selectedIndex:  -1,     
+      selectedIndex:  -1,
       selectedItem:   {
-                    
+
                   },
       selectedDocument: {
-                    
+
       },
       juridica: 0
     };
   },
-  created() {    
-    if (this.$store.getters.currentUser.roles[0].name == 'juridica') {
+  created() {
+    if (this.$store.getters.role == 'juridica') {
       this.juridica = 1
     }
   },
   computed: {
     formTitle() {
       return this.selectedIndex === -1 ? 'Nuevo ' : 'Editar '
-    }    
+    }
   },
   methods: {
     async initialize() {
       try {
         let documentTypes = await axios.get('/document_type')
-        this.documentTypes = documentTypes.data        
+        this.documentTypes = documentTypes.data
       } catch(e) {
         console.log(e)
       }
@@ -107,35 +107,9 @@ export default {
     async save() {
         try {
           await this.$validator.validateAll()
-          var doc = null
-          if (this.selectedIndex != -1) {
-            if (this.selectedItem.document_id) {
-              doc = await axios.put('/document/' + this.selectedDocument.id, this.selectedDocument)              
-            } else {
-              if (this.selectedDocument.name) {
-                doc = await axios.post('/document', this.selectedDocument)
-              }
-            }
-            if (doc != null) {
-              let res = await axios.put('/company/' + this.selectedItem.id, $.extend({}, this.selectedItem, {'document_id': doc.data.id}))
-            } else {
-              let res = await axios.put('/company/' + this.selectedItem.id, this.selectedItem)
-            }            
-            this.close()
-            this.toastr.success('Editado correctamente')
-          } else {             
-            if (this.selectedDocument.name) {
-              doc = await axios.post('/document', this.selectedDocument)
-            }
-            if (doc != null) {
-              let res = await axios.post('/company', this.selectedItem)
-            } else {
-              let res = await axios.post('/company', $.extend({}, this.selectedItem, {'document_id': doc.data.id}))
-            }            
-            this.close()
-            this.toastr.success('Registrado correctamente')
-
-          }
+          let res = await axios.post('/company', this.selectedItem)
+          this.close()
+          this.toastr.success('Registrado correctamente')
         } catch(e) {
           console.log(e)
         }
@@ -146,9 +120,6 @@ export default {
       this.selectedItem = item;
       this.dialog = true;
       this.selectedIndex = item;
-      if (item.document_id) {
-        this.selectedDocument = item.document;
-      }
     });
     this.initialize()
   },

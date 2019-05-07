@@ -1,0 +1,129 @@
+[
+  {
+    "href": "dashboard",
+    "title": "Inicio",
+    "icon": "home",
+    "permission": null,
+    "params": {}
+  }, {
+    "href": "employeeIndex",
+    "title": "Personas",
+    "icon": "group",
+    "permission": "read-employee",
+    "params": {}
+  }, {
+    "title": "Eventuales",
+    "icon": "person",
+    "permission": "read-eventual",
+    "group": [
+      {
+        "href": "contractIndex",
+        "title": "Contratos Eventuales",
+        "icon": "gavel",
+        "permission": "read-eventual",
+        "params": {}
+      }, {
+        "href": "procedureIndex",
+        "title": "Planillas Eventuales",
+        "icon": "storage",
+        "permission": "read-procedure-eventual",
+        "params": {}
+      }
+    ]
+  }, {
+    "title": "Consultores",
+    "icon": "work",
+    "permission": "read-consultant",
+    "group": [
+      {
+        "href": "consultantIndex",
+        "title": "Contratos Consultores",
+        "icon": "gavel",
+        "permission": "read-consultant",
+        "params": {}
+      }, {
+        "href": "consultantProcedureIndex",
+        "title": "Planillas Consultores",
+        "icon": "storage",
+        "permission": "read-procedure-consultant",
+        "params": {}
+      }
+    ]
+  }, {
+    "href": "departureIndex",
+    "title": "Aprobar Permisos",
+    "icon": "alarm_on",
+    "permission": "read-departure",
+    "params": {
+      "departureType": "all"
+    }
+  }, {
+    "href": "departureIndex",
+    "title": "Permisos",
+    "icon": "directions_run",
+    "permission": "!admin",
+    "params": {
+      "departureType": "user"
+    }
+  }, {
+    "title": "Almacén",
+    "icon": "shopping_cart",
+    "permission": "read-supply-requests",
+    "group": [
+      {
+        "href": "supplyRequestIndex",
+        "title": "Pedidos",
+        "icon": "send",
+        "permission": "read-supply-requests",
+        "params": {
+          "requestType": "all"
+        }
+      }, {
+        "href": "suppliesIndex",
+        "title": "Materiales",
+        "icon": "receipt",
+        "permission": "read-supplies",
+        "params": {}
+      }
+    ]
+  }, {
+    "href": "supplyRequestIndex",
+    "title": "Solicitud de Material",
+    "icon": "add_shopping_cart",
+    "permission": "!admin",
+    "params": {
+      "requestType": "user"
+    }
+  }, {
+    "title": "Configuración",
+    "icon": "settings",
+    "permission": "admin",
+    "group": [
+      {
+        "href": "phonebookIndex",
+        "title": "Agenda Telefonica",
+        "icon": "contact_phone",
+        "permission": "admin",
+        "params": {}
+      }, {
+        "href": "departureConfig",
+        "title": "Permisos",
+        "icon": "directions_walk",
+        "permission": "admin",
+        "params": {}
+      }
+    ]
+  }, {
+    "href": "userIndex",
+    "title": "Usuarios",
+    "icon": "security",
+    "permission": "admin",
+    "params": {}
+  }, {
+    "href": "userActionIndex",
+    "title": "Actividad",
+    "icon": "timeline",
+    "permission": "read-user-action",
+    "params": {}
+  }
+]

@@ -17,21 +17,20 @@ html, body {
 }
 .left-header {
   margin-left: 400px;
+  margin-top: 2px;
 }
 .left-header-title {
-  margin-top: 27px;
-  margin-bottom: 1px;
+  margin-top: 26px;
 }
 .left-header-subtitle {
   margin-left: 397px;
-  margin-top: -2px;
 }
 .left-nit {
   min-width: 146px;
 }
 .left-employee-box {
   margin-left: 127px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 .left-box-code {
   min-width: 193px;
@@ -40,35 +39,36 @@ html, body {
   min-width: 139.7px;
 }
 .left-employee-space-tiny {
-  padding-top: 6px;
+  padding-top: 4px;
 }
 .left-charge {
+  margin-top: 2px;
   max-width: 559px;
   min-height: 25px;
   max-height: 25px;
   margin-left: 70px;
 }
 .left-discounts-box {
-  margin-left: 38px;
-  margin-top: 42px;
+  margin-left: 30px;
+  margin-top: 34px;
 }
 .left-discounts-first-row {
-  min-width: 127px;
+  min-width: 125px;
 }
 .left-discounts-second-row {
   min-width: 90px;
-  margin-right: 15px;
+  margin-right: 17px;
 }
 .left-discounts-third-row {
   min-width: 235px;
   padding-left: 25px;
 }
 .left-image {
-  margin-top: 8px;
+  margin-top: 7px;
   margin-left: 252px;
 }
 .left-discounts-vertical-space {
-  padding-top: 37px;
+  padding-top: 31px;
 }
 .ticket {
   min-height: 537px;
@@ -89,11 +89,11 @@ html, body {
 }
 .right-content {
   margin-left: 63.5px;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 .right-charge {
-  min-height: 66px;
-  max-height: 66px;
+  min-height: 58px;
+  max-height: 58px;
 }
 .right-text {
   margin-top: 5px;
@@ -111,21 +111,21 @@ html, body {
 }
 .right-header-title {
   margin-left: 59.7px;
-  margin-top: 5px;
+  margin-top: 4px;
 }
 .right-header-subtitle {
   margin-left: 57.2px;
   margin-top: 2.5px;
 }
 .right-name {
-  margin-top: 14px;
+  margin-top: 12px;
   min-height: 22px;
   max-height: 22px;
 }
 .right-image {
   margin-top: 14px;
-  padding-bottom: 2px;
-  margin-left: 80px;
+  margin-left: 70px;
+  margin-bottom: -1px;
 }
 .right-nua {
   min-height: 17px;

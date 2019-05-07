@@ -98,7 +98,7 @@
                     <td class="text-xxs w-95-px">
                         {{-- Concepto de Pago: --}}
                     </td>
-                    <td class="uppercase courier text-xs w-235-px">PAGO DE HABERES {{ $procedure->month->shortened}} {{ $procedure->year }}</td>
+                    <td class="uppercase courier text-xs w-235-px">{{ strlen($procedure->month->shortened) > 3 ? '' : 'PAGO DE HABERES ' }}{{ $procedure->month->shortened}} {{ $procedure->year }}</td>
                     <td class="text-xxs w-95-px">
                         {{-- Nº Días Trab.: --}}
                     </td>
@@ -270,7 +270,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    
+
                     {{-- /discounts --}}
                     <tr>
                         <td class="text-xs text-left border-top">
@@ -374,7 +374,7 @@
                             {{-- Concepto de Pago: --}}
                         </td>
                         <td class="uppercase courier text-xs w-235-px" style="min-height:14px;height:14px;max-height:14px;">
-                            PAGO DE HABERES {{ $procedure->month->shortened}} {{ $procedure->year }}
+                            {{ strlen($procedure->month->shortened) > 3 ? '' : 'PAGO DE HABERES ' }}{{ $procedure->month->shortened}} {{ $procedure->year }}
                         </td>
                     </tr>
                     <tr>
@@ -452,7 +452,7 @@
             </div>
         </div>
     </div>
-    
+
     @endforeach
 </body>
 
