@@ -1,0 +1,150 @@
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: "Roboto Mono", monospace;
+}
+.font-tiny {
+  font-size: 8pt;
+}
+.font-normal {
+  font-size: 9pt;
+}
+.font-large {
+  font-size: 10.8pt;
+}
+.font-huge {
+  font-size: 12.7pt;
+}
+.left-header {
+  margin-left: 400px;
+  margin-top: 2px;
+}
+.left-header-title {
+  margin-top: 26px;
+}
+.left-header-subtitle {
+  margin-left: 397px;
+}
+.left-nit {
+  min-width: 146px;
+}
+.left-employee-box {
+  margin-left: 127px;
+  margin-top: 8px;
+}
+.left-box-code {
+  min-width: 193px;
+}
+.left-employee-space-normal {
+  min-width: 139.7px;
+}
+.left-employee-space-tiny {
+  padding-top: 4px;
+}
+.left-charge {
+  margin-top: 2px;
+  max-width: 559px;
+  min-height: 25px;
+  max-height: 25px;
+  margin-left: 70px;
+}
+.left-discounts-box {
+  margin-left: 30px;
+  margin-top: 34px;
+}
+.left-discounts-first-row {
+  min-width: 125px;
+}
+.left-discounts-second-row {
+  min-width: 90px;
+  margin-right: 17px;
+}
+.left-discounts-third-row {
+  min-width: 235px;
+  padding-left: 25px;
+}
+.left-image {
+  margin-top: 7px;
+  margin-left: 252px;
+}
+.left-discounts-vertical-space {
+  padding-top: 31px;
+}
+.ticket {
+  min-height: 537px;
+  max-height: 537px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.left-ticket {
+  display: inline-block;
+}
+.right-ticket {
+  display: inline-block;
+  margin-top: 0;
+  padding-top: 0;
+  margin-left: 50.8px;
+  min-width: 304.8px;
+  max-width: 304.8px;
+}
+.right-content {
+  margin-left: 63.5px;
+  margin-top: 24px;
+}
+.right-charge {
+  min-height: 59px;
+  max-height: 59px;
+}
+.right-text {
+  margin-top: 5px;
+  margin-left: 12.7px;
+}
+.right-text-left {
+  margin-top: 5px;
+  margin-left: 6.4px;
+}
+.right-text-right {
+  margin-left: 38.1px;
+}
+.right-nit {
+  min-width: 142.2px;
+}
+.right-header-title {
+  margin-left: 59.7px;
+  margin-top: 4px;
+}
+.right-header-subtitle {
+  margin-left: 57.2px;
+  margin-top: 2.5px;
+}
+.right-name {
+  margin-top: 12px;
+  min-height: 22px;
+  max-height: 22px;
+}
+.right-image {
+  margin-top: 14px;
+  margin-left: 70px;
+  margin-bottom: -1px;
+}
+.right-nua {
+  min-height: 17px;
+  max-height: 17px;
+}
+.page {
+  overflow: hidden;
+  page-break-after: always;
+}
+.cover-border {
+  padding-top: 50%;
+  text-align: center;
+}
+.cover-title {
+  border-color: #5D6975;
+  border-style: solid;
+  border-width: 1px;
+  border-top-left-radius: .7rem;
+  border-top-right-radius: .7rem;
+  border-bottom-right-radius: .7rem;
+  border-bottom-left-radius: .7rem;
+}

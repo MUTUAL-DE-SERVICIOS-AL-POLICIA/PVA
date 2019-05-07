@@ -187,10 +187,10 @@
               <div>
                 <v-card-actions v-if="!procedure.new">
                   <v-spacer></v-spacer>
-                  <v-btn icon v-if="(procedure.active && $store.getters.permissions.includes('update-procedure-eventual')) || $store.getters.role == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" class="ml-0">
+                  <v-btn icon v-if="$store.getters.permissions.includes('update-procedure-eventual') || $store.getters.role == 'admin'" :to="{ name: 'procedureEdit', params: { id: procedure.id }}" class="ml-0">
                     <v-tooltip top>
-                      <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">edit</v-icon>
-                      <span>Editar</span>
+                      <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">{{ procedure.active ? 'edit' : 'visibility' }}</v-icon>
+                      <span>{{ procedure.active ? 'Editar' : 'Ver' }}</span>
                     </v-tooltip>
                   </v-btn>
                   <v-btn icon v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'" class="ml-0">

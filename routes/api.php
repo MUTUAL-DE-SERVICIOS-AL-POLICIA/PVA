@@ -301,6 +301,7 @@ Route::group([
       Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['index', 'store', 'update', 'delete']);
       // Ticket
       Route::get('ticket/print/{id}', 'Api\V1\TicketController@print')->name('ticket_print');
+      Route::get('ticket/standalone/{code}', 'Api\V1\TicketController@standalone')->name('standalone_ticket_print');
       // Employee
       Route::get('employee/active/{active}', 'Api\V1\EmployeeController@filter_employees')->name('employee_active_list');
       Route::post('employee', 'Api\V1\EmployeeController@store')->name('employee_store');

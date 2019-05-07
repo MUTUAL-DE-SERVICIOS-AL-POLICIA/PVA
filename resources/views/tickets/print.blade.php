@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Boletas de Pago de {{ $procedure->month->name }} de {{ $procedure->year }}</title>
     <style>
-        <?php include public_path('css/ticket-print.min.css') ?>
+      <?php include public_path('css/ticket-print.min.css') ?>
     </style>
 </head>
 
@@ -270,7 +270,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    
+
                     {{-- /discounts --}}
                     <tr>
                         <td class="text-xs text-left border-top">
@@ -452,7 +452,7 @@
             </div>
         </div>
     </div>
-    
+
     @endforeach
 </body>
 
