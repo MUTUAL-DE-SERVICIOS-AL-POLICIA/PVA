@@ -7,8 +7,6 @@ use App\Payroll;
 use App\Procedure;
 use App\Company;
 use App\CompanyAddress;
-use App\Employee;
-use App\EmployeeDiscount;
 
 class TicketController extends Controller
 {
