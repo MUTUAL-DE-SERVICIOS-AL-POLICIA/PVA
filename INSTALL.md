@@ -3,12 +3,26 @@
 ## Requirements
 
 * (Optional) LDAP server to authenticate users
-* PHP 7.1.22 (with `LDAP, GD, PGSQL, PDO_PGSQL, ICONV, MYSQL` modules enabled)
+* PHP 7.1.22 (with `LDAP, GD, PGSQL, PDO_PGSQL, MBSTRING, MYSQL, XML, ZIP` modules enabled)
 * Node.js 8.12.0
 * NPM 6.4.1 or Yarn 1.9.4
 * PostgreSQL 10.4
 
 ## Install
+
+* Roboto fonts support (Based on Ubuntu 16.04 distro)
+
+```sh
+sudo apt update
+sudo apt install fonts-roboto fonts-roboto-fontface unzip fontconfig
+cd /tmp
+wget -O RobotoMono.zip https://fonts.google.com/download\?family\=Roboto%20Mono
+sudo mkdir /usr/share/fonts/googlefonts
+sudo unzip -d /usr/share/fonts/googlefonts /tmp/RobotoMono.zip
+sudo chmod -R --reference=/usr/share/fonts/googlefonts /usr/share/fonts/googlefonts
+sudo fc-cache -fv
+fc-match "Roboto Mono"
+```
 
 * Clone the project
 
