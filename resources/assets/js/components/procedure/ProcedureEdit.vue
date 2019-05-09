@@ -403,7 +403,11 @@ export default {
   },
   watch: {
     date(val) {
-      this.selectedDate = this.$moment(this.date).format("DD/MM/YYYY");
+      if (val) {
+        this.selectedDate = this.$moment(this.date).format("DD/MM/YYYY");
+      } else {
+        this.selectedDate = null
+      }
     },
   },
   methods: {
@@ -449,7 +453,7 @@ export default {
     },
     async savePayroll(payroll) {
       try {
-        if (procedure.active) {
+        if (this.procedure.active) {
           await axios.patch(`/payroll/${payroll.id}`, {
             unworked_days: parseInt(payroll.unworked_days),
             rc_iva: Number(payroll.rc_iva),
@@ -661,8 +665,8 @@ export default {
         );
       } catch(e) {
         console.log(e);
+        this.date = this.procedure.pay_date
       }
-
     }
   }
 };

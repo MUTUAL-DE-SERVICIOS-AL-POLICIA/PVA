@@ -302,6 +302,10 @@ class Ldap
           }
         }
 
+        usort($result, function ($a, $b) {
+          return $a->sn <=> $b->sn;
+        });
+
         return $result;
       }
     }
