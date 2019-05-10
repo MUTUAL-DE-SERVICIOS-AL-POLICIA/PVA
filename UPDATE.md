@@ -2,6 +2,12 @@
 
 ---
 
+## From [4.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.1.0) to [4.1.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.1.1)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
 ## From [4.0.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.0.3) to [4.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.1.0)
 
 * Install `Roboto Fonts`, refer to the [INSTALL](INSTALL.md) file
