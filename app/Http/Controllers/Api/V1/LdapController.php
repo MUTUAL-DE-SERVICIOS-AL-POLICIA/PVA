@@ -147,4 +147,29 @@ class LdapController extends Controller
       ])
     ]);
   }
+
+  /**
+   * Restart user password.
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function destroy($id)
+  {
+    Employee::findOrFail($id);
+    $ldap = new Ldap();
+    $user = $ldap->get_entry($id);
+    if ($user) {
+      if ($ldap->update_password($user['uid'], $user['uid'])) {
+        $ldap->unbind();
+        return response()->json($user, 200);
+      }
+    }
+    $ldap->unbind();
+    return response()->json([
+      'message' => 'Bad Request Error',
+      'errors' => [
+        'type' => ['Usuario inexistente en el servidor LDAP'],
+      ],
+    ], 400);
+  }
 }

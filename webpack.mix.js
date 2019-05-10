@@ -2,6 +2,9 @@ let mix = require('laravel-mix')
 require('laravel-mix-purgecss')
 
 mix.js('resources/assets/js/app.js', 'public/js')
+  .webpackConfig({
+    devtool: "inline-source-map"
+  })
   .copy('resources/assets/css/payroll-print.css', 'public/css')
   .minify('public/css/payroll-print.css')
   .copy('resources/assets/css/ticket-standalone.css', 'public/css')

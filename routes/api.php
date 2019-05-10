@@ -222,7 +222,7 @@ Route::group([
       'middleware' => 'role:admin',
     ], function () {
       // User
-      Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update']);
+      Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update', 'destroy']);
       Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'destroy']);
       // Permission
       Route::resource('permission', 'Api\V1\PermissionController')->only(['index']);

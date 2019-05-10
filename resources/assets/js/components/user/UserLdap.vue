@@ -25,6 +25,12 @@
               </v-btn>
               <span>Actualizar</span>
             </v-tooltip>
+            <v-tooltip top>
+              <v-btn slot="activator" flat icon color="error" @click.native="resetPassword(props.item.employeeNumber)">
+                <v-icon>vpn_key</v-icon>
+              </v-btn>
+              <span>Reiniciar Contraseña</span>
+            </v-tooltip>
           </td>
         </tr>
       </template>
@@ -33,6 +39,7 @@
 </template>
 
 <script>
+import { log } from 'util';
 export default {
   name: "userLdap",
   data() {
@@ -113,6 +120,14 @@ export default {
         });
       } catch (e) {
         console.log(e);
+      }
+    },
+    async resetPassword(id) {
+      try {
+        let res = await axios.delete(`/ldap/${id}`)
+        this.toastr.success(`Contraseña reiniciada para el usuario: ${res.data.uid}`)
+      } catch (e) {
+        console.log(e)
       }
     },
     async updateUser(id) {
