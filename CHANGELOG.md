@@ -2,6 +2,16 @@
 
 ---
 
+## [4.1.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.1.1) - 2019-05-10
+
+### Added
+
+* Reset user password option
+
+### Fixed
+
+* Save tribute payroll details bug
+
 ## [4.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.1.0) - 2019-05-07
 
 ### Added

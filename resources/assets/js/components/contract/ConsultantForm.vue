@@ -266,6 +266,7 @@
 </template>
 
 <script>
+import { log } from 'util';
 export default {
   name: "ConsultantForm",
   props: ["item", "bus"],
@@ -326,6 +327,10 @@ export default {
         months: []
       },
       position_id: null,
+      oldDate: {
+        start: null,
+        end: null
+      }
     }
   },
   created() {
@@ -348,6 +353,10 @@ export default {
         this.position_id = item.consultant_position_id
 
         if (!item.edit) {
+          this.oldDate = {
+            start: item.start_date,
+            end: item.end_date
+          }
           this.selectedItem.start_date = this.onlyWeekdays(this.$moment(item.retirement_date ? item.retirement_date : item.end_date)).startOf('day').toISOString().split('T')[0]
           this.selectedItem.end_date = null
           this.selectedItem.rrhh_cite = null
@@ -403,6 +412,10 @@ export default {
       return momentDate
     },
     clearForm() {
+      this.oldDate = {
+        start: null,
+        end: null
+      }
       this.datePicker = {
         start: {
           formattedDate: null,
@@ -509,7 +522,7 @@ export default {
             this.selectedItem.charge_id = search.charge_id
             this.selectedItem.position_group_id = search.position_group_id
             this.onSelectCharge(search.charge.id)
-            let res = await axios.get(`/consultant_contract/position_free/${position.id}`)            
+            let res = await axios.get(`/consultant_contract/position_free/${position.id}`)
             if (this.position_id == position.id) {
               this.table.position.free = true
             } else {
@@ -588,8 +601,11 @@ export default {
             await axios.post(`/consultant_contract`, this.selectedItem)
           } else if (!this.selectedItem.edit && !this.selectedItem.new) {
             await axios.patch(`/consultant_contract/${this.selectedItem.id}`, {
+              start_date: this.oldDate.start,
+              end_date: this.oldDate.end,
               active: false
             })
+            delete this.selectedItem['id']
             await axios.post(`/consultant_contract`, this.selectedItem)
           } else {
             if ((this.selectedItem.retirement_date && this.selectedItem.retirement_reason_id)) {
