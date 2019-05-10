@@ -2,6 +2,12 @@
 
 ---
 
+## [4.1.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.1.2) - 2019-05-10
+
+### Fixed
+
+* Recontract consultant
+
 ## [4.1.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.1.1) - 2019-05-10
 
 ### Added
