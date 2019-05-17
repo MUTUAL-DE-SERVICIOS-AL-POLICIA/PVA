@@ -2,6 +2,12 @@
 
 ---
 
+## [4.2.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.2.0) - 2019-05-17
+
+### Added
+
+* Zammad request to sync users with ldap server support
+
 ## [4.1.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.1.2) - 2019-05-10
 
 ### Fixed
