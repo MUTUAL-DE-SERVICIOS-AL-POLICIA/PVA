@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Employee;
 use App\User;
 use Ldap;
+use Carbon;
 
 class LdapController extends Controller
 {
@@ -90,7 +91,7 @@ class LdapController extends Controller
       }
     }
 
-    return response()->json([
+    $response = [
       'employees' => (object)[
         'total' => count($employees),
         'new' => $added
@@ -103,7 +104,20 @@ class LdapController extends Controller
         'added' => $success_added,
         'removed' => $success_removed
       ],
-    ]);
+    ];
+
+    if (env('ZAMMAD_SYNC')) {
+      $zammad = $this->zammad_sync();
+      if (array_key_exists('result', $zammad)) {
+        $response['zammad'] = $zammad['result'];
+      } elseif (array_key_exists('error', $zammad)) {
+        $response['zammad']['error'] = $zammad['error'];
+      } else {
+        $response['zammad'] = $zammad;
+      }
+    }
+
+    return response()->json($response);
   }
 
   /**
@@ -171,5 +185,55 @@ class LdapController extends Controller
         'type' => ['Usuario inexistente en el servidor LDAP'],
       ],
     ], 400);
+  }
+
+  private function zammad_sync()
+  {
+    $route = 'api/v1/integration/ldap/job_start';
+    $max_request = 10;
+
+    $headers = [
+      'Content-Type:application/json',
+      'Authorization: Basic ' . base64_encode(implode(':', [env('ZAMMAD_USER'), env('ZAMMAD_PASSWORD')]))
+    ];
+
+    $request = curl_init();
+    curl_setopt($request, CURLOPT_URL, implode('/', [env('ZAMMAD_HOST'), $route]));
+    curl_setopt($request, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($request, CURLOPT_POST, 1);
+    curl_setopt($request, CURLOPT_TIMEOUT, 30);
+    $result = curl_exec($request);
+    curl_setopt($request, CURLOPT_POST, 0);
+
+    $i = 0;
+    do {
+      curl_setopt($request, CURLOPT_URL, implode('?', [implode('/', [env('ZAMMAD_HOST'), $route]), implode('=', ['_', Carbon::now()->timestamp])]));
+      $result = curl_exec($request);
+      $result = json_decode($result, true);
+      if (array_key_exists('result', $result)) {
+        if (count($result['result']) > 0) {
+          break;
+        }
+      }
+      $i++;
+      sleep(2);
+      if ($i > $max_request) {
+        return [
+          'error' => 'request limit number exceded'
+        ];
+        break;
+      }
+    } while (true);
+
+    if (!$result) {
+      return [
+        'error' => 'no route to host'
+      ];
+    }
+
+    curl_close($request);
+    return $result;
   }
 }
