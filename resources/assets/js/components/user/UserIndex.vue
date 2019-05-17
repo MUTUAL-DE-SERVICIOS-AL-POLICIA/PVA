@@ -46,7 +46,7 @@
                             <v-list-tile-content>Base de datos:</v-list-tile-content>
                             <v-list-tile-content class="align-end">{{ message.employees.total }}</v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile class="error white--text">
+                        <v-list-tile class="white--text" :class="message.employees.new.length > 0 ? 'error' : 'primary'">
                           <v-list-tile-content>NO sincronizados:</v-list-tile-content>
                           <v-list-tile-content class="align-end" v-if="message.employees.new">
                             <ul v-for="employee in message.employees.new" :key="employee.id">
@@ -108,7 +108,7 @@
                           <v-list-tile-content>Sin cambios:</v-list-tile-content>
                           <v-list-tile-content class="align-end">{{ message.zammad.unchanged }}</v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile class="error white--text">
+                        <v-list-tile class="white--text" :class="message.zammad.failed > 0 ? 'error' : 'primary'">
                           <v-list-tile-content>Falla:</v-list-tile-content>
                           <v-list-tile-content class="align-end">{{ message.zammad.failed }}</v-list-tile-content>
                         </v-list-tile>

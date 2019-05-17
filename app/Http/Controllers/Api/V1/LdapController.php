@@ -212,9 +212,11 @@ class LdapController extends Controller
       curl_setopt($request, CURLOPT_URL, implode('?', [implode('/', [env('ZAMMAD_HOST'), $route]), implode('=', ['_', Carbon::now()->timestamp])]));
       $result = curl_exec($request);
       $result = json_decode($result, true);
-      if (array_key_exists('result', $result)) {
-        if (count($result['result']) > 0) {
-          break;
+      if ($result) {
+        if (array_key_exists('result', $result)) {
+          if (count($result['result']) > 0) {
+            break;
+          }
         }
       }
       $i++;
