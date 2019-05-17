@@ -189,7 +189,7 @@ class LdapController extends Controller
 
   private function zammad_sync()
   {
-    $route = 'api/v1/integration/job_start';
+    $route = 'api/v1/integration/ldap/job_start';
     $max_request = 10;
 
     $headers = [
