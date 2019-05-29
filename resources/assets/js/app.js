@@ -43,6 +43,7 @@ Vue.use(VueRouter)
 Vue.use(Vuex)
 
 import moment from 'moment-business-days'
+import { log } from 'util'
 
 moment.updateLocale('es', require('moment/locale/es'), {
   workingWeekdays: [1, 2, 3, 4, 5]
@@ -68,7 +69,7 @@ axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Authorization'] = `${store.getters.token.type} ${store.getters.token.value}`
 
 axios.interceptors.response.use(response => {
-  return response;
+  return response
 }, error => {
   if (error.response) {
     if (error.response.status == 401) {
@@ -77,12 +78,12 @@ axios.interceptors.response.use(response => {
     }
     for (let key in error.response.data.errors) {
       error.response.data.errors[key].forEach(error => {
-        toastr.error(error);
-      });
+        toastr.error(error)
+      })
     }
   }
   return Promise.reject(error)
-});
+})
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
@@ -112,3 +113,8 @@ new Vue({
 })
 
 Validator.localize('es', es)
+
+if (store.getters.tokenExpired) {
+  store.dispatch('logout')
+  router.go('login')
+}
