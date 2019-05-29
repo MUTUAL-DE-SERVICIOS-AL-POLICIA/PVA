@@ -2,6 +2,12 @@
 
 ---
 
+## [4.2.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.2.1) - 2019-05-29
+
+### Fixed
+
+* Logout when token has expired on boot
+
 ## [4.2.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.2.0) - 2019-05-17
 
 ### Added

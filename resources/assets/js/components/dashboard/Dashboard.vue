@@ -21,6 +21,7 @@
                               first_name: { title: 'PRIMER NOMBRE' },
                               second_name: { title: 'SEGUNDO NOMBRE' },
                               position: { title: 'CARGO' },
+                              gender: { title: 'GÉNERO' },
                               phone_number: { title: 'CELULAR'},
                               landline_number: { title: 'TELÉFONO'}
                             }"
