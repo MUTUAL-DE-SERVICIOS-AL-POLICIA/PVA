@@ -6,6 +6,9 @@ npm-debug.log
 /.vagrant
 yarn-error.log
 
+# Laradock submodule
+laradock/
+
 # Laravel 4 specific
 bootstrap/compiled.php
 app/storage/
