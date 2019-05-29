@@ -34,6 +34,16 @@ export default {
     },
     token(state) {
       return state.token
+    },
+    tokenExpired(state) {
+      let token = localStorage.getItem('token')
+      if (token) {
+        let base64 = token.split('.')[1]
+        token = decodeURIComponent(atob(base64).split('').map(c => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        }).join(''))
+        return moment().isAfter(moment.unix(JSON.parse(token).exp))
+      }
     }
   },
   mutations: {
@@ -41,6 +51,9 @@ export default {
       localStorage.removeItem('user')
       localStorage.removeItem('token')
       localStorage.removeItem('token_type')
+      localStorage.removeItem('role')
+      localStorage.removeItem('id')
+      localStorage.removeItem('permissions')
       state.id = null
       state.user = null
       state.role = null
