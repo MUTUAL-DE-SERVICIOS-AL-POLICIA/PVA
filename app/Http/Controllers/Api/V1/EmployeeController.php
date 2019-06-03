@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api\V1;
 use App\Employee;
 use App\Payroll;
 use App\DepartureReason;
+use App\AssistanceUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeEditForm;
 use App\Http\Requests\EmployeeStoreForm;
 use Illuminate\Http\Request;
+use Carbon\CarbonImmutable;
 
 /** @resource Employee
  *
@@ -114,6 +116,41 @@ class EmployeeController extends Controller
       $employee = Employee::findOrFail($id);
       $employee->delete();
       return $employee;
+    }
+  }
+
+  public function assistance(Request $request, $id)
+  {
+    $employee = Employee::findOrFail($id);
+    $assistance_user = AssistanceUser::where('ssn', 'like', $employee->identity_card . '%')->first();
+    if ($assistance_user) {
+      if (!$request->has('from')) {
+        $to = CarbonImmutable::now();
+      } else {
+        $to = CarbonImmutable::parse($request->input('from'));
+      }
+      if ($to->day >= 20) {
+        $from = $to->day(19);
+      } else {
+        $from = $to->subMonth()->day(20);
+      }
+
+      $checks = $assistance_user->checks()->where('checktime', '>=', $from->format('Ymd'))->where('checktime', '<', $to->format('Ymd'))->get();
+
+      foreach ($checks as $i => $check) {
+        $checktime = CarbonImmutable::parse($check->checktime);
+        $check->date = $checktime->toDateString();
+        $check->time = $checktime->format('H:i');
+        $check->color = 'blue';
+        unset($check->checktime);
+      }
+
+      return response()->json([
+        'from' => $from->toDateString(),
+        'to' => $to->toDateString(),
+        'weeks' => $to->diffInWeeks($from->day(1)) + 2,
+        'checks' => collect(array_unique($checks->all()))->values()
+      ], 200);
     }
   }
 }

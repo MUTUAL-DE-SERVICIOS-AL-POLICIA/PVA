@@ -13,6 +13,7 @@ Route::group([
   Route::get('employee/{employee_id}/contract', 'Api\V1\EmployeeContractController@get_last_contract')->name('employee_last_contract');
   // Employee
   Route::get('employee', 'Api\V1\EmployeeController@index')->name('employees_list');
+  Route::get('employee/{id}/assistance', 'Api\V1\EmployeeController@assistance')->name('employees_assistance');
   // Position Group
   Route::get('position_group', 'Api\V1\PositionGroupController@index')->name('position_group_list');
   // Location

@@ -50,6 +50,14 @@
       }
     ]
   }, {
+    "href": "assistanceIndex",
+    "title": "Asistencia",
+    "icon": "fingerprint",
+    "permission": "!admin",
+    "params": {
+      "assistanceType": "user"
+    }
+  }, {
     "href": "departureIndex",
     "title": "Aprobar Permisos",
     "icon": "alarm_on",

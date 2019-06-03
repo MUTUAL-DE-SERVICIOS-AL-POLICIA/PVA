@@ -16,6 +16,7 @@ import SuppliesIndex from './components/supply/SuppliesIndex'
 import SupplyRequestIndex from './components/supply/SupplyRequestIndex'
 import DepartureConfig from './components/configuration/DepartureConfig'
 import DepartureIndex from './components/departure/DepartureIndex'
+import AssistanceIndex from './components/assistance/AssistanceIndex'
 
 export const routes = [
   {
@@ -149,5 +150,12 @@ export const routes = [
     meta: {
       requiresAuth: true
     }
-  }
+  }, {
+    path: '/assistance',
+    component: AssistanceIndex,
+    name: 'assistanceIndex',
+    meta: {
+      requiresAuth: true
+    }
+  },
 ]
