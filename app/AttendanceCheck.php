@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AssistanceCheck extends Model
+class AttendanceCheck extends Model
 {
-  protected $connection = 'assistance';
+  protected $connection = 'attendance';
   protected $table = 'checkinout';
   public $timestamps = false;
   protected $fillable = [];
@@ -15,6 +15,6 @@ class AssistanceCheck extends Model
 
   public function user()
   {
-    return $this->belongsTo(AssistanceUser::class, 'USERID', 'USERID');
+    return $this->belongsTo(AttendanceUser::class, 'USERID', 'USERID');
   }
 }

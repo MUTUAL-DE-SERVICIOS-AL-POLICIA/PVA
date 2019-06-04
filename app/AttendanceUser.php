@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AssistanceUser extends Model
+class AttendanceUser extends Model
 {
-  protected $connection = 'assistance';
+  protected $connection = 'attendance';
   protected $table = 'userinfo';
   public $timestamps = false;
   protected $fillable = [];
@@ -14,6 +14,6 @@ class AssistanceUser extends Model
 
   public function checks()
   {
-    return $this->hasMany(AssistanceCheck::class, 'USERID', 'USERID')->select('checktime');
+    return $this->hasMany(AttendanceCheck::class, 'USERID', 'USERID')->select('checktime');
   }
 }

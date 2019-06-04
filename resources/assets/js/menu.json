@@ -50,12 +50,12 @@
       }
     ]
   }, {
-    "href": "assistanceIndex",
+    "href": "attendanceIndex",
     "title": "Asistencia",
     "icon": "fingerprint",
     "permission": "!admin",
     "params": {
-      "assistanceType": "user"
+      "attendanceType": "user"
     }
   }, {
     "href": "departureIndex",

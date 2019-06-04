@@ -60,13 +60,13 @@ return [
       'engine' => null,
     ],
 
-    'assistance' => [
+    'attendance' => [
       'driver' => 'sqlsrv',
-      'host' => env('DB_ASSISTANCE_HOST', '127.0.0.1'),
-      'port' => env('DB_ASSISTANCE_PORT', '1433'),
-      'database' => env('DB_ASSISTANCE_DATABASE', 'db'),
-      'username' => env('DB_ASSISTANCE_USERNAME', 'admin'),
-      'password' => env('DB_ASSISTANCE_PASSWORD', 'admin'),
+      'host' => env('DB_ATTENDANCE_HOST', '127.0.0.1'),
+      'port' => env('DB_ATTENDANCE_PORT', '1433'),
+      'database' => env('DB_ATTENDANCE_DATABASE', 'db'),
+      'username' => env('DB_ATTENDANCE_USERNAME', 'admin'),
+      'password' => env('DB_ATTENDANCE_PASSWORD', 'admin'),
       'charset' => 'utf8',
       'prefix' => '',
     ],

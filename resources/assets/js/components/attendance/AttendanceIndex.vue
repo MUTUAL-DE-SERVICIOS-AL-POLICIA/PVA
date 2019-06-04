@@ -42,7 +42,7 @@ import Loading from '../Loading'
 import ManteinanceDialog from "../ManteinanceDialog"
 
 export default {
-  name: 'AssistanceIndex',
+  name: 'AttendanceIndex',
   components: {
     Loading,
     ManteinanceDialog
@@ -59,7 +59,7 @@ export default {
   },
   computed: {
     manteinanceMode() {
-      return JSON.parse(process.env.MIX_ASSISTANCE_MANTEINANCE_MODE)
+      return JSON.parse(process.env.MIX_ATTENDANCE_MANTEINANCE_MODE)
     }
   },
   beforeMount() {
@@ -68,7 +68,7 @@ export default {
   methods: {
     async getChecks() {
       try {
-        let res = await axios.get(`employee/${this.$store.getters.id}/assistance`)
+        let res = await axios.get(`employee/${this.$store.getters.id}/attendance`)
         this.checks = res.data.checks
         this.limits = {
           start: res.data.from,

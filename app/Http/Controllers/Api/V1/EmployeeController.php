@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Employee;
 use App\Payroll;
 use App\DepartureReason;
-use App\AssistanceUser;
+use App\AttendanceUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeEditForm;
 use App\Http\Requests\EmployeeStoreForm;
@@ -119,11 +119,11 @@ class EmployeeController extends Controller
     }
   }
 
-  public function assistance(Request $request, $id)
+  public function attendance(Request $request, $id)
   {
     $employee = Employee::findOrFail($id);
-    $assistance_user = AssistanceUser::where('ssn', 'like', $employee->identity_card . '%')->first();
-    if ($assistance_user) {
+    $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->first();
+    if ($attendance_user) {
       if (!$request->has('from')) {
         $to = CarbonImmutable::now();
       } else {
@@ -135,7 +135,7 @@ class EmployeeController extends Controller
         $from = $to->subMonth()->day(20);
       }
 
-      $checks = $assistance_user->checks()->where('checktime', '>=', $from->format('Ymd'))->where('checktime', '<', $to->format('Ymd'))->get();
+      $checks = $attendance_user->checks()->where('checktime', '>=', $from->format('Ymd'))->where('checktime', '<', $to->format('Ymd'))->get();
 
       foreach ($checks as $i => $check) {
         $checktime = CarbonImmutable::parse($check->checktime);
