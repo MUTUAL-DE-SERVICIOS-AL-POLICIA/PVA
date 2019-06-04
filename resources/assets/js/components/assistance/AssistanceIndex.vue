@@ -21,7 +21,7 @@
         >
           <template v-slot:day="{ date }">
             <template v-for="event in checks.filter(o => o.date == date)">
-              <div class="text-center my-event" :key="`${event.date} ${event.time}`">
+              <div class="text-center my-event" :key="`${event.date}_${event.time}`">
                 <span class="white--text">{{ event.time }}</span>
               </div>
             </template>
@@ -53,15 +53,6 @@ export default {
   },
   beforeMount() {
     this.getChecks()
-  },
-  computed: {
-    eventsMap () {
-      const map = {}
-      if (this.checks.length > 0) {
-        this.checks.forEach(e => (map[e.date] = map[e.date] || []).push(e))
-      }
-      return map
-    }
   },
   methods: {
     async getChecks() {
