@@ -225,6 +225,7 @@ Route::group([
       // User
       Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update', 'destroy']);
       Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'destroy']);
+      Route::get('user/switch_active/{id}', 'Api\V1\UserController@switch_active')->name('user_switch_active');
       // Permission
       Route::resource('permission', 'Api\V1\PermissionController')->only(['index']);
       // Role

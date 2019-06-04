@@ -20,12 +20,12 @@ use Ldap;
 class AuthController extends Controller
 {
   /**
-	 * Get a JWT via given credentials.
-	 *
-	 * Login, return a JsonWebToken to request as "Bearer" Authorization header
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
+   * Get a JWT via given credentials.
+   *
+   * Login, return a JsonWebToken to request as "Bearer" Authorization header
+   *
+   * @return \Illuminate\Http\JsonResponse
+   */
   public function store(AuthForm $request)
   {
     if ($request['username'] == 'admin') {
@@ -33,6 +33,18 @@ class AuthController extends Controller
 
       if ($token) {
         return $this->respondWithToken($token);
+      }
+    }
+
+    $user = User::whereUsername($request['username'])->first();
+    if ($user) {
+      if (!$user->active) {
+        return response()->json([
+          'message' => 'No autorizado',
+          'errors' => [
+            'type' => ['Usuario desactivado'],
+          ],
+        ], 401);
       }
     }
 
@@ -82,22 +94,22 @@ class AuthController extends Controller
   }
 
   /**
-	 * Get the authenticated User.
-	 *
-	 * Login, return a JsonWebToken to request as "Bearer" Authorization header
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
+   * Get the authenticated User.
+   *
+   * Login, return a JsonWebToken to request as "Bearer" Authorization header
+   *
+   * @return \Illuminate\Http\JsonResponse
+   */
   public function show()
   {
     return response()->json(auth('api')->user());
   }
 
   /**
-	 * Log the user out (Invalidate the token).
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
+   * Log the user out (Invalidate the token).
+   *
+   * @return \Illuminate\Http\JsonResponse
+   */
   public function destroy()
   {
     auth('api')->logout();
@@ -107,22 +119,22 @@ class AuthController extends Controller
   }
 
   /**
-	 * Refresh a token.
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
+   * Refresh a token.
+   *
+   * @return \Illuminate\Http\JsonResponse
+   */
   public function update()
   {
     return $this->respondWithToken(auth('api')->refresh());
   }
 
   /**
-	 * Get the token array structure.
-	 *
-	 * @param  string $token
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
+   * Get the token array structure.
+   *
+   * @param  string $token
+   *
+   * @return \Illuminate\Http\JsonResponse
+   */
   protected function respondWithToken($token, $employee = null)
   {
     if ($employee == null) {

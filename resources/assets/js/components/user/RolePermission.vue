@@ -2,26 +2,15 @@
   <div>
     <v-data-table
       :headers="headers"
-      :items="users"
+      :items="roles"
       :search="search"
       :rows-per-page-items="[10,20,30,{text:'TODO',value:-1}]"
       disable-initial-sort
     >
-      <template slot="items" slot-scope="props" v-if="props.item.roles.length > 0">
-        <tr v-if="props.item.roles[0].name != 'admin'">
+      <template slot="items" slot-scope="props">
+        <tr v-if="props.item.name != 'admin'">
           <td class="text-xs-center">
-            <v-tooltip right v-if="props.item.employee">
-              <span slot="activator">
-                {{ props.item.employee.first_name }} {{ props.item.employee.second_name }} {{ props.item.employee.last_name }} {{ props.item.employee.mothers_last_name }} <span class="font-weight-bold font-italic">[{{ props.item.roles[0].name }}]</span>
-              </span>
-              <span>
-                <div>{{ props.item.name }}</div>
-                <div>{{ props.item.position }}</div>
-              </span>
-            </v-tooltip>
-            <span v-else>
-              {{ props.item.username }}
-            </span>
+            {{ props.item.display_name }}
           </td>
           <td
             v-for="(permission, index) in permissions"
@@ -43,11 +32,11 @@
 
 <script>
 export default {
-  name: "userPermission",
+  name: "rolePermission",
   data() {
     return {
       permissions: [],
-      users: [],
+      roles: [],
       headers: [
         {
           align: "center",
@@ -61,7 +50,7 @@ export default {
   },
   mounted() {
     this.getPermissions();
-    this.getUsers();
+    this.getRoles();
   },
   methods: {
     verifyPermission(permissions, permission) {
@@ -87,26 +76,26 @@ export default {
         console.log(e);
       }
     },
-    async getUsers() {
+    async getRoles() {
       try {
-        let res = await axios.get("user");
-        this.users = res.data;
+        let res = await axios.get("role");
+        this.roles = res.data;
       } catch (e) {
         console.log(e);
       }
     },
-    async updatePermission(userId, permissionId, status) {
+    async updatePermission(roleId, permissionId, status) {
       try {
         if (status) {
-          await axios.delete(`/user/${userId}/permission/${permissionId}`);
+          await axios.delete(`/role/${roleId}/permission/${permissionId}`);
         } else if (!status) {
-          await axios.patch(`/user/${userId}/permission/${permissionId}`);
+          await axios.patch(`/role/${roleId}/permission/${permissionId}`);
         }
         this.toastr.success("Actualizado correctamente");
       } catch (e) {
         console.log(e);
       } finally {
-        this.getUsers();
+        this.getRoles();
       }
     }
   }

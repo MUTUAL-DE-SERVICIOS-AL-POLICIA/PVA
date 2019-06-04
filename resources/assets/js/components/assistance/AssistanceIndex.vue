@@ -1,44 +1,51 @@
 <template>
   <v-container fluid>
-    <v-toolbar>
-      <v-toolbar-title>
-        {{ `Asistencia del ${$moment(limits.start).format('L')} al ${$moment(limits.end).format('L')}` }}
-      </v-toolbar-title>
-    </v-toolbar>
-    <div v-if="loading">
-      <Loading/>
-    </div>
-    <v-flex>
-      <v-card>
-        <v-calendar
-          :start="limits.start"
-          :end="limits.end"
-          :now="$store.getters.dateNow"
-          :short-months="false"
-          locale="es-bo"
-          type="custom-weekly"
-          :weekdays="[1,2,3,4,5,6,0]"
-        >
-          <template v-slot:day="{ date }">
-            <template v-for="event in checks.filter(o => o.date == date)">
-              <div class="text-center my-event" :key="`${event.date}_${event.time}`">
-                <span class="white--text">{{ event.time }}</span>
-              </div>
+    <template v-if="!this.manteinanceMode">
+      <v-toolbar>
+        <v-toolbar-title>
+          {{ `Asistencia del ${$moment(limits.start).format('L')} al ${$moment(limits.end).format('L')}` }}
+        </v-toolbar-title>
+      </v-toolbar>
+      <div v-if="loading">
+        <Loading/>
+      </div>
+      <v-flex>
+        <v-card>
+          <v-calendar
+            :start="limits.start"
+            :end="limits.end"
+            :now="$store.getters.dateNow"
+            :short-months="false"
+            locale="es-bo"
+            type="custom-weekly"
+            :weekdays="[1,2,3,4,5,6,0]"
+          >
+            <template v-slot:day="{ date }">
+              <template v-for="event in checks.filter(o => o.date == date)">
+                <div class="text-center my-event" :key="`${event.date}_${event.time}`">
+                  <span class="white--text">{{ event.time }}</span>
+                </div>
+              </template>
             </template>
-          </template>
-        </v-calendar>
-      </v-card>
-    </v-flex>
+          </v-calendar>
+        </v-card>
+      </v-flex>
+    </template>
+    <template v-else>
+      <ManteinanceDialog positionGroup="la Unidad de Recursos Humanos"></ManteinanceDialog>
+    </template>
   </v-container>
 </template>
 
 <script>
 import Loading from '../Loading'
+import ManteinanceDialog from "../ManteinanceDialog"
 
 export default {
   name: 'AssistanceIndex',
   components: {
-    Loading
+    Loading,
+    ManteinanceDialog
   },
   data() {
     return {
@@ -48,6 +55,11 @@ export default {
         start: null,
         end: null
       }
+    }
+  },
+  computed: {
+    manteinanceMode() {
+      return JSON.parse(process.env.MIX_ASSISTANCE_MANTEINANCE_MODE)
     }
   },
   beforeMount() {

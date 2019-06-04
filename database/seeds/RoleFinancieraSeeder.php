@@ -11,9 +11,13 @@ class RoleFinancieraSeeder extends Seeder
    */
   public function run()
   {
-    App\Role::create([
+    $role = App\Role::firstOrNew([
       'name' => 'financiera',
       'display_name' => 'FINANCIERA'
     ]);
+
+    $permisions = App\Permission::where('name', 'read-employee')->orWhere('name', 'read-eventual')->orWhere('name', 'read-consultant')->orWhere('name', 'read-procedure-consultant')->orWhere('name', 'read-procedure-eventual')->orWhere('name', 'read-user-action')->get()->toArray();
+
+    $role->attachPermissions($permisions);
   }
 }
