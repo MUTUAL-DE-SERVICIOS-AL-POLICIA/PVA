@@ -46,8 +46,7 @@ export default {
       checks: [],
       limits: {
         start: null,
-        end: null,
-        weeks: 1
+        end: null
       }
     }
   },
@@ -61,8 +60,7 @@ export default {
         this.checks = res.data.checks
         this.limits = {
           start: res.data.from,
-          end: res.data.to,
-          weeks: res.data.weeks
+          end: res.data.to
         }
         this.loading = false
       } catch (e) {

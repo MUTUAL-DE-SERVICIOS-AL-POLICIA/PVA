@@ -148,7 +148,6 @@ class EmployeeController extends Controller
       return response()->json([
         'from' => $from->toDateString(),
         'to' => $to->toDateString(),
-        'weeks' => $to->diffInWeeks($from->day(1)) + 2,
         'checks' => collect(array_unique($checks->all()))->values()
       ], 200);
     }
