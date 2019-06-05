@@ -13,8 +13,20 @@ class AttendanceCheck extends Model
   protected $primaryKey = null;
   public $incrementing = false;
 
+  function __construct()
+  {
+    $this->CHECKTYPE = 'I';
+    $this->WorkCode = 0;
+    $this->UserExtFmt = 1;
+  }
+
   public function user()
   {
     return $this->belongsTo(AttendanceUser::class, 'USERID', 'USERID');
+  }
+
+  public function device()
+  {
+    return $this->belongsTo(AttendanceDevice::class, 'SENSORID', 'MachineNumber');
   }
 }

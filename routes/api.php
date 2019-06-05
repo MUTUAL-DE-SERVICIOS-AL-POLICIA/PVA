@@ -297,6 +297,8 @@ Route::group([
     Route::group([
       'middleware' => 'role:admin|rrhh',
     ], function () {
+      // Attendance
+      Route::resource('attendance', 'Api\V1\AttendanceController')->only(['index', 'show', 'store', 'destroy']);
       // Bonus
       Route::get('bonus/print/{year}', 'Api\V1\BonusController@print')->name('bonus_print');
       Route::resource('bonus', 'Api\V1\BonusController')->only(['index', 'show', 'store', 'update', 'destroy']);

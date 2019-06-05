@@ -12,6 +12,7 @@
       <v-flex>
         <v-card>
           <v-calendar
+            v-if="checks.length > 0"
             :start="limits.start"
             :end="limits.end"
             :now="$store.getters.dateNow"
@@ -28,6 +29,11 @@
               </template>
             </template>
           </v-calendar>
+          <template v-else>
+            <v-card-text v-if="!loading">
+              <h2 class="red--text">No se pudo encontrar el usuario en la base de datos</h2>
+            </v-card-text>
+          </template>
         </v-card>
       </v-flex>
     </template>

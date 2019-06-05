@@ -122,7 +122,7 @@ class EmployeeController extends Controller
   public function attendance(Request $request, $id)
   {
     $employee = Employee::findOrFail($id);
-    $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->first();
+    $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->orderBy('USERID', 'DESC')->first();
     if ($attendance_user) {
       if (!$request->has('from')) {
         $to = CarbonImmutable::now();
@@ -130,12 +130,12 @@ class EmployeeController extends Controller
         $to = CarbonImmutable::parse($request->input('from'));
       }
       if ($to->day >= 20) {
-        $from = $to->day(19);
+        $from = $to->day(20);
       } else {
         $from = $to->subMonth()->day(20);
       }
 
-      $checks = $attendance_user->checks()->where('checktime', '>=', $from->format('Ymd'))->where('checktime', '<', $to->format('Ymd'))->get();
+      $checks = $attendance_user->checks()->where('checktime', '>=', $from->startOfDay()->format('Ymd H:i:s'))->where('checktime', '<=', $to->endOfDay()->format('Ymd H:i:s'))->get();
 
       foreach ($checks as $i => $check) {
         $checktime = CarbonImmutable::parse($check->checktime);
@@ -150,6 +150,13 @@ class EmployeeController extends Controller
         'to' => $to->toDateString(),
         'checks' => collect(array_unique($checks->all()))->values()
       ], 200);
+    } else {
+      return response()->json([
+        'message' => 'Usuario inexistente',
+        'errors' => [
+          'type' => ['Usuario inexistente en la base de datos'],
+        ],
+      ], 404);
     }
   }
 }

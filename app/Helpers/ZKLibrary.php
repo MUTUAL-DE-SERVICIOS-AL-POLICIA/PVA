@@ -63,7 +63,7 @@ class ZKLibrary
   public $user_data = array();
   public $attendance_data = array();
   public $timeout_sec = 5;
-  public $timeout_usec = 5000000;
+  public $timeout_usec = 0;
 
   public function __construct($ip = null, $port = null)
   {
@@ -82,6 +82,12 @@ class ZKLibrary
     unset($this->user_data);
     unset($this->attendance_data);
   }
+
+  public function verify_open_port($ip = null)
+  {
+    return @fsockopen($ip, 23, $errno, $errstr, $this->timeout_sec);
+  }
+
   public function connect($ip = null, $port = 4370)
   {
     if ($ip != null) {
@@ -93,26 +99,37 @@ class ZKLibrary
     if ($this->ip == null || $this->port == null) {
       return false;
     }
-    $command = CMD_CONNECT;
-    $command_string = '';
-    $chksum = 0;
-    $session_id = 0;
-    $reply_id = -1 + USHRT_MAX;
-    $buf = $this->createHeader($command, $chksum, $session_id, $reply_id, $command_string);
-    socket_sendto($this->socket, $buf, strlen($buf), 0, $this->ip, $this->port);
-    try {
-      socket_recvfrom($this->socket, $this->received_data, 1024, 0, $this->ip, $this->port);
-      if (strlen($this->received_data) > 0) {
-        $u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6', substr($this->received_data, 0, 8));
-        $this->session_id = hexdec($u['h6'] . $u['h5']);
-        return $this->checkValid($this->received_data);
-      } else {
-        return FALSE;
+
+    if ($this->verify_open_port($this->ip, $this->port)) {
+      \Log::info('Puerto ' . $this->port . ' abierto en la dirección ' . $this->ip);
+      $command = CMD_CONNECT;
+      $command_string = '';
+      $chksum = 0;
+      $session_id = 0;
+      $reply_id = -1 + USHRT_MAX;
+      $buf = $this->createHeader($command, $chksum, $session_id, $reply_id, $command_string);
+
+      socket_sendto($this->socket, $buf, strlen($buf), 0, $this->ip, $this->port);
+      try {
+        socket_recvfrom($this->socket, $this->received_data, 1024, 0, $this->ip, $this->port);
+        if (strlen($this->received_data) > 0) {
+          $u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6', substr($this->received_data, 0, 8));
+          $this->session_id = hexdec($u['h6'] . $u['h5']);
+          // return $this->checkValid($this->received_data);
+          return true;
+        } else {
+          return false;
+        }
+      } catch (ErrorException $e) {
+        \Log::error($e);
+        return false;
+      } catch (exception $e) {
+        \Log::error($e);
+        return false;
       }
-    } catch (ErrorException $e) {
-      return FALSE;
-    } catch (exception $e) {
-      return FALSE;
+    } else {
+      \Log::error('Puerto ' . $this->port . ' cerrado en la dirección ' . $this->ip);
+      return false;
     }
   }
   public function disconnect()
@@ -132,9 +149,11 @@ class ZKLibrary
       socket_recvfrom($this->socket, $this->received_data, 1024, 0, $this->ip, $this->port);
       return $this->checkValid($this->received_data);
     } catch (ErrorException $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     } catch (Exception $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     }
   }
   public function setTimeout($sec = 0, $usec = 0)
@@ -256,7 +275,7 @@ class ZKLibrary
     if ($command == CMD_ACK_OK) {
       return TRUE;
     } else {
-      return FALSE;
+      return false;
     }
   }
   function execCommand($command, $command_string = '', $offset_data = 8)
@@ -273,9 +292,11 @@ class ZKLibrary
       $this->session_id =  hexdec($u['h6'] . $u['h5']);
       return substr($this->received_data, $offset_data);
     } catch (ErrorException $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     } catch (exception $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     }
   }
   private function getSizeUser()
@@ -287,7 +308,7 @@ class ZKLibrary
       $size = hexdec($u['h4'] . $u['h3'] . $u['h2'] . $u['h1']);
       return $size;
     } else {
-      return FALSE;
+      return false;
     }
   }
   private function getSizeAttendance()
@@ -299,7 +320,7 @@ class ZKLibrary
       $size = hexdec($u['h4'] . $u['h3'] . $u['h2'] . $u['h1']);
       return $size;
     } else {
-      return FALSE;
+      return false;
     }
   }
   private function getSizeTemplate()
@@ -311,7 +332,7 @@ class ZKLibrary
       $size = hexdec($u['h4'] . $u['h3'] . $u['h2'] . $u['h1']);
       return $size;
     } else {
-      return FALSE;
+      return false;
     }
   }
   public function restartDevice()
@@ -630,9 +651,11 @@ class ZKLibrary
       }
       return $users;
     } catch (ErrorException $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     } catch (exception $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     }
   }
   public function getUserTemplateAll($uid)
@@ -694,9 +717,11 @@ class ZKLibrary
       }
       return $template_data;
     } catch (ErrorException $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     } catch (exception $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     }
   }
   public function getUserData()
@@ -739,9 +764,11 @@ class ZKLibrary
       }
       return $retdata;
     } catch (ErrorException $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     } catch (exception $e) {
-      return FALSE;
+      \Log::error($e);
+      return false;
     }
   }
   public function setUser($uid, $userid, $name, $password, $role)
@@ -749,7 +776,7 @@ class ZKLibrary
     $uid = (int)$uid;
     $role = (int)$role;
     if ($uid > USHRT_MAX) {
-      return FALSE;
+      return false;
     }
     if ($role > 255) $role = 255;
     $name = substr($name, 0, 28);
@@ -780,11 +807,11 @@ class ZKLibrary
 		}
 		catch(ErrorException $e)
 		{
-			return FALSE;
+			return false;
 		}
 		catch(exception $e)
 		{
-			return FALSE;
+			return false;
 		}
 		*/
   }
@@ -895,7 +922,8 @@ class ZKLibrary
       }
       return $attendance;
     } catch (exception $e) {
-      return false;
+      \Log::error($e);
+      return [];
     }
   }
   public function clearAttendance()
