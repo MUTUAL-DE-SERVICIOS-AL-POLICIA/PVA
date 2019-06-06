@@ -56,7 +56,7 @@ class AttendanceController extends Controller
         } else {
           $i++;
           $device->users = [];
-          $message = 'No se puede conectar con dispositivo ' . $device->MachineAlias;
+          $message = 'No se pudo conectar con el dispositivo ' . $device->MachineAlias;
           if (!in_array($message, $errors)) $errors[] = $message;
           \Log::error($message);
         }
@@ -102,6 +102,7 @@ class AttendanceController extends Controller
             foreach ($user_checks as $key => $user_check) {
               $user = AttendanceUser::where('BADGENUMBER', strval($key))->first();
               if ($user) {
+                $count = 0;
                 foreach ($user_check as $check) {
                   $c = new AttendanceCheck();
                   $c->USERID = intval($user->USERID);
@@ -111,12 +112,18 @@ class AttendanceController extends Controller
                   $c->SENSORID = strval($device->MachineNumber);
                   $c->sn = $device->sn;
                   $exists = AttendanceCheck::where($c->toArray())->first();
-                  if (!$exists) $c->save();
+                  if (!$exists) {
+                    $c->save();
+                    $count++;
+                  }
                 }
-                array_push($users, [
-                  'user' => $user->NAME,
-                  'checks' => count($user_check)
-                ]);
+                if ($count > 0) {
+                  array_push($users, [
+                    'user' => $user->NAME,
+                    'checks' => count($user_check),
+                    'device' => $device->MachineNumber
+                  ]);
+                }
               } else {
                 $message = 'Usuario con BADGENUMBER: ' . $key . ' inexistente';
                 $errors[] = $message;
@@ -129,7 +136,9 @@ class AttendanceController extends Controller
           break;
         } else {
           $i++;
-          \Log::error('Device ' . $device->MachineAlias . ' unreachable');
+          $message = 'No se pudo conectar con el dispositivo ' . $device->MachineAlias;
+          if (!in_array($message, $errors)) $errors[] = $message;
+          \Log::error($message);
         }
       } while ($i < 3);
     }
@@ -169,7 +178,8 @@ class AttendanceController extends Controller
             if ($user) {
               array_push($users, [
                 'user' => $user->NAME,
-                'checks' => count($user_check)
+                'checks' => count($user_check),
+                'device' => $device->MachineNumber
               ]);
             } else {
               $message = 'Usuario con BADGENUMBER: ' . $key . ' inexistente';
@@ -183,7 +193,10 @@ class AttendanceController extends Controller
         break;
       } else {
         $i++;
-        \Log::error('Device ' . $device->MachineAlias . ' unreachable');
+        $device->users = [];
+        $message = 'No se pudo conectar con el dispositivo ' . $device->MachineAlias;
+        if (!in_array($message, $errors)) $errors[] = $message;
+        \Log::error($message);
       }
     } while ($i < 3);
     foreach ($errors as $error) {
@@ -235,7 +248,9 @@ class AttendanceController extends Controller
           break;
         } else {
           $i++;
-          \Log::error('Device ' . $device->MachineAlias . ' unreachable');
+          $message = 'No se pudo conectar con el dispositivo ' . $device->MachineAlias;
+          if (!in_array($message, $errors)) $errors[] = $message;
+          \Log::error($message);
         }
       } while ($i < 3);
     }
