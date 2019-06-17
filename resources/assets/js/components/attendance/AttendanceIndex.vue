@@ -5,14 +5,47 @@
         <v-toolbar-title>
           {{ `Asistencia del ${$moment(limits.start).format('L')} al ${$moment(limits.end).format('L')}` }}
         </v-toolbar-title>
+        <v-tooltip color="white" role="button" bottom>
+          <v-icon slot="activator" class="ml-4">info</v-icon>
+          <div>
+            <v-alert :value="true" type="success" color="green darken-2">INGRESO</v-alert>
+            <v-alert :value="true" type="info" color="blue darken-2">SALIDA</v-alert>
+            <v-alert :value="true" type="error" color="red darken-2">RETRASO</v-alert>
+            <v-alert :value="true" type="warning" color="yellow darken-4">FUERA DE RANGO</v-alert>
+          </div>
+        </v-tooltip>
+        <v-spacer></v-spacer>
+        <AttendanceSync v-if="isAdmin"/>
+        <AttendanceErase v-if="isAdmin"/>
+        <v-btn color="primary" @click="showDate = !showDate">
+          {{ $moment(this.date).format('MMMM') }}
+        </v-btn>
       </v-toolbar>
       <div v-if="loading">
         <Loading/>
       </div>
-      <v-flex>
-        <v-card>
+      <v-flex v-else>
+        <v-card class="pa-1" v-if="isAdmin">
+          <v-container grid-list-md text-xs-center>
+            <v-layout row wrap>
+              <v-flex xs12>
+                <v-autocomplete
+                  :items="employees"
+                  item-text="fullName"
+                  label="Empleado"
+                  v-model="selectedEmployee"
+                  item-value="id"
+                  clearable
+                  prepend-icon="person"
+                  hint="Nombre del empleado"
+                  persistent-hint
+                ></v-autocomplete>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card>
+        <v-card v-if="checks.length > 0">
           <v-calendar
-            v-if="checks.length > 0"
             :start="limits.start"
             :end="limits.end"
             :now="$store.getters.dateNow"
@@ -23,35 +56,52 @@
           >
             <template v-slot:day="{ date }">
               <template v-for="event in checks.filter(o => o.date == date)">
-                <div class="text-center my-event" :key="`${event.date}_${event.time}`">
-                  <span class="white--text">{{ event.time }}</span>
+                <div class="text-xs-center white--text event subheading" :class="`${event.color} darken-1`" :key="`${event.date}_${event.time}`">
+                  {{ event.time }}
                 </div>
               </template>
             </template>
           </v-calendar>
-          <template v-else>
-            <v-card-text v-if="!loading">
-              <h2 class="red--text">No se pudo encontrar el usuario en la base de datos</h2>
-            </v-card-text>
-          </template>
+        </v-card>
+        <v-card v-else>
+          <v-card-text v-if="!loading">
+            <h2 class="red--text">No hay registros de asistencia</h2>
+          </v-card-text>
         </v-card>
       </v-flex>
     </template>
     <template v-else>
       <ManteinanceDialog positionGroup="la Unidad de Recursos Humanos"></ManteinanceDialog>
     </template>
+
+    <v-dialog
+      v-model="showDate"
+      width="460"
+    >
+      <v-date-picker
+        v-model="date"
+        :landscape="true"
+        type="month"
+        locale="es-BO"
+        :max="$store.getters.dateNow"
+      ></v-date-picker>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import Loading from '../Loading'
 import ManteinanceDialog from "../ManteinanceDialog"
+import AttendanceSync from "./AttendanceSync"
+import AttendanceErase from "./AttendanceErase"
 
 export default {
   name: 'AttendanceIndex',
   components: {
     Loading,
-    ManteinanceDialog
+    ManteinanceDialog,
+    AttendanceSync,
+    AttendanceErase
   },
   data() {
     return {
@@ -60,26 +110,72 @@ export default {
       limits: {
         start: null,
         end: null
+      },
+      employees: [],
+      selectedEmployee: null,
+      date: this.$store.getters.dateNow,
+      showDate: false
+    }
+  },
+  watch: {
+    selectedEmployee: function(val) {
+      if (typeof val === 'number') this.getChecks(val)
+    },
+    date: function(val) {
+      if (typeof this.selectedEmployee === 'object') {
+        if (this.selectedEmployee === null) {
+          this.selectedEmployee = this.$store.getters.id
+        } else {
+          this.selectedEmployee = this.selectedEmployee.id
+        }
+      } else {
+        this.getChecks(this.selectedEmployee)
       }
+      this.showDate = false
     }
   },
   computed: {
     manteinanceMode() {
       return JSON.parse(process.env.MIX_ATTENDANCE_MANTEINANCE_MODE)
+    },
+    isAdmin() {
+      return this.$store.getters.role == 'admin' || this.$store.getters.role == 'rrhh'
     }
   },
-  beforeMount() {
+  mounted() {
     this.getChecks()
+    if (this.isAdmin) {
+      this.getEmployees()
+    }
   },
   methods: {
-    async getChecks() {
+    async getChecks(id = this.$store.getters.id) {
       try {
-        let res = await axios.get(`employee/${this.$store.getters.id}/attendance`)
+        this.loading = true
+        let res = await axios.get(`employee/${id}/attendance`, {
+          params: {
+            month: this.date
+          }
+        })
         this.checks = res.data.checks
         this.limits = {
           start: res.data.from,
           end: res.data.to
         }
+        this.loading = false
+      } catch (e) {
+        console.log(e)
+        this.loading = false
+      }
+    },
+    async getEmployees() {
+      try {
+        let res = await axios.get(`employee`)
+        this.employees = res.data.filter(o => o.active)
+        this.employees.forEach(e => {
+          e.fullName = `${e.first_name || ''} ${e.second_name || ''} ${e.last_name || ''} ${e.mothers_last_name || ''}`
+        });
+        this.selectedEmployee = this.employees.find(o => o.id == this.$store.getters.id)
         this.loading = false
       } catch (e) {
         console.log(e)
@@ -91,10 +187,9 @@ export default {
 </script>
 
 <style>
-  .my-event {
+  .event {
     overflow: hidden;
     border-radius: 8px;
-    background-color: steelblue;
     width: 50%;
     padding: 3px;
     margin-left: 25%;

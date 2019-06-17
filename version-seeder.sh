@@ -8,3 +8,4 @@ php artisan db:seed --class=RoleJuridicaSeeder
 php artisan db:seed --class=RoleAlmacenesSeeder
 php artisan db:seed --class=RoleFinancieraSeeder
 php artisan db:seed --class=TruncateUserPermissionSeeder
+php artisan db:seed --class=JobScheduleDiscountSeeder

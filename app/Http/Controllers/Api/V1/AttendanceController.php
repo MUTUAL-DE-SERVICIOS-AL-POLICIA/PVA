@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\AttendanceDevice;
 use ZKLibrary;
+use Util;
 use Carbon\Carbon;
 use App\AttendanceCheck;
 use Dotenv\Regex\Result;
+use App\Employee;
 
 class AttendanceController extends Controller
 {
@@ -43,12 +45,12 @@ class AttendanceController extends Controller
                   'checks' => count($user_check)
                 ]);
               } else {
-                $message = 'Usuario con BADGENUMBER: ' . $key . ' inexistente';
+                $message = 'Usuario con BADGENUMBER: ' . $key . ' inexistente en la base de datos';
                 $errors[] = $message;
               }
             }
           } else {
-            $message = 'El dispositivo ' . $device->MachineAlias . ' no tiene registros';
+            $message = 'El dispositivo ' . $device->MachineAlias . ' no contiene registros';
             $errors[] = $message;
           }
           $device->users = $users;
@@ -79,6 +81,7 @@ class AttendanceController extends Controller
    */
   public function store(Request $request)
   {
+    \Log::info('Starting Attendace synchronization');
     $errors = [];
     $users = [];
     $query = AttendanceDevice::select('MachineNumber', 'MachineAlias', 'IP', 'Port', 'sn')->where('Enabled', true);
@@ -101,20 +104,56 @@ class AttendanceController extends Controller
             $user_checks = collect($checks)->groupBy(1)->toArray();
             foreach ($user_checks as $key => $user_check) {
               $user = AttendanceUser::where('BADGENUMBER', strval($key))->first();
+              $employee = Employee::whereIdentityCard(explode(' ', $user->SSN)[0])->first();
+              if ($employee) {
+                switch ($employee->consultant()) {
+                  case true:
+                    $job_schedules = $employee->last_consultant_contract()->job_schedules;
+                    break;
+                  case false:
+                    $job_schedules = $employee->last_contract()->job_schedules;
+                    break;
+                  case null:
+                    $employee = null;
+                    break;
+                }
+              } else {
+                $message = 'No se encontró ningún empleado con CI.: ' . $user->SSN;
+                if (!in_array($message, $errors)) $errors[] = $message;
+              }
               if ($user) {
                 $count = 0;
                 foreach ($user_check as $check) {
-                  $c = new AttendanceCheck();
-                  $c->USERID = intval($user->USERID);
-                  $c->CHECKTIME = Carbon::parse($check[3])->format('Ymd H:i:s');
-                  // $c->CHECKTYPE = 'I';
-                  $c->VERIFYCODE = intval($check[2]);
-                  $c->SENSORID = strval($device->MachineNumber);
-                  $c->sn = $device->sn;
-                  $exists = AttendanceCheck::where($c->toArray())->first();
+                  $user_id = intval($user->USERID);
+                  $checktime = Carbon::parse($check[3])->format('Ymd H:i:s');
+                  $exists = AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->first();
                   if (!$exists) {
-                    $c->save();
+                    $c = new AttendanceCheck();
+                    $c->USERID = $user_id;
+                    $c->CHECKTIME = $checktime;
+                    $c->VERIFYCODE = intval($check[2]);
+                    $c->SENSORID = strval($device->MachineNumber);
+                    $c->sn = $device->sn;
                     $count++;
+                  } else {
+                    $c = $exists;
+                  }
+                  if ($employee) {
+                    $checktype = Util::attendance_checktype($job_schedules, $check[3]);
+                    $c->CHECKTYPE = $checktype->type;
+                  } else {
+                    $c->CHECKTYPE = 'X';
+                  }
+                  try {
+                    $c->save();
+                  } catch (\Exception $error) {
+                    try {
+                      $c->CHECKTIME = $checktime;
+                      AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->update($c->toArray());
+                    } catch (\Exception $e) {
+                      \Log::error('Cannot save check where USERID=' . $user_id . ' and CHECKTIME=' . $checktime);
+                      \Log::error($e->getMessage());
+                    }
                   }
                 }
                 if ($count > 0) {
@@ -130,7 +169,7 @@ class AttendanceController extends Controller
               }
             }
           } else {
-            $message = 'El dispositivo ' . $device->MachineAlias . ' no tiene registros';
+            $message = 'El dispositivo ' . $device->MachineAlias . ' no contiene registros';
             $errors[] = $message;
           }
           break;
@@ -145,6 +184,7 @@ class AttendanceController extends Controller
     foreach ($errors as $error) {
       \Log::error($error);
     }
+    \Log::info('Attendace synchronization has ended');
     return response()->json([
       'errors' => $errors,
       'added' => $users
@@ -187,7 +227,7 @@ class AttendanceController extends Controller
             }
           }
         } else {
-          $message = 'El dispositivo ' . $device->MachineAlias . ' no tiene registros';
+          $message = 'El dispositivo ' . $device->MachineAlias . ' no contiene registros';
           $errors[] = $message;
         }
         break;
@@ -229,6 +269,7 @@ class AttendanceController extends Controller
    */
   public function destroy($id = null)
   {
+    $errors = [];
     $query = AttendanceDevice::select('MachineNumber', 'MachineAlias', 'IP', 'Port', 'sn')->where('Enabled', true);
     if (!$id) {
       $devices = $query->get();
@@ -255,6 +296,7 @@ class AttendanceController extends Controller
       } while ($i < 3);
     }
     return response()->json([
+      'errors' => $errors,
       'message' => 'Eliminados registros de asistencia'
     ], 200);
   }

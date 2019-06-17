@@ -11,6 +11,7 @@ use App\Http\Requests\EmployeeEditForm;
 use App\Http\Requests\EmployeeStoreForm;
 use Illuminate\Http\Request;
 use Carbon\CarbonImmutable;
+use Util;
 
 /** @resource Employee
  *
@@ -124,10 +125,10 @@ class EmployeeController extends Controller
     $employee = Employee::findOrFail($id);
     $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->orderBy('USERID', 'DESC')->first();
     if ($attendance_user) {
-      if (!$request->has('from')) {
+      if (!$request->has('month')) {
         $to = CarbonImmutable::now();
       } else {
-        $to = CarbonImmutable::parse($request->input('from'));
+        $to = CarbonImmutable::parse($request->input('month'))->day(19);
       }
       if ($to->day >= 20) {
         $from = $to->day(20);
@@ -137,11 +138,35 @@ class EmployeeController extends Controller
 
       $checks = $attendance_user->checks()->where('checktime', '>=', $from->startOfDay()->format('Ymd H:i:s'))->where('checktime', '<=', $to->endOfDay()->format('Ymd H:i:s'))->get();
 
-      foreach ($checks as $i => $check) {
+      switch ($employee->consultant()) {
+        case true:
+          $job_schedules = $employee->last_consultant_contract()->job_schedules;
+          break;
+        case false:
+          $job_schedules = $employee->last_contract()->job_schedules;
+          break;
+        case null:
+          $job_schedules = null;
+          break;
+      }
+
+      foreach ($checks as $check) {
         $checktime = CarbonImmutable::parse($check->checktime);
         $check->date = $checktime->toDateString();
         $check->time = $checktime->format('H:i');
-        $check->color = 'blue';
+        $check->color = 'orange';
+        if ($job_schedules) {
+          $attendance = Util::attendance_checktype($job_schedules, $check->checktime, true);
+          if ($attendance->delay->minutes > 0) {
+            $check->color = 'red';
+          } else {
+            if ($attendance->type == 'I') {
+              $check->color = 'green';
+            } elseif ($attendance->type == 'O') {
+              $check->color = 'blue';
+            }
+          }
+        }
         unset($check->checktime);
       }
 

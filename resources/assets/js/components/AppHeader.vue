@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: "app-header",
+  name: "AppHeader",
   methods: {
     async logout() {
       try {

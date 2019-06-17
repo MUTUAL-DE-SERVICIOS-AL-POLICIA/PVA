@@ -62,9 +62,7 @@
     "title": "Aprobar Permisos",
     "icon": "alarm_on",
     "permission": "read-departure",
-    "params": {
-      "departureType": "all"
-    }
+    "params": {}
   }, {
     "href": "departureIndex",
     "title": "Permisos",
