@@ -112,8 +112,8 @@ Route::group([
     Route::get('consultant_contract/{id}', 'Api\V1\ConsultantContractController@show')->name('consultant_contract_details');
     Route::get('consultant_contract/position_free/{position_id}', 'Api\V1\ConsultantContractController@positionFree')->name('consultant_contract_position_free');
     // Job Schedule
-    Route::get('jobs_chedule', 'Api\V1\JobScheduleController@index')->name('jobs_chedule_list');
-    Route::get('jobs_chedule/{id}', 'Api\V1\JobScheduleController@show')->name('jobs_chedule_details');
+    Route::get('job_schedule', 'Api\V1\JobScheduleController@index')->name('job_schedule_list');
+    Route::get('job_schedule/{id}', 'Api\V1\JobScheduleController@show')->name('job_schedule_details');
     // Procedure
     Route::get('procedure', 'Api\V1\ProcedureController@index')->name('procedure_list');
     Route::get('procedure/{id}', 'Api\V1\ProcedureController@show')->name('procedure_details');
@@ -226,6 +226,8 @@ Route::group([
       Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update', 'destroy']);
       Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'destroy']);
       Route::get('user/switch_active/{id}', 'Api\V1\UserController@switch_active')->name('user_switch_active');
+      // Attendance
+      Route::resource('attendance', 'Api\V1\AttendanceController')->only(['store', 'destroy']);
       // Permission
       Route::resource('permission', 'Api\V1\PermissionController')->only(['index']);
       // Role
@@ -298,7 +300,7 @@ Route::group([
       'middleware' => 'role:admin|rrhh',
     ], function () {
       // Attendance
-      Route::resource('attendance', 'Api\V1\AttendanceController')->only(['index', 'show', 'store', 'destroy']);
+      Route::resource('attendance', 'Api\V1\AttendanceController')->only(['index', 'show']);
       // Bonus
       Route::get('bonus/print/{year}', 'Api\V1\BonusController@print')->name('bonus_print');
       Route::resource('bonus', 'Api\V1\BonusController')->only(['index', 'show', 'store', 'update', 'destroy']);
@@ -354,9 +356,9 @@ Route::group([
       Route::delete('consultant_contract/{id}', 'Api\V1\ConsultantContractController@destroy')->name('consultant_contract_delete');
       Route::get('consultant_contract/valid/{procedure_id}', 'Api\V1\ConsultantContractController@valid_date')->name('consultant_contract_valid');
       // Job Schedule
-      Route::post('jobs_chedule', 'Api\V1\JobScheduleController@store')->name('jobs_chedule_store');
-      Route::patch('jobs_chedule/{id}', 'Api\V1\JobScheduleController@update')->name('jobs_chedule_update');
-      Route::delete('jobs_chedule/{id}', 'Api\V1\JobScheduleController@destroy')->name('jobs_chedule_delete');
+      Route::post('job_schedule', 'Api\V1\JobScheduleController@store')->name('job_schedule_store');
+      Route::patch('job_schedule/{id}', 'Api\V1\JobScheduleController@update')->name('job_schedule_update');
+      Route::delete('job_schedule/{id}', 'Api\V1\JobScheduleController@destroy')->name('job_schedule_delete');
       // Procedure
       Route::post('procedure', 'Api\V1\ProcedureController@store')->name('procedure_store');
       Route::patch('procedure/{id}', 'Api\V1\ProcedureController@update')->name('procedure_update');

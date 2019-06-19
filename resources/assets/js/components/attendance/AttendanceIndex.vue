@@ -44,7 +44,8 @@
             </v-layout>
           </v-container>
         </v-card>
-        <v-card v-if="checks.length > 0">
+        <Loading v-if="loading"></Loading>
+        <v-card v-else-if="checks.length > 0">
           <v-calendar
             :start="limits.start"
             :end="limits.end"
@@ -55,7 +56,8 @@
             :weekdays="[1,2,3,4,5,6,0]"
           >
             <template v-slot:day="{ date }">
-              <template v-for="event in checks.filter(o => o.date == date)">
+              <template v-for="(event, index) in checks.filter(o => o.date == date)">
+                <div class="text-xs-center event subheading grey darken-1 mt-3 mb-3" :key="`${event.date}_${event.time}`" v-if="index > 0 && event.shift != checks.filter(o => o.date == date)[index - 1].shift"></div>
                 <div class="text-xs-center white--text event subheading" :class="`${event.color} darken-1`" :key="`${event.date}_${event.time}`">
                   {{ event.time }}
                 </div>
@@ -139,7 +141,7 @@ export default {
       return JSON.parse(process.env.MIX_ATTENDANCE_MANTEINANCE_MODE)
     },
     isAdmin() {
-      return this.$store.getters.role == 'admin' || this.$store.getters.role == 'rrhh'
+      return this.$store.getters.role == 'admin'
     }
   },
   mounted() {

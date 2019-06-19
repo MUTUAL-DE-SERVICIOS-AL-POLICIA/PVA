@@ -414,7 +414,8 @@ class Util
       'delay' => (object)[
         'minutes' => 0,
         'discount' => 0
-      ]
+      ],
+      'shift' => null
     ];
     $checktime = CarbonImmutable::parse($check);
     foreach ($job_schedules as $schedule) {
@@ -432,7 +433,8 @@ class Util
 
       foreach ($periods as $key => $period) {
         if ($calc_discount) $discounts = JobScheduleDiscount::whereUnit('minutes')->orderBy('time', 'DESC')->get();
-        if ($checktime->between($period->start_limit, $period->end_limit)) {
+        $find = $checktime->between($period->start_limit, $period->end_limit);
+        if ($find) {
           if ($key == 'in') {
             $attendance->type = 'I';
             if ($calc_discount) {
@@ -442,7 +444,6 @@ class Util
                   if ($delay > $discount->time) {
                     $attendance->delay->minutes = $delay;
                     $attendance->delay->discount = $discount->discount;
-                    break;
                   }
                 }
               }
@@ -450,9 +451,14 @@ class Util
           } else {
             $attendance->type = 'O';
           }
+          break;
         }
       }
+      if ($find) {
+        break;
+      }
     }
+    $attendance->shift = $schedule->id;
     return $attendance;
   }
 }

@@ -117,6 +117,12 @@
         "icon": "directions_walk",
         "permission": "admin",
         "params": {}
+      }, {
+        "href": "attendanceConfig",
+        "title": "Horarios",
+        "icon": "watch_later",
+        "permission": "admin",
+        "params": {}
       }
     ]
   }, {

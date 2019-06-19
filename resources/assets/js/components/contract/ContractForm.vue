@@ -25,12 +25,12 @@
                     name="Empleado"
                     :error-messages="errors.collect('Empleado')"
                     :disabled="juridica">
-                  </v-autocomplete>                
+                  </v-autocomplete>
                   <v-autocomplete
                     v-if="edit||selectedIndex==-1"
                     v-model="selectedItem.position_id"
                     :items="positions"
-                    item-text="name" 
+                    item-text="name"
                     item-value="id"
                     label="Puesto"
                     @change="onSelectPosition"
@@ -45,8 +45,8 @@
                       v-if="edit||selectedIndex==-1"
                       v-model="selectedItem.contract_type_id"
                       :items="contractTypes"
-                      item-text="name" 
-                      item-value="id"                    
+                      item-text="name"
+                      item-value="id"
                       label="Tipo de contratación"
                       v-validate="'required'"
                       name="Tipo de contratacion"
@@ -60,8 +60,8 @@
                       v-if="edit||selectedIndex==-1"
                       v-model="selectedItem.contract_mode_id"
                       :items="contractModes"
-                      item-text="name" 
-                      item-value="id"                    
+                      item-text="name"
+                      item-value="id"
                       label="Modalidad de contratación"
                       v-validate="'required'"
                       name="Modalidad de contratacion"
@@ -96,9 +96,9 @@
                         :disabled="selectedItem.id && $store.getters.role != 'admin'"
                         autocomplete='cc-exp-month'
                       ></v-text-field>
-                      <v-date-picker v-model="date" no-title 
-                      @input="menuDate = false" 
-                      @change="monthSalaryCalc" 
+                      <v-date-picker v-model="date" no-title
+                      @input="menuDate = false"
+                      @change="monthSalaryCalc"
                       locale="es-bo"></v-date-picker>
                     </v-menu>
                   </v-flex>
@@ -119,23 +119,23 @@
                         slot="activator"
                         v-model="formatDateEnd"
                         label="Fecha de conclusión"
-                        prepend-icon="event" 
+                        prepend-icon="event"
                         :disabled="selectedItem.id && $store.getters.role != 'admin'"
                         autocomplete='cc-exp-year'
                         readonly
                         clearable
                         @input="dateEndNull"
                       ></v-text-field>
-                      <v-date-picker 
-                      v-model="date2" no-title 
+                      <v-date-picker
+                      v-model="date2" no-title
                       :min="date"
-                      @input="menuDate2 = false" 
+                      @input="menuDate2 = false"
                       @change="monthSalaryCalc"
-                      locale="es-bo">                        
+                      locale="es-bo">
                       </v-date-picker>
                     </v-menu>
                   </v-flex>
-                </v-layout>                
+                </v-layout>
                 <v-text-field
                   v-model="selectedItem.contract_number"
                   label="Número de contrato"
@@ -335,7 +335,7 @@
                   <p v-if="selectedIndex==-1"><strong>Empleado: </strong> {{ fullName(tableEmployee) }}
                     <v-chip v-if="tableEmployeeFree==1" small color="red" text-color="white">Ocupado</v-chip>
                   </p>
-                  <p><strong>Puesto: </strong> {{ tablePosition }} 
+                  <p><strong>Puesto: </strong> {{ tablePosition }}
                     <v-chip v-if="tablePositionFree==1" small color="red" text-color="white">Ocupado</v-chip>
                   </p>
                   <p><strong>Haber Basico: </strong> Bs. {{ tableSalary }} </p>
@@ -370,7 +370,7 @@
             </v-flex>
           </v-layout>
         </v-container>
-      </v-card-text>  
+      </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click.native="close"><v-icon>close</v-icon> Cancelar</v-btn>
@@ -499,7 +499,7 @@ export default {
         this.retirementReasons = retirementReasons.data;
         let insuranceCompanies = await axios.get("/insurance_company");
         this.insuranceCompanies = insuranceCompanies.data;
-        let jobSchedules = await axios.get("/jobs_chedule");
+        let jobSchedules = await axios.get("/job_schedule");
         this.jobSchedules = jobSchedules.data;
       } catch (e) {
         console.log(e);
@@ -588,14 +588,14 @@ export default {
         this.tableEmployeeFree = 0;
         let employee = await axios.get("/employee/" + v);
         this.tableEmployee = employee.data;
-        let employeeFree = await axios.get("/contract/last_contract/" + v);        
+        let employeeFree = await axios.get("/contract/last_contract/" + v);
         if (employeeFree.data.active == true) {
           if (this.selectedIndex == -1) {
             this.tableEmployeeFree = 1;
           } else {
             if (this.selectedItem.employee_id != this.selectedItem.employee.id) {
               this.tableEmployeeFree = 1;
-            } 
+            }
           }
         }
       }
@@ -607,7 +607,7 @@ export default {
         let positionFree = await axios.get(
           "/contract/position_free/" + v
         );
-        if (positionFree.data) { 
+        if (positionFree.data) {
           if (this.selectedIndex == -1) {
             this.tablePositionFree = 1;
           } else {
@@ -682,7 +682,7 @@ export default {
     },
     dateCiteNull() {
       this.selectedItem.rrhh_cite_date = null;
-    }    
+    }
   },
   mounted() {
     this.bus.$on("openDialog", item => {
