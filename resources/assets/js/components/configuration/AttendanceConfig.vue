@@ -103,8 +103,8 @@ export default {
           end_minutes: parseInt(schedule.end.split(':')[1]),
           start_hour_min_limit: parseInt(schedule.start_limit.split(':')[0]),
           start_minutes_min_limit: parseInt(schedule.start_limit.split(':')[1]),
-          end_hour_min_limit: parseInt(schedule.end_limit.split(':')[0]),
-          end_minutes_min_limit: parseInt(schedule.end_limit.split(':')[1]),
+          end_hour_max_limit: parseInt(schedule.end_limit.split(':')[0]),
+          end_minutes_max_limit: parseInt(schedule.end_limit.split(':')[1]),
           workdays: schedule.days.filter(o => o.value).map(o => o.weekday)
         })
         this.toastr.success('Actualizado correctamente')
