@@ -149,7 +149,9 @@ class AttendanceController extends Controller
                   } catch (\Exception $error) {
                     try {
                       $c->CHECKTIME = $checktime;
-                      AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->update($c->toArray());
+                      if ($exists) {
+                        if ($exists->CHECKTYPE != $c->CHECKTYPE) AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->update($c->toArray());
+                      }
                     } catch (\Exception $e) {
                       \Log::error('Cannot save check where USERID=' . $user_id . ' and CHECKTIME=' . $checktime);
                       \Log::error($e->getMessage());
@@ -258,7 +260,49 @@ class AttendanceController extends Controller
    */
   public function update(Request $request, $id)
   {
-    //
+    $employee = Employee::findOrFail($id);
+    $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->orderBy('USERID', 'DESC')->first();
+    $user_id = intval($attendance_user->USERID);
+
+    if ($attendance_user) {
+      $checktime = Carbon::parse($request->input('date') . ' ' . $request->input('time'))->format('Ymd H:i:s');
+      $exists = AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->first();
+      if ($exists) {
+        return $exists;
+      } else {
+        switch ($employee->consultant()) {
+          case true:
+            $job_schedules = $employee->last_consultant_contract()->job_schedules;
+            break;
+          case false:
+            $job_schedules = $employee->last_contract()->job_schedules;
+            break;
+          case null:
+            $job_schedules = null;
+            break;
+        }
+        if ($job_schedules) {
+          $last_check = AttendanceCheck::where('USERID', $user_id)->orderBy('CHECKTIME', 'DESC')->first();
+          if ($last_check) {
+            $checktype = Util::attendance_checktype($job_schedules, $checktime);
+            try {
+              $c = new AttendanceCheck();
+              $c->CHECKTYPE = $checktype->type;
+              $c->CHECKTIME = $checktime;
+              $c->USERID = $user_id;
+              $c->VERIFYCODE = $last_check->VERIFYCODE;
+              $c->SENSORID = $last_check->SENSORID;
+              $c->sn = $last_check->sn;
+              $c->save();
+              return $c;
+            } catch (\Exception $e) {
+              abort(409);
+            }
+          }
+        }
+      }
+    }
+    abort(404);
   }
 
   /**

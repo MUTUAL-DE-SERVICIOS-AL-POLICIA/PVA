@@ -28,7 +28,7 @@
         <v-card class="pa-1" v-if="isAdmin">
           <v-container grid-list-md text-xs-center>
             <v-layout row wrap>
-              <v-flex xs12>
+              <v-flex xs11>
                 <v-autocomplete
                   :items="employees"
                   item-text="fullName"
@@ -40,6 +40,9 @@
                   hint="Nombre del empleado"
                   persistent-hint
                 ></v-autocomplete>
+              </v-flex>
+              <v-flex xs1>
+                <AttendanceAdd v-if="isAdmin" :id="selectedEmployee" :limits="limits" :bus="bus"></AttendanceAdd>
               </v-flex>
             </v-layout>
           </v-container>
@@ -57,8 +60,8 @@
           >
             <template v-slot:day="{ date }">
               <template v-for="(event, index) in checks.filter(o => o.date == date)">
-                <div class="text-xs-center event subheading grey darken-1 mt-3 mb-3" :key="`${event.date}_${event.time}`" v-if="index > 0 && event.shift != checks.filter(o => o.date == date)[index - 1].shift"></div>
-                <div class="text-xs-center white--text event subheading" :class="`${event.color} darken-1`" :key="`${event.date}_${event.time}`">
+                <div class="text-xs-center event subheading grey darken-1 mt-3 mb-3" :key="index+event" v-if="index > 0 && event.shift != checks.filter(o => o.date == date)[index - 1].shift"></div>
+                <div class="text-xs-center white--text event subheading" :class="`${event.color} darken-${event.shift}`" :key="index">
                   {{ event.time }}
                 </div>
               </template>
@@ -92,10 +95,12 @@
 </template>
 
 <script>
+import Vue from "vue";
 import Loading from '../Loading'
 import ManteinanceDialog from "../ManteinanceDialog"
 import AttendanceSync from "./AttendanceSync"
 import AttendanceErase from "./AttendanceErase"
+import AttendanceAdd from "./AttendanceAdd"
 
 export default {
   name: 'AttendanceIndex',
@@ -103,7 +108,8 @@ export default {
     Loading,
     ManteinanceDialog,
     AttendanceSync,
-    AttendanceErase
+    AttendanceErase,
+    AttendanceAdd
   },
   data() {
     return {
@@ -113,6 +119,7 @@ export default {
         start: null,
         end: null
       },
+      bus: new Vue(),
       employees: [],
       selectedEmployee: null,
       date: this.$store.getters.dateNow,
@@ -122,6 +129,7 @@ export default {
   watch: {
     selectedEmployee: function(val) {
       if (typeof val === 'number') this.getChecks(val)
+      if (this.selectedEmployee.hasOwnProperty('id')) this.selectedEmployee = this.selectedEmployee.id
     },
     date: function(val) {
       if (typeof this.selectedEmployee === 'object') {
@@ -145,10 +153,14 @@ export default {
     }
   },
   mounted() {
-    this.getChecks()
     if (this.isAdmin) {
       this.getEmployees()
+    } else {
+      this.getChecks()
     }
+    this.bus.$on("newCheck", (val) => {
+      this.getChecks(this.selectedEmployee)
+    })
   },
   methods: {
     async getChecks(id = this.$store.getters.id) {

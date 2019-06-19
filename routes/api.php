@@ -227,7 +227,7 @@ Route::group([
       Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'destroy']);
       Route::get('user/switch_active/{id}', 'Api\V1\UserController@switch_active')->name('user_switch_active');
       // Attendance
-      Route::resource('attendance', 'Api\V1\AttendanceController')->only(['store', 'destroy']);
+      Route::resource('attendance', 'Api\V1\AttendanceController')->only(['store', 'destroy', 'update']);
       // Permission
       Route::resource('permission', 'Api\V1\PermissionController')->only(['index']);
       // Role

@@ -114,7 +114,7 @@ export default {
       }
     },
     allowedMinutes(m) {
-      return m % 30 === 0
+      return m % 5 === 0
     },
     async getJobSchedules() {
       try {
