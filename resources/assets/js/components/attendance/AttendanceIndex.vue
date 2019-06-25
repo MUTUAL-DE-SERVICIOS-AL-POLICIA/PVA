@@ -15,8 +15,8 @@
           </div>
         </v-tooltip>
         <v-spacer></v-spacer>
-        <AttendanceSync v-if="isAdmin"/>
-        <AttendanceErase v-if="isAdmin"/>
+        <AttendanceSync v-if="$store.getters.role == 'admin'"/>
+        <AttendanceErase v-if="$store.getters.role == 'admin'"/>
         <v-btn color="primary" @click="showDate = !showDate">
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
@@ -42,7 +42,7 @@
                 ></v-autocomplete>
               </v-flex>
               <v-flex xs1>
-                <AttendanceAdd v-if="isAdmin" :id="selectedEmployee" :limits="limits" :bus="bus"></AttendanceAdd>
+                <AttendanceAdd v-if="$store.getters.role == 'admin'" :id="selectedEmployee" :limits="limits" :bus="bus"></AttendanceAdd>
               </v-flex>
             </v-layout>
           </v-container>
@@ -149,7 +149,7 @@ export default {
       return JSON.parse(process.env.MIX_ATTENDANCE_MANTEINANCE_MODE)
     },
     isAdmin() {
-      return this.$store.getters.role == 'admin'
+      return this.$store.getters.role == 'admin' || this.$store.getters.role == 'rrhh'
     },
     maxDate() {
       let now = this.$moment(this.$store.getters.dateNow)
