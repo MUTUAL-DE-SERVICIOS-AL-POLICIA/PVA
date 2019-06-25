@@ -417,6 +417,9 @@ export default {
         let res = await axios({
           method: "GET",
           url: `/ticket/standalone/${code}`,
+          params: {
+            procedure_id: this.procedure.id
+          },
           responseType: "arraybuffer"
         })
         let blob = new Blob([res.data], {
