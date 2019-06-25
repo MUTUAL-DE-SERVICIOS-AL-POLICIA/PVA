@@ -59,7 +59,10 @@ class TicketController extends Controller
 
   function standalone($code)
   {
-    $grouped_payrolls = Payroll::where('code', $code)->leftJoin('employees as e', 'e.id', '=', 'payrolls.employee_id')->leftJoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->orderBy('c.start_date')->get();
+    if (!$request->has('procedure_id')) {
+      abort(404);
+    }
+    $grouped_payrolls = Payroll::where('code', $code)->whereProcedureId($request->input('procedure_id'))->leftJoin('employees as e', 'e.id', '=', 'payrolls.employee_id')->leftJoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->orderBy('c.start_date')->get();
 
     $company = Company::first();
     $company->address = CompanyAddress::where('active', true)->first()->address;
