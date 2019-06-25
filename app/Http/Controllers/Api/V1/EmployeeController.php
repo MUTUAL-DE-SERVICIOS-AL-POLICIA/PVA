@@ -128,12 +128,17 @@ class EmployeeController extends Controller
       if (!$request->has('month')) {
         $to = CarbonImmutable::now();
       } else {
-        $to = CarbonImmutable::parse($request->input('month'))->day(19);
+        $to = CarbonImmutable::parse($request->input('month'));
       }
-      if ($to->day >= 20) {
-        $from = $to->day(20);
-      } else {
+
+      if ($to->day == 20) {
+        $from = $to;
+      } elseif ($to->day < 20) {
         $from = $to->subMonth()->day(20);
+        $to = $to->day(19);
+      } else {
+        $from = $to->day(20);
+        $to = $from->addMonth()->day(19);
       }
 
       $checks = $attendance_user->checks()->where('checktime', '>=', $from->startOfDay()->format('Ymd H:i:s'))->where('checktime', '<=', $to->endOfDay()->format('Ymd H:i:s'))->get();

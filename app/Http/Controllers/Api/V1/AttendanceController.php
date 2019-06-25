@@ -10,7 +10,6 @@ use ZKLibrary;
 use Util;
 use Carbon\Carbon;
 use App\AttendanceCheck;
-use Dotenv\Regex\Result;
 use App\Employee;
 
 class AttendanceController extends Controller

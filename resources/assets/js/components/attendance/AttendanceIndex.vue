@@ -88,7 +88,7 @@
         :landscape="true"
         type="month"
         locale="es-BO"
-        :max="$store.getters.dateNow"
+        :max="maxDate"
       ></v-date-picker>
     </v-dialog>
   </v-container>
@@ -150,6 +150,15 @@ export default {
     },
     isAdmin() {
       return this.$store.getters.role == 'admin'
+    },
+    maxDate() {
+      let now = this.$moment(this.$store.getters.dateNow)
+      if (now.date() <= 20) {
+        return now.format()
+      } else {
+        this.date = now.add(1, 'months').date(1).format('YYYY-MM-DD')
+        return this.date
+      }
     }
   },
   mounted() {
