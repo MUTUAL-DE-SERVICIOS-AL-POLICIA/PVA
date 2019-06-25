@@ -122,7 +122,7 @@ export default {
       bus: new Vue(),
       employees: [],
       selectedEmployee: null,
-      date: this.$store.getters.dateNow,
+      date: null,
       showDate: false
     }
   },
@@ -156,8 +156,11 @@ export default {
       if (now.date() <= 20) {
         return now.format()
       } else {
-        this.date = now.add(1, 'months').date(1).format('YYYY-MM-DD')
-        return this.date
+        now = now.add(1, 'months').date(1).format('YYYY-MM-DD')
+        if (!this.date) {
+          this.date = now
+        }
+        return now
       }
     }
   },
