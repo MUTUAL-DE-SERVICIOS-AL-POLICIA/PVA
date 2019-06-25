@@ -7,6 +7,7 @@ use App\Payroll;
 use App\Procedure;
 use App\Company;
 use App\CompanyAddress;
+use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
@@ -57,9 +58,12 @@ class TicketController extends Controller
     return $pdf->stream($file_name);
   }
 
-  function standalone($code)
+  function standalone(Request $request, $code)
   {
-    $grouped_payrolls = Payroll::where('code', $code)->leftJoin('employees as e', 'e.id', '=', 'payrolls.employee_id')->leftJoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->orderBy('c.start_date')->get();
+    if (!$request->has('procedure_id')) {
+      abort(404);
+    }
+    $grouped_payrolls = Payroll::where('code', $code)->whereProcedureId($request->input('procedure_id'))->leftJoin('employees as e', 'e.id', '=', 'payrolls.employee_id')->leftJoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->orderBy('c.start_date')->get();
 
     $company = Company::first();
     $company->address = CompanyAddress::where('active', true)->first()->address;
