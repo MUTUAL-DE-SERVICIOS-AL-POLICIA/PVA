@@ -506,7 +506,7 @@ export default {
     },
     async getJobSchedules() {
       try {
-        let res = await axios.get("/jobs_chedule")
+        let res = await axios.get("/job_schedule")
         this.jobSchedules = res.data
       } catch (e) {
         console.log(e)

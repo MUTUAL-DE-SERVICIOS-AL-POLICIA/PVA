@@ -5,6 +5,93 @@
         <v-layout row wrap>
           <v-flex md12 lg8>
             <v-layout row wrap>
+              <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
+                <v-card color="light-blue darken-1" dark :to="{ name: 'attendanceIndex' }" style="cursor: pointer" class="card-box">
+                  <v-layout row wrap>
+                    <v-flex xs4 class="text-xs-center" mt-4>
+                      <v-icon size="80">fingerprint</v-icon>
+                    </v-flex>
+                    <v-flex xs7>
+                      <v-card-text class="text-xs-center">
+                        <div class="display-2 font-weight-thin">Registro de Asistencia</div>
+                      </v-card-text>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </v-flex>
+              <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
+                <v-card color="teal darken-4" dark :to="{ name: 'supplyRequestIndex', query: { requestType: 'user' }}" style="cursor: pointer" class="card-box">
+                  <v-layout row wrap>
+                    <v-flex xs4 class="text-xs-center" mt-4>
+                      <v-icon size="80">add_shopping_cart</v-icon>
+                    </v-flex>
+                    <v-flex xs7>
+                      <v-card-text class="text-xs-center">
+                        <div class="display-2 font-weight-thin">Solicitud de Material</div>
+                      </v-card-text>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </v-flex>
+              <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
+                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex', query: {departureType: 'user'} }" style="cursor: pointer" class="card-box">
+                  <v-layout row wrap>
+                    <v-flex xs4 class="text-xs-center" mt-4>
+                      <v-icon size="80">directions_run</v-icon>
+                    </v-flex>
+                    <v-flex xs7>
+                      <v-card-text class="text-xs-center">
+                        <div class="display-2 font-weight-thin">Permisos y Licencias</div>
+                      </v-card-text>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </v-flex>
+              <v-flex xs12 sm6 v-if="$store.getters.role == 'admin' || $store.getters.role == 'rrhh'">
+                <v-card dark class="mb-2 card-box">
+                  <v-layout row wrap>
+                    <v-flex xs4 class="text-xs-center" mt-4>
+                      <v-icon size="80">attach_money</v-icon>
+                      <div class="text-xs-left ml-3">
+                        <vue-json-to-csv
+                            v-if="procedures.length > 0"
+                            :json-data="procedures"
+                            :labels = "{
+                              month: { title: 'Nº' },
+                              name: { title: 'MES' },
+                              faults: { title: 'DESCUENTOS' }
+                            }"
+                            :csv-title="`fondo_social_a_${procedures[procedures.length - 1].name.toLowerCase()}_${$moment($store.getters.dateNow).year()}`"
+                          >
+                          <v-tooltip right>
+                            <v-btn flat icon slot="activator">
+                              <v-icon>save</v-icon>
+                            </v-btn>
+                            <span>Descargar</span>
+                          </v-tooltip>
+                        </vue-json-to-csv>
+                      </div>
+                    </v-flex>
+                    <v-flex xs7>
+                      <v-card-text class="text-xs-center">
+                        <div class="display-2 font-weight-thin">{{ procedures.length == 0 ? '0' : new Intl.NumberFormat('es-BO').format(procedures.map(item => item.faults).reduce((prev, next) => prev + next)) }}</div>
+                        <div class="headline font-weight-light">Fondo Social {{ $moment($store.getters.dateNow).year() }}</div>
+                        <v-tooltip bottom v-if="procedures.length > 0">
+                          <div slot="activator" class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
+                          <table>
+                            <tr v-for="item in procedures" :key="item.id">
+                              <td>{{ item.month }}.-</td>
+                              <td>{{ item.name }}</td>
+                              <td class="text-xs-right">{{ item.faults }}</td>
+                            </tr>
+                          </table>
+                        </v-tooltip>
+                        <div v-else class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
+                      </v-card-text>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </v-flex>
               <template v-for="filter in filteredEmployees">
                 <v-flex xs12 sm6 :key="filter.title" v-if="$store.getters.role == 'admin' || $store.getters.role == 'rrhh'">
                   <v-card :color="filter.color" dark class="mb-2 card-box">
@@ -56,79 +143,6 @@
                   </v-card>
                 </v-flex>
               </template>
-              <v-flex xs12 sm6 v-if="$store.getters.role == 'admin' || $store.getters.role == 'rrhh'">
-                <v-card dark class="mb-2 card-box">
-                  <v-layout row wrap>
-                    <v-flex xs4 class="text-xs-center" mt-4>
-                      <v-icon size="80">attach_money</v-icon>
-                      <div class="text-xs-left ml-3">
-                        <vue-json-to-csv
-                            v-if="procedures.length > 0"
-                            :json-data="procedures"
-                            :labels = "{
-                              month: { title: 'Nº' },
-                              name: { title: 'MES' },
-                              faults: { title: 'DESCUENTOS' }
-                            }"
-                            :csv-title="`fondo_social_a_${procedures[procedures.length - 1].name.toLowerCase()}_${$moment($store.getters.dateNow).year()}`"
-                          >
-                          <v-tooltip right>
-                            <v-btn flat icon slot="activator">
-                              <v-icon>save</v-icon>
-                            </v-btn>
-                            <span>Descargar</span>
-                          </v-tooltip>
-                        </vue-json-to-csv>
-                      </div>
-                    </v-flex>
-                    <v-flex xs7>
-                      <v-card-text class="text-xs-center">
-                        <div class="display-2 font-weight-thin">{{ procedures.length == 0 ? '0' : new Intl.NumberFormat('es-BO').format(procedures.map(item => item.faults).reduce((prev, next) => prev + next)) }}</div>
-                        <div class="headline font-weight-light">Fondo Social {{ $moment($store.getters.dateNow).year() }}</div>
-                        <v-tooltip bottom v-if="procedures.length > 0">
-                          <div slot="activator" class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
-                          <table>
-                            <tr v-for="item in procedures" :key="item.id">
-                              <td>{{ item.month }}.-</td>
-                              <td>{{ item.name }}</td>
-                              <td class="text-xs-right">{{ item.faults }}</td>
-                            </tr>
-                          </table>
-                        </v-tooltip>
-                        <div v-else class="subheading font-weight-light">Meses pagados: {{ procedures.length }}</div>
-                      </v-card-text>
-                    </v-flex>
-                  </v-layout>
-                </v-card>
-              </v-flex>
-              <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
-                <v-card color="teal darken-4" dark :to="{ name: 'supplyRequestIndex', query: { requestType: 'user' }}" style="cursor: pointer" class="card-box">
-                  <v-layout row wrap>
-                    <v-flex xs4 class="text-xs-center" mt-4>
-                      <v-icon size="80">add_shopping_cart</v-icon>
-                    </v-flex>
-                    <v-flex xs7>
-                      <v-card-text class="text-xs-center">
-                        <div class="display-2 font-weight-thin">Solicitud de Material</div>
-                      </v-card-text>
-                    </v-flex>
-                  </v-layout>
-                </v-card>
-              </v-flex>
-              <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
-                <v-card color="blue darken-4" dark :to="{ name: 'departureIndex', query: {departureType: 'user'} }" style="cursor: pointer" class="card-box">
-                  <v-layout row wrap>
-                    <v-flex xs4 class="text-xs-center" mt-4>
-                      <v-icon size="80">directions_run</v-icon>
-                    </v-flex>
-                    <v-flex xs7>
-                      <v-card-text class="text-xs-center">
-                        <div class="display-2 font-weight-thin">Permisos y Licencias</div>
-                      </v-card-text>
-                    </v-flex>
-                  </v-layout>
-                </v-card>
-              </v-flex>
             </v-layout>
           </v-flex>
           <v-flex md12 lg4>
@@ -262,7 +276,7 @@ export default {
                 })
                 obj.title = 'Eventuales'
                 obj.icon = 'person'
-                obj.color = 'blue darken-4'
+                obj.color = 'teal lighten-1'
                 obj.downloadable = true
                 obj.role = null
                 break
@@ -272,7 +286,7 @@ export default {
                 })
                 obj.title = 'Consultores'
                 obj.icon = 'work'
-                obj.color = 'blue-grey darken-2'
+                obj.color = 'blue-grey darken-1'
                 obj.downloadable = true
                 obj.role = null
                 break

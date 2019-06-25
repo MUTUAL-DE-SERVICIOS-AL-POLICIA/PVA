@@ -219,6 +219,42 @@ Esta pestaña cuenta con las mismas opciones que el módulo de planillas de pers
 
 ![IMAGE](./img/consultant_payroll_index.png)
 
+## REGISTRO DE ASISTENCIA
+
+En la pantalla inicial se encuentra habilitado un ícono con el título "REGISTRO DE ASISTENCIA" que sirve de acceso directo para navegar hasta la ventana de la lista de registros de asistencia.
+
+![IMAGE](./img/attendance_dashboard.png)
+
+### LISTA DE REGISTROS DE ASISTENCIA MENSUAL
+
+![IMAGE](./img/attendance_month.png)
+
+En esta ventana se visualizan los registros de asistencia o marcado por día en un calendario que discrimina la asistencia por mes de acuerdo al rango de fechas especificado por el personal de Recursos Humanos; es decir, por ejemplo para el mes de Junio se toman en cuenta los registros desde el día 20 del mes de Mayo hasta el día 19 del mes de Junio. Los registros posteriores al 20 de cada mes son tomados en cuenta para el siguiente mes.
+
+Los registros marcados en rojo indican un retraso en el ingreso, los registros en verde indican el ingreso antes de la hora definida como atraso, los registros azules indican las salidas, los registros amarillos indican los marcados que no concuerdan con el ingreso o salida, es decir no están dentro de horarios establecidos. Por último la línea ploma divide los registros del primer y el segundo turno laborales.
+
+Para verificar registros antiguos basta con seleccionar el mes deseado en el botón verde superior derecho.
+
+![IMAGE](./img/attendance_select_month.png)
+
+### LISTA DE REGISTROS DE ASISTENCIA POR EMPLEADO
+
+Los funcionarios con rol de Recursos Humanos pueden además seleccionar cualquier funcionario de la lista de funcionarios activos a fin de obtener la lista de registros de asistencia, en este caso también está disponible la selección del mes.
+
+![IMAGE](./img/attendance_select_employee.png)
+
+### CONFIGURACIÓN DE HORARIOS DE TRABAJO
+
+Para el correcto funcionamiento y visualización de registros de asistencia es necesario configurar los límites de cada horario de trabajo establecido en la base de datos, así como los días laborales de acuerdo a los contratos emitidos por la institución.
+
+![IMAGE](./img/attendance_config.png)
+
+### SINCRONIZACIÓN DE REGISTROS DE ASISTENCIA
+
+El usuario administrador puede sincronizar los datos de los dispositivos biométricos con la base de datos y a su vez borrar dichos registros a fin de evitar el desbordamiento de las bases de datos de cada dispositivo biométrico.
+
+![IMAGE](./img/attendance_sync.png)
+
 ## SALIDAS Y LICENCIAS
 
 ### SOLICITUD DE SALIDAS Y LICENCIAS

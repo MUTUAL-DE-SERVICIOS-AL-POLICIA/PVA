@@ -144,14 +144,14 @@
       </v-flex>
     </v-toolbar>
     <UserRole v-if="sourceSelected == 'Roles'" ref="UserRole"/>
-    <UserPermission v-if="sourceSelected == 'Permisos'" ref="UserPermission"/>
+    <RolePermission v-if="sourceSelected == 'Permisos'" ref="RolePermission"/>
     <UserLdap v-if="sourceSelected == 'LDAP'"/>
   </v-container>
 </template>
 
 <script>
 import UserRole from "./UserRole"
-import UserPermission from "./UserPermission"
+import RolePermission from "./RolePermission"
 import UserLdap from "./UserLdap"
 import { log } from 'util'
 
@@ -159,7 +159,7 @@ export default {
   name: "userIndex",
   components: {
     UserRole,
-    UserPermission,
+    RolePermission,
     UserLdap
   },
   computed: {

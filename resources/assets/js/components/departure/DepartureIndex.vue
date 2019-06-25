@@ -1,123 +1,128 @@
 <template>
   <v-container fluid>
-    <v-toolbar>
-      <v-toolbar-title>
-        <v-select
-          v-model="departureTypeSelected"
-          :items="departureTypes"
-          item-text="dislayName"
-          item-value="dateRange"
-          class="subheading font-weight-medium"
-          :label="$route.query.departureType == 'all' ? `Aprobar Solicitudes` : `Solicitud de Permisos`"
-        ></v-select>
-      </v-toolbar-title>
-      <v-tooltip color="white" role="button" bottom>
-        <v-icon slot="activator" class="ml-4">info</v-icon>
-        <div>
-          <v-alert :value="true" type="warning" class="black--text">PENDIENTE DE APROBACIÓN</v-alert>
-          <v-alert :value="true" type="error">RECHAZADO</v-alert>
-          <v-alert :value="true" type="info">SELECCIONADO</v-alert>
+    <template v-if="!this.manteinanceMode">
+      <v-toolbar>
+        <v-toolbar-title>
+          <v-select
+            v-model="departureTypeSelected"
+            :items="departureTypes"
+            item-text="dislayName"
+            item-value="dateRange"
+            class="subheading font-weight-medium"
+            :label="$route.query.departureType == 'all' ? `Aprobar Solicitudes` : `Solicitud de Permisos`"
+          ></v-select>
+        </v-toolbar-title>
+        <v-tooltip color="white" role="button" bottom>
+          <v-icon slot="activator" class="ml-4">info</v-icon>
+          <div>
+            <v-alert :value="true" type="warning" class="black--text">PENDIENTE DE APROBACIÓN</v-alert>
+            <v-alert :value="true" type="error">RECHAZADO</v-alert>
+            <v-alert :value="true" type="info">SELECCIONADO</v-alert>
+          </div>
+        </v-tooltip>
+        <v-spacer></v-spacer>
+        <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+        <v-btn color="error" v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" @click.native="print('report')">
+          <v-icon>print</v-icon>
+          <div class="pl-2">Reporte</div>
+        </v-btn>
+        <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
+          <v-chip
+            :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
+            class="mr-3"
+          >
+            <v-avatar
+              class="body-2 font-weight-black"
+              :color="remainingDepartures.monthly.time_remaining > 0 ? 'primary' : 'error'"
+            >{{ remainingDepartures.monthly.time_remaining / 60 }}</v-avatar>
+            <div class="subheading font-weight-regular">Hrs/Mes</div>
+          </v-chip>
+          <v-chip
+            :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
+            class="mr-3"
+          >
+            <v-avatar
+              class="body-2 font-weight-black"
+              :color="remainingDepartures.annually.time_remaining > 0 ? 'info' : 'error'"
+            >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
+            <div class="subheading font-weight-regular">Días/Año</div>
+          </v-chip>
+          <DepartureEdit :bus="bus"></DepartureEdit>
+          <RemoveItem :bus="bus"/>
         </div>
-      </v-tooltip>
-      <v-spacer></v-spacer>
-      <v-divider
-        class="mx-2"
-        inset
-        vertical
-      ></v-divider>
-      <v-btn color="error" v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" @click.native="print('report')">
-        <v-icon>print</v-icon>
-        <div class="pl-2">Reporte</div>
-      </v-btn>
-      <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
-        <v-chip
-          :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
-          class="mr-3"
-        >
-          <v-avatar
-            class="body-2 font-weight-black"
-            :color="remainingDepartures.monthly.time_remaining > 0 ? 'primary' : 'error'"
-          >{{ remainingDepartures.monthly.time_remaining / 60 }}</v-avatar>
-          <div class="subheading font-weight-regular">Hrs/Mes</div>
-        </v-chip>
-        <v-chip
-          :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
-          class="mr-3"
-        >
-          <v-avatar
-            class="body-2 font-weight-black"
-            :color="remainingDepartures.annually.time_remaining > 0 ? 'info' : 'error'"
-          >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
-          <div class="subheading font-weight-regular">Días/Año</div>
-        </v-chip>
-        <DepartureEdit :bus="bus"></DepartureEdit>
-        <RemoveItem :bus="bus"/>
+      </v-toolbar>
+      <div v-if="loading">
+        <Loading/>
       </div>
-    </v-toolbar>
-    <div v-if="loading">
-      <Loading/>
-    </div>
-    <v-data-table
-      v-else
-      :headers="headers"
-      :items="departures"
-      :loading="loading"
-      :rows-per-page-items="[20,30,40,{text:'TODO',value:-1}]"
-      disable-initial-sort
-      expand
-      class="elevation-1"
-    >
-      <template slot="items" slot-scope="props">
-        <tr :class="props.expanded ? 'info dark white--text' : (props.item.approved == null ? 'warning' : (props.item.approved == false ? 'error dark white--text' : ''))">
-          <td class="text-xs-center bordered" @click="expand(props)" v-if="$route.query.departureType == 'all'">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${props.item.second_name}` }}</td>
-          <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).group }}</td>
-          <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).reason }}</td>
-          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] HH:mm') }}</td>
-          <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] HH:mm') }}</td>
-          <td class="text-xs-center bordered">
-            <v-layout align-center justify-center column fill-height v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
-              <v-switch
-                value
-                :input-value="props.item.approved"
-                color="info"
-                @change="switchActive(props.item)"
-              ></v-switch>
-            </v-layout>
-            <div v-else>
-              <v-tooltip top>
-                <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
-                  <v-icon>print</v-icon>
-                </v-btn>
-                <span>Imprimir</span>
-              </v-tooltip>
-              <v-tooltip top v-if="props.item.approved === null && (props.item.description_needed || props.item.note)">
-                <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click="bus.$emit('updateDeparture', props.item)">
-                  <v-icon>edit</v-icon>
-                </v-btn>
-                <span>Editar</span>
-              </v-tooltip>
-              <v-tooltip top v-if="props.item.approved == null">
-                <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item.id)">
-                  <v-icon>delete</v-icon>
-                </v-btn>
-                <span>Eliminar</span>
-              </v-tooltip>
-            </div>
-          </td>
-        </tr>
-      </template>
-      <template slot="expand" slot-scope="props">
-        <v-card flat class="grey lighten-3">
-          <v-card-text class="bordered">
-            <v-list class="grey lighten-3">
-              <v-list-tile-content v-if="props.item.description"><p><strong>Detalle: </strong>{{ props.item.description }}</p></v-list-tile-content>
-              <v-list-tile-content><p><strong>Puesto: </strong>{{ props.item.position }}</p></v-list-tile-content>
-              <v-list-tile-content><p><strong>Unidad: </strong>{{ props.item.positionGroup }}</p></v-list-tile-content>
-            </v-list>
-          </v-card-text>
-        </v-card>
-      </template>
-    </v-data-table>
+      <v-data-table
+        v-else
+        :headers="headers"
+        :items="departures"
+        :loading="loading"
+        :rows-per-page-items="[20,30,40,{text:'TODO',value:-1}]"
+        disable-initial-sort
+        expand
+        class="elevation-1"
+      >
+        <template slot="items" slot-scope="props">
+          <tr :class="props.expanded ? 'info dark white--text' : (props.item.approved == null ? 'warning' : (props.item.approved == false ? 'error dark white--text' : ''))">
+            <td class="text-xs-center bordered" @click="expand(props)" v-if="$route.query.departureType == 'all'">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${props.item.second_name}` }}</td>
+            <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).group }}</td>
+            <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).reason }}</td>
+            <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] HH:mm') }}</td>
+            <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] HH:mm') }}</td>
+            <td class="text-xs-center bordered">
+              <v-layout align-center justify-center column fill-height v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
+                <v-switch
+                  value
+                  :input-value="props.item.approved"
+                  color="info"
+                  @change="switchActive(props.item)"
+                ></v-switch>
+              </v-layout>
+              <div v-else>
+                <v-tooltip top>
+                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
+                    <v-icon>print</v-icon>
+                  </v-btn>
+                  <span>Imprimir</span>
+                </v-tooltip>
+                <v-tooltip top v-if="props.item.approved === null && (props.item.description_needed || props.item.note)">
+                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click="bus.$emit('updateDeparture', props.item)">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                  <span>Editar</span>
+                </v-tooltip>
+                <v-tooltip top v-if="props.item.approved == null">
+                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item.id)">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                  <span>Eliminar</span>
+                </v-tooltip>
+              </div>
+            </td>
+          </tr>
+        </template>
+        <template slot="expand" slot-scope="props">
+          <v-card flat class="grey lighten-3">
+            <v-card-text class="bordered">
+              <v-list class="grey lighten-3">
+                <v-list-tile-content v-if="props.item.description"><p><strong>Detalle: </strong>{{ props.item.description }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Puesto: </strong>{{ props.item.position }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Unidad: </strong>{{ props.item.positionGroup }}</p></v-list-tile-content>
+              </v-list>
+            </v-card-text>
+          </v-card>
+        </template>
+      </v-data-table>
+    </template>
+    <template v-else>
+      <ManteinanceDialog positionGroup="la Unidad de Recursos Humanos"></ManteinanceDialog>
+    </template>
   </v-container>
 </template>
 
@@ -126,13 +131,15 @@ import Vue from 'vue'
 import Loading from '../Loading'
 import RemoveItem from "../RemoveItem"
 import DepartureEdit from './DepartureEdit'
+import ManteinanceDialog from "../ManteinanceDialog"
 
 export default {
   name: 'Departure',
   components: {
     Loading,
     RemoveItem,
-    DepartureEdit
+    DepartureEdit,
+    ManteinanceDialog
   },
   data() {
     return {
@@ -189,6 +196,11 @@ export default {
           sortable: this.$route.query.departureType == 'all' ? true : false
         }
       ]
+    }
+  },
+  computed: {
+    manteinanceMode() {
+      return JSON.parse(process.env.MIX_DEPARTURE_MANTEINANCE_MODE)
     }
   },
   mounted() {
