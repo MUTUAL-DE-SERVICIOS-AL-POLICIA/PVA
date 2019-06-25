@@ -139,7 +139,7 @@ export default {
       }
     }
   },
-  name: "app-header",
+  name: "AppMain",
   methods: {
     logout() {
       this.$store.dispatch("logout");

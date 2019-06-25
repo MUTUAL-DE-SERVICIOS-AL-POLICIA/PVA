@@ -5,6 +5,8 @@ namespace App\Helpers;
 use Carbon;
 use Auth;
 use App\UserAction;
+use App\JobScheduleDiscount;
+use Carbon\CarbonImmutable;
 
 class Util
 {
@@ -403,5 +405,60 @@ class Util
     if (strlen($text) > 80) return 'text-xxxs';
     if (strlen($text) > 60) return 'text-xxs';
     return 'text-xs';
+  }
+
+  public static function attendance_checktype($job_schedules, $check, $calc_discount = false)
+  {
+    $attendance = (object)[
+      'type' => 'X',
+      'delay' => (object)[
+        'minutes' => 0,
+        'discount' => 0
+      ],
+      'shift' => null
+    ];
+    $checktime = CarbonImmutable::parse($check);
+    foreach ($job_schedules as $schedule) {
+      $periods = (object)[
+        'in' => (object)[
+          'start_limit' => $checktime->hours($schedule->start_hour_min_limit)->minutes($schedule->start_minutes_min_limit)->seconds(0),
+          'end_limit' => $checktime->hours($schedule->end_hour)->minutes($schedule->end_minutes)->seconds(0),
+          'start' => $checktime->hours($schedule->start_hour)->minutes($schedule->start_minutes)->seconds(0)
+        ],
+        'out' => (object)[
+          'start_limit' => $checktime->hours($schedule->end_hour)->minutes($schedule->end_minutes)->seconds(0),
+          'end_limit' => $checktime->hours($schedule->end_hour_max_limit)->minutes($schedule->end_minutes_max_limit)->seconds(59)
+        ]
+      ];
+
+      foreach ($periods as $key => $period) {
+        if ($calc_discount) $discounts = JobScheduleDiscount::whereUnit('minutes')->orderBy('time', 'DESC')->get();
+        $find = $checktime->between($period->start_limit, $period->end_limit);
+        if ($find) {
+          if ($key == 'in') {
+            $attendance->type = 'I';
+            if ($calc_discount) {
+              foreach ($discounts as $discount) {
+                if ($checktime->greaterThan($period->start)) {
+                  $delay = $checktime->diffInMinutes($period->start);
+                  if ($delay > $discount->time) {
+                    $attendance->delay->minutes = $delay;
+                    $attendance->delay->discount = $discount->discount;
+                  }
+                }
+              }
+            }
+          } else {
+            $attendance->type = 'O';
+          }
+          break;
+        }
+      }
+      if ($find) {
+        break;
+      }
+    }
+    $attendance->shift = $schedule->id;
+    return $attendance;
   }
 }

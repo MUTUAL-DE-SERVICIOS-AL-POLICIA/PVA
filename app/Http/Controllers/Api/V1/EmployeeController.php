@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api\V1;
 use App\Employee;
 use App\Payroll;
 use App\DepartureReason;
+use App\AttendanceUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeEditForm;
 use App\Http\Requests\EmployeeStoreForm;
 use Illuminate\Http\Request;
+use Carbon\CarbonImmutable;
+use Util;
 
 /** @resource Employee
  *
@@ -114,6 +117,77 @@ class EmployeeController extends Controller
       $employee = Employee::findOrFail($id);
       $employee->delete();
       return $employee;
+    }
+  }
+
+  public function attendance(Request $request, $id)
+  {
+    $employee = Employee::findOrFail($id);
+    $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->orderBy('USERID', 'DESC')->first();
+    if ($attendance_user) {
+      if (!$request->has('month')) {
+        $to = CarbonImmutable::now();
+      } else {
+        $to = CarbonImmutable::parse($request->input('month'));
+      }
+
+      if ($to->day == 20) {
+        $from = $to;
+      } elseif ($to->day < 20) {
+        $from = $to->subMonth()->day(20);
+        $to = $to->day(19);
+      } else {
+        $from = $to->day(20);
+        $to = $from->addMonth()->day(19);
+      }
+
+      $checks = $attendance_user->checks()->where('checktime', '>=', $from->startOfDay()->format('Ymd H:i:s'))->where('checktime', '<=', $to->endOfDay()->format('Ymd H:i:s'))->get();
+
+      switch ($employee->consultant()) {
+        case true:
+          $job_schedules = $employee->last_consultant_contract()->job_schedules;
+          break;
+        case false:
+          $job_schedules = $employee->last_contract()->job_schedules;
+          break;
+        case null:
+          $job_schedules = null;
+          break;
+      }
+
+      foreach ($checks as $check) {
+        $checktime = CarbonImmutable::parse($check->checktime);
+        $check->date = $checktime->toDateString();
+        $check->time = $checktime->format('H:i');
+        $check->color = 'orange';
+        if ($job_schedules) {
+          $attendance = Util::attendance_checktype($job_schedules, $check->checktime, true);
+          $check->shift = $attendance->shift;
+          if ($attendance->delay->minutes > 0) {
+            $check->color = 'red';
+          } else {
+            if ($attendance->type == 'I') {
+              $check->color = 'green';
+            } elseif ($attendance->type == 'O') {
+              $check->color = 'blue';
+            }
+          }
+        }
+        unset($check->checktime);
+      }
+
+      return response()->json([
+        'from' => $from->toDateString(),
+        'to' => $to->toDateString(),
+        'checks' => collect(array_unique($checks->all()))->values()
+      ], 200);
+    } else {
+      return response()->json([
+        'message' => 'Usuario inexistente',
+        'errors' => [
+          'type' => ['Usuario inexistente en la base de datos'],
+        ],
+      ], 404);
     }
   }
 }

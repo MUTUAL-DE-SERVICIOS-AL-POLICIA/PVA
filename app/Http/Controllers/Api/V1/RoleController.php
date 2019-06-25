@@ -10,23 +10,30 @@ use App\Role;
  * Resource to retrieve and show Role data
  */
 
-class RoleController extends Controller {
-	/**
-	 * Display a listing of the roles data.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index() {
-		return Role::get();
-	}
+class RoleController extends Controller
+{
+  /**
+   * Display a listing of the roles data.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index()
+  {
+    $roles = Role::get();
+    foreach ($roles as $role) {
+      $role->permissions = $role->permissions()->pluck('id');
+    }
+    return $roles;
+  }
 
-	/**
-	 * Display the specified role.
-	 *
-	 * @param  \App\Role  $role
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show($id) {
-		return Role::findOrFail($id);
-	}
+  /**
+   * Display the specified role.
+   *
+   * @param  \App\Role  $role
+   * @return \Illuminate\Http\Response
+   */
+  public function show($id)
+  {
+    return Role::with('permissions')->findOrFail($id);
+  }
 }

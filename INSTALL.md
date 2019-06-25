@@ -42,7 +42,7 @@ composer install
 yarn
 ```
 
-* Editar el archivo `.env` de acuerdo a las variables de la base de datos a utilizar
+* Edit `.env` file with database credentials and established manteinance modes
 
 * Generate keys and compile JS files
 
