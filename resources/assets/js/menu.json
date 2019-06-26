@@ -50,13 +50,17 @@
       }
     ]
   }, {
+    "href": "attendanceIndex",
+    "title": "Asistencia",
+    "icon": "fingerprint",
+    "permission": "!admin",
+    "params": {}
+  }, {
     "href": "departureIndex",
     "title": "Aprobar Permisos",
     "icon": "alarm_on",
     "permission": "read-departure",
-    "params": {
-      "departureType": "all"
-    }
+    "params": {}
   }, {
     "href": "departureIndex",
     "title": "Permisos",
@@ -109,6 +113,12 @@
         "href": "departureConfig",
         "title": "Permisos",
         "icon": "directions_walk",
+        "permission": "admin",
+        "params": {}
+      }, {
+        "href": "attendanceConfig",
+        "title": "Horarios",
+        "icon": "watch_later",
         "permission": "admin",
         "params": {}
       }

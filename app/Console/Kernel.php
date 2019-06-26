@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
   {
     // $schedule->command('inspire')
     //      ->hourly();
+    $schedule->call(function () {
+      \App::call('App\Http\Controllers\Api\V1\AttendanceController@store');
+    })->daily();
   }
 
   /**
@@ -35,7 +38,7 @@ class Kernel extends ConsoleKernel
    */
   protected function commands()
   {
-    $this->load(__DIR__.'/Commands');
+    $this->load(__DIR__ . '/Commands');
 
     require base_path('routes/console.php');
   }

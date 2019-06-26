@@ -2,6 +2,32 @@
 
 ---
 
+## [4.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.3.1) - 2019-06-26
+
+### Fixed
+
+* Bonus print ticket with standalone template
+* Closed print job certificate option to rrhh role
+
+### Added
+
+* Laradock installation readme
+
+## [4.3.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.3.0) - 2019-06-25
+
+### Added
+
+* Attendance view
+* Job schedules configuration
+
+### Fixed
+
+* Dashboard order to prevent icons disorder on update
+
+### Changed
+
+* User-Permission to Role-Permission attachment
+
 ## [4.2.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.2.1) - 2019-05-29
 
 ### Fixed

@@ -15,7 +15,9 @@ import PhonebookIndex from './components/phonebook/PhonebookIndex'
 import SuppliesIndex from './components/supply/SuppliesIndex'
 import SupplyRequestIndex from './components/supply/SupplyRequestIndex'
 import DepartureConfig from './components/configuration/DepartureConfig'
+import AttendanceConfig from './components/configuration/AttendanceConfig'
 import DepartureIndex from './components/departure/DepartureIndex'
+import AttendanceIndex from './components/attendance/AttendanceIndex'
 
 export const routes = [
   {
@@ -149,5 +151,19 @@ export const routes = [
     meta: {
       requiresAuth: true
     }
-  }
+  }, {
+    path: '/attendance_config',
+    component: AttendanceConfig,
+    name: 'attendanceConfig',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/attendance',
+    component: AttendanceIndex,
+    name: 'attendanceIndex',
+    meta: {
+      requiresAuth: true
+    }
+  },
 ]
