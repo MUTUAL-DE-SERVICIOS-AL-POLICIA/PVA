@@ -6,3 +6,4 @@ Sistema de administración de funcionarios, contratos y gestión de planillas.
 
 * [Manual de instalación](./INSTALL.md)
 * [Manual de usuario](./docs/MANUAL.md)
+* [Despliegue con Docker](./docs/docker/README.md)

@@ -2,6 +2,12 @@
 
 ---
 
+## From [4.3.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.3.0) to [4.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.3.1)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
 ## From [4.2.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.2.1) to [4.3.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.3.0)
 
 * Add `ATTENDANCE SQL SERVER` required properties and new `Manteinance Modes` to `.env` file

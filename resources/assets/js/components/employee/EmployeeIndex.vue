@@ -64,40 +64,35 @@
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.nua_cua || '' }} </td>
-          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center" v-if="$store.getters.permissions.includes('update-employee')">
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center">
             <v-switch
+              v-if="$store.getters.permissions.includes('update-employee')"
               v-show="props.item.consultant == null"
               v-model="props.item.active"
               @change="switchActive(props.item)"
             ></v-switch>
           </td>
-          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center">
-            <table>
-              <td :class="withoutBorders" v-if="(!active && $store.getters.permissions.includes('update-employee')) || (active && $store.getters.permissions.includes('update-employee-inactive'))">
-                <v-tooltip top :class="withoutBorders">
-                  <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'white' : 'info'" @click="editItem(props.item)">
-                    <v-icon>edit</v-icon>
-                  </v-btn>
-                  <span>Editar</span>
-                </v-tooltip>
-              </td>
-              <td v-if="props.item.total_contracts == 0 && $store.getters.permissions.includes('delete-employee')" :class="withoutBorders">
-                <v-tooltip top :class="withoutBorders">
-                  <v-btn medium :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
-                    <v-icon>delete</v-icon>
-                  </v-btn>
-                  <span>Eliminar</span>
-                </v-tooltip>
-              </td>
-              <td v-else :class="withoutBorders">
-                <v-tooltip top :class="withoutBorders">
-                  <v-btn medium :class="withoutBorders" slot="activator" flat icon :color="props.item.consultant == null ? 'white' : 'info'" @click="certificateItem(props.item)">
-                    <v-icon>timeline</v-icon>
-                  </v-btn>
-                  <span>Certificado de trabajo</span>
-                </v-tooltip>
-              </td>
-            </table>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center layout">
+            <v-tooltip top v-if="(!active && $store.getters.permissions.includes('update-employee')) || (active && $store.getters.permissions.includes('update-employee-inactive'))">
+              <v-btn :class="withoutBorders" medium slot="activator" flat icon :color="props.item.consultant == null ? 'white' : 'info'" @click="editItem(props.item)">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>Editar</span>
+            </v-tooltip>
+            <v-tooltip top v-if="props.item.total_contracts == 0 && $store.getters.permissions.includes('delete-employee')">
+              <v-btn :class="withoutBorders" medium slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+              <span>Eliminar</span>
+            </v-tooltip>
+            <div v-else>
+              <v-tooltip top v-if="['admin', 'rrhh'].includes($store.getters.role)">
+                <v-btn :class="withoutBorders" medium slot="activator" flat icon :color="props.item.consultant == null ? 'white' : 'info'" @click="certificateItem(props.item)">
+                  <v-icon>timeline</v-icon>
+                </v-btn>
+                <span>Certificado de trabajo</span>
+              </v-tooltip>
+            </div>
           </td>
         </tr>
       </template>
@@ -192,14 +187,14 @@ export default {
         { text: "AFP", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "management_entity.name" },
         { text: "CUA/NUA", class: ["ml-0", "mr-0", "pl-0", "pr-0"], value: "nua_cua" },
         {
-          align: "center",
+          align: "left",
           text: "Activo",
           class: ["ml-0", "mr-0", "pl-0", "pr-0"],
           value: "first_name",
           sortable: false
         },
         {
-          align: "left",
+          align: "center",
           text: "Acciones",
           class: ["ml-0", "mr-0", "pl-0", "pr-0"],
           value: "second_name",
@@ -281,7 +276,7 @@ export default {
       this.bus.$emit("openDialogRemove", `/employee/${employee.id}`);
     },
     certificateItem(item) {
-      this.bus.$emit("openDialogCertificate", item);      
+      this.bus.$emit("openDialogCertificate", item);
     },
     rowColor(employee) {
       if (
