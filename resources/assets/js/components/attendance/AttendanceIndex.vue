@@ -37,8 +37,9 @@
                   item-value="id"
                   clearable
                   prepend-icon="person"
-                  hint="Nombre del empleado"
+                  :hint="selectedEmployeePosition"
                   persistent-hint
+                  flat
                 ></v-autocomplete>
               </v-flex>
               <v-flex xs1>
@@ -122,6 +123,7 @@ export default {
       bus: new Vue(),
       employees: [],
       selectedEmployee: null,
+      selectedEmployeePosition: null,
       date: null,
       showDate: false
     }
@@ -130,6 +132,8 @@ export default {
     selectedEmployee: function(val) {
       if (typeof val === 'number') this.getChecks(val)
       if (this.selectedEmployee.hasOwnProperty('id')) this.selectedEmployee = this.selectedEmployee.id
+      let employee = this.employees.find(o => o.id == this.selectedEmployee)
+      if (employee) this.selectedEmployeePosition = employee.position || 'Nombre del empleado'
     },
     date: function(val) {
       if (typeof this.selectedEmployee === 'object') {
@@ -199,7 +203,7 @@ export default {
         let res = await axios.get(`employee`)
         this.employees = res.data.filter(o => o.active)
         this.employees.forEach(e => {
-          e.fullName = `${e.first_name || ''} ${e.second_name || ''} ${e.last_name || ''} ${e.mothers_last_name || ''}`
+          e.fullName = `${e.last_name || ''} ${e.mothers_last_name || ''} ${e.first_name || ''} ${e.second_name || ''}`
         });
         this.selectedEmployee = this.employees.find(o => o.id == this.$store.getters.id)
         this.loading = false
