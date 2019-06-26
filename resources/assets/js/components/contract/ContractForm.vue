@@ -113,14 +113,14 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="selectedItem.id && $store.getters.role != 'admin'"
+                      :disabled="disableEndDate"
                     >
                       <v-text-field
                         slot="activator"
                         v-model="formatDateEnd"
                         label="Fecha de conclusión"
                         prepend-icon="event"
-                        :disabled="selectedItem.id && $store.getters.role != 'admin'"
+                        :disabled="disableEndDate"
                         autocomplete='cc-exp-year'
                         readonly
                         clearable
@@ -433,6 +433,17 @@ export default {
     }
   },
   computed: {
+    disableEndDate() {
+      if (this.selectedItem.id && this.$store.getters.role == 'admin') {
+        return false
+      } else if (this.selectedItem.id && this.recontract && (this.$store.getters.role == 'admin' || this.$store.getters.role == 'rrhh')) {
+        return false
+      } else if (!this.selectedItem.id) {
+        return false
+      } else {
+        return true
+      }
+    },
     formTitle() {
       return this.selectedIndex === -1
         ? "Nuevo contrato"

@@ -73,25 +73,25 @@
           <tr>
             <td class="font-large left-discounts-first-row">SUELDOS</td>
             <td class="font-large left-discounts-second-row" align="right">{{ Util::formatMoney($payroll->quotable) }}</td>
-            <td class="font-large left-discounts-third-row">AFP.RV.{{ $procedure->employee_discount->elderly * 100 }}%</td>
+            <td class="font-large left-discounts-third-row">AFP.RV.{{ $bonus ? 0 : $procedure->employee_discount->elderly * 100 }}%</td>
             <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_old) }}</td>
           </tr>
           <tr>
             <td class="font-large left-discounts-first-row"></td>
             <td class="font-large left-discounts-second-row" align="right"></td>
-            <td class="font-large left-discounts-third-row">AFP.RC.{{ $procedure->employee_discount->common_risk * 100 }}%</td>
+            <td class="font-large left-discounts-third-row">AFP.RC.{{ $bonus ? 0 : $procedure->employee_discount->common_risk * 100 }}%</td>
             <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_common_risk) }}</td>
           </tr>
           <tr>
             <td class="font-large left-discounts-first-row"></td>
             <td class="font-large left-discounts-second-row" align="right"></td>
-            <td class="font-large left-discounts-third-row">AFP.CM.{{ $procedure->employee_discount->comission * 100 }}%</td>
+            <td class="font-large left-discounts-third-row">AFP.CM.{{ $bonus ? 0 : $procedure->employee_discount->comission * 100 }}%</td>
             <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_commission) }}</td>
           </tr>
           <tr>
             <td class="font-large left-discounts-first-row"></td>
             <td class="font-large left-discounts-second-row" align="right"></td>
-            <td class="font-large left-discounts-third-row">AFP.SOL.ASE.{{ $procedure->employee_discount->solidary * 100 }}%</td>
+            <td class="font-large left-discounts-third-row">AFP.SOL.ASE.{{ $bonus ? 0 : $procedure->employee_discount->solidary * 100 }}%</td>
             <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_solidary) }}</td>
           </tr>
           <tr>

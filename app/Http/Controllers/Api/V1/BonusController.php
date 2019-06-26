@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Company;
+use App\CompanyAddress;
 use App\Contract;
 use App\EmployeeBonus;
 use App\BonusProcedure;
@@ -193,21 +194,33 @@ class BonusController extends Controller
         }
 
         $file_name = "Boletas de Pago de " . $procedure->month->name . " de " . $procedure->year . ".pdf";
+
+        $company = Company::first();
+        $company->address = CompanyAddress::where('active', true)->first()->address;
+
         $data = [
           'payrolls' => $employees,
+          'company' => $company,
           'procedure' => $procedure,
+          'bonus' => true
         ];
 
-        return \PDF::loadView('tickets.print', $data)
-          ->setOption('page-width', '216')
-          ->setOption('page-height', '356')
-          ->setOption('margin-top', 0)
-          ->setOption('margin-bottom', 0)
-          ->setOption('margin-left', 4)
-          ->setOption('margin-right', 4)
-          ->setOption('encoding', 'utf-8')
-          ->stream($file_name);
+        $options = [
+          'orientation' => 'portrait',
+          'page-width' => '216',
+          'page-height' => '427',
+          'margin-left' => '0',
+          'margin-right' => '0',
+          'margin-top' => '0',
+          'margin-bottom' => '0',
+          'encoding' => 'UTF-8',
+          'user-style-sheet' => public_path('css/ticket-standalone.min.css')
+        ];
 
+        $pdf = \PDF::loadView('tickets.standalone', $data);
+        $pdf->setOptions($options);
+
+        return $pdf->stream($file_name);
         break;
       default:
         $response = (object)array(

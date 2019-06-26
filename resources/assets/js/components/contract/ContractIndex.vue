@@ -82,7 +82,7 @@
                 <v-list-tile @click="print(props.item, 'printLow')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Baja del seguro</v-list-tile>
               </v-list>
             </v-menu>
-            <v-tooltip top v-if="$store.getters.permissions.includes('update-eventual') && checkEnd(props.item) != '' && props.item.active == true">
+            <v-tooltip top v-if="['rrhh', 'admin'].includes($store.getters.role) && checkEnd(props.item) != '' && props.item.active == true">
               <v-btn :class="withoutBorders" slot="activator" flat icon color="info" @click="editItem(props.item, 'recontract')">
                 <v-icon>autorenew</v-icon>
               </v-btn>

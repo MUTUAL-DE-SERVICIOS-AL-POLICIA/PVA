@@ -54,9 +54,7 @@
     "title": "Asistencia",
     "icon": "fingerprint",
     "permission": "!admin",
-    "params": {
-      "attendanceType": "user"
-    }
+    "params": {}
   }, {
     "href": "departureIndex",
     "title": "Aprobar Permisos",

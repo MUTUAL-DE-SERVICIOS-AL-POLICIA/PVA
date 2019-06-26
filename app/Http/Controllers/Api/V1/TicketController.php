@@ -37,7 +37,8 @@ class TicketController extends Controller
     $data = [
       'payrolls' => $payrolls,
       'company' => $company,
-      'procedure' => $procedure
+      'procedure' => $procedure,
+      'bonus' => false
     ];
 
     $options = [
@@ -88,7 +89,8 @@ class TicketController extends Controller
     $data = [
       'payrolls' => $payrolls,
       'company' => $company,
-      'procedure' => $procedure
+      'procedure' => $procedure,
+      'bonus' => false
     ];
 
     $file_name = "boleta_" . $code . ".pdf";

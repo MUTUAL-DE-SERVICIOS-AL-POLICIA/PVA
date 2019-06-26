@@ -14,9 +14,10 @@ class EmployeeBonus
 
     $this->code_image = null;
 
-		// Common data
+    // Common data
     $this->employee_id = $employee->id;
     $this->year = $year;
+    $this->month_shortened = 'AGUINALDO';
     $this->nua_cua = $employee->nua_cua;
     $this->ci = $employee->identity_card;
     $this->id_ext = $employee->city_identity_card->shortened;
@@ -51,6 +52,8 @@ class EmployeeBonus
     // Extra data
     $this->position_group = null;
     $this->position_group_id = null;
+    $this->employer_number = null;
+    $this->employer_number_id = null;
     $this->base_wages = $this->get_latest_payrolls($employee->id, $year, $pay_date, $procedure);
     $this->average = 0;
     $this->bonus_percentage = (object)[];
@@ -132,6 +135,8 @@ class EmployeeBonus
     $this->ovt->insurance_company_id = $payroll->contract->insurance_company->ovt_id;
     $this->position_group = $payroll->position_group->name;
     $this->position_group_id = $payroll->position_group->id;
+    $this->employer_number = $payroll->position_group->company_address->city->employer_number->number;
+    $this->employer_number_id = $payroll->position_group->company_address->city->employer_number->id;
   }
 
   private function calc_worked_moths($contracts, $year, $pay_date)
