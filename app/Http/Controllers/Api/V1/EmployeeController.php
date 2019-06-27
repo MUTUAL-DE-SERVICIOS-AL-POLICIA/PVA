@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeEditForm;
 use App\Http\Requests\EmployeeStoreForm;
 use Illuminate\Http\Request;
+use Carbon;
 use Carbon\CarbonImmutable;
 use Util;
 
@@ -131,6 +132,12 @@ class EmployeeController extends Controller
         $to = CarbonImmutable::parse($request->input('month'));
       }
 
+      if ($request->input('with_discounts')) {
+        $with_discounts = true;
+      } else {
+        $with_discounts = false;
+      }
+
       if ($to->day == 20) {
         $from = $to;
       } elseif ($to->day < 20) {
@@ -143,12 +150,16 @@ class EmployeeController extends Controller
 
       $checks = $attendance_user->checks()->where('checktime', '>=', $from->startOfDay()->format('Ymd H:i:s'))->where('checktime', '<=', $to->endOfDay()->format('Ymd H:i:s'))->get();
 
-      switch ($employee->consultant()) {
+      $employee->consultant = $employee->consultant();
+      switch ($employee->consultant) {
         case true:
-          $job_schedules = $employee->last_consultant_contract()->job_schedules;
+
+          $employee->contract = $employee->last_consultant_contract();
+          $job_schedules = $employee->contract->job_schedules;
           break;
         case false:
-          $job_schedules = $employee->last_contract()->job_schedules;
+          $employee->contract = $employee->last_contract();
+          $job_schedules = $employee->contract->job_schedules;
           break;
         case null:
           $job_schedules = null;
@@ -161,7 +172,10 @@ class EmployeeController extends Controller
         $check->time = $checktime->format('H:i');
         $check->color = 'orange';
         if ($job_schedules) {
-          $attendance = Util::attendance_checktype($job_schedules, $check->checktime, true);
+          $attendance = Util::attendance_checktype($job_schedules, $check->checktime, $with_discounts);
+          if ($with_discounts) {
+            $check->delay = $attendance->delay;
+          }
           $check->shift = $attendance->shift;
           if ($attendance->delay->minutes > 0) {
             $check->color = 'red';
@@ -176,11 +190,45 @@ class EmployeeController extends Controller
         unset($check->checktime);
       }
 
-      return response()->json([
+      if ($with_discounts && $job_schedules->count() > 1) {
+        $checks = Util::filter_checks($checks);
+      }
+
+      $data = [
         'from' => $from->toDateString(),
         'to' => $to->toDateString(),
-        'checks' => collect(array_unique($checks->all()))->values()
-      ], 200);
+        'checks' => $with_discounts ? $checks : collect(array_unique($checks->all()))->values()
+      ];
+
+      if ($request->input('type') == 'pdf') {
+        $data['employee'] = $employee;
+
+        $file_name = implode(" ", ['marcados', $data['employee']->fullName('lowercase', 'last_name_first'), 'del', $data['from'], 'al', $data['to']]) . ".pdf";
+
+        $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_message' => null, 'print_date' => true, 'date' => Carbon::now()))->render();
+
+        $options = [
+          'orientation' => 'landscape',
+          'page-width' => '216',
+          'page-height' => '279',
+          'margin-top' => '4',
+          'margin-bottom' => '4',
+          'margin-left' => '5',
+          'margin-right' => '5',
+          'encoding' => 'UTF-8',
+          'footer-html' => $footerHtml,
+          'user-style-sheet' => public_path('css/report-print.min.css')
+        ];
+
+        $pdf = \PDF::loadView('attendance.print', [
+          'employees' => [$data]
+        ]);
+        $pdf->setOptions($options);
+
+        return $pdf->stream($file_name);
+      }
+
+      return response()->json($data, 200);
     } else {
       return response()->json([
         'message' => 'Usuario inexistente',

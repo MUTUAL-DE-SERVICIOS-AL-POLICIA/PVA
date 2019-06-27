@@ -414,9 +414,10 @@ class Util
     foreach ($checks as $day => $group) {
       $filtered[$day] = [];
       $date = collect($group)->groupBy('shift');
-      foreach ($date as $check) {
-        $filtered[$day][] = $check->first()->time;
-        $filtered[$day][] = $check->last()->time;
+      foreach ($date as $period => $check) {
+        $filtered[$day][$period] = [];
+        $filtered[$day][$period][] = $check->first();
+        if ($check->last() != $check->first()) $filtered[$day][$period][] = $check->last();
       }
     }
     return $filtered;
