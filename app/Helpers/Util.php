@@ -417,7 +417,7 @@ class Util
       foreach ($date as $period => $check) {
         $filtered[$day][$period] = [];
         $filtered[$day][$period][] = $check->first();
-        if ($check->last() != $check->first()) $filtered[$day][$period][] = $check->last();
+        if ($check->last()->time != $check->first()->time) $filtered[$day][$period][] = $check->last();
       }
     }
     return $filtered;

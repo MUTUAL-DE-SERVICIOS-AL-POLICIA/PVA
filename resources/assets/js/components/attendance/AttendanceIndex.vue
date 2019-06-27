@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <template v-if="!this.manteinanceMode">
-      <v-toolbar>
+      <v-toolbar v-if="!loading">
         <v-toolbar-title>
           {{ `Asistencia del ${$moment(limits.start).format('L')} al ${$moment(limits.end).format('L')}` }}
         </v-toolbar-title>
@@ -17,6 +17,7 @@
         <v-spacer></v-spacer>
         <AttendanceSync v-if="$store.getters.role == 'admin'"/>
         <AttendanceErase v-if="$store.getters.role == 'admin'"/>
+        <v-btn class="mr-5" @click.native="print" color="info" v-if="['admin', 'rrhh'].includes($store.getters.role)">IMPRIMIR TODO</v-btn>
         <v-btn color="primary" @click="showDate = !showDate">
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
@@ -28,7 +29,7 @@
         <v-card class="pa-1" v-if="isAdmin">
           <v-container grid-list-md text-xs-center>
             <v-layout row wrap>
-              <v-flex xs11>
+              <v-flex xs10>
                 <v-autocomplete
                   :items="employees"
                   item-text="fullName"
@@ -42,8 +43,16 @@
                   flat
                 ></v-autocomplete>
               </v-flex>
-              <v-flex xs1>
-                <AttendanceAdd v-if="$store.getters.role == 'admin'" :id="selectedEmployee" :limits="limits" :bus="bus"></AttendanceAdd>
+              <v-flex xs2>
+                <template class="justify-center layout">
+                  <v-tooltip top>
+                    <v-btn medium slot="activator" flat icon color="info" @click="getChecks(selectedEmployee, true)">
+                      <v-icon>print</v-icon>
+                    </v-btn>
+                    <span>Imprimir asistencia del funcionario</span>
+                  </v-tooltip>
+                  <AttendanceAdd v-if="$store.getters.role == 'admin'" :id="selectedEmployee" :limits="limits" :bus="bus"></AttendanceAdd>
+                </template>
               </v-flex>
             </v-layout>
           </v-container>
@@ -179,18 +188,28 @@ export default {
     })
   },
   methods: {
-    async getChecks(id = this.$store.getters.id) {
+    async getChecks(id = this.$store.getters.id, print = false) {
       try {
         this.loading = true
         let res = await axios.get(`employee/${id}/attendance`, {
+          responseType: print ? 'arraybuffer' : 'json',
           params: {
-            month: this.date
+            month: this.date,
+            type: print ? 'pdf' : 'json',
+            with_discounts: print
           }
         })
-        this.checks = res.data.checks
-        this.limits = {
-          start: res.data.from,
-          end: res.data.to
+        if (print) {
+          let blob = new Blob([res.data], {
+            type: "application/pdf"
+          });
+          printJS(window.URL.createObjectURL(blob));
+        } else {
+          this.checks = res.data.checks
+          this.limits = {
+            start: res.data.from,
+            end: res.data.to
+          }
         }
         this.loading = false
       } catch (e) {
@@ -209,6 +228,24 @@ export default {
         this.loading = false
       } catch (e) {
         console.log(e)
+        this.loading = false
+      }
+    },
+    async print() {
+      try {
+        this.loading = true
+        let res = await axios({
+          method: "GET",
+          url: `attendance/print/${this.date}`,
+          responseType: "arraybuffer"
+        });
+        let blob = new Blob([res.data], {
+          type: "application/pdf"
+        });
+        printJS(window.URL.createObjectURL(blob));
+      } catch(e) {
+        console.log(e)
+      } finally {
         this.loading = false
       }
     }

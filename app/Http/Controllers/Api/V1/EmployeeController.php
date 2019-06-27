@@ -132,7 +132,7 @@ class EmployeeController extends Controller
         $to = CarbonImmutable::parse($request->input('month'));
       }
 
-      if ($request->input('with_discounts')) {
+      if (json_decode($request->input('with_discounts'))) {
         $with_discounts = true;
       } else {
         $with_discounts = false;
@@ -150,15 +150,26 @@ class EmployeeController extends Controller
 
       $checks = $attendance_user->checks()->where('checktime', '>=', $from->startOfDay()->format('Ymd H:i:s'))->where('checktime', '<=', $to->endOfDay()->format('Ymd H:i:s'))->get();
 
+      if ($checks->count() == 0) {
+        return response()->json([
+          'message' => 'Sin registros de asistencia',
+          'errors' => [
+            'type' => ['Sin registros de asistencia para el rango de fechas'],
+          ],
+        ], 404);
+      }
+
+      $employee->full_name = $employee->fullName('uppercase', 'last_name_first');
       $employee->consultant = $employee->consultant();
       switch ($employee->consultant) {
         case true:
-
           $employee->contract = $employee->last_consultant_contract();
+          $employee->position_name = $employee->contract->consultant_position->name;
           $job_schedules = $employee->contract->job_schedules;
           break;
         case false:
           $employee->contract = $employee->last_contract();
+          $employee->position_name = $employee->contract->position->name;
           $job_schedules = $employee->contract->job_schedules;
           break;
         case null:
@@ -190,22 +201,18 @@ class EmployeeController extends Controller
         unset($check->checktime);
       }
 
-      if ($with_discounts && $job_schedules->count() > 1) {
-        $checks = Util::filter_checks($checks);
-      }
-
       $data = [
         'from' => $from->toDateString(),
         'to' => $to->toDateString(),
-        'checks' => $with_discounts ? $checks : collect(array_unique($checks->all()))->values()
+        'checks' => $with_discounts ? Util::filter_checks($checks) : collect(array_unique($checks->all()))->values()
       ];
 
-      if ($request->input('type') == 'pdf') {
+      if ($with_discounts) {
         $data['employee'] = $employee;
+      }
 
+      if ($request->input('type') == 'pdf') {
         $file_name = implode(" ", ['marcados', $data['employee']->fullName('lowercase', 'last_name_first'), 'del', $data['from'], 'al', $data['to']]) . ".pdf";
-
-        $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_message' => null, 'print_date' => true, 'date' => Carbon::now()))->render();
 
         $options = [
           'orientation' => 'landscape',
@@ -216,7 +223,6 @@ class EmployeeController extends Controller
           'margin-left' => '5',
           'margin-right' => '5',
           'encoding' => 'UTF-8',
-          'footer-html' => $footerHtml,
           'user-style-sheet' => public_path('css/report-print.min.css')
         ];
 
