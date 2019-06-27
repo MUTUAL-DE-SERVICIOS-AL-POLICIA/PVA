@@ -407,6 +407,21 @@ class Util
     return 'text-xs';
   }
 
+  public static function filter_checks($checks)
+  {
+    $filtered = [];
+    $checks = collect($checks)->groupBy('date');
+    foreach ($checks as $day => $group) {
+      $filtered[$day] = [];
+      $date = collect($group)->groupBy('shift');
+      foreach ($date as $check) {
+        $filtered[$day][] = $check->first()->time;
+        $filtered[$day][] = $check->last()->time;
+      }
+    }
+    return $filtered;
+  }
+
   public static function attendance_checktype($job_schedules, $check, $calc_discount = false)
   {
     $attendance = (object)[
