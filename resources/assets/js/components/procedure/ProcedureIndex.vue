@@ -141,7 +141,12 @@
                         </v-layout>
                         <div class="text-md-center">
                           <div>Fecha de Pago</div>
-                          <v-date-picker :min="$moment(this.$store.getters.dateNow).month(11).date(4).toISOString()" locale="es-bo" v-model="bonusProcedure.pay_date"></v-date-picker>
+                          <v-date-picker
+                            :min="$moment(this.$store.getters.dateNow).month(11).date(4).toISOString()"
+                            locale="es-bo"
+                            v-model="bonusProcedure.pay_date"
+                            first-day-of-week="1"
+                          ></v-date-picker>
                         </div>
                       </v-card-text>
                       <v-divider></v-divider>

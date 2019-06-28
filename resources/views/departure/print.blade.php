@@ -26,7 +26,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
         overflow: hidden;
         white-space: nowrap;
         margin-top: 0px;
-        margin-bottom: 3px;
+        margin-bottom: 2px;
       }
       .scissors-rule > span {
         position: relative;
@@ -60,18 +60,18 @@ $contract = $departure->employee->contract_in_date($departure->departure);
       <tr>
         <th class="w-25 text-left no-padding no-margins align-middle">
           <div class="text-left">
-            <img src="{{ public_path("/img/logo.png") }}" class="w-65">
+            <img src="{{ public_path("/img/logo.png") }}" class="w-30">
           </div>
         </th>
         <th class="w-50 align-top">
-          <div class="font-thin uppercase leading-tight text-xs">
+          <div class="font-thin uppercase leading-tight text-xxs">
             <div>MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</div>
             <div>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</div>
             <div>UNIDAD DE RECURSOS HUMANOS</div>
           </div>
         </th>
         <th class="w-25 no-padding no-margins align-top">
-          <table class="table-code no-padding no-margins text-xxxs">
+          <table class="table-code no-padding no-margins text-xxxxs">
             <tbody>
               <tr>
                 <td class="text-center bg-grey-darker text-white">Nº </td>
@@ -95,20 +95,26 @@ $contract = $departure->employee->contract_in_date($departure->departure);
       </tr>
     </table>
     <div class="block">
-      <div class="font-semibold leading-tight text-xs text-center m-b-5">{{ $departure->departure_reason->name }}</div>
+      <div class="font-semibold leading-tight text-xs text-center m-b-5 uppercase">
+        @if ($departure->departure_reason->departure_group->name == 'COMISIÓN')
+          {{ $departure->departure_reason->description }}
+        @else
+          {{ $departure->departure_reason->name }}
+        @endif
+      </div>
       <table class="table-info w-50 m-b-5 text-center uppercase" style="float: left; margin-left: 1px;">
         <tr class="bg-grey-darker text-xxs text-white">
           <td>NOMBRE</td>
         </tr>
         <tr>
           @php ($name = $departure->employee->fullName())
-          <td class="{{ Util::departure_string_length($name) }} data-row py-5">{{ $name }}</td>
+          <td class="{{ Util::departure_string_length($name) }} data-row py-5 text-xs">{{ $name }}</td>
         </tr>
         <tr class="bg-grey-darker text-xxs text-white">
           <td>ÁREA</td>
         </tr>
         <tr>
-          <td class="{{ Util::departure_string_length($contract->position->position_group->name) }} data-row py-5">{{ $contract->position->position_group->name }}</td>
+          <td class="{{ Util::departure_string_length($contract->position->position_group->name) }} data-row py-5 text-xs">{{ $contract->position->position_group->name }}</td>
         </tr>
       </table>
       <table class="table-info w-49 m-b-5 text-center uppercase" style="float: right; margin-left: 1px;">
@@ -116,7 +122,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
           <td class="w-50" colspan='2'>CARGO</td>
         </tr>
         <tr>
-          <td class="{{ Util::departure_string_length($contract->position->name) }} data-row py-5" colspan='2'>{{ $contract->position->name }}</td>
+          <td class="{{ Util::departure_string_length($contract->position->name) }} data-row py-5 text-xs" colspan='2'>{{ $contract->position->name }}</td>
         </tr>
         <tr class="bg-grey-darker text-xxs text-white">
           <td class="w-50">DESDE</td>
@@ -142,14 +148,14 @@ $contract = $departure->employee->contract_in_date($departure->departure);
           </tr>
         </thead>
         <tbody>
-          <tr class="{{ Util::departure_string_length($departure->description) }} text-left" style="height: 70px;">
-            <td>{{ $departure->description }}</td>
+          <tr class="{{ Util::departure_string_length($departure->description) }} text-left" style="height: 50px; max-height: 50px;">
+            <td class="text-xxs">{{ $departure->description }}</td>
           </tr>
         </tbody>
       </table>
       <table class="w-100 description-row" border="1" frame="void" rules="all">
         <tbody>
-          <tr style="height: 176px; vertical-align: bottom;">
+          <tr style="height: 100px; max-height: 100px; vertical-align: bottom;">
             <td class="text-center w-25 font-bold text-xxxs">Solicitante</td>
             <td class="text-center w-25 font-bold text-xxxs">Autorizado</td>
             <td class="text-center w-25 font-bold text-xxxs">RRHH</td>

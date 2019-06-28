@@ -85,7 +85,13 @@
                         name="Fecha de inicio"
                         :error-messages="errors.collect('Fecha de inicio')"
                       ></v-text-field>
-                      <v-date-picker locale="es-bo" v-model="selectedItem.start_date" no-title @input="datePicker.start.display = false"></v-date-picker>
+                      <v-date-picker
+                        locale="es-bo"
+                        v-model="selectedItem.start_date"
+                        no-title
+                        @input="datePicker.start.display = false"
+                        first-day-of-week="1"
+                      ></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <v-flex xs12 sm6 md6>
@@ -109,7 +115,14 @@
                         :error-messages="errors.collect('Fecha de conclusión')"
                         readonly
                       ></v-text-field>
-                      <v-date-picker locale="es-bo" :min="datePicker.end.min" v-model="selectedItem.end_date" no-title @input="datePicker.end.display = false"></v-date-picker>
+                      <v-date-picker
+                        locale="es-bo"
+                        :min="datePicker.end.min"
+                        v-model="selectedItem.end_date"
+                        no-title
+                        @input="datePicker.end.display = false"
+                        first-day-of-week="1"
+                      ></v-date-picker>
                     </v-menu>
                   </v-flex>
                 </v-layout>
@@ -145,7 +158,13 @@
                         prepend-icon="event"
                         readonly
                       ></v-text-field>
-                      <v-date-picker locale="es-bo" v-model="selectedItem.rrhh_cite_date" no-title @input="datePicker.rrhh.display = false"></v-date-picker>
+                      <v-date-picker
+                        locale="es-bo"
+                        v-model="selectedItem.rrhh_cite_date"
+                        no-title
+                        @input="datePicker.rrhh.display = false"
+                        first-day-of-week="1"
+                      ></v-date-picker>
                     </v-menu>
                   </v-flex>
                 </v-layout>
@@ -211,7 +230,15 @@
                       :error-messages="errors.collect('Fecha de retiro')"
                       readonly
                     ></v-text-field>
-                    <v-date-picker locale="es-bo" v-model="selectedItem.retirement_date" no-title @input="datePicker.retirement.display = false" :min="$moment(selectedItem.start_date).add(1, 'days').toISOString().split('T')[0]" :max="$moment(selectedItem.end_date).toISOString().split('T')[0]"></v-date-picker>
+                    <v-date-picker
+                      locale="es-bo"
+                      v-model="selectedItem.retirement_date"
+                      no-title
+                      @input="datePicker.retirement.display = false"
+                      :min="$moment(selectedItem.start_date).add(1, 'days').toISOString().split('T')[0]"
+                      :max="$moment(selectedItem.end_date).toISOString().split('T')[0]"
+                      first-day-of-week="1"
+                    ></v-date-picker>
                   </v-menu>
                 </v-form>
               </v-card>

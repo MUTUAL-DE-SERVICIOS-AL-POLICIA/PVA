@@ -125,33 +125,36 @@ class EmployeeController extends Controller
   {
     $employee = Employee::findOrFail($id);
     $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->orderBy('USERID', 'DESC')->first();
-    if ($attendance_user) {
-      if (!$request->has('month')) {
-        $to = CarbonImmutable::now();
-      } else {
-        $to = CarbonImmutable::parse($request->input('month'));
-      }
 
+    if (!$request->has('month')) {
+      $to = CarbonImmutable::now();
+    } else {
+      $to = CarbonImmutable::parse($request->input('month'));
+    }
+
+    if ($to->day == 20) {
+      $from = $to;
+    } elseif ($to->day < 20) {
+      $from = $to->subMonth()->day(20);
+      $to = $to->day(19);
+    } else {
+      $from = $to->day(20);
+      $to = $from->addMonth()->day(19);
+    }
+
+    if ($attendance_user) {
       if (json_decode($request->input('with_discounts'))) {
         $with_discounts = true;
       } else {
         $with_discounts = false;
       }
 
-      if ($to->day == 20) {
-        $from = $to;
-      } elseif ($to->day < 20) {
-        $from = $to->subMonth()->day(20);
-        $to = $to->day(19);
-      } else {
-        $from = $to->day(20);
-        $to = $from->addMonth()->day(19);
-      }
-
       $checks = $attendance_user->checks()->where('checktime', '>=', $from->startOfDay()->format('Ymd H:i:s'))->where('checktime', '<=', $to->endOfDay()->format('Ymd H:i:s'))->get();
 
       if ($checks->count() == 0) {
         return response()->json([
+          'from' => $from->toDateString(),
+          'to' => $to->toDateString(),
           'message' => 'Sin registros de asistencia',
           'errors' => [
             'type' => ['Sin registros de asistencia para el rango de fechas'],
@@ -237,6 +240,8 @@ class EmployeeController extends Controller
       return response()->json($data, 200);
     } else {
       return response()->json([
+        'from' => $from->toDateString(),
+        'to' => $to->toDateString(),
         'message' => 'Usuario inexistente',
         'errors' => [
           'type' => ['Usuario inexistente en la base de datos'],

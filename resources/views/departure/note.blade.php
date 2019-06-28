@@ -108,37 +108,37 @@ $contract = $departure->employee->contract_in_date($departure->departure);
               @break
               @case('MAMOGRAFÍA/PAPANICOLAOU')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso j) Las servidoras públicas gozarán de un día de libre para exámenes de Mamografía y Papanicolaou.
+                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso j) Las servidoras públicas gozarán de un día de libre para exámenes de Mamografía y Papanicolaou. Para tal efecto adjunto el documento de respaldo correspondiente.
                 </span>
               @break
               @case('EXAMEN DE PRÓSTATA')
                 <span>
-                  la LEY N° 798 de 26 de abril de 2016, Artículo I OBJETO, inciso II) Los servidores públicos y trabajadores mayores de cuarenta (40) años que desarrollan sus actividades con funciones permanentes o temporales en instituciones públicas, privadas o dependientes de cualquier tipo de empleador, gozarán de tolerancia remunerada de un día hábil al año, a objeto de someterse a un examen médico de Próstata.
+                  la LEY N° 798 de 26 de abril de 2016, Artículo I OBJETO, inciso II) Los servidores públicos y trabajadores mayores de cuarenta (40) años que desarrollan sus actividades con funciones permanentes o temporales en instituciones públicas, privadas o dependientes de cualquier tipo de empleador, gozarán de tolerancia remunerada de un día hábil al año, a objeto de someterse a un examen médico de Próstata. Para tal efecto adjunto el documento de respaldo correspondiente.
                 </span>
               @break
               @case('EXAMEN DE COLON')
                 <span>
-                  la LEY N° 798 de 26 de abril de 2016, Artículo I OBJETO, inciso III) Las servidoras y los servidores públicos y las trabajadoras y los trabajadores mayores de cuarenta (40) años que desarrollan sus actividades con funciones permanentes o temporales en instituciones públicas, privadas o dependientes de cualquier tipo de empleador, gozarán de tolerancia remunerada de un día hábil al año, a objeto de someterse a un examen médico de Colon.
+                  la LEY N° 798 de 26 de abril de 2016, Artículo I OBJETO, inciso III) Las servidoras y los servidores públicos y las trabajadoras y los trabajadores mayores de cuarenta (40) años que desarrollan sus actividades con funciones permanentes o temporales en instituciones públicas, privadas o dependientes de cualquier tipo de empleador, gozarán de tolerancia remunerada de un día hábil al año, a objeto de someterse a un examen médico de Colon. Para tal efecto adjunto el documento de respaldo correspondiente.
                 </span>
               @break
               @case('MATRIMONIO')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso e) Por matrimonio, gozará de tres (3) días hábiles de licencia, previa presentación de la Certificación de Inscripción expedida por el Oficial de Registro Civil que acredite la fecha de realización del Matrimonio.
+                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso e) Por matrimonio, gozará de tres (3) días hábiles de licencia. Para tal efecto adjunto el Certificado de Matrimonio expedido por el oficial de registro civil que acredita la fecha de realización del Matrimonio.
                 </span>
               @break
               @case('NACIMIENTO DE HIJOS')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso b) Por nacimiento de hijos, el padre gozará de tres (3) días hábiles de licencia, con obligación de presentar el certificado de nacimiento correspondiente.
+                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso b) Por nacimiento de hijos, el padre gozará de tres (3) días hábiles de licencia, con obligación de presentar el certificado de nacimiento expedido por el oficial de registro civil.
                 </span>
               @break
               @case('FALLECIMIENTO DE PADRES, CONYUGE, HERMANOS O HIJOS')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso a) Por fallecimiento de padres, cónyuge, hermanos o hijos gozará de tres (3) días hábiles de licencia, debiendo presentar el Certificado de Defunción hasta los 5 días de finalizada la licencia.
+                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso a) Por fallecimiento de padres, cónyuge, hermanos o hijos gozará de tres (3) días hábiles de licencia, debiendo presentar el Certificado de Defunción expedido por el oficial de registro civil, hasta los 5 días de finalizada la licencia.
                 </span>
               @break
               @case('FALLECIMIENTO DE SUEGROS O CUÑADOS')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso a) Por fallecimiento de parientes políticos, suegros y cuñados, el funcionario gozará de dos (2) días hábiles de licencia, debiendo presentar el Certificado de Defunción hasta los 5 días de finalizada la licencia.
+                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso a) Por fallecimiento de parientes políticos, suegros y cuñados, el funcionario gozará de dos (2) días hábiles de licencia, debiendo presentar el Certificado de Defunción expedido por el oficial de registro civil, hasta los 5 días de finalizada la licencia.
                 </span>
               @break
               @case('DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS')

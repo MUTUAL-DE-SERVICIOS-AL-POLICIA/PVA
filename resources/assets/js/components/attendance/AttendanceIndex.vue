@@ -3,7 +3,7 @@
     <template v-if="!this.manteinanceMode">
       <v-toolbar v-if="!loading">
         <v-toolbar-title>
-          {{ `Asistencia del ${$moment(limits.start).format('L')} al ${$moment(limits.end).format('L')}` }}
+          {{ (limits.start && limits.end) ? `Asistencia del ${$moment(limits.start).format('L')} al ${$moment(limits.end).format('L')}` : `Asistencia del mes de ${$moment(date).format('MMMM')}` }}
         </v-toolbar-title>
         <v-tooltip color="white" role="button" bottom>
           <v-icon slot="activator" class="ml-4">info</v-icon>
@@ -155,6 +155,14 @@ export default {
         this.getChecks(this.selectedEmployee)
       }
       this.showDate = false
+    },
+    checks: function(val) {
+      if (val.length == 0) {
+        this.limits = {
+          start: null,
+          end: null
+        }
+      }
     }
   },
   computed: {
@@ -211,9 +219,10 @@ export default {
             end: res.data.to
           }
         }
-        this.loading = false
       } catch (e) {
         console.log(e)
+        this.checks = []
+      } finally {
         this.loading = false
       }
     },
