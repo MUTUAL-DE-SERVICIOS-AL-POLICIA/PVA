@@ -365,7 +365,7 @@ class AttendanceController extends Controller
           'from' => $response->from,
           'to' => $response->to,
           'employee' => $response->employee,
-          'checks' => (array)$response->checks,
+          'checks' => (array) $response->checks,
         ];
       }
     }
@@ -376,7 +376,7 @@ class AttendanceController extends Controller
       'orientation' => 'landscape',
       'page-width' => '216',
       'page-height' => '279',
-      'margin-top' => '4',
+      'margin-top' => '8',
       'margin-bottom' => '4',
       'margin-left' => '5',
       'margin-right' => '5',
