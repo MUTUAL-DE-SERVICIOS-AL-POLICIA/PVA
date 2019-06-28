@@ -243,6 +243,11 @@ Los funcionarios con rol de Recursos Humanos pueden además seleccionar cualquie
 
 ![IMAGE](./img/attendance_select_employee.png)
 
+- **1)** Imprime los registros de asistencia del mes de todo el personal
+- **2)** Imprime los registros de asistencia del mes solo del funcionario seleccionado
+
+![IMAGE](./img/attendance_print.png)
+
 ### CONFIGURACIÓN DE HORARIOS DE TRABAJO
 
 Para el correcto funcionamiento y visualización de registros de asistencia es necesario configurar los límites de cada horario de trabajo establecido en la base de datos, así como los días laborales de acuerdo a los contratos emitidos por la institución.

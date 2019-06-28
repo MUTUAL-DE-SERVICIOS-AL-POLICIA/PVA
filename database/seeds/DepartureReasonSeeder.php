@@ -26,7 +26,7 @@ class DepartureReasonSeeder extends Seeder
     // Comisión
     $group = App\DepartureGroup::where('name', 'COMISIÓN')->first();
     $group->departure_reasons()->saveMany([
-      new App\DepartureReason(['name' => 'DILIGENCIA', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => true, 'description' => 'Comisión por diligencia']),
+      new App\DepartureReason(['name' => 'TRABAJO', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => true, 'description' => 'Comisión por trabajo']),
       new App\DepartureReason(['name' => 'REUNIÓN', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => true, 'description' => 'Comisión por reunión']),
       new App\DepartureReason(['name' => 'CURSO/TALLER', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => true, 'description' => 'Comisión por curso/taller']),
       new App\DepartureReason(['name' => 'VIAJE', 'days' => null, 'hours' => null, 'reset' => null, 'payable' => true, 'note' => false, 'description_needed' => false, 'description' => 'Comisión por viaje'])

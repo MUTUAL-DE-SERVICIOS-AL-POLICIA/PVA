@@ -9,7 +9,7 @@ $max_requests = 14;
 <html lang="es">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>PLATAFORMA VIRTUAL - MUSERPOL </title>
+  <title>PLATAFORMA VIRTUAL ADMINISTRATIVA - MUSERPOL </title>
   <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all"/>
   <style>
     .scissors-rule {

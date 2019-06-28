@@ -13,7 +13,7 @@ class DepartureGroupSeeder extends Seeder
   {
     $types = [
       ['name' => 'PERSONAL', 'description' => 'Asuntos personales'],
-      ['name' => 'COMISIÓN', 'description' => 'VIAJEs, reuniones, diligencias'],
+      ['name' => 'COMISIÓN', 'description' => 'Viajes, reuniones, diligencias'],
       ['name' => 'SALUD', 'description' => 'Consulta médica, bajas'],
       ['name' => 'FAMILIAR', 'description' => 'Matrimonio, nacimientos, fallecimientos'],
       ['name' => 'EXTRACURRICULAR', 'description' => 'Otros']

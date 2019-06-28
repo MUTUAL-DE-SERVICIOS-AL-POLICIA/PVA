@@ -301,6 +301,7 @@ Route::group([
     ], function () {
       // Attendance
       Route::resource('attendance', 'Api\V1\AttendanceController')->only(['index', 'show']);
+      Route::get('attendance/print/{month}', 'Api\V1\AttendanceController@print')->name('attendance_print');
       // Bonus
       Route::get('bonus/print/{year}', 'Api\V1\BonusController@print')->name('bonus_print');
       Route::resource('bonus', 'Api\V1\BonusController')->only(['index', 'show', 'store', 'update', 'destroy']);

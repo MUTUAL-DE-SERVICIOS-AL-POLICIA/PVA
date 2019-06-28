@@ -96,10 +96,14 @@
                         :disabled="selectedItem.id && $store.getters.role != 'admin'"
                         autocomplete='cc-exp-month'
                       ></v-text-field>
-                      <v-date-picker v-model="date" no-title
-                      @input="menuDate = false"
-                      @change="monthSalaryCalc"
-                      locale="es-bo"></v-date-picker>
+                      <v-date-picker
+                        v-model="date"
+                        no-title
+                        @input="menuDate = false"
+                        @change="monthSalaryCalc"
+                        locale="es-bo"
+                        first-day-of-week="1"
+                      ></v-date-picker>
                     </v-menu>
                   </v-flex>
                   <v-flex xs6>
@@ -127,12 +131,14 @@
                         @input="dateEndNull"
                       ></v-text-field>
                       <v-date-picker
-                      v-model="date2" no-title
-                      :min="date"
-                      @input="menuDate2 = false"
-                      @change="monthSalaryCalc"
-                      locale="es-bo">
-                      </v-date-picker>
+                        v-model="date2"
+                        no-title
+                        :min="date"
+                        @input="menuDate2 = false"
+                        @change="monthSalaryCalc"
+                        locale="es-bo"
+                        first-day-of-week="1"
+                      ></v-date-picker>
                     </v-menu>
                   </v-flex>
                 </v-layout>
@@ -179,7 +185,13 @@
                         @input="dateCiteNull"
                         :disabled="$store.getters.role != 'admin' && $store.getters.role != 'rrhh'"
                       ></v-text-field>
-                      <v-date-picker v-model="date4" no-title @input="menuDate4 = false" locale="es-bo"></v-date-picker>
+                      <v-date-picker
+                        v-model="date4"
+                        no-title
+                        @input="menuDate4 = false"
+                        locale="es-bo"
+                        first-day-of-week="1"
+                      ></v-date-picker>
                     </v-menu>
                   </v-flex>
                 </v-layout>
@@ -320,7 +332,12 @@
                             name="Fecha de retiro"
                             :error-messages="errors.collect('Fecha de retiro')"
                           ></v-text-field>
-                          <v-date-picker v-model="date3" no-title @input="menuDate3 = false" locale="es-bo"></v-date-picker>
+                          <v-date-picker
+                            v-model="date3"
+                            no-title
+                            @input="menuDate3 = false"
+                            locale="es-bo"
+                          ></v-date-picker>
                         </v-menu>
                       </v-flex>
                     </v-layout>

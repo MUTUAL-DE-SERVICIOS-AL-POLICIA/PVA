@@ -1,5 +1,5 @@
 <template>
-  <div class="mr-5">
+  <div>
     <v-btn @click.native="openDialog" color="error">BORRAR DISPOSITIVOS</v-btn>
     <v-dialog persistent v-model="show" max-width="900px" @keydown.esc="!loading ? close() : ''">
       <v-card>
