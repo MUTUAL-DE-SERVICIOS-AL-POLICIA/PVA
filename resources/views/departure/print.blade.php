@@ -103,14 +103,14 @@ $contract = $departure->employee->contract_in_date($departure->departure);
         @endif
       </div>
       <table class="table-info w-50 m-b-5 text-center uppercase" style="float: left; margin-left: 1px;">
-        <tr class="bg-grey-darker text-xxs text-white">
+        <tr class="bg-grey-darker text-xxxs text-white">
           <td>NOMBRE</td>
         </tr>
         <tr>
           @php ($name = $departure->employee->fullName())
           <td class="{{ Util::departure_string_length($name) }} data-row py-5 text-xs">{{ $name }}</td>
         </tr>
-        <tr class="bg-grey-darker text-xxs text-white">
+        <tr class="bg-grey-darker text-xxxs text-white">
           <td>ÁREA</td>
         </tr>
         <tr>
@@ -118,13 +118,13 @@ $contract = $departure->employee->contract_in_date($departure->departure);
         </tr>
       </table>
       <table class="table-info w-49 m-b-5 text-center uppercase" style="float: right; margin-left: 1px;">
-        <tr class="bg-grey-darker text-xxs text-white">
+        <tr class="bg-grey-darker text-xxxs text-white">
           <td class="w-50" colspan='2'>CARGO</td>
         </tr>
         <tr>
           <td class="{{ Util::departure_string_length($contract->position->name) }} data-row py-5 text-xs" colspan='2'>{{ $contract->position->name }}</td>
         </tr>
-        <tr class="bg-grey-darker text-xxs text-white">
+        <tr class="bg-grey-darker text-xxxs text-white">
           <td class="w-50">DESDE</td>
           <td class="w-50">HASTA</td>
         </tr>
@@ -143,7 +143,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
       </table>
       <table class="table-info w-100 m-b-10 uppercase">
         <thead>
-          <tr class="bg-grey-darker text-xxs text-white text-center">
+          <tr class="bg-grey-darker text-xxxs text-white text-center">
             <td>DETALLE</td>
           </tr>
         </thead>
