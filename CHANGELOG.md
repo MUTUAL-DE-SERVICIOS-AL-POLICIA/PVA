@@ -2,6 +2,16 @@
 
 ---
 
+## [4.4.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.4.0) - 2019-06-28
+
+### Added
+
+* Printable attendance template
+
+### Changed
+
+* Departure comission name changed
+
 ## [4.3.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.3.1) - 2019-06-26
 
 ### Fixed
