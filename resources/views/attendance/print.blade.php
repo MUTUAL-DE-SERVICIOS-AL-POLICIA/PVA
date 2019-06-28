@@ -15,8 +15,8 @@ use \Milon\Barcode\DNS2D;
       text-align: center;
       overflow: hidden;
       white-space: nowrap;
-      margin-top: 6px;
-      margin-bottom: 15px;
+      margin-top: 5px;
+      margin-bottom: 12px;
     }
     .scissors-rule > span {
       position: relative;
@@ -100,7 +100,7 @@ use \Milon\Barcode\DNS2D;
       </table>
       <hr class="m-b-10" style="margin-top: 0; padding-top: 0;">
       <div class="block">
-        <div class="font-semibold leading-tight text-sm text-center m-b-10">REGISTRO DE ASISTENCIA</div>
+        <div class="font-semibold leading-tight text-sm text-center m-b-10 text-xs">REGISTRO DE ASISTENCIA</div>
 
         <table class="table-info w-100 m-b-10 uppercase text-xs">
           <tbody>
@@ -113,7 +113,7 @@ use \Milon\Barcode\DNS2D;
           </tbody>
         </table>
 
-        <table class="table-info w-100 m-b-10 uppercase text-xs" style="padding-top: 4px;">
+        <table class="table-info w-100 m-b-10 uppercase text-xxs" style="padding-top: 4px;">
           <thead>
             <tr>
               <th class="text-center bg-grey-darker text-white">LUN</th>
