@@ -126,6 +126,7 @@
                       :min="this.minDate.format('Y-M-D')"
                       locale="es-bo"
                       @change="saveDate"
+                      first-day-of-week="1"
                     ></v-date-picker>
                   </v-menu>
                 </v-flex>

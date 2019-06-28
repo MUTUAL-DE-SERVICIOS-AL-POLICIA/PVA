@@ -163,7 +163,13 @@
                               :error-messages="errors.collect('Fecha de Salida')"
                             ></v-text-field>
                           </template>
-                          <v-date-picker v-model="departure.departure" no-title @input="showStartDate = false" locale="es-bo"></v-date-picker>
+                          <v-date-picker
+                            v-model="departure.departure"
+                            no-title
+                            @input="showStartDate = false"
+                            locale="es-bo"
+                            first-day-of-week="1"
+                          ></v-date-picker>
                         </v-menu>
                       </v-flex>
                       <v-flex mt-4 v-if="(reasonSelected.date.end.visible && departure.timeToAdd == -1) || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS'">
@@ -191,7 +197,14 @@
                               :error-messages="errors.collect('Fecha de Retorno')"
                             ></v-text-field>
                           </template>
-                          <v-date-picker v-model="departure.return" no-title @input="showEndDate = false" :min="$moment(departure.departure).startOf('day').add('days', 1).format('YYYY-MM-DD')" locale="es-bo"></v-date-picker>
+                          <v-date-picker
+                            v-model="departure.return"
+                            no-title
+                            @input="showEndDate = false"
+                            :min="$moment(departure.departure).startOf('day').add('days', 1).format('YYYY-MM-DD')"
+                            locale="es-bo"
+                            first-day-of-week="1"
+                          ></v-date-picker>
                         </v-menu>
                       </v-flex>
                     </v-layout>
@@ -652,18 +665,27 @@ export default {
             if (['CUMPLEAÑOS', 'JURADO ELECTORAL'].includes(this.reasonSelected.name)) {
               this.reasonSelected.records = null
               if (this.reasonSelected.name == 'JURADO ELECTORAL') {
+                this.departure.description = 'Adjunto respaldo del Tribunal Supremo Electoral'
                 this.reasonSelected.options = [
                   {
                     text: 'Una jornada',
                     value: 8
                   }
                 ]
+              } else {
+                this.departure.description = 'Adjunto fotocopia de Cédula de Identidad'
               }
             }
             if (['CON GOCE DE HABERES', 'MAMOGRAFÍA/PAPANICOLAOU', 'EXAMEN DE PRÓSTATA', 'EXAMEN DE COLON'].includes(this.reasonSelected.name)) {
               this.reasonSelected.records = null
             }
             if (['SIN GOCE DE HABERES', 'VIAJE', 'BAJA MÉDICA'].includes(this.reasonSelected.name)) {
+              if (this.reasonSelected.name == 'VIAJE') {
+                this.departure.description = 'Adjunto memorándum de designación'
+              }
+              if (this.reasonSelected.name == 'BAJA MÉDICA') {
+                this.departure.description = 'Adjunto documento de respaldo correspondiente'
+              }
               this.reasonSelected.options = [
                 {
                   text: 'Media jornada',
@@ -695,7 +717,13 @@ export default {
               this.reasonSelected.options = null
               this.reasonSelected.records = this.reasonSelected.records.filter(o => o.value != 3)
             }
-            if (['DILIGENCIA', 'REUNIÓN', 'CURSO/TALLER', 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS', 'CONSULTA MÉDICA', 'ACTIVIDAD CULTURAL O DEPORTIVA'].includes(this.reasonSelected.name)) {
+            if (['TRABAJO', 'REUNIÓN', 'CURSO/TALLER', 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS', 'CONSULTA MÉDICA', 'ACTIVIDAD CULTURAL O DEPORTIVA'].includes(this.reasonSelected.name)) {
+              if (this.reasonSelected.name == 'ACTIVIDAD CULTURAL O DEPORTIVA') {
+                this.departure.description = 'Adjunto documento de respaldo correspondiente'
+              }
+              if (this.reasonSelected.name == 'CONSULTA MÉDICA') {
+                this.departure.description = 'Adjunto justificativo de la C.N.S.'
+              }
               if (this.reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS') {
                 this.reasonSelected.date = {
                   start: {
@@ -722,6 +750,9 @@ export default {
               }
             }
             if (['MATRIMONIO', 'NACIMIENTO DE HIJOS', 'MATERNIDAD', 'FALLECIMIENTO DE PADRES, CONYUGE, HERMANOS O HIJOS', 'FALLECIMIENTO DE SUEGROS O CUÑADOS', ''].includes(this.reasonSelected.name)) {
+              if (this.reasonSelected.name == 'MATERNIDAD') {
+                this.departure.description = 'Adjunto documento de baja médica'
+              }
               this.departure.timeToAdd = -1
               this.reasonSelected.records = null
               this.reasonSelected.period = false

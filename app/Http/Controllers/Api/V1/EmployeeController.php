@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeEditForm;
 use App\Http\Requests\EmployeeStoreForm;
 use Illuminate\Http\Request;
+use Carbon;
 use Carbon\CarbonImmutable;
 use Util;
 
@@ -124,31 +125,55 @@ class EmployeeController extends Controller
   {
     $employee = Employee::findOrFail($id);
     $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->orderBy('USERID', 'DESC')->first();
-    if ($attendance_user) {
-      if (!$request->has('month')) {
-        $to = CarbonImmutable::now();
-      } else {
-        $to = CarbonImmutable::parse($request->input('month'));
-      }
 
-      if ($to->day == 20) {
-        $from = $to;
-      } elseif ($to->day < 20) {
-        $from = $to->subMonth()->day(20);
-        $to = $to->day(19);
+    if (!$request->has('month')) {
+      $to = CarbonImmutable::now();
+    } else {
+      $to = CarbonImmutable::parse($request->input('month'));
+    }
+
+    if ($to->day == 20) {
+      $from = $to;
+    } elseif ($to->day < 20) {
+      $from = $to->subMonth()->day(20);
+      $to = $to->day(19);
+    } else {
+      $from = $to->day(20);
+      $to = $from->addMonth()->day(19);
+    }
+
+    if ($attendance_user) {
+      if (json_decode($request->input('with_discounts'))) {
+        $with_discounts = true;
       } else {
-        $from = $to->day(20);
-        $to = $from->addMonth()->day(19);
+        $with_discounts = false;
       }
 
       $checks = $attendance_user->checks()->where('checktime', '>=', $from->startOfDay()->format('Ymd H:i:s'))->where('checktime', '<=', $to->endOfDay()->format('Ymd H:i:s'))->get();
 
-      switch ($employee->consultant()) {
+      if ($checks->count() == 0) {
+        return response()->json([
+          'from' => $from->toDateString(),
+          'to' => $to->toDateString(),
+          'message' => 'Sin registros de asistencia',
+          'errors' => [
+            'type' => ['Sin registros de asistencia para el rango de fechas'],
+          ],
+        ], 404);
+      }
+
+      $employee->full_name = $employee->fullName('uppercase', 'last_name_first');
+      $employee->consultant = $employee->consultant();
+      switch ($employee->consultant) {
         case true:
-          $job_schedules = $employee->last_consultant_contract()->job_schedules;
+          $employee->contract = $employee->last_consultant_contract();
+          $employee->position_name = $employee->contract->consultant_position->name;
+          $job_schedules = $employee->contract->job_schedules;
           break;
         case false:
-          $job_schedules = $employee->last_contract()->job_schedules;
+          $employee->contract = $employee->last_contract();
+          $employee->position_name = $employee->contract->position->name;
+          $job_schedules = $employee->contract->job_schedules;
           break;
         case null:
           $job_schedules = null;
@@ -161,7 +186,10 @@ class EmployeeController extends Controller
         $check->time = $checktime->format('H:i');
         $check->color = 'orange';
         if ($job_schedules) {
-          $attendance = Util::attendance_checktype($job_schedules, $check->checktime, true);
+          $attendance = Util::attendance_checktype($job_schedules, $check->checktime, $with_discounts);
+          if ($with_discounts) {
+            $check->delay = $attendance->delay;
+          }
           $check->shift = $attendance->shift;
           if ($attendance->delay->minutes > 0) {
             $check->color = 'red';
@@ -176,13 +204,44 @@ class EmployeeController extends Controller
         unset($check->checktime);
       }
 
+      $data = [
+        'from' => $from->toDateString(),
+        'to' => $to->toDateString(),
+        'checks' => $with_discounts ? Util::filter_checks($checks) : collect(array_unique($checks->all()))->values()
+      ];
+
+      if ($with_discounts) {
+        $data['employee'] = $employee;
+      }
+
+      if ($request->input('type') == 'pdf') {
+        $file_name = implode(" ", ['marcados', $data['employee']->fullName('lowercase', 'last_name_first'), 'del', $data['from'], 'al', $data['to']]) . ".pdf";
+
+        $options = [
+          'orientation' => 'landscape',
+          'page-width' => '216',
+          'page-height' => '279',
+          'margin-top' => '4',
+          'margin-bottom' => '4',
+          'margin-left' => '5',
+          'margin-right' => '5',
+          'encoding' => 'UTF-8',
+          'user-style-sheet' => public_path('css/report-print.min.css')
+        ];
+
+        $pdf = \PDF::loadView('attendance.print', [
+          'employees' => [$data]
+        ]);
+        $pdf->setOptions($options);
+
+        return $pdf->stream($file_name);
+      }
+
+      return response()->json($data, 200);
+    } else {
       return response()->json([
         'from' => $from->toDateString(),
         'to' => $to->toDateString(),
-        'checks' => collect(array_unique($checks->all()))->values()
-      ], 200);
-    } else {
-      return response()->json([
         'message' => 'Usuario inexistente',
         'errors' => [
           'type' => ['Usuario inexistente en la base de datos'],

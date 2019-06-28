@@ -28,14 +28,16 @@
           readonly
         ></v-text-field>
         <v-date-picker
-        v-model="date"
-        @input="menuDate = false"
-        @change="updatePayDate(procedure.id, date)"
-        locale="es-bo"
-        :min="minDatePay"
-        :max="maxDatePay"
-        :disabled="!procedure.active"
-        no-title></v-date-picker>
+          v-model="date"
+          @input="menuDate = false"
+          @change="updatePayDate(procedure.id, date)"
+          locale="es-bo"
+          :min="minDatePay"
+          :max="maxDatePay"
+          :disabled="!procedure.active"
+          no-title
+          first-day-of-week="1"
+        ></v-date-picker>
       </v-menu>
       <v-dialog
         v-model="dialogDelete"

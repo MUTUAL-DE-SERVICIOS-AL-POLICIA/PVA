@@ -17,6 +17,7 @@
                 :max="limits.end"
                 :min="limits.start"
                 locale="es-bo"
+                first-day-of-week="1"
               ></v-date-picker>
             </v-flex>
             <v-flex xs6>

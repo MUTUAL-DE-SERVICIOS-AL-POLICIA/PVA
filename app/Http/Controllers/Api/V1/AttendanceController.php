@@ -343,4 +343,52 @@ class AttendanceController extends Controller
       'message' => 'Eliminados registros de asistencia'
     ], 200);
   }
+
+  public function print($month)
+  {
+    $employees = Employee::whereActive(true)->orderBy('last_name')->select('id')->get();
+    $date = Carbon::parse($month);
+
+    $request = new Request([
+      'month' => $month,
+      'with_discounts' => true,
+      'type' => 'json'
+    ]);
+
+    $data = [];
+
+    foreach ($employees as $employee) {
+      $response = (new EmployeeController)->attendance($request, $employee->id);
+      if ($response->status() == 200) {
+        $response = json_decode($response->getContent());
+        $data[] = [
+          'from' => $response->from,
+          'to' => $response->to,
+          'employee' => $response->employee,
+          'checks' => (array)$response->checks,
+        ];
+      }
+    }
+
+    $file_name = implode(" ", ['marcados', 'de', $date->ISOFormat('MMMM'), 'de', $date->year]) . ".pdf";
+
+    $options = [
+      'orientation' => 'landscape',
+      'page-width' => '216',
+      'page-height' => '279',
+      'margin-top' => '4',
+      'margin-bottom' => '4',
+      'margin-left' => '5',
+      'margin-right' => '5',
+      'encoding' => 'UTF-8',
+      'user-style-sheet' => public_path('css/report-print.min.css')
+    ];
+
+    $pdf = \PDF::loadView('attendance.print', [
+      'employees' => $data
+    ]);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
+  }
 }
