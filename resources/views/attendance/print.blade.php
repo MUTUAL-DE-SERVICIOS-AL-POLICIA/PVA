@@ -72,18 +72,18 @@ use \Milon\Barcode\DNS2D;
         <tr>
           <th class="w-15 text-left no-padding no-margins align-middle">
             <div class="text-left">
-              <img src="{{ public_path("/img/logo.png") }}" class="w-40">
+              <img src="{{ public_path("/img/logo.png") }}" class="w-30">
             </div>
           </th>
           <th class="w-70 align-top">
-            <div class="font-hairline leading-tight text-xxs" >
+            <div class="font-hairline leading-tight text-xxxs" >
               <div>MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</div>
               <div>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</div>
               <div>UNIDAD DE RECURSOS HUMANOS</div>
             </div>
           </th>
           <th class="w-15 no-padding no-margins align-top">
-            <table class="table-code no-padding no-margins text-xxs uppercase">
+            <table class="table-code no-padding no-margins text-xxxs uppercase">
               <tbody>
                 <tr>
                     <td class="text-center bg-grey-darker text-white">Desde </td>
@@ -100,9 +100,9 @@ use \Milon\Barcode\DNS2D;
       </table>
       <hr class="m-b-10" style="margin-top: 0; padding-top: 0;">
       <div class="block">
-        <div class="font-semibold leading-tight text-sm text-center m-b-10 text-xs">REGISTRO DE ASISTENCIA</div>
+        <div class="font-semibold leading-tight text-center m-b-10 text-xxs">REGISTRO DE ASISTENCIA</div>
 
-        <table class="table-info w-100 m-b-10 uppercase text-xs">
+        <table class="table-info w-100 m-b-10 uppercase text-xxs">
           <tbody>
             <tr>
               <td style="border-top: 1px solid #5d6975" class="w-10 text-center bg-grey-darker text-white font-light">Nombre</td>
@@ -113,7 +113,7 @@ use \Milon\Barcode\DNS2D;
           </tbody>
         </table>
 
-        <table class="table-info w-100 m-b-10 uppercase text-xxs" style="padding-top: 4px;">
+        <table class="table-info w-100 m-b-10 uppercase text-xxxs" style="padding-top: 4px;">
           <thead>
             <tr>
               <th class="text-center bg-grey-darker text-white">LUN</th>
@@ -125,7 +125,7 @@ use \Milon\Barcode\DNS2D;
               <th class="text-center bg-grey-darker text-white border-left-white">DOM</th>
             </tr>
           </thead>
-          <tbody class="table-striped text-xs">
+          <tbody class="table-striped text-xxxs">
             @while($from->lessThan($to))
             @if($from->dayOfWeek == Carbon::MONDAY)
             <tr class="font-thin">
@@ -140,7 +140,7 @@ use \Milon\Barcode\DNS2D;
                 @php ($current_date = $from->toDateString())
                 @if(array_key_exists($current_date, $check['checks']))
                   @foreach ($check['checks'][$current_date] as $period)
-                    <p class="text-center" style="margin-top: 0; margin-bottom: 0; padding-top: 2px; padding-bottom: 0;">
+                    <p class="text-center text-xxs" style="margin-top: 0; margin-bottom: 0; padding-top: 2px; padding-bottom: 0;">
                     @foreach ($period as $i => $c)
                       @if ($i>0)
                         <span> - </span>

@@ -186,10 +186,8 @@ class EmployeeController extends Controller
         $check->time = $checktime->format('H:i');
         $check->color = 'orange';
         if ($job_schedules) {
-          $attendance = Util::attendance_checktype($job_schedules, $check->checktime, $with_discounts);
-          if ($with_discounts) {
-            $check->delay = $attendance->delay;
-          }
+          $attendance = Util::attendance_checktype($job_schedules, $check->checktime, true);
+          $check->delay = $attendance->delay;
           $check->shift = $attendance->shift;
           if ($attendance->delay->minutes > 0) {
             $check->color = 'red';

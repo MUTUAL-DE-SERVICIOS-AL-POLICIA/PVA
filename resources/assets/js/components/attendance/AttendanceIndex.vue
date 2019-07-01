@@ -51,7 +51,7 @@
                     </v-btn>
                     <span>Imprimir asistencia del funcionario</span>
                   </v-tooltip>
-                  <AttendanceAdd v-if="$store.getters.role == 'admin'" :id="selectedEmployee" :limits="limits" :bus="bus"></AttendanceAdd>
+                  <AttendanceAdd v-if="$store.getters.role == 'admin' && $route.query.add" :id="selectedEmployee" :limits="limits" :bus="bus"></AttendanceAdd>
                 </template>
               </v-flex>
             </v-layout>
@@ -186,6 +186,7 @@ export default {
     }
   },
   mounted() {
+    this.date = this.$store.getters.dateNow
     if (this.isAdmin) {
       this.getEmployees()
     } else {
