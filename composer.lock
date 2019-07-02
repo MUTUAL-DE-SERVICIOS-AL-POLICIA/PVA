@@ -2395,16 +2395,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.7.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "84e09df79855ed3da84e2eab6850eb7741d8cbda"
+                "reference": "352c7002fefe4e4037d02654d853a1b09520946f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/84e09df79855ed3da84e2eab6850eb7741d8cbda",
-                "reference": "84e09df79855ed3da84e2eab6850eb7741d8cbda",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/352c7002fefe4e4037d02654d853a1b09520946f",
+                "reference": "352c7002fefe4e4037d02654d853a1b09520946f",
                 "shasum": ""
             },
             "require": {
@@ -2485,7 +2485,7 @@
                 "xls",
                 "xlsx"
             ],
-            "time": "2019-05-26T02:50:36+00:00"
+            "time": "2019-07-01T20:46:51+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -4617,7 +4617,7 @@
         },
         {
             "name": "windwalker/renderer",
-            "version": "3.5.7",
+            "version": "3.5.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ventoviro/windwalker-renderer.git",
@@ -4674,7 +4674,7 @@
         },
         {
             "name": "windwalker/structure",
-            "version": "3.5.7",
+            "version": "3.5.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ventoviro/windwalker-structure.git",

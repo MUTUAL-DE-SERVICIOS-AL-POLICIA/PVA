@@ -203,6 +203,9 @@ export default {
       return JSON.parse(process.env.MIX_DEPARTURE_MANTEINANCE_MODE)
     }
   },
+  beforeMount() {
+    if (this.$route.query.departureType == 'user') this.getRemainingDepartures()
+  },
   mounted() {
     this.bus.$on('printDeparture', departureId => {
       this.print(departureId)
@@ -223,6 +226,7 @@ export default {
   },
   watch: {
     '$route.query.departureType'(val) {
+      if (val == 'user') this.getRemainingDepartures()
       this.getDepartures(val)
       this.setHeaders()
     },
