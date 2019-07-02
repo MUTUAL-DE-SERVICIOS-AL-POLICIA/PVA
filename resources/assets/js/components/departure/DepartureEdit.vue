@@ -24,7 +24,7 @@
           <v-stepper-content step="1">
             <v-card>
               <v-card-text>
-                <v-layout v-if="!updateDeparture">
+                <v-layout v-show="!updateDeparture">
                   <v-flex xs5 pr-5>
                     <v-select
                       :items="groups"
@@ -88,9 +88,9 @@
             </v-card>
           </v-stepper-content>
 
-          <v-stepper-content step="2" v-if="!updateDeparture">
+          <v-stepper-content step="2" v-show="!updateDeparture">
             <v-layout row justify-space-between>
-              <v-flex grow v-if="reasonSelected.options">
+              <v-flex grow v-show="reasonSelected.options">
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Opciones</v-toolbar-title>
                   <v-card-actions>
@@ -112,7 +112,7 @@
                   </v-card-actions>
                 </v-card>
               </v-flex>
-              <v-flex xs-4 v-if="reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8">
+              <v-flex xs-4 v-show="reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8">
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Período</v-toolbar-title>
                   <v-card-actions>
@@ -134,12 +134,12 @@
                   </v-card-actions>
                 </v-card>
               </v-flex>
-              <v-flex grow v-if="reasonSelected.date.start.visible || reasonSelected.date.end.visible">
+              <v-flex grow v-show="reasonSelected.date.start.visible || reasonSelected.date.end.visible">
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Fecha</v-toolbar-title>
                   <v-card-actions>
                     <v-layout column>
-                      <v-flex v-if="reasonSelected.date.start.visible">
+                      <v-flex v-show="reasonSelected.date.start.visible">
                         <v-menu
                           v-model="showStartDate"
                           :close-on-content-click="false"
@@ -172,7 +172,7 @@
                           ></v-date-picker>
                         </v-menu>
                       </v-flex>
-                      <v-flex mt-4 v-if="(reasonSelected.date.end.visible && departure.timeToAdd == -1) || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS'">
+                      <v-flex mt-4 v-show="(reasonSelected.date.end.visible && departure.timeToAdd == -1) || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS'">
                         <v-menu
                           v-model="showEndDate"
                           :close-on-content-click="false"
@@ -213,7 +213,7 @@
               </v-flex>
             </v-layout>
             <v-layout mt-4>
-              <v-flex xs-6 v-if="reasonSelected.records">
+              <v-flex xs-6 v-show="reasonSelected.records">
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Marcado</v-toolbar-title>
                   <v-card-actions>
@@ -235,7 +235,7 @@
                   </v-card-actions>
                 </v-card>
               </v-flex>
-              <v-flex xs-6 v-if="reasonSelected.time.start.visible || reasonSelected.time.end.visible">
+              <v-flex xs-6 v-show="reasonSelected.time.start.visible || reasonSelected.time.end.visible">
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Hora</v-toolbar-title>
                   <v-card-actions>
