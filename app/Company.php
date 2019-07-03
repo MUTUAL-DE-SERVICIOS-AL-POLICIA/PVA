@@ -8,7 +8,7 @@ class Company extends Model
 {
   public $timestamps = true;
   public $guarded = ['id'];
-  protected $fillable = ['name', 'shortened', 'tax_number'];
+  protected $fillable = ['name', 'shortened', 'tax_number', 'directors_designation_number', 'directors_designation_date'];
 
   public function accounts()
   {
