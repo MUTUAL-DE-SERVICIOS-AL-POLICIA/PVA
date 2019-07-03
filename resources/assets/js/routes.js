@@ -16,6 +16,7 @@ import SuppliesIndex from './components/supply/SuppliesIndex'
 import SupplyRequestIndex from './components/supply/SupplyRequestIndex'
 import DepartureConfig from './components/configuration/DepartureConfig'
 import AttendanceConfig from './components/configuration/AttendanceConfig'
+import CompanyConfig from './components/configuration/CompanyConfig'
 import DepartureIndex from './components/departure/DepartureIndex'
 import AttendanceIndex from './components/attendance/AttendanceIndex'
 
@@ -165,5 +166,12 @@ export const routes = [
     meta: {
       requiresAuth: true
     }
-  },
+  }, {
+    path: '/company_config',
+    component: CompanyConfig,
+    name: 'companyConfig',
+    meta: {
+      requiresAuth: true
+    }
+  }
 ]

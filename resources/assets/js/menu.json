@@ -123,6 +123,12 @@
         "icon": "watch_later",
         "permission": "admin",
         "params": {}
+      }, {
+        "href": "companyConfig",
+        "title": "Institución",
+        "icon": "account_balance",
+        "permission": "admin",
+        "params": {}
       }
     ]
   }, {
