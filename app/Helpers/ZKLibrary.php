@@ -64,6 +64,8 @@ class ZKLibrary
   public $attendance_data = array();
   public $timeout_sec = 5;
   public $timeout_usec = 0;
+  public $sec = 5;
+  public $usec = 500;
 
   public function __construct($ip = null, $port = null)
   {
@@ -372,8 +374,8 @@ class ZKLibrary
   public function writeLCD($rank, $text)
   {
     $command = CMD_WRITE_LCD;
-    $byte1 = chr((int)($rank % 256));
-    $byte2 = chr((int)($rank >> 8));
+    $byte1 = chr((int) ($rank % 256));
+    $byte2 = chr((int) ($rank >> 8));
     $byte3 = chr(0);
     $command_string = $byte1 . $byte2 . $byte3 . ' ' . $text;
     return $this->execCommand($command, $command_string);
@@ -590,8 +592,8 @@ class ZKLibrary
   public function getSelectedUser($uid, $finger)
   {
     $command = CMD_USERTEMP_RRQ;
-    $byte1 = chr((int)($uid % 256));
-    $byte2 = chr((int)($uid >> 8));
+    $byte1 = chr((int) ($uid % 256));
+    $byte2 = chr((int) ($uid >> 8));
     $command_string = $byte1 . $byte2 . chr($finger);
     return $this->execCommand($command, $command_string);
   }
@@ -675,8 +677,8 @@ class ZKLibrary
     $template_data = '';
     $this->user_data = array();
     $command = CMD_USERTEMP_RRQ;
-    $byte1 = chr((int)($uid % 256));
-    $byte2 = chr((int)($uid >> 8));
+    $byte1 = chr((int) ($uid % 256));
+    $byte2 = chr((int) ($uid >> 8));
     $command_string = $byte1 . $byte2 . chr($finger);
     $chksum = 0;
     $session_id = $this->session_id;
@@ -773,16 +775,16 @@ class ZKLibrary
   }
   public function setUser($uid, $userid, $name, $password, $role)
   {
-    $uid = (int)$uid;
-    $role = (int)$role;
+    $uid = (int) $uid;
+    $role = (int) $role;
     if ($uid > USHRT_MAX) {
       return false;
     }
     if ($role > 255) $role = 255;
     $name = substr($name, 0, 28);
     $command = CMD_USER_WRQ;
-    $byte1 = chr((int)($uid % 256));
-    $byte2 = chr((int)($uid >> 8));
+    $byte1 = chr((int) ($uid % 256));
+    $byte2 = chr((int) ($uid >> 8));
     $command_string = $byte1 . $byte2 . chr($role) . str_pad($password, 8, chr(0)) . str_pad($name, 28, chr(0)) . str_pad(chr(1), 9, chr(0)) . str_pad($userid, 8, chr(0)) . str_repeat(chr(0), 16);
     return $this->execCommand($command, $command_string);
   }
@@ -828,16 +830,16 @@ class ZKLibrary
   public function deleteUser($uid)
   {
     $command = CMD_DELETE_USER;
-    $byte1 = chr((int)($uid % 256));
-    $byte2 = chr((int)($uid >> 8));
+    $byte1 = chr((int) ($uid % 256));
+    $byte2 = chr((int) ($uid >> 8));
     $command_string = $byte1 . $byte2;
     return $this->execCommand($command, $command_string);
   }
   public function deleteUserTemp($uid, $finger)
   {
     $command = CMD_DELETE_USERTEMP;
-    $byte1 = chr((int)($uid % 256));
-    $byte2 = chr((int)($uid >> 8));
+    $byte1 = chr((int) ($uid % 256));
+    $byte2 = chr((int) ($uid >> 8));
     $command_string = $byte1 . $byte2 . chr($finger);
     return $this->execCommand($command, $command_string);
   }
@@ -849,8 +851,8 @@ class ZKLibrary
   public function testUserTemplate($uid, $finger)
   {
     $command = CMD_TEST_TEMP;
-    $byte1 = chr((int)($uid % 256));
-    $byte2 = chr((int)($uid >> 8));
+    $byte1 = chr((int) ($uid % 256));
+    $byte2 = chr((int) ($uid >> 8));
     $command_string = $byte1 . $byte2 . chr($finger);
     $u =  unpack('H2h1/H2h2', $this->execCommand($command, $command_string));
     $ret = hexdec($u['h2'] . $u['h1']);
@@ -859,16 +861,16 @@ class ZKLibrary
   public function startVerify($uid)
   {
     $command = CMD_STARTVERIFY;
-    $byte1 = chr((int)($uid % 256));
-    $byte2 = chr((int)($uid >> 8));
+    $byte1 = chr((int) ($uid % 256));
+    $byte2 = chr((int) ($uid >> 8));
     $command_string = $byte1 . $byte2;
     return $this->execCommand($command, $command_string);
   }
   public function startEnroll($uid, $finger)
   {
     $command = CMD_STARTENROLL;
-    $byte1 = chr((int)($uid % 256));
-    $byte2 = chr((int)($uid >> 8));
+    $byte1 = chr((int) ($uid % 256));
+    $byte2 = chr((int) ($uid >> 8));
     $command_string = $byte1 . $byte2 . chr($finger);
     return $this->execCommand($command, $command_string);
   }
