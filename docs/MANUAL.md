@@ -390,3 +390,9 @@ Gestión de roles para cada cuenta de usuario con acceso al sistema, esta lista 
 Cada acción generada por los usuarios es guardada como respaldo de la actividad en caso de ser necesaria la evidencia de los cambios que realizó algún usuario.
 
 ![IMAGE](./img/activities.png)
+
+## CONFIGURACIÓN DE DATOS INSTITUCIONALES
+
+Para la correcta impresión del nombre de la institución, así como su acrónimo y datos adicionales, es necesario configurar los datos institucionales; entre otros, la resolución y fecha de designación de la máxima autoridad ejecutiva.
+
+![IMAGE](./img/company_config.png)

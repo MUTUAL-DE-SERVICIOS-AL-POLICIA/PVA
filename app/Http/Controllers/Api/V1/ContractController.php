@@ -6,6 +6,7 @@ use App\Contract;
 use App\EmployerNumber;
 use App\Http\Controllers\Controller;
 use App\Procedure;
+use App\Company;
 use Illuminate\Http\Request;
 
 /** @resource Contract
@@ -101,6 +102,7 @@ class ContractController extends Controller
   function print($id, $type)
   {
     $data = [
+      'company' => Company::first(),
       'contract' => Contract::findOrFail($id),
       'mae' => Contract::where([['position_id', '1'], ['active', 'true']])->first(),
       'employer_number' => EmployerNumber::where('insurance_company_id', '1')->first(),
