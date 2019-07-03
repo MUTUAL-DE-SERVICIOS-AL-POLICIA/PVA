@@ -2,6 +2,16 @@
 
 ---
 
+## [4.5.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.5.0) - 2019-07-03
+
+### Added
+
+* Company configuration
+
+### Changed
+
+* Hardcoded eventual contract printable template director's designation date to value of database
+
 ## [4.4.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.4.0) - 2019-06-28
 
 ### Added

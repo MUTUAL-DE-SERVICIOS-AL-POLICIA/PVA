@@ -170,7 +170,7 @@ export default {
     async updateDeparture(item) {
       try {
         let res = await axios.patch(`departure_reason/${item.id}`, item)
-        this.toastr.success('Registro actualizado');
+        this.toastr.success('Registro actualizado')
       } catch (e) {
         console.log(e)
       }
