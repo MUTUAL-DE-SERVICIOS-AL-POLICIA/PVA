@@ -9,6 +9,7 @@ use App\AttendanceDevice;
 use ZKLibrary;
 use Util;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use App\AttendanceCheck;
 use App\Employee;
 
@@ -344,21 +345,53 @@ class AttendanceController extends Controller
     ], 200);
   }
 
-  public function print($month)
+  public function print(Request $request, $type)
   {
     $employees = Employee::whereActive(true)->orderBy('last_name')->select('id')->get();
-    $date = Carbon::parse($month);
 
-    $request = new Request([
-      'month' => $month,
-      'with_discounts' => true,
-      'type' => 'json'
-    ]);
+    if (!$request->has('from') && !$request->has('to')) {
+      $to = CarbonImmutable::now();
+
+      if ($type == 'consultant') {
+        $from = $to->day(1);
+        $to = $from->endOfMonth();
+      } else {
+        if ($to->day == 20) {
+          $from = $to;
+        } elseif ($to->day < 20) {
+          $from = $to->subMonth()->day(20);
+          $to = $to->day(19);
+        } else {
+          $from = $to->day(20);
+          $to = $from->addMonth()->day(19);
+        }
+      }
+
+      $req = new Request([
+        'from' => $from->toDateString(),
+        'to' => $to->toDateString(),
+        'with_discounts' => true,
+        'type' => 'json'
+      ]);
+    } else {
+      $req = new Request([
+        'from' => $request->input('from'),
+        'to' => $request->input('to'),
+        'with_discounts' => true,
+        'type' => 'json'
+      ]);
+    }
 
     $data = [];
 
-    foreach ($employees as $employee) {
-      $response = (new EmployeeController)->attendance($request, $employee->id);
+    foreach ($employees as $key => $employee) {
+      $consultant = $employee->consultant();
+      if ($consultant === true && $type == 'eventual' || $consultant === false && $type == 'consultant' || $consultant === null) {
+        unset($employees[$key]);
+        continue;
+      }
+
+      $response = (new EmployeeController)->attendance($req, $employee->id);
       if ($response->status() == 200) {
         $response = json_decode($response->getContent());
         $data[] = [
@@ -370,6 +403,7 @@ class AttendanceController extends Controller
       }
     }
 
+    $date = Carbon::parse($req->input('to'));
     $file_name = implode(" ", ['marcados', 'de', $date->ISOFormat('MMMM'), 'de', $date->year]) . ".pdf";
 
     $options = [
