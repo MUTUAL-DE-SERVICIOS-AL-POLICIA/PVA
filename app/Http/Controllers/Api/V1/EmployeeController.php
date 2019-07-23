@@ -45,6 +45,7 @@ class EmployeeController extends Controller
       } elseif ($employee->consultant === false) {
         $employee->position = $employee->last_contract()->position->name;
       }
+      unset($employee['contracts']);
     }
 
     return $employees;

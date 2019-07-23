@@ -44,7 +44,7 @@
                 ></v-autocomplete>
               </v-flex>
               <v-flex xs2>
-                <template class="justify-center layout">
+                <template class="justify-center layout" v-if="selectedEmployee">
                   <v-tooltip top>
                     <v-btn medium slot="activator" flat icon color="info" @click="getChecks(selectedEmployee, true)">
                       <v-icon>print</v-icon>
@@ -238,7 +238,6 @@ export default {
         this.employees.forEach(e => {
           e.fullName = `${e.last_name || ''} ${e.mothers_last_name || ''} ${e.first_name || ''} ${e.second_name || ''}`
         });
-        this.selectedEmployee = this.employees.find(o => o.id == this.$store.getters.id)
         this.loading = false
       } catch (e) {
         console.log(e)

@@ -4,13 +4,17 @@
     <v-card>
       <v-toolbar dark color="secondary">
         <v-toolbar-title class="white--text">Generar reporte para {{ type.name }} de {{ $moment(from).format('L') }} a {{ $moment(to).format('L') }}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon dark @click.native="close" v-if="!loading">
+          <v-icon>close</v-icon>
+        </v-btn>
       </v-toolbar>
       <Loading v-if="loading"/>
       <div v-else>
         <v-card-text>
           <v-container grid-list-md text-xs-center fluid>
             <v-layout row wrap>
-              <v-flex xs12>
+              <v-flex xs2>
                 <v-select
                   v-model="type"
                   :items="types"
@@ -22,26 +26,30 @@
                   single-line
                 ></v-select>
               </v-flex>
-              <v-flex xs6>
+              <v-flex xs5>
                 <div class="subheading font-weight-light">Desde:</div>
                 <v-date-picker
                   v-model="from"
                   no-title
+                  :show-current="false"
                   :landscape="false"
                   locale="es-BO"
                   first-day-of-week="1"
                   :max="to"
+                  color="green darken-2"
                 ></v-date-picker>
               </v-flex>
-              <v-flex xs6>
+              <v-flex xs5>
                 <div class="subheading font-weight-light">Hasta:</div>
                 <v-date-picker
                   v-model="to"
                   no-title
+                  :show-current="false"
                   :landscape="false"
                   locale="es-BO"
                   first-day-of-week="1"
                   :min="from"
+                  color="orange accent-4"
                 ></v-date-picker>
               </v-flex>
             </v-layout>
@@ -95,7 +103,7 @@ export default {
         this.loading = true
         let res = await axios({
           method: "GET",
-          url: `attendance/print/${this.type}`,
+          url: `attendance/print/${this.type.value}`,
           responseType: "arraybuffer",
           params: {
             from: this.from,
