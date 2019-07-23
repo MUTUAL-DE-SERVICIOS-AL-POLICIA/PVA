@@ -243,8 +243,10 @@ Los funcionarios con rol de Recursos Humanos pueden además seleccionar cualquie
 
 ![IMAGE](./img/attendance_select_employee.png)
 
-- **1)** Imprime los registros de asistencia del mes de todo el personal
+- **1)** Imprime los registros de asistencia del personal eventual o consultor de acuerdo a la selección de un rango de fechas
 - **2)** Imprime los registros de asistencia del mes solo del funcionario seleccionado
+
+![IMAGE](./img/attendance_print_dialog.png)
 
 ![IMAGE](./img/attendance_print.png)
 

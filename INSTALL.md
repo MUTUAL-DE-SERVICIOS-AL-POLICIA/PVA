@@ -39,7 +39,7 @@ git checkout $latestVersion
 ```sh
 composer run-script post-root-package-install
 composer install
-yarn
+yarn install
 ```
 
 * Edit `.env` file with database credentials and established manteinance modes
@@ -48,7 +48,6 @@ yarn
 
 ```sh
 composer run-script post-create-project-cmd
-php artisan jwt:secret
 yarn prod
 composer run-script post-autoload-dump
 ```

@@ -17,7 +17,7 @@
         <v-spacer></v-spacer>
         <AttendanceSync v-if="$store.getters.role == 'admin'"/>
         <AttendanceErase v-if="$store.getters.role == 'admin'"/>
-        <v-btn class="mr-5" @click.native="print" color="info" v-if="['admin', 'rrhh'].includes($store.getters.role)">IMPRIMIR TODO</v-btn>
+        <AttendancePrint v-if="['admin', 'rrhh'].includes($store.getters.role)"/>
         <v-btn color="primary" @click="showDate = !showDate">
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
@@ -44,7 +44,7 @@
                 ></v-autocomplete>
               </v-flex>
               <v-flex xs2>
-                <template class="justify-center layout">
+                <template class="justify-center layout" v-if="selectedEmployee">
                   <v-tooltip top>
                     <v-btn medium slot="activator" flat icon color="info" @click="getChecks(selectedEmployee, true)">
                       <v-icon>print</v-icon>
@@ -111,6 +111,7 @@ import ManteinanceDialog from "../ManteinanceDialog"
 import AttendanceSync from "./AttendanceSync"
 import AttendanceErase from "./AttendanceErase"
 import AttendanceAdd from "./AttendanceAdd"
+import AttendancePrint from "./AttendancePrint"
 
 export default {
   name: 'AttendanceIndex',
@@ -119,7 +120,8 @@ export default {
     ManteinanceDialog,
     AttendanceSync,
     AttendanceErase,
-    AttendanceAdd
+    AttendanceAdd,
+    AttendancePrint
   },
   data() {
     return {
@@ -139,10 +141,12 @@ export default {
   },
   watch: {
     selectedEmployee: function(val) {
-      if (typeof val === 'number') this.getChecks(val)
-      if (this.selectedEmployee.hasOwnProperty('id')) this.selectedEmployee = this.selectedEmployee.id
-      let employee = this.employees.find(o => o.id == this.selectedEmployee)
-      if (employee) this.selectedEmployeePosition = employee.position || 'Nombre del empleado'
+      if (val != null) {
+        if (typeof val === 'number') this.getChecks(val)
+        if (this.selectedEmployee.hasOwnProperty('id')) this.selectedEmployee = this.selectedEmployee.id
+        let employee = this.employees.find(o => o.id == this.selectedEmployee)
+        if (employee) this.selectedEmployeePosition = employee.position || 'Nombre del empleado'
+      }
     },
     date: function(val) {
       if (typeof this.selectedEmployee === 'object') {
@@ -234,28 +238,9 @@ export default {
         this.employees.forEach(e => {
           e.fullName = `${e.last_name || ''} ${e.mothers_last_name || ''} ${e.first_name || ''} ${e.second_name || ''}`
         });
-        this.selectedEmployee = this.employees.find(o => o.id == this.$store.getters.id)
         this.loading = false
       } catch (e) {
         console.log(e)
-        this.loading = false
-      }
-    },
-    async print() {
-      try {
-        this.loading = true
-        let res = await axios({
-          method: "GET",
-          url: `attendance/print/${this.date}`,
-          responseType: "arraybuffer"
-        });
-        let blob = new Blob([res.data], {
-          type: "application/pdf"
-        });
-        printJS(window.URL.createObjectURL(blob));
-      } catch(e) {
-        console.log(e)
-      } finally {
         this.loading = false
       }
     }

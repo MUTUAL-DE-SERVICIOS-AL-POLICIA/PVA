@@ -45,6 +45,7 @@ class EmployeeController extends Controller
       } elseif ($employee->consultant === false) {
         $employee->position = $employee->last_contract()->position->name;
       }
+      unset($employee['contracts']);
     }
 
     return $employees;
@@ -126,20 +127,30 @@ class EmployeeController extends Controller
     $employee = Employee::findOrFail($id);
     $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->orderBy('USERID', 'DESC')->first();
 
-    if (!$request->has('month')) {
-      $to = CarbonImmutable::now();
-    } else {
-      $to = CarbonImmutable::parse($request->input('month'));
-    }
+    if (!$request->has('from') && !$request->has('to')) {
+      if (!$request->has('month')) {
+        $to = CarbonImmutable::now();
+      } else {
+        $to = CarbonImmutable::parse($request->input('month'));
+      }
 
-    if ($to->day == 20) {
-      $from = $to;
-    } elseif ($to->day < 20) {
-      $from = $to->subMonth()->day(20);
-      $to = $to->day(19);
+      if ($employee->consultant()) {
+        $from = $to->day(1);
+        $to = $from->endOfMonth();
+      } else {
+        if ($to->day == 20) {
+          $from = $to;
+        } elseif ($to->day < 20) {
+          $from = $to->subMonth()->day(20);
+          $to = $to->day(19);
+        } else {
+          $from = $to->day(20);
+          $to = $from->addMonth()->day(19);
+        }
+      }
     } else {
-      $from = $to->day(20);
-      $to = $from->addMonth()->day(19);
+      $from = CarbonImmutable::parse($request->input('from'));
+      $to = CarbonImmutable::parse($request->input('to'));
     }
 
     if ($attendance_user) {

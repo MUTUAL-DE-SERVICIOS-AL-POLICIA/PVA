@@ -2,6 +2,17 @@
 
 ---
 
+## [4.6.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.0) - 2019-07-23
+
+### Added
+
+* Date range to print attendance report
+* Eventual or Consultant select to print attendance report
+
+### Fixed
+
+* Consultant attendance dates
+
 ## [4.5.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.5.0) - 2019-07-03
 
 ### Added
