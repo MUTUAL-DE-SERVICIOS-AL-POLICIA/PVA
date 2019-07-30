@@ -5,7 +5,7 @@
         <v-layout row wrap>
           <v-flex md12 lg8>
             <v-layout row wrap>
-              <v-flex xs12 sm6 v-if="$store.getters.user != 'admin'">
+              <v-flex xs12 sm6>
                 <v-card color="light-blue darken-1" dark :to="{ name: 'attendanceIndex' }" style="cursor: pointer" class="card-box">
                   <v-layout row wrap>
                     <v-flex xs4 class="text-xs-center" mt-4>

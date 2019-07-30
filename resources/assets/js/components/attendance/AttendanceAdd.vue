@@ -7,6 +7,10 @@
     <v-card>
       <v-toolbar dark color="secondary">
         <v-toolbar-title class="white--text">Adicionar registro</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon dark @click.native="close">
+          <v-icon>close</v-icon>
+        </v-btn>
       </v-toolbar>
       <v-card-text>
         <v-container grid-list-md text-xs-center fluid>
@@ -48,6 +52,15 @@ export default {
       check: {
         date: this.$store.getters.dateNow,
         time: null
+      }
+    }
+  },
+  watch: {
+    'check.time': function(newVal, oldVal) {
+      if (newVal != oldVal && newVal != null) {
+        if (newVal.split(':').length < 3) {
+          this.check.time = `${newVal}:${(Math.random() * 59 | 1).toString().padStart(2, '0')}`
+        }
       }
     }
   },

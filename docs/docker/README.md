@@ -51,17 +51,35 @@ docker-compose up -d --build apache2 php-fpm
 docker-compose ps
 ```
 
-* With the container called `workspace` you need to run
+* Install needed fonts into `php-fpm` container
 
 ```sh
-docker exec -it pva_workspace_1 composer install
+docker-compose exec php-fpm /var/www/install-roboto-fonts.sh
+```
+
+* Within the container called `workspace` you need to run
+
+```sh
+docker-compose exec workspace composer run-script post-root-package-install
+```
+
+```sh
+docker-compose exec workspace composer install
 ```
 
 * To change the application to development mode you need to run
 
 ```sh
-docker exec -it pva_workspace_1 yarn dev
+docker-compose exec workspace yarn dev
 ```
+
+* Generate laravel's session and jwt auth keys
+
+```sh
+docker-compose exec workspace composer run-script post-create-project-cmd
+```
+
+* Modify `.env` file according to the right credentials
 
 ## Issues
 
