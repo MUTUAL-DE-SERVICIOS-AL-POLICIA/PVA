@@ -26,13 +26,10 @@
           inset
           vertical
         ></v-divider>
-        <v-btn color="error" v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" @click.native="print('report')">
-          <v-icon>print</v-icon>
-          <div class="pl-2">Reporte</div>
-        </v-btn>
+        <ReportPrint v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')"/>
         <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
           <v-chip
-            :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
+            v-if="!$store.getters.consultant" :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
             class="mr-3"
           >
             <v-avatar
@@ -42,7 +39,7 @@
             <div class="subheading font-weight-regular">Hrs/Mes</div>
           </v-chip>
           <v-chip
-            :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
+            v-if="!$store.getters.consultant" :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
             class="mr-3"
           >
             <v-avatar
@@ -82,6 +79,7 @@
                   :input-value="props.item.approved"
                   color="info"
                   @change="switchActive(props.item)"
+                  v-show="!props.expanded"
                 ></v-switch>
               </v-layout>
               <div v-else>
@@ -131,6 +129,7 @@ import Vue from 'vue'
 import Loading from '../Loading'
 import RemoveItem from "../RemoveItem"
 import DepartureEdit from './DepartureEdit'
+import ReportPrint from './ReportPrint'
 import ManteinanceDialog from "../ManteinanceDialog"
 
 export default {
@@ -139,6 +138,7 @@ export default {
     Loading,
     RemoveItem,
     DepartureEdit,
+    ReportPrint,
     ManteinanceDialog
   },
   data() {
@@ -201,6 +201,18 @@ export default {
   computed: {
     manteinanceMode() {
       return JSON.parse(process.env.MIX_DEPARTURE_MANTEINANCE_MODE)
+    },
+    startDate() {
+      let now = this.$moment(this.$store.getters.dateNow)
+      if (this.$store.getters.consultant) {
+        return now.date(1).startOf('day').format()
+      } else {
+        if (now.date() < 20) {
+          return now.subtract(1, 'months').date(20).startOf('day').format()
+        } else {
+          return now.date(20).startOf('day').format()
+        }
+      }
     }
   },
   beforeMount() {
@@ -260,6 +272,7 @@ export default {
     async getLastContract(id) {
       try {
         let res = await axios.get(`employee/${id}/contract`)
+        console.log (res.data)
         return res.data
       } catch (e) {
         console.log(e)
@@ -268,8 +281,13 @@ export default {
     async expand(props) {
       if (!props.expanded) {
         let contract = await this.getLastContract(props.item.employee_id)
-        props.item.position = contract.position.name,
-        props.item.positionGroup = contract.position.position_group.name
+        if (contract.hasOwnProperty('consultant_position_id')) {
+          props.item.position = contract.consultant_position.name,
+          props.item.positionGroup = contract.consultant_position.position_group.name
+        } else {
+          props.item.position = contract.position.name,
+          props.item.positionGroup = contract.position.position_group.name
+        }
       }
       props.expanded = !props.expanded
     },
@@ -278,16 +296,16 @@ export default {
         this.loading = true
         let res = await axios({
           method: 'GET',
-          url: id == 'report' ? `departure/report/print` : `departure/print/${id}`,
+          url: `departure/print/${id}`,
           responseType: "arraybuffer"
-        });
+        })
         let blob = new Blob([res.data], {
           type: "application/pdf"
-        });
-        printJS(window.URL.createObjectURL(blob));
+        })
+        printJS(window.URL.createObjectURL(blob))
         this.loading = false
       } catch (e) {
-        console.log(e);
+        console.log(e)
         this.loading = false
       }
     },
@@ -336,7 +354,9 @@ export default {
           case 'all':
             res = await axios.get(`departure`, {
               params: {
-                date_range: this.departureTypeSelected
+                date_range: this.departureTypeSelected,
+                from_date: this.$moment(this.$store.getters.dateNow).subtract(1, 'months').date(20).startOf('day').format(),
+                to_date: this.$moment(this.$store.getters.dateNow).endOf('day').format()
               }
             })
             break;
@@ -344,7 +364,9 @@ export default {
             res = await axios.get(`departure`, {
               params: {
                 employee_id: this.$store.getters.id,
-                date_range: this.departureTypeSelected
+                date_range: this.departureTypeSelected,
+                from_date: this.startDate,
+                to_date: this.$moment(this.$store.getters.dateNow).endOf('day').format()
               }
             })
             break;

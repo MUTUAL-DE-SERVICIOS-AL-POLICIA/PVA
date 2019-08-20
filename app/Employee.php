@@ -43,7 +43,11 @@ class Employee extends Model
 
   public function contract_in_date($date)
   {
-    return Contract::whereEmployeeId($this->id)->where('start_date', '<=', $date)->orderBy('start_date', 'DESC')->first();
+    if ($this->consultant()) {
+      return ConsultantContract::whereEmployeeId($this->id)->where('start_date', '<=', $date)->orderBy('start_date', 'DESC')->first();
+    } else {
+      return Contract::whereEmployeeId($this->id)->where('start_date', '<=', $date)->orderBy('start_date', 'DESC')->first();
+    }
   }
 
   public function consultant_contracts()
