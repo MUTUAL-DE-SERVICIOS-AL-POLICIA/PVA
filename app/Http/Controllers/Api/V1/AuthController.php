@@ -137,6 +137,7 @@ class AuthController extends Controller
    */
   protected function respondWithToken($token, $employee = null)
   {
+    $consultant = null;
     if ($employee == null) {
       $user = $this->guard()->user();
       $id = $user->employee_id;
@@ -149,6 +150,7 @@ class AuthController extends Controller
       $username = $employee->username;
       $role = 'guest';
       $permissions = [];
+      $consultant = $employee->consultant();
     }
 
     $ip = request()->ip();
@@ -168,6 +170,7 @@ class AuthController extends Controller
       'user' => $username,
       'role' => $role,
       'permissions' => $permissions,
+      'consultant' => $consultant,
       'message' => 'Indentidad verificada',
     ], 200);
   }
