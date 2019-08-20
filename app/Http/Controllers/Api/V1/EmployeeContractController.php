@@ -51,9 +51,10 @@ class EmployeeContractController extends Controller
   {
     $employee = Employee::findOrFail($employee_id);
     if ($employee->consultant()) {
-      $employee->last_consultant_contract()->consultant_position->position_group;
-      $employee->last_consultant_contract()->consultant_position->charge;
-      return $employee->last_consultant_contract();
+      $contract = $employee->last_consultant_contract();
+      $contract->consultant_position->position_group;
+      $contract->consultant_position->charge;
+      return $contract;
     } else {
       $contract = $employee->last_contract();
       $contract->position->position_group;
