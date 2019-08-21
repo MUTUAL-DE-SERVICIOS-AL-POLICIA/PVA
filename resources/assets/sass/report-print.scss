@@ -6,6 +6,7 @@ date: 15-02-2018
 //colors
 $black: #000;
 $color_catskill_white_approx: #f1f5f8;
+$color_shuttle_gray: #bbbbbb;
 $color_shuttle_gray_approx: #5d6975;
 $white: #fff;
 $color_shark_approx: #22292f;
@@ -521,6 +522,9 @@ tr {
 	right: auto;
 	bottom: auto;
 	left: auto;
+}
+.bg-grey {
+	background-color: $color_shuttle_gray;
 }
 .bg-grey-darker {
 	background-color: $color_shuttle_gray_approx;

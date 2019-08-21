@@ -6,7 +6,7 @@
     </v-btn>
     <v-card>
       <v-toolbar dark color="secondary">
-        <v-toolbar-title class="white--text">Generar reporte del {{ $moment(from).format('L') }} a {{ $moment(to).format('L') }}</v-toolbar-title>
+        <v-toolbar-title class="white--text">Generar reporte para {{ type.name }} del {{ $moment(from).format('L') }} a {{ $moment(to).format('L') }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click.native="close" v-if="!loading">
           <v-icon>close</v-icon>
@@ -17,7 +17,19 @@
         <v-card-text>
           <v-container grid-list-md text-xs-center fluid>
             <v-layout row wrap>
-              <v-flex xs6>
+              <v-flex xs2>
+                <v-select
+                  v-model="type"
+                  :items="types"
+                  item-text="name"
+                  item-value="value"
+                  hint="Tipo de contrato"
+                  persistent-hint
+                  return-object
+                  single-line
+                ></v-select>
+              </v-flex>
+              <v-flex xs5>
                 <div class="subheading font-weight-light">Desde:</div>
                 <v-date-picker
                   v-model="from"
@@ -30,7 +42,7 @@
                   color="green darken-2"
                 ></v-date-picker>
               </v-flex>
-              <v-flex xs6>
+              <v-flex xs5>
                 <div class="subheading font-weight-light">Hasta:</div>
                 <v-date-picker
                   v-model="to"
@@ -57,10 +69,11 @@
 </template>
 
 <script>
-import Loading from '../Loading'
+import Loading from './Loading'
 
 export default {
   name: 'ReportPrint',
+  props: ['url'],
   components: {
     Loading
   },
@@ -68,11 +81,20 @@ export default {
     return {
       loading: false,
       show: false,
+      type: null,
+      types: [{
+        value: 'eventual',
+        name: 'Eventuales'
+      }, {
+        value: 'consultant',
+        name: 'Consultores'
+      }],
       from: null,
       to: null
     }
   },
   beforeMount() {
+    this.type = this.types[0]
     this.from = this.$moment(this.$store.getters.dateNow).startOf('month').format('YYYY-MM-DD')
     this.to = this.$moment(this.$store.getters.dateNow).endOf('month').format('YYYY-MM-DD')
   },
@@ -85,11 +107,11 @@ export default {
         this.loading = true
         let res = await axios({
           method: "GET",
-          url: `departure/report/print`,
+          url: `${this.url}/${this.type.value}`,
           responseType: "arraybuffer",
           params: {
-            from_date: this.from,
-            to_date: this.to
+            from: this.from,
+            to: this.to
           }
         });
         let blob = new Blob([res.data], {

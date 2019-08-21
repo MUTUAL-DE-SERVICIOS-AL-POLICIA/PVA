@@ -26,7 +26,7 @@
           inset
           vertical
         ></v-divider>
-        <ReportPrint v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')"/>
+        <ReportPrint v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" url="departure/report/print"/>
         <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
           <v-chip
             v-if="!$store.getters.consultant" :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
@@ -129,7 +129,7 @@ import Vue from 'vue'
 import Loading from '../Loading'
 import RemoveItem from "../RemoveItem"
 import DepartureEdit from './DepartureEdit'
-import ReportPrint from './ReportPrint'
+import ReportPrint from '../ReportPrint'
 import ManteinanceDialog from "../ManteinanceDialog"
 
 export default {
@@ -355,8 +355,8 @@ export default {
             res = await axios.get(`departure`, {
               params: {
                 date_range: this.departureTypeSelected,
-                from_date: this.$moment(this.$store.getters.dateNow).subtract(1, 'months').date(20).startOf('day').format(),
-                to_date: this.$moment(this.$store.getters.dateNow).endOf('day').format()
+                from: this.$moment(this.$store.getters.dateNow).subtract(1, 'months').date(20).startOf('day').format(),
+                to: this.$moment(this.$store.getters.dateNow).endOf('day').format()
               }
             })
             break;
@@ -365,8 +365,8 @@ export default {
               params: {
                 employee_id: this.$store.getters.id,
                 date_range: this.departureTypeSelected,
-                from_date: this.startDate,
-                to_date: this.$moment(this.$store.getters.dateNow).endOf('day').format()
+                from: this.startDate,
+                to: this.$moment(this.$store.getters.dateNow).endOf('day').format()
               }
             })
             break;

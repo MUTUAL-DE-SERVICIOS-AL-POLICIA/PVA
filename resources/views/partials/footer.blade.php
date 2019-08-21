@@ -42,9 +42,9 @@ use \Milon\Barcode\DNS2D;
     </script>
 </head>
 
-<body onload="substitutePdfVariables()">
-    <div class="parent" style="padding-top: {{ isset($footer_margin) ? $footer_margin : 0 }};">
-        <div class="child" align="left">
+<body onload="substitutePdfVariables()" style="border:0;" class="text-xs">
+    <div class="parent" style="padding-top: {{ isset($footer_margin) ? $footer_margin : 0 }}; border:0;">
+        <div class="child" align="left" style="border:0;">
         @if (env("APP_ENV") != "production")
             VERSIÓN DE PRUEBAS
         @else
@@ -65,7 +65,7 @@ use \Milon\Barcode\DNS2D;
             @endif
         @endif
         </div>
-        <div class="child" align="center">
+        <div class="child" align="center" style="border:0;">
         @if (isset($paginator))
             @if ($paginator)
                 <span size="3">
@@ -74,7 +74,7 @@ use \Milon\Barcode\DNS2D;
             @endif
         @endif
         </div>
-        <div class="child" align="right">
+        <div class="child" align="right" style="border:0;">
             <img src="data:image/png;base64, {{ DNS2D::getBarcodePNG(bcrypt($date . ' ' . gethostname() . ' ' . env('APP_URL')), 'PDF417') }}" alt="BARCODE!!!" style="height: 20px; width: 125px;" />
         </div>
     </div>
