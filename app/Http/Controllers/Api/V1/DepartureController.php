@@ -206,9 +206,9 @@ class DepartureController extends Controller
     $data = array('departures' => $this->index($request));
 
     $date = (object)[];
-    if ($request->has('from_date') && $request->has('to_date')) {
-      $date->from = $request['from_date'];
-      $date->to = $request['to_date'];
+    if ($request->has('from') && $request->has('to')) {
+      $date->from = $request['from'];
+      $date->to = $request['to'];
     } else {
       $date = $this->current_date();
     }
