@@ -356,7 +356,7 @@ export default {
               params: {
                 date_range: this.departureTypeSelected,
                 from: this.$moment(this.$store.getters.dateNow).subtract(1, 'months').date(20).startOf('day').format(),
-                to: this.$moment(this.$store.getters.dateNow).endOf('day').format()
+                to: this.$moment(this.$store.getters.dateNow).endOf('month').format()
               }
             })
             break;
