@@ -2,6 +2,17 @@
 
 ---
 
+## [4.6.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.3) - 2019-08-23
+
+### Added
+
+* Select by departure tyes
+* Month selection on departures index view
+
+### Changed
+
+* Limit of personal departures from 2 to 4
+
 ## [4.6.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.1) - 2019-08-21
 
 ### Added
