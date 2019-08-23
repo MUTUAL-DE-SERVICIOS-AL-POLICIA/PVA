@@ -27,40 +27,30 @@ class DepartureController extends Controller
    */
   public function index(Request $request)
   {
-    if (!$request->has('from') && !$request->has('to')) {
-      $date = $this->current_date();
-    } else {
-      $date = (object)[
-        'from' => null,
-        'to' => null
-      ];
-    }
+    $date = (object)[
+      'from' => $request['from'],
+      'to' => $request['to']
+    ];
 
     $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note');
 
-    if (!$request->has('date_range')) {
-      $request['date_range'] = 'monthly';
-    }
-
-    if ($request['date_range'] == 'monthly') {
-      if ($request->has('from') && $request->has('to')) {
-        $date->from = $request['from'];
-        $date->to = $request['to'];
+    if ($request->has('approved')) {
+      if ($request['approved'] != 'all') {
+        $query = $query->whereApproved(json_decode($request['approved']));
       }
-
-      $query = $query->where(function ($subQuery) use ($date) {
-        $subQuery->where(function ($q) use ($date) {
-          return $q->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
-        })->orWhere(function ($q) use ($date) {
-          return $q->whereDate('return', '>=', $date->from)->whereDate('return', '<=', $date->to);
-        })->orWhere(function ($q) use ($date) {
-          return $q->whereDate('departure', '<=', $date->from)->whereDate('return', '>=', $date->to);
-        });
-      });
     }
 
-    if ($request->query->has('employee_id')) {
-      $query = $query->where('employee_id', intval($request['employee_id']));
+    $query = $query->where(function ($subQuery) use ($date) {
+      $subQuery->where(function ($q) use ($date) {
+        return $q->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
+      })->orWhere(function ($q) use ($date) {
+        return $q->whereDate('return', '>=', $date->from)->whereDate('return', '<=', $date->to);
+      });
+    });
+
+    $employee_id = intval($request['employee_id']);
+    if ($employee_id) {
+      $query = $query->where('employee_id', $employee_id);
     } else {
       $query = $query->join('employees', 'departures.employee_id', '=', 'employees.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note', 'employees.last_name', 'employees.mothers_last_name', 'employees.first_name', 'employees.second_name')->orderBy('employees.last_name', 'ASC');
     }
@@ -203,15 +193,14 @@ class DepartureController extends Controller
   function report_print(Request $request, $type)
   {
     $request['type'] = $type;
+    $request['approved'] = 'all';
     $data = array('departures' => $this->index($request));
 
-    $date = (object)[];
-    if ($request->has('from') && $request->has('to')) {
-      $date->from = $request['from'];
-      $date->to = $request['to'];
-    } else {
-      $date = $this->current_date();
-    }
+    $date = (object)[
+      'from' => $request['from'],
+      'to' => $request['to']
+    ];
+
     $data['title'] = (object)[
       'name' => 'SOLICITUDES DE SALIDAS Y LICENCIAS',
       'date' => $date,
@@ -239,21 +228,5 @@ class DepartureController extends Controller
     $pdf->setOptions($options);
 
     return $pdf->stream($file_name);
-  }
-
-  private function current_date()
-  {
-    $current = CarbonImmutable::now();
-    if ($current->day <= 19) {
-      return (object)[
-        'from' => $current->subMonths(1)->days(20)->startOfDay(),
-        'to' => $current->days(19)->endOfDay()
-      ];
-    } else {
-      return (object)[
-        'from' => $current->days(20)->startOfDay(),
-        'to' => $current->addMonths(1)->days(19)->endOfDay()
-      ];
-    }
   }
 }

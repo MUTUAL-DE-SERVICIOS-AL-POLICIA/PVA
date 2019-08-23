@@ -180,33 +180,39 @@ class Employee extends Model
     $total_time = DepartureReason::where('name', 'PERMISO POR HORAS')->first()->hours * 60;
     $total_time_records = DepartureReason::where('name', 'REGULARIZACIÓN DE MARCADO')->first()->hours;
 
-    if ($departures->count() == 0) {
-      $response = [
-        'remaining_records' => $total_time_records - $records,
-        'time_remaining' => $total_time,
-        'options' => [
-          ['text' => 'Media hora', 'value' => 0.5],
-          ['text' => 'Una hora', 'value' => 1],
-          ['text' => 'Hora y media', 'value' => 1.5]
-        ]
-      ];
-    } elseif ($departures->count() == 1) {
-      $departure = Carbon::parse($departures[0]->departure);
-      $return = Carbon::parse($departures[0]->return);
-      $time_remaining = $departure->diffInMinutes($return);
+    $time_remaining = 0;
+
+    if ($departures->count() < 4) {
+      foreach($departures as $d) {
+        $departure = Carbon::parse($d->departure);
+        $return = Carbon::parse($d->return);
+        $time_remaining += $departure->diffInMinutes($return);
+      }
+
       $response = [
         'remaining_records' => $total_time_records - $records,
         'time_remaining' => $total_time - $time_remaining
       ];
+
       switch ($response['time_remaining']) {
         case 30:
-          $response['options'] = [['text' => 'Media hora', 'value' => 0.5]];
+          $response['options'] = [
+            ['text' => 'Media hora', 'value' => 0.5]
+          ];
           break;
         case 60:
-          $response['options'] = [['text' => 'Una hora', 'value' => 1]];
+          $response['options'] = [
+            ['text' => 'Media hora', 'value' => 0.5],
+            ['text' => 'Una hora', 'value' => 1]
+          ];
           break;
         case 90:
-          $response['options'] = [['text' => 'Hora y media', 'value' => 1.5]];
+        case 120:
+          $response['options'] = [
+            ['text' => 'Media hora', 'value' => 0.5],
+            ['text' => 'Una hora', 'value' => 1],
+            ['text' => 'Hora y media', 'value' => 1.5]
+          ];
           break;
         default:
           $response['options'] = [];
