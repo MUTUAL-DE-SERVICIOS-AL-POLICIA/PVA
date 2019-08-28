@@ -2,6 +2,12 @@
 
 ---
 
+## [4.6.4](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.4) - 2019-08-28
+
+### Added
+
+* Hardcoded text to departure note printed template
+
 ## [4.6.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.3) - 2019-08-23
 
 ### Added
@@ -13,7 +19,7 @@
 
 * Limit of personal departures from 2 to 4
 
-## [4.6.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.1) - 2019-08-21
+## [4.6.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.2) - 2019-08-21
 
 ### Added
 
