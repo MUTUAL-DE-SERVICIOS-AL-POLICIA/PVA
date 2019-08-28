@@ -50,7 +50,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
         Señor:
       </div>
       <div>
-        Cnl. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->first()->contracts[0]->employee->fullName() }}
+        Cnl. Desp. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->first()->contracts[0]->employee->fullName() }}
       </div>
       <div class="font-bold">
         {{ App\Position::first()->name }}
