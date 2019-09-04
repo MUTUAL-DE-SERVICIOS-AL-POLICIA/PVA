@@ -2,6 +2,12 @@
 
 ---
 
+## [4.6.5](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.5) - 2019-09-04
+
+### Fixed
+
+* Consultant note print template
+
 ## [4.6.4](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.4) - 2019-08-28
 
 ### Added

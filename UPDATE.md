@@ -2,6 +2,12 @@
 
 ---
 
+## From [4.6.4](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.4) to [4.6.5](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.5)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
 ## From [4.6.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.3) to [4.6.4](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.4)
 
 ```sh
