@@ -1046,6 +1046,28 @@ export default {
         this.loading = true
         let res = await axios.get(`departure_reason/${reasonId}`)
         this.reasonSelected = res.data
+        if (!res.data.hasOwnProperty('date')) {
+          this.reasonSelected.date = {
+            start: {
+              editable: false,
+              visible: false
+            },
+            end: {
+              editable: false,
+              visible: false
+            }
+          },
+          this.reasonSelected.time = {
+            start: {
+              editable: false,
+              visible: false
+            },
+            end: {
+              editable: false,
+              visible: false
+            }
+          }
+        }
         this.loading = false
       } catch (e) {
         console.log(e)

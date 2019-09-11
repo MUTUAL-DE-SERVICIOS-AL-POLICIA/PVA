@@ -2,6 +2,41 @@
 
 ---
 
+## [4.6.5](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.5) - 2019-09-04
+
+### Fixed
+
+* Consultant note print template
+
+## [4.6.4](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.4) - 2019-08-28
+
+### Added
+
+* Hardcoded text to departure note printed template
+
+## [4.6.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.3) - 2019-08-23
+
+### Added
+
+* Select by departure tyes
+* Month selection on departures index view
+
+### Changed
+
+* Limit of personal departures from 2 to 4
+
+## [4.6.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.2) - 2019-08-21
+
+### Added
+
+* Merged report generator to standalone component
+
+## [4.6.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.1) - 2019-08-20
+
+### Fixed
+
+* Fixed consultant departure index and print option
+
 ## [4.6.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.0) - 2019-07-23
 
 ### Added

@@ -27,38 +27,54 @@ class DepartureController extends Controller
    */
   public function index(Request $request)
   {
-    $date = $this->current_date();
+    $date = (object)[
+      'from' => $request['from'],
+      'to' => $request['to']
+    ];
 
     $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note');
 
-    if (!$request->has('date_range')) {
-      $request['date_range'] = 'monthly';
-    }
-
-    if ($request['date_range'] == 'monthly') {
-      if ($request->has('from_date') && $request->has('to_date')) {
-        $date->from = $request['from_date'];
-        $date->to = $request['to_date'];
+    if ($request->has('approved')) {
+      if ($request['approved'] != 'all') {
+        $query = $query->whereApproved(json_decode($request['approved']));
       }
-
-      $query = $query->where(function ($subQuery) use ($date) {
-        $subQuery->where(function ($q) use ($date) {
-          return $q->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
-        })->orWhere(function ($q) use ($date) {
-          return $q->whereDate('return', '>=', $date->from)->whereDate('return', '<=', $date->to);
-        })->orWhere(function ($q) use ($date) {
-          return $q->whereDate('departure', '<=', $date->from)->whereDate('return', '>=', $date->to);
-        });
-      });
     }
 
-    if ($request->query->has('employee_id')) {
-      $query = $query->where('employee_id', intval($request['employee_id']));
+    $query = $query->where(function ($subQuery) use ($date) {
+      $subQuery->where(function ($q) use ($date) {
+        return $q->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
+      })->orWhere(function ($q) use ($date) {
+        return $q->whereDate('return', '>=', $date->from)->whereDate('return', '<=', $date->to);
+      });
+    });
+
+    $employee_id = intval($request['employee_id']);
+    if ($employee_id) {
+      $query = $query->where('employee_id', $employee_id);
     } else {
       $query = $query->join('employees', 'departures.employee_id', '=', 'employees.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note', 'employees.last_name', 'employees.mothers_last_name', 'employees.first_name', 'employees.second_name')->orderBy('employees.last_name', 'ASC');
     }
 
-    return $query->orderBy('departures.departure', 'ASC')->orderBy('departures.return', 'ASC')->get();
+    $departures = $query->orderBy('departures.departure', 'ASC')->orderBy('departures.return', 'ASC')->get();
+
+    if ($request->has('type')) {
+      $filtered = [];
+      foreach ($departures as $departure) {
+        $is_consultant = $departure->employee->consultant();
+        unset($departure->employee);
+        if (($request['type'] == 'consultant' && !$is_consultant) || ($request['type'] == 'eventual' && $is_consultant)) {
+          $departures = $departures->except($departure->id);
+        } else {
+          $filtered[] = $departure;
+        }
+      }
+
+      if ($request['type'] == 'consultant') {
+        $departures = $filtered;
+      }
+    }
+
+    return $departures;
   }
 
   /**
@@ -144,8 +160,8 @@ class DepartureController extends Controller
         'orientation' => 'portrait',
         'page-width' => '216',
         'page-height' => '279',
-        'margin-top' => '10',
-        'margin-bottom' => '10',
+        'margin-top' => '1',
+        'margin-bottom' => '0',
         'margin-left' => '25',
         'margin-right' => '25',
         'encoding' => 'UTF-8',
@@ -174,20 +190,21 @@ class DepartureController extends Controller
     return $pdf->stream($file_name);
   }
 
-  function report_print(Request $request)
+  function report_print(Request $request, $type)
   {
+    $request['type'] = $type;
+    $request['approved'] = 'all';
     $data = array('departures' => $this->index($request));
 
-    $date = (object)[];
-    if ($request->has('from_date') && $request->has('to_date')) {
-      $date->from = $request['from_date'];
-      $date->to = $request['to_date'];
-    } else {
-      $date = $this->current_date();
-    }
+    $date = (object)[
+      'from' => $request['from'],
+      'to' => $request['to']
+    ];
+
     $data['title'] = (object)[
       'name' => 'SOLICITUDES DE SALIDAS Y LICENCIAS',
-      'date' => $date
+      'date' => $date,
+      'type' => ($type == 'consultant') ? 'CONSULTORES' : 'EVENTUALES'
     ];
 
     $file_name = implode('_', ['solicitudes', 'salidas', $date->from, $date->to]) . '.pdf';
@@ -198,34 +215,18 @@ class DepartureController extends Controller
       'orientation' => 'landscape',
       'page-width' => '216',
       'page-height' => '279',
-      'margin-top' => '12',
-      'margin-bottom' => '12',
-      'margin-left' => '10',
-      'margin-right' => '10',
+      'margin-top' => '8',
+      'margin-bottom' => '16',
+      'margin-left' => '5',
+      'margin-right' => '5',
       'encoding' => 'UTF-8',
       'footer-html' => $footerHtml,
-      'user-style-sheet' => public_path('css/payroll-print.min.css')
+      'user-style-sheet' => public_path('css/report-print.min.css')
     ];
 
     $pdf = \PDF::loadView('departure.report', $data);
     $pdf->setOptions($options);
 
     return $pdf->stream($file_name);
-  }
-
-  private function current_date()
-  {
-    $current = CarbonImmutable::now();
-    if ($current->day <= 19) {
-      return (object)[
-        'from' => $current->subMonths(1)->days(20)->startOfDay(),
-        'to' => $current->days(19)->endOfDay()
-      ];
-    } else {
-      return (object)[
-        'from' => $current->days(20)->startOfDay(),
-        'to' => $current->addMonths(1)->days(19)->endOfDay()
-      ];
-    }
   }
 }

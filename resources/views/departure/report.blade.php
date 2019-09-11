@@ -1,71 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        @php($from = Carbon::parse($title->date->from)->ISOFormat('L'))
-        @php($to = Carbon::parse($title->date->to)->ISOFormat('L'))
-        <title>{{ $title->name }} {{ $from }} {{ $to }}</title>
-    </head>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>PLATAFORMA VIRTUAL ADMINISTRATIVA - MUSERPOL </title>
+    <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all"/>
+    <style>
+      .border-left-white {
+        border-left: 1px solid white;
+      }
+    </style>
+  </head>
 
-    <body>
-        <div>
-            <div class="header-left">
-                <img id="header-image" src="{{ public_path().'/img/logo.png'}}">
-            </div>
-            <div class="header-center">
-                <h2>
-                    {{ $title->name }}
-                </h2>
-                <h3>DESDE {{ $from }} HASTA {{ $to }}</h3>
-            </div>
-        </div>
-
-        <table align="center">
-            <thead>
-                <tr>
-                    <th colspan="2" style="border-left: 1px solid white; border-top: 1px solid white; background-color: white;"></th>
-                    <th colspan="7">SOLICITUD</th>
-                </tr>
-                <tr>
-                    <th width="1%">N°</th>
-                    <th width="20%">TRABAJADOR</th>
-                    <th width="5%">TIPO</th>
-                    <th width="10%">MOTIVO</th>
-                    <th width="10%" colspan="2">DESDE</th>
-                    <th width="10%" colspan="2">HASTA</th>
-                    <th width="5%">ESTADO</th>
-                </tr>
-            </thead>
-            <tbody style="font-size: 1.3em;">
-            @if (count($departures) > 0)
-                @foreach ($departures as $i => $departure)
-                    <tr>
-                        <td>{{ ++$i }}</td>
-                        <td class="name">{{ $departure->employee->fullName("uppercase", "last_name_first") }}</td>
-                        <td>{{ $departure->departure_reason->departure_group->name }}</td>
-                        <td>{{ $departure->departure_reason->name }}</td>
-                        @php ($from = Carbon::parse($departure->departure))
-                        @php ($to = Carbon::parse($departure->return))
-                        <td>{{ $from->ISOFormat('L') }}</td>
-                        <td>{{ $from->format('H:i') }}</td>
-                        <td>{{ $to->ISOFormat('L') }}</td>
-                        <td>{{ $to->format('H:i') }}</td>
-                        <td>
-                            @if($departure->approved === true)
-                                {{ 'APROBADO' }}
-                            @elseif($departure->approved === false)
-                                {{ 'RECHAZADO' }}
-                            @elseif($departure->approved === null)
-                                {{ 'PENDIENTE' }}
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
-            @endif
+  <body style="border: 0; border-radius: 0;">
+    <table class="w-100 uppercase">
+      <tr>
+        <th class="w-15 text-left no-padding no-margins align-middle">
+          <div class="text-left">
+            <img src="{{ public_path("/img/logo.png") }}" class="w-50">
+          </div>
+        </th>
+        <th class="w-70 align-top">
+          <div class="font-hairline leading-tight text-xs" >
+            <div>MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</div>
+            <div>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</div>
+            <div>UNIDAD DE RECURSOS HUMANOS</div>
+          </div>
+        </th>
+        <th class="w-15 no-padding no-margins align-top">
+          <table class="table-code no-padding no-margins text-xxxs uppercase">
+            <tbody>
+              <tr>
+                  <td class="text-center bg-grey-darker text-white">Desde </td>
+                  <td> {{ Carbon::parse($title->date->from)->ISOFormat('L') }} </td>
+              </tr>
+              <tr>
+                <td class="text-center bg-grey-darker text-white">Hasta</td>
+                <td> {{ Carbon::parse($title->date->to)->ISOFormat('L') }} </td>
+              </tr>
+              <tr>
+                <td class="text-center bg-grey-darker text-white">Tipo</td>
+                <td> {{ $title->type }} </td>
+              </tr>
             </tbody>
-        </table>
-    </body>
+          </table>
+        </th>
+      </tr>
+    </table>
+    <hr class="m-b-10" style="margin-top: 0; padding-top: 0;">
+    <div class="block">
+      <div class="font-semibold leading-tight text-center m-b-10 text-xs">{{ $title->name }}</div>
+    </div>
 
+    <table class="table-info w-100 m-b-10 uppercase text-xs">
+      <thead>
+        <tr>
+          <th class="text-center bg-grey-darker text-white">N°</th>
+          <th class="text-center bg-grey-darker text-white border-left-white">TRABAJADOR</th>
+          <th class="text-center bg-grey-darker text-white border-left-white">TIPO</th>
+          <th class="text-center bg-grey-darker text-white border-left-white">MOTIVO</th>
+          <th class="text-center bg-grey-darker text-white border-left-white" colspan="2">DESDE</th>
+          <th class="text-center bg-grey-darker text-white border-left-white" colspan="2">HASTA</th>
+          <th class="text-center bg-grey-darker text-white border-left-white">ESTADO</th>
+        </tr>
+      </thead>
+      <tbody>
+      @if (count($departures) > 0)
+        @foreach ($departures as $i => $departure)
+          @php
+            if ($departure->approved === true) {
+              $text = 'APROBADO';
+              $color_class = '';
+            } elseif ($departure->approved === false) {
+              $text = 'RECHAZADO';
+              $color_class = 'bg-grey';
+            } elseif ($departure->approved === null) {
+              $text = 'PENDIENTE';
+              $color_class = 'bg-grey-lightest';
+            }
+          @endphp
+          <tr class="font-thin {{ $color_class }}">
+            <td class="text-center">{{ ++$i }}</td>
+            <td class="text-center">{{ $departure->employee->fullName("uppercase", "last_name_first") }}</td>
+            <td class="text-center">{{ $departure->departure_reason->departure_group->name }}</td>
+            <td class="text-center">{{ $departure->departure_reason->name }}</td>
+            @php ($from = Carbon::parse($departure->departure))
+            @php ($to = Carbon::parse($departure->return))
+            <td class="text-center">{{ $from->ISOFormat('L') }}</td>
+            <td class="text-center">{{ $from->format('H:i') }}</td>
+            <td class="text-center">{{ $to->ISOFormat('L') }}</td>
+            <td class="text-center">{{ $to->format('H:i') }}</td>
+            <td class="text-center">{{ $text }}</td>
+          </tr>
+        @endforeach
+      @endif
+      </tbody>
+    </table>
+  </body>
 </html>

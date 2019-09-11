@@ -1,9 +1,12 @@
 <template>
   <v-dialog persistent v-model="show" max-width="900px" @keydown.esc="close" scrollable>
-    <v-btn slot="activator" class="mr-5" color="info">REPORTE</v-btn>
+    <v-btn slot="activator" color="info">
+      <v-icon>print</v-icon>
+      <div class="pl-2">Reporte</div>
+    </v-btn>
     <v-card>
       <v-toolbar dark color="secondary">
-        <v-toolbar-title class="white--text">Generar reporte para {{ type.name }} de {{ $moment(from).format('L') }} a {{ $moment(to).format('L') }}</v-toolbar-title>
+        <v-toolbar-title class="white--text">Generar reporte para {{ type.name }} del {{ $moment(from).format('L') }} a {{ $moment(to).format('L') }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click.native="close" v-if="!loading">
           <v-icon>close</v-icon>
@@ -66,10 +69,11 @@
 </template>
 
 <script>
-import Loading from '../Loading'
+import Loading from './Loading'
 
 export default {
-  name: 'AttendancePrint',
+  name: 'ReportPrint',
+  props: ['url'],
   components: {
     Loading
   },
@@ -91,8 +95,8 @@ export default {
   },
   beforeMount() {
     this.type = this.types[0]
-    this.from = this.$moment().startOf('month').format('YYYY-MM-DD')
-    this.to = this.$moment().endOf('month').format('YYYY-MM-DD')
+    this.from = this.$moment(this.$store.getters.dateNow).startOf('month').format('YYYY-MM-DD')
+    this.to = this.$moment(this.$store.getters.dateNow).endOf('month').format('YYYY-MM-DD')
   },
   methods: {
     close() {
@@ -103,7 +107,7 @@ export default {
         this.loading = true
         let res = await axios({
           method: "GET",
-          url: `attendance/print/${this.type.value}`,
+          url: `${this.url}/${this.type.value}`,
           responseType: "arraybuffer",
           params: {
             from: this.from,

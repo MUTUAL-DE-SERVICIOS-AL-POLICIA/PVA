@@ -7,9 +7,9 @@
             v-model="departureTypeSelected"
             :items="departureTypes"
             item-text="dislayName"
-            item-value="dateRange"
+            item-value="value"
             class="subheading font-weight-medium"
-            :label="$route.query.departureType == 'all' ? `Aprobar Solicitudes` : `Solicitud de Permisos`"
+            label="Solicitudes"
           ></v-select>
         </v-toolbar-title>
         <v-tooltip color="white" role="button" bottom>
@@ -21,18 +21,9 @@
           </div>
         </v-tooltip>
         <v-spacer></v-spacer>
-        <v-divider
-          class="mx-2"
-          inset
-          vertical
-        ></v-divider>
-        <v-btn color="error" v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" @click.native="print('report')">
-          <v-icon>print</v-icon>
-          <div class="pl-2">Reporte</div>
-        </v-btn>
         <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
           <v-chip
-            :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
+            v-if="!$store.getters.consultant" :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
             class="mr-3"
           >
             <v-avatar
@@ -42,7 +33,7 @@
             <div class="subheading font-weight-regular">Hrs/Mes</div>
           </v-chip>
           <v-chip
-            :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
+            v-if="!$store.getters.consultant" :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
             class="mr-3"
           >
             <v-avatar
@@ -51,9 +42,29 @@
             >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
             <div class="subheading font-weight-regular">Días/Año</div>
           </v-chip>
-          <DepartureEdit :bus="bus"></DepartureEdit>
-          <RemoveItem :bus="bus"/>
         </div>
+        <ReportPrint v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" url="departure/report/print"/>
+        <v-divider
+          class="mx-2"
+          inset
+          vertical
+        ></v-divider>
+        <v-flex xs2 v-show="$route.query.departureType == 'all'">
+          <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Buscar"
+            single-line
+            hide-details
+            full-width
+            clearable
+          ></v-text-field>
+        </v-flex>
+        <v-btn color="info" @click="showDate = !showDate">
+          {{ $moment(this.date).format('MMMM') }}
+        </v-btn>
+        <DepartureEdit class="ml-3" :bus="bus" v-show="$route.query.departureType == 'user'"></DepartureEdit>
+        <RemoveItem :bus="bus"/>
       </v-toolbar>
       <div v-if="loading">
         <Loading/>
@@ -64,6 +75,7 @@
         :items="departures"
         :loading="loading"
         :rows-per-page-items="[20,30,40,{text:'TODO',value:-1}]"
+        :search="search"
         disable-initial-sort
         expand
         class="elevation-1"
@@ -76,14 +88,20 @@
             <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] HH:mm') }}</td>
             <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] HH:mm') }}</td>
             <td class="text-xs-center bordered">
-              <v-layout align-center justify-center column fill-height v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
-                <v-switch
-                  value
-                  :input-value="props.item.approved"
-                  color="info"
-                  @change="switchActive(props.item)"
-                ></v-switch>
-              </v-layout>
+              <div v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
+                <v-tooltip top v-show="props.item.approved === null || props.item.approved === false">
+                  <v-btn slot="activator" small icon color="success" @click.native="switchActive(props.item.id, true)">
+                    <v-icon>check</v-icon>
+                  </v-btn>
+                  <span>Aprobar</span>
+                </v-tooltip>
+                <v-tooltip top v-show="props.item.approved === null || props.item.approved === true">
+                  <v-btn slot="activator" small icon color="error" @click.native="switchActive(props.item.id, false)">
+                    <v-icon>clear</v-icon>
+                  </v-btn>
+                  <span>Rechazar</span>
+                </v-tooltip>
+              </div>
               <div v-else>
                 <v-tooltip top>
                   <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
@@ -123,6 +141,19 @@
     <template v-else>
       <ManteinanceDialog positionGroup="la Unidad de Recursos Humanos"></ManteinanceDialog>
     </template>
+
+    <v-dialog
+      v-model="showDate"
+      width="460"
+    >
+      <v-date-picker
+        v-model="date"
+        :landscape="true"
+        type="month"
+        locale="es-BO"
+        :max="($route.query.departureType == 'user' && !$store.getters.consultant) ? $moment($store.getters.dateNow).add(1, 'months').format() : $store.getters.dateNow"
+      ></v-date-picker>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -131,6 +162,7 @@ import Vue from 'vue'
 import Loading from '../Loading'
 import RemoveItem from "../RemoveItem"
 import DepartureEdit from './DepartureEdit'
+import ReportPrint from '../ReportPrint'
 import ManteinanceDialog from "../ManteinanceDialog"
 
 export default {
@@ -139,19 +171,29 @@ export default {
     Loading,
     RemoveItem,
     DepartureEdit,
+    ReportPrint,
     ManteinanceDialog
   },
   data() {
     return {
       loading: true,
       bus: new Vue(),
-      departureTypeSelected: 'monthly',
+      search: '',
+      date: this.$store.getters.dateNow,
+      showDate: false,
+      departureTypeSelected: 'null',
       departureTypes: [
         {
-          dateRange: 'monthly',
-          dislayName: 'MES ACTUAL'
+          value: 'null',
+          dislayName: 'PENDIENTES'
         }, {
-          dateRange: 'annually',
+          value: true,
+          dislayName: 'APROBADAS'
+        }, {
+          value: false,
+          dislayName: 'RECHAZADAS'
+        }, {
+          value: 'all',
           dislayName: 'TODAS'
         }
       ],
@@ -171,14 +213,14 @@ export default {
       headers: [
         {
           text: 'Tipo',
-          value: '',
+          value: 'mothers_last_name',
           align: 'center',
           sortable: false
         }, {
           text: 'Motivo',
-          value: 'departure_reason_id',
+          value: 'first_name',
           align: 'center',
-          sortable: true
+          sortable: false
         }, {
           text: 'Desde',
           value: 'departure',
@@ -191,9 +233,9 @@ export default {
           sortable: true
         }, {
           text: 'Acciones',
-          value: this.$route.query.departureType == 'all' ? 'approved' : '',
+          value: 'second_name',
           align: 'center',
-          sortable: this.$route.query.departureType == 'all' ? true : false
+          sortable: false
         }
       ]
     }
@@ -201,10 +243,39 @@ export default {
   computed: {
     manteinanceMode() {
       return JSON.parse(process.env.MIX_DEPARTURE_MANTEINANCE_MODE)
+    },
+    dateRange() {
+      let range = {
+        from: null,
+        to: this.$moment(this.date)
+      }
+      if (this.$route.query.departureType == 'all') {
+        range.from = range.to.clone().subtract(1, 'months').date(20).startOf('day').format()
+        range.to = range.to.endOf('month').format()
+      } else {
+        if (this.$store.getters.consultant) {
+          range.from = range.to.clone().date(1).startOf('day').format()
+          range.to = range.to.endOf('month').format()
+        } else {
+          if (range.to.date() < 20) {
+            range.from = range.to.clone().subtract(1, 'months').date(20).startOf('day').format()
+            range.to = range.to.date(19).endOf('day').format()
+          } else {
+            range.from = range.to.clone().date(20).startOf('day').format()
+            range.to = range.to.add(1, 'months').date(19).endOf('day').format()
+          }
+        }
+      }
+      return range
     }
   },
   beforeMount() {
-    if (this.$route.query.departureType == 'user') this.getRemainingDepartures()
+    if (this.$route.query.departureType == 'user') {
+      this.getRemainingDepartures()
+      this.departureTypeSelected = 'all'
+    } else {
+      this.departureTypeSelected = 'null'
+    }
   },
   mounted() {
     this.bus.$on('printDeparture', departureId => {
@@ -222,16 +293,32 @@ export default {
     }
     this.getDepartureGroups()
     this.getDepartureReasons()
-    this.getDepartures(this.$route.query.departureType)
+    this.getDepartures()
   },
   watch: {
-    '$route.query.departureType'(val) {
-      if (val == 'user') this.getRemainingDepartures()
-      this.getDepartures(val)
+    '$route.query.departureType'(newVal, oldVal) {
+      if (newVal == 'user') {
+        this.departureTypeSelected = 'all'
+        this.getRemainingDepartures()
+      } else {
+        this.departureTypeSelected = 'null'
+      }
+      if (newVal != oldVal) {
+        this.getDepartures(newVal)
+      }
       this.setHeaders()
     },
-    'departureTypeSelected'(val) {
-      this.getDepartures(this.$route.query.departureType)
+    'departureTypeSelected'(newVal, oldVal) {
+      this.search = ''
+      if (newVal != oldVal) {
+        this.getDepartures()
+      }
+    },
+    date: function(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.getDepartures()
+      }
+      this.showDate = false
     }
   },
   methods: {
@@ -240,7 +327,7 @@ export default {
         if (this.headers.findIndex(o => o.text == 'Nombres') == -1) {
           this.headers.unshift({
             text: 'Nombres',
-            value: 'employee.last_name',
+            value: 'last_name',
             align: 'center',
             sortable: true
           })
@@ -260,6 +347,7 @@ export default {
     async getLastContract(id) {
       try {
         let res = await axios.get(`employee/${id}/contract`)
+        console.log (res.data)
         return res.data
       } catch (e) {
         console.log(e)
@@ -268,8 +356,13 @@ export default {
     async expand(props) {
       if (!props.expanded) {
         let contract = await this.getLastContract(props.item.employee_id)
-        props.item.position = contract.position.name,
-        props.item.positionGroup = contract.position.position_group.name
+        if (contract.hasOwnProperty('consultant_position_id')) {
+          props.item.position = contract.consultant_position.name,
+          props.item.positionGroup = contract.consultant_position.position_group.name
+        } else {
+          props.item.position = contract.position.name,
+          props.item.positionGroup = contract.position.position_group.name
+        }
       }
       props.expanded = !props.expanded
     },
@@ -278,16 +371,16 @@ export default {
         this.loading = true
         let res = await axios({
           method: 'GET',
-          url: id == 'report' ? `departure/report/print` : `departure/print/${id}`,
+          url: `departure/print/${id}`,
           responseType: "arraybuffer"
-        });
+        })
         let blob = new Blob([res.data], {
           type: "application/pdf"
-        });
-        printJS(window.URL.createObjectURL(blob));
+        })
+        printJS(window.URL.createObjectURL(blob))
         this.loading = false
       } catch (e) {
-        console.log(e);
+        console.log(e)
         this.loading = false
       }
     },
@@ -328,27 +421,18 @@ export default {
         console.log(e)
       }
     },
-    async getDepartures(type) {
+    async getDepartures(type = this.$route.query.departureType) {
       try {
         this.loading = true
-        let res
-        switch (type) {
-          case 'all':
-            res = await axios.get(`departure`, {
-              params: {
-                date_range: this.departureTypeSelected
-              }
-            })
-            break;
-          case 'user':
-            res = await axios.get(`departure`, {
-              params: {
-                employee_id: this.$store.getters.id,
-                date_range: this.departureTypeSelected
-              }
-            })
-            break;
-        }
+        let range = this.dateRange
+        let res = await axios.get(`departure`, {
+          params: {
+            from: range.from,
+            to: range.to,
+            employee_id: type == 'user' ? this.$store.getters.id : null,
+            approved: this.departureTypeSelected
+          }
+        })
         if (res) this.departures = res.data
         this.loading = false
       } catch (e) {
@@ -356,17 +440,21 @@ export default {
         this.loading = false
       }
     },
-    async switchActive(departure) {
+    async switchActive(id, state) {
       try {
-        let state = (departure.approved === null || departure.approved === false) ? true : false
-        let res = await axios.patch(`departure/${departure.id}`, {
+        let res = await axios.patch(`departure/${id}`, {
           approved: state
         })
-        this.departures[this.departures.findIndex(o => o.id == departure.id)].approved = state
-        if (state === true) {
-          this.toastr.success('Aprobado')
+        if (this.departureTypeSelected == 'all') {
+          console.log()
+          this.departures[this.departures.findIndex(o => o.id == id)].approved = res.data.approved
         } else {
-          this.toastr.error('Rechazado')
+          this.departures = this.departures.filter(o => o.id != id)
+        }
+        if (state === true) {
+          this.toastr.success('Solicitud aprobada')
+        } else {
+          this.toastr.warning('Solicitud rechazada')
         }
       } catch (e) {
         console.log(e)

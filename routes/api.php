@@ -435,7 +435,7 @@ Route::group([
       Route::patch('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@update')->name('employee_discount_update');
       Route::delete('employee_discount/{id}', 'Api\V1\EmployeeDiscountController@destroy')->name('employee_discount_delete');
       // Departure
-      Route::get('departure/report/print', 'Api\V1\DepartureController@report_print')->name('report_print');
+      Route::get('departure/report/print/{type}', 'Api\V1\DepartureController@report_print')->name('report_print');
     });
 
     // FINANCIERA-RRHH routes

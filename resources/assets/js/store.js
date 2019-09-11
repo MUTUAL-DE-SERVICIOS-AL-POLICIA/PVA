@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   state: {
@@ -6,6 +6,7 @@ export default {
     user: localStorage.getItem('user') || null,
     role: localStorage.getItem('role') || null,
     permissions: localStorage.getItem('permissions') || null,
+    consultant: localStorage.getItem('consultant') || null,
     ldapAuth: JSON.parse(process.env.MIX_LDAP_AUTHENTICATION),
     dateNow: moment().format('Y-MM-DD'),
     token: {
@@ -28,6 +29,9 @@ export default {
     },
     permissions(state) {
       return JSON.parse(state.permissions)
+    },
+    consultant(state) {
+      return JSON.parse(state.consultant)
     },
     dateNow(state) {
       return state.dateNow
@@ -58,18 +62,21 @@ export default {
       state.user = null
       state.role = null
       state.permissions = null
+      state.consultant = null
     },
     'login': function (state, data) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("token_type", data.token_type);
-      localStorage.setItem("id", JSON.stringify(data.id));
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("role", JSON.stringify(data.role));
-      localStorage.setItem("permissions", JSON.stringify(data.permissions));
-      state.user = localStorage.getItem('id');
-      state.user = localStorage.getItem('user');
-      state.role = localStorage.getItem('role');
-      state.permissions = localStorage.getItem('permissions');
+      localStorage.setItem("token", data.token)
+      localStorage.setItem("token_type", data.token_type)
+      localStorage.setItem("id", JSON.stringify(data.id))
+      localStorage.setItem("user", JSON.stringify(data.user))
+      localStorage.setItem("role", JSON.stringify(data.role))
+      localStorage.setItem("consultant", JSON.stringify(data.consultant))
+      localStorage.setItem("permissions", JSON.stringify(data.permissions))
+      state.user = localStorage.getItem('id')
+      state.user = localStorage.getItem('user')
+      state.role = localStorage.getItem('role')
+      state.permissions = localStorage.getItem('permissions')
+      state.consultant = localStorage.getItem('consultant')
       state.token = {
         type: localStorage.getItem('token_type'),
         value: localStorage.getItem('token')
@@ -77,12 +84,12 @@ export default {
       axios.defaults.headers.common['Authorization'] = `${state.token.type} ${state.token.value}`
     },
     'setDate': function(state, newValue) {
-      state.dateNow = newValue;
+      state.dateNow = newValue
     }
   },
   actions: {
     logout(context) {
       context.commit('logout')
-    },
+    }
   }
 }

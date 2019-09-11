@@ -3,6 +3,7 @@ use \Carbon\Carbon;
 use \Milon\Barcode\DNS2D;
 
 $contract = $departure->employee->contract_in_date($departure->departure);
+$consultant = $departure->employee->consultant();
 ?>
 
 <!DOCTYPE html>
@@ -114,7 +115,11 @@ $contract = $departure->employee->contract_in_date($departure->departure);
           <td>ÁREA</td>
         </tr>
         <tr>
-          <td class="{{ Util::departure_string_length($contract->position->position_group->name) }} data-row py-5 text-xs">{{ $contract->position->position_group->name }}</td>
+          @if ($consultant)
+            <td class="{{ Util::departure_string_length($contract->consultant_position->position_group->name) }} data-row py-5 text-xs">{{ $contract->consultant_position->position_group->name }}</td>
+          @else
+            <td class="{{ Util::departure_string_length($contract->position->position_group->name) }} data-row py-5 text-xs">{{ $contract->position->position_group->name }}</td>
+          @endif
         </tr>
       </table>
       <table class="table-info w-49 m-b-5 text-center uppercase" style="float: right; margin-left: 1px;">
@@ -122,7 +127,11 @@ $contract = $departure->employee->contract_in_date($departure->departure);
           <td class="w-50" colspan='2'>CARGO</td>
         </tr>
         <tr>
-          <td class="{{ Util::departure_string_length($contract->position->name) }} data-row py-5 text-xs" colspan='2'>{{ $contract->position->name }}</td>
+          @if ($consultant)
+            <td class="{{ Util::departure_string_length($contract->consultant_position->name) }} data-row py-5" colspan='2'>{{ $contract->consultant_position->name }}</td>
+          @else
+            <td class="{{ Util::departure_string_length($contract->position->name) }} data-row py-5 text-xs" colspan='2'>{{ $contract->position->name }}</td>
+          @endif
         </tr>
         <tr class="bg-grey-darker text-xxxs text-white">
           <td class="w-50">DESDE</td>

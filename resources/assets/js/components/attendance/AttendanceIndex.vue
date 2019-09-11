@@ -17,7 +17,7 @@
         <v-spacer></v-spacer>
         <AttendanceSync v-if="$store.getters.role == 'admin'"/>
         <AttendanceErase v-if="$store.getters.role == 'admin'"/>
-        <AttendancePrint v-if="['admin', 'rrhh'].includes($store.getters.role)"/>
+        <ReportPrint v-if="['admin', 'rrhh'].includes($store.getters.role)" url="attendance/print"/>
         <v-btn color="primary" @click="showDate = !showDate">
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
@@ -111,7 +111,7 @@ import ManteinanceDialog from "../ManteinanceDialog"
 import AttendanceSync from "./AttendanceSync"
 import AttendanceErase from "./AttendanceErase"
 import AttendanceAdd from "./AttendanceAdd"
-import AttendancePrint from "./AttendancePrint"
+import ReportPrint from "../ReportPrint"
 
 export default {
   name: 'AttendanceIndex',
@@ -121,7 +121,7 @@ export default {
     AttendanceSync,
     AttendanceErase,
     AttendanceAdd,
-    AttendancePrint
+    ReportPrint
   },
   data() {
     return {

@@ -3,6 +3,7 @@ use \Carbon\Carbon;
 use \Milon\Barcode\DNS2D;
 
 $contract = $departure->employee->contract_in_date($departure->departure);
+$consultant = $departure->employee->consultant();
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +40,11 @@ $contract = $departure->employee->contract_in_date($departure->departure);
     <hr width="100%">
     <div class="text-right" style="margin-top: 1cm;">
       <div>
-        {{ ucwords(mb_strtolower($contract->position->position_group->company_address->city->name)) }}, {{ Carbon::parse($departure->created_at)->ISOFormat('LL') }}
+        @if ($consultant)
+          {{ ucwords(mb_strtolower($contract->consultant_position->position_group->company_address->city->name)) }}, {{ Carbon::parse($departure->created_at)->ISOFormat('LL') }}
+        @else
+          {{ ucwords(mb_strtolower($contract->position->position_group->company_address->city->name)) }}, {{ Carbon::parse($departure->created_at)->ISOFormat('LL') }}
+        @endif
       </div>
       <div>
         {{ $departure->cite }}
@@ -50,7 +55,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
         Señor:
       </div>
       <div>
-        Cnl. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->first()->contracts[0]->employee->fullName() }}
+        Cnl. Desp. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->first()->contracts[0]->employee->fullName() }}
       </div>
       <div class="font-bold">
         {{ App\Position::first()->name }}
@@ -199,8 +204,8 @@ $contract = $departure->employee->contract_in_date($departure->departure);
           {{ $employee->fullName() }}
         </div>
         <div>
-          @if ($employee->consultant())
-            {{ $employee->last_consultant_contract()->position->name }}
+          @if ($consultant)
+            {{ $employee->last_consultant_contract()->consultant_position->name }}
           @else
             {{ $employee->last_contract()->position->name }}
           @endif
