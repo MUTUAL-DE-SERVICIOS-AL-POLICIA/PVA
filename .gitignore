@@ -7,7 +7,7 @@ npm-debug.log
 yarn-error.log
 
 # Laradock submodule
-laradock
+laradock/
 
 # Laravel 4 specific
 bootstrap/compiled.php

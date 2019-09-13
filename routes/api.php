@@ -460,4 +460,18 @@ Route::group([
       Route::resource('supply_request', 'Api\V1\SupplyRequestController')->only(['index', 'update']);
     });
   });
+
+//_W0:_______________________________
+  //Provider
+  Route::resource('provider_list', 'Api\V1\ProviderController')->only(['show']);
+  Route::delete('provider/{id}', 'Api\V1\ProviderController@destroy')->name('provider_delete');
+  Route::get('provider', 'Api\V1\ProviderController@getListAll')->name('provider_list');
+  Route::get('provider/{id}', 'Api\V1\ProviderController@getOne')->name('provider_one');
+  Route::patch('provider/{id}', 'Api\V1\ProviderController@update')->name('provider_update');
+  Route::post('provider', 'Api\V1\ProviderController@store')->name('provider_store');
+  //Entrynote
+  Route::resource('entrynote_list', 'Api\V1\EntrynoteController')->only(['show']);
+//_W1:_______________________________
+
+
 });

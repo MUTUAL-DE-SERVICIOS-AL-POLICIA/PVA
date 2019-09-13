@@ -70,7 +70,8 @@
     "params": {
       "departureType": "user"
     }
-  }, {
+  },
+  {
     "title": "Almacén",
     "icon": "shopping_cart",
     "permission": "read-supply-requests",
@@ -90,6 +91,21 @@
         "permission": "read-supplies",
         "params": {}
       }
+    ,{
+        "href": "providerIndex",
+        "title": "Proveedores",
+        "icon": "local_shipping",
+        "permission": "read-provider",
+        "params": {}
+      }
+    ,{
+        "href": "entrynoteIndex",
+        "title": "Nota de ingreso",
+         "icon": "note_add",
+        "permission": "read-entrynote",
+        "params": {}
+      }
+
     ]
   }, {
     "href": "supplyRequestIndex",
