@@ -7,7 +7,7 @@ npm-debug.log
 yarn-error.log
 
 # Laradock submodule
-laradock/
+laradock
 
 # Laravel 4 specific
 bootstrap/compiled.php
@@ -41,3 +41,6 @@ public/mix-manifest.json
 
 # Test files
 *.test
+
+docs/docker/Dockerfile-PHP-FPM
+docs/docker/Dockerfile-Workspace

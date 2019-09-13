@@ -15,7 +15,18 @@ class CreateEntrynotesTable extends Migration
     {
         Schema::create('entrynotes', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
+          $table->unsignedInteger('providers_id');
+          $table->foreign('providers_id')->references('id')->on('providers');
+          $table->string('c31')->nullable();
+          $table->string('bill1')->nullable();
+          $table->string('bill2')->nullable();
+          $table->string('reentry_state')->nullable();
+          $table->string('reentry_date_c31')->nullable();
+          $table->string('reentry_date_entrynote')->nullable();
+          $table->string('reentry_date_bill')->nullable();
+          $table->timestamps();
+          $table->softDeletes();
+
         });
     }
 
@@ -26,6 +37,10 @@ class CreateEntrynotesTable extends Migration
      */
     public function down()
     {
+
+      Schema::table('providers', function(Blueprint $table){
+        $table->dropForeign(['providers_id']);
+      });
         Schema::dropIfExists('entrynotes');
     }
 }
