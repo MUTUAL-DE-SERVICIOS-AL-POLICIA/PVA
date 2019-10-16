@@ -2,6 +2,14 @@
 
 ---
 
+## From [4.6.5](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.5) to [4.6.6](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.6)
+
+```sh
+composer install --prefer-dist --no-dev
+```
+
+* Set count to departure reasons on departure configuration view
+
 ## From [4.6.4](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.4) to [4.6.5](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.5)
 
 ```sh

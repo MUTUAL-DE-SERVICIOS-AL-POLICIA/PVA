@@ -21,7 +21,7 @@ class PositionGroupCompanyAddressController extends Controller {
 	 */
 	public function get_addresses($position_group_id) {
 		$position_group = PositionGroup::findOrFail($position_group_id);
-		return $position_group->addresses;
+		return $position_group->company_address;
 	}
 
 	/**
@@ -34,8 +34,18 @@ class PositionGroupCompanyAddressController extends Controller {
 	public function get_address($position_group_id, $company_address_id) {
 		$position_group = PositionGroup::findOrFail($position_group_id);
 		$company_address = CompanyAddress::findOrFail($company_address_id);
-		if ($position_group->addresses->contains($company_address)) {
+		if ($position_group->company_address_id == $company_address_id) {
 			return $company_address;
+		} else {
+			return App::abort(404);
+		}
+	}
+
+	public function get_city($position_group_id, $company_address_id) {
+		$position_group = PositionGroup::findOrFail($position_group_id);
+		$company_address = CompanyAddress::findOrFail($company_address_id);
+		if ($position_group->company_address_id == $company_address_id) {
+			return $company_address->city;
 		} else {
 			return App::abort(404);
 		}
