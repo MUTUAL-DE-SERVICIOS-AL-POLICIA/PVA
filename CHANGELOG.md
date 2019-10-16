@@ -2,6 +2,12 @@
 
 ---
 
+## [4.6.6](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.6) - 2019-10-16
+
+### Added
+
+* Count to departure reasons
+
 ## [4.6.5](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.5) - 2019-09-04
 
 ### Fixed

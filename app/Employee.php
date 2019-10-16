@@ -181,8 +181,19 @@ class Employee extends Model
     $total_time_records = DepartureReason::where('name', 'REGULARIZACIÓN DE MARCADO')->first()->hours;
 
     $time_remaining = 0;
+    $monthly_reason = DepartureReason::whereName('PERMISO POR HORAS')->first();
 
-    if ($departures->count() < 4) {
+    $response = [
+      'remaining_records' => 0,
+      'time_remaining' => 0,
+      'options' => []
+    ];
+
+    if (!$monthly_reason->count) {
+      return $response;
+    }
+
+    if ($departures->count() < $monthly_reason->count) {
       foreach($departures as $d) {
         $departure = Carbon::parse($d->departure);
         $return = Carbon::parse($d->return);
@@ -202,11 +213,19 @@ class Employee extends Model
           break;
         case 60:
           $response['options'] = [
-            ['text' => 'Media hora', 'value' => 0.5],
             ['text' => 'Una hora', 'value' => 1]
           ];
+          if ($monthly_reason->count > 2) {
+            array_unshift($response['options'], ['text' => 'Media hora', 'value' => 0.5]);
+          }
           break;
         case 90:
+          if ($monthly_reason->count <= 2) {
+            $response['options'] = [
+              ['text' => 'Hora y media', 'value' => 1.5]
+            ];
+            break;
+          }
         case 120:
           $response['options'] = [
             ['text' => 'Media hora', 'value' => 0.5],
@@ -217,12 +236,6 @@ class Employee extends Model
         default:
           $response['options'] = [];
       }
-    } else {
-      $response = [
-        'remaining_records' => 0,
-        'time_remaining' => 0,
-        'options' => []
-      ];
     }
     return $response;
   }

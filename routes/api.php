@@ -34,6 +34,37 @@ Route::group([
   Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
   // Employee
   Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
+  // Position Group
+  Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
+  Route::group([
+    'prefix' => 'position_group/{superior_id}',
+  ], function () {
+    Route::get('/dependency', 'Api\V1\DependencyPositionGroupController@get_dependency')->name('position_group_dependency');
+    Route::get('/dependents', 'Api\V1\DependencyPositionGroupController@get_dependents')->name('position_group_dependents');
+    Route::group([
+      'prefix' => '/dependents/{dependent_id}',
+    ], function () {
+      Route::get('', 'Api\V1\DependencyPositionGroupController@get_dependent')->name('position_group_dependent_details');
+    });
+  });
+  Route::group([
+    'prefix' => 'position_group/{position_group_id}/company_address',
+  ], function () {
+    Route::get('', 'Api\V1\PositionGroupCompanyAddressController@get_addresses')->name('position_group_company_address_list');
+    Route::group([
+      'prefix' => '/{company_address_id}',
+    ], function () {
+      Route::get('', 'Api\V1\PositionGroupCompanyAddressController@get_address')->name('position_group_company_address_details');
+      Route::get('/city', 'Api\V1\PositionGroupCompanyAddressController@get_city')->name('position_group_company_address_city');
+    });
+  });
+  // Position
+  Route::get('position', 'Api\V1\PositionController@index')->name('positions_list');
+  Route::get('position/{id}', 'Api\V1\PositionController@show')->name('position_details');
+  // Consultant Position
+  Route::get('consultant_position', 'Api\V1\ConsultantPositionController@index')->name('consultant_positions_list');
+  Route::get('consultant_position/{id}', 'Api\V1\ConsultantPositionController@show')->name('consultant_position_details');
+  Route::get('consultant_position/find/with_name', 'Api\V1\ConsultantPositionController@find')->name('consultant_positions_find');
   // With credentials
   Route::group([
     'middleware' => 'jwt.auth'
@@ -62,13 +93,6 @@ Route::group([
     // Charge
     Route::get('charge', 'Api\V1\ChargeController@index')->name('charges_list');
     Route::get('charge/{id}', 'Api\V1\ChargeController@show')->name('charge_details');
-    // Position
-    Route::get('position', 'Api\V1\PositionController@index')->name('positions_list');
-    Route::get('position/{id}', 'Api\V1\PositionController@show')->name('position_details');
-    // Consultant Position
-    Route::get('consultant_position', 'Api\V1\ConsultantPositionController@index')->name('consultant_positions_list');
-    Route::get('consultant_position/{id}', 'Api\V1\ConsultantPositionController@show')->name('consultant_position_details');
-    Route::get('consultant_position/find/with_name', 'Api\V1\ConsultantPositionController@find')->name('consultant_positions_find');
     // Payroll
     Route::get('payroll', 'Api\V1\PayrollController@index')->name('payroll_list');
     Route::get('payroll/{id}', 'Api\V1\PayrollController@show')->name('payroll_details');
@@ -168,29 +192,6 @@ Route::group([
       'prefix' => 'company_address/{company_address_id}/city/{city_id}',
     ], function () {
       Route::get('', 'Api\V1\CompanyAddressCityController@get_city')->name('company_address_get_city');
-    });
-    // Position Group
-    Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
-    Route::group([
-      'prefix' => 'position_group/{superior_id}',
-    ], function () {
-      Route::get('/dependency', 'Api\V1\DependencyPositionGroupController@get_dependency')->name('position_group_dependency');
-      Route::get('/dependents', 'Api\V1\DependencyPositionGroupController@get_dependents')->name('position_group_dependents');
-      Route::group([
-        'prefix' => '/dependents/{dependent_id}',
-      ], function () {
-        Route::get('', 'Api\V1\DependencyPositionGroupController@get_dependent')->name('position_group_dependent_details');
-      });
-    });
-    Route::group([
-      'prefix' => 'position_group/{position_group_id}/company_address',
-    ], function () {
-      Route::get('', 'Api\V1\PositionGroupCompanyAddressController@get_addresses')->name('position_group_company_address_list');
-      Route::group([
-        'prefix' => '/{company_address_id}',
-      ], function () {
-        Route::get('', 'Api\V1\PositionGroupCompanyAddressController@get_address')->name('position_group_company_address_details');
-      });
     });
     // Contract Mode
     Route::resource('contract_mode', 'Api\V1\ContractModeController')->only(['index', 'show']);
