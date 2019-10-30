@@ -1,0 +1,78 @@
+
+
+
+
+
+
+<v-dialog persistent v-model="dialog2" max-width="900px" @keydown.esc="close" scrollable>
+    <v-tooltip slot="activator" top v-if="$store.getters.permissions.includes('create-employee')">
+        <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
+        <span>Nuevo Empleado</span>
+    </v-tooltip>
+    <v-card>
+        <v-toolbar dark color="secondary">
+            <v-toolbar-title class="white--text">Datos del Empleado</v-toolbar-title>
+        </v-toolbar>
+
+        <v-card-text>
+            <form ref="form">
+                <v-layout wrap>
+                    <v-flex xs12 sm6 md6>
+                        <v-layout wrap>
+                            <v-flex xs5 sm5 md5 pr-2>
+                                <v-text-field
+                                  v-validate="'required'"
+                                  :error-messages="errors.collect('Carnet de Identidad')"
+                                  data-vv-name="Carnet de Identidad"
+                                  v-model="edit.identity_card"
+                                  label="C.I."
+                                ></v-text-field>
+                            </v-flex>
+                            <v-spacer></v-spacer>
+                            <v-flex xs3 sm3 md3 pl-2 pr-2>
+                                <v-select
+                                  v-validate="'required'"
+                                  :error-messages="errors.collect('Ciudad de Expedición')"
+                                  data-vv-name="Ciudad de Expedición"
+                                  :items="cities"
+                                  item-text="shortened"
+                                  item-value="id"
+                                  label="Ciudad"
+                                  v-model="edit.city_identity_card_id"
+                                  single-line
+                                  :menu-props="{ auto: true, overflowY: true }"
+                                ></v-select>
+                            </v-flex>
+                            <v-flex xs4 sm4 md4 pl-2>
+                                <v-select
+                                  v-validate="'required'"
+                                  :error-messages="errors.collect('Género')"
+                                  data-vv-name="Género"
+                                  :items="genders"
+                                  item-text="name"
+                                  item-value="value"
+                                  label="Género"
+                                  v-model="edit.gender"
+                                  single-line
+                                  :menu-props="{ auto: true, overflowY: true }"
+                                ></v-select>
+                            </v-flex>
+                        </v-layout>
+
+                    </v-flex>
+
+                </v-layout>
+            </form>
+        </v-card-text>
+
+
+
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="error" @click.native="close"><v-icon>close</v-icon> Cancelar</v-btn>
+            <v-btn color="success" :disabled="this.errors.any()" @click.native="saveEmployee"><v-icon>check</v-icon> Guardar</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>
+
+

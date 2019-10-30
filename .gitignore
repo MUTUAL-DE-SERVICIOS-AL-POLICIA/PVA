@@ -41,3 +41,6 @@ public/mix-manifest.json
 
 # Test files
 *.test
+
+docs/docker/Dockerfile-PHP-FPM
+docs/docker/Dockerfile-Workspace
