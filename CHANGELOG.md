@@ -2,6 +2,16 @@
 
 ---
 
+## [4.6.7](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.7) - 2019-11-04
+
+### Added
+
+* Time configuration on attendance device view
+
+### Fixed
+
+* Encode data to utf-8 aftear each mssql query
+
 ## [4.6.6](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.6) - 2019-10-16
 
 ### Added
