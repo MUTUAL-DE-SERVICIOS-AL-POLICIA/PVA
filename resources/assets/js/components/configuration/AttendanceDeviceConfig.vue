@@ -52,7 +52,7 @@
     >
       <v-card>
         <v-toolbar dark color="secondary">
-          <v-toolbar-title class="white--text">Datos del Empleado</v-toolbar-title>
+          <v-toolbar-title class="white--text">Hora del dispositivo</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <Loading v-if="loading"/>
