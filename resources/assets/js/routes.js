@@ -19,6 +19,7 @@ import AttendanceConfig from './components/configuration/AttendanceConfig'
 import CompanyConfig from './components/configuration/CompanyConfig'
 import DepartureIndex from './components/departure/DepartureIndex'
 import AttendanceIndex from './components/attendance/AttendanceIndex'
+import AttendanceDeviceConfig from './components/configuration/AttendanceDeviceConfig'
 
 export const routes = [
   {
@@ -170,6 +171,13 @@ export const routes = [
     path: '/company_config',
     component: CompanyConfig,
     name: 'companyConfig',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/attendace_device',
+    component: AttendanceDeviceConfig,
+    name: 'attendanceDeviceConfig',
     meta: {
       requiresAuth: true
     }

@@ -223,6 +223,8 @@ Route::group([
     Route::group([
       'middleware' => 'role:admin',
     ], function () {
+      // Attendance Device
+      Route::resource('attendance_device', 'Api\V1\AttendanceDeviceController')->only(['index', 'show', 'update']);
       // User
       Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update', 'destroy']);
       Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'destroy']);
