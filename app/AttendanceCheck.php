@@ -9,7 +9,7 @@ class AttendanceCheck extends Model
   protected $connection = 'attendance';
   protected $table = 'checkinout';
   public $timestamps = false;
-  protected $fillable = [];
+  protected $fillable = ['USERID', 'CHECKTIME', 'CHECKTYPE', 'VERIFYCODE', 'SENSORID', 'Memoinfo', 'WorkCode', 'sn', 'UserExtFmt'];
   protected $primaryKey = null;
   public $incrementing = false;
 
@@ -28,5 +28,50 @@ class AttendanceCheck extends Model
   public function device()
   {
     return $this->belongsTo(AttendanceDevice::class, 'SENSORID', 'MachineNumber');
+  }
+
+  public function getUSERIDAttribute($value)
+  {
+    return utf8_decode($value);
+  }
+
+  public function getCHECKTIMEAttribute($value)
+  {
+    return utf8_decode($value);
+  }
+
+  public function getCHECKTYPEAttribute($value)
+  {
+    return utf8_decode($value);
+  }
+
+  public function getVERIFYCODEAttribute($value)
+  {
+    return utf8_decode($value);
+  }
+
+  public function getSENSORIDAttribute($value)
+  {
+    return utf8_decode($value);
+  }
+
+  public function getMemoinfoAttribute($value)
+  {
+    return utf8_decode($value);
+  }
+
+  public function getWorkCodeAttribute($value)
+  {
+    return utf8_decode($value);
+  }
+
+  public function getSnAttribute($value)
+  {
+    return utf8_decode($value);
+  }
+
+  public function getUserExtFmtAttribute($value)
+  {
+    return utf8_decode($value);
   }
 }
