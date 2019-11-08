@@ -2,6 +2,12 @@
 
 ---
 
+## [4.6.8](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.8) - 2019-11-08
+
+### Fixed
+
+* MSSQL connection charset encoding
+
 ## [4.6.7](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.7) - 2019-11-04
 
 ### Added
