@@ -67,7 +67,7 @@ return [
       'database' => env('DB_ATTENDANCE_DATABASE', 'db'),
       'username' => env('DB_ATTENDANCE_USERNAME', 'admin'),
       'password' => env('DB_ATTENDANCE_PASSWORD', 'admin'),
-      'charset' => 'utf8',
+      'charset' => 'latin1',
       'prefix' => '',
     ],
 
