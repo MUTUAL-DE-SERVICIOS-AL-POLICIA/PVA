@@ -35,8 +35,8 @@ class DepartureController extends Controller
     $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note');
 
     if ($request->has('approved')) {
-      if ($request['approved'] != 'all') {
-        $query = $query->whereApproved(json_decode($request['approved']));
+      if ($request->approved != 'all') {
+        $query = $query->whereApproved(json_decode($request->approved));
       }
     }
 
