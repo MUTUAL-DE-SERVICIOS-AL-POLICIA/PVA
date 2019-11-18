@@ -69,6 +69,12 @@
             :weekdays="[1,2,3,4,5,6,0]"
           >
             <template v-slot:day="{ date }">
+              <template v-for="event in departures.filter((o) => { return $moment(date).isBetween($moment(o.from.date).startOf('day'), $moment(o.to.date).endOf('day'), null, '[]') })">
+                <div class="text-xs text-xs-center white--text grey darken-3 mb-2" :key="event.id">
+                  <div>{{ event.reason }} [ {{ event.id }} ]</div>
+                  <div>{{ event.from.time }} - {{ event.to.time }}</div>
+                </div>
+              </template>
               <template v-for="(event, index) in checks.filter(o => o.date == date)">
                 <div class="text-xs-center event subheading grey darken-1 mt-3 mb-3" :key="index+event" v-if="index > 0 && event.shift != checks.filter(o => o.date == date)[index - 1].shift"></div>
                 <div class="text-xs-center white--text event subheading" :class="`${event.color} darken-${event.shift}`" :key="index">
@@ -127,6 +133,7 @@ export default {
     return {
       loading: true,
       checks: [],
+      departures: [],
       limits: {
         start: null,
         end: null
@@ -201,6 +208,22 @@ export default {
     })
   },
   methods: {
+    async getDepartures(id) {
+      try {
+        this.loading = true
+        let res = await axios.get(`employee/${id}/departure`, {
+          params: {
+            month: this.date
+          }
+        })
+        this.departures = res.data
+      } catch (e) {
+        console.log(e)
+        this.departures = []
+      } finally {
+        this.loading = false
+      }
+    },
     async getChecks(id = this.$store.getters.id, print = false) {
       try {
         this.loading = true
@@ -223,6 +246,7 @@ export default {
             start: res.data.from,
             end: res.data.to
           }
+          this.getDepartures(id)
         }
       } catch (e) {
         console.log(e)

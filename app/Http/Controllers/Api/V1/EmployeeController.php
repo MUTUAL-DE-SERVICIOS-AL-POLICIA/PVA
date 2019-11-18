@@ -122,18 +122,14 @@ class EmployeeController extends Controller
     }
   }
 
-  public function attendance(Request $request, $id)
+  private function date_range(Request $request, Employee $employee)
   {
-    $employee = Employee::findOrFail($id);
-    $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->orderBy('USERID', 'DESC')->first();
-
     if (!$request->has('from') && !$request->has('to')) {
       if (!$request->has('month')) {
         $to = CarbonImmutable::now();
       } else {
         $to = CarbonImmutable::parse($request->input('month'));
       }
-
       if ($employee->consultant()) {
         $from = $to->day(1);
         $to = $from->endOfMonth();
@@ -152,6 +148,49 @@ class EmployeeController extends Controller
       $from = CarbonImmutable::parse($request->input('from'));
       $to = CarbonImmutable::parse($request->input('to'));
     }
+    return (object)[
+      'from' => $from->startOfDay(),
+      'to' => $to->endOfDay()
+    ];
+  }
+
+  public function departure(Request $request, $id)
+  {
+    $employee = Employee::findOrFail($id);
+    $date_range = $this->date_range($request, $employee);
+    $from = $date_range->from;
+    $to = $date_range->to;
+    $request = new Request([
+      'from' => $date_range->from,
+      'to' => $date_range->to,
+      'employee_id' => $employee->id,
+      'approved' => 'true'
+    ]);
+    $departures = app(\App\Http\Controllers\Api\V1\DepartureController::class)->index($request);
+    foreach ($departures as $departure) {
+      $departure->reason = $departure->departure_reason->departure_group->name;
+      $from = Carbon::parse($departure->departure);
+      $to = Carbon::parse($departure->return);
+      $departure->from = (object)[
+        'date' => $from->toDateString(),
+        'time' => $from->format('H:i')
+      ];
+      $departure->to = (object)[
+        'date' => $to->toDateString(),
+        'time' => $to->format('H:i')
+      ];
+      unset($departure->departure_reason, $departure->departure, $departure->return);
+    }
+    return response()->json($departures);
+  }
+
+  public function attendance(Request $request, $id)
+  {
+    $employee = Employee::findOrFail($id);
+    $attendance_user = AttendanceUser::where('ssn', 'like', $employee->identity_card . '%')->orderBy('USERID', 'DESC')->first();
+    $date_range = $this->date_range($request, $employee);
+    $from = $date_range->from;
+    $to = $date_range->to;
 
     if ($attendance_user) {
       if (json_decode($request->input('with_discounts'))) {

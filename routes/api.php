@@ -14,6 +14,7 @@ Route::group([
   // Employee
   Route::get('employee', 'Api\V1\EmployeeController@index')->name('employees_list');
   Route::get('employee/{id}/attendance', 'Api\V1\EmployeeController@attendance')->name('employees_attendance');
+  Route::get('employee/{id}/departure', 'Api\V1\EmployeeController@departure')->name('employees_departure');
   // Position Group
   Route::get('position_group', 'Api\V1\PositionGroupController@index')->name('position_group_list');
   // Location
