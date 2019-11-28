@@ -81,7 +81,6 @@ class AttendanceController extends Controller
    */
   public function store(Request $request)
   {
-    \Log::info('Starting Attendace synchronization');
     $errors = [];
     $users = [];
     $query = AttendanceDevice::select('MachineNumber', 'MachineAlias', 'IP', 'Port', 'sn')->where('Enabled', true);
@@ -92,6 +91,7 @@ class AttendanceController extends Controller
     if ($devices->count() == 0) {
       abort(404);
     }
+    \Log::info('Starting Attendace synchronization.');
     foreach ($devices as $device) {
       $zk = new ZKLibrary($device->IP, $device->Port);
       $i = 0;
@@ -168,7 +168,7 @@ class AttendanceController extends Controller
                   ]);
                 }
               } else {
-                $message = 'Usuario con BADGENUMBER: ' . intval(uft8_decode($key)) . ' inexistente';
+                $message = 'Usuario con BADGENUMBER: ' . intval(utf8_decode($key)) . ' inexistente';
                 $errors[] = $message;
               }
             }
@@ -185,9 +185,9 @@ class AttendanceController extends Controller
       } while ($i < 3);
       \Log::info('Sincronización con dispositivo ' . $device->MachineAlias . ' terminada.');
     }
-    foreach ($errors as $error) {
-      \Log::error($error);
-    }
+    // foreach ($errors as $error) {
+    //   \Log::error($error);
+    // }
     \Log::info('Attendace synchronization has ended');
     return response()->json([
       'errors' => $errors,
@@ -313,25 +313,28 @@ class AttendanceController extends Controller
    * @param  \App\AttendanceUser  $attendanceUser
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id = null)
+  public function destroy($id)
   {
     $errors = [];
     $query = AttendanceDevice::select('MachineNumber', 'MachineAlias', 'IP', 'Port', 'sn')->where('Enabled', true);
-    if (!$id) {
-      $devices = $query->get();
-    } else {
-      $devices = $query->where('MachineNumber', $id)->get();
+    if ($id != 'all') {
+      $devices = $query->where('MachineNumber', $id);
     }
+    $devices = $query->get();
     if ($devices->count() == 0) {
       abort(404);
     }
+    \Log::info('Erasing Attendace devices.');
     foreach ($devices as $device) {
       $zk = new ZKLibrary($device->IP, $device->Port);
       $i = 0;
       do {
         if ($zk->connect()) {
+          $zk->disableDevice();
           $zk->clearAttendance();
+          $zk->enableDevice();
           $zk->disconnect();
+          \Log::info('Device ' . $device->MachineAlias . ' erased.');
           break;
         } else {
           $i++;
