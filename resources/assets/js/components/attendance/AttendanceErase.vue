@@ -135,7 +135,7 @@ export default {
         this.step = 3
         this.loading = true
         if (process.env.NODE_ENV == 'production') {
-          let res = await axios.delete(`attendance`)
+          let res = await axios.delete(`attendance/all`)
           this.data = res.data
         } else {
           this.data = {
