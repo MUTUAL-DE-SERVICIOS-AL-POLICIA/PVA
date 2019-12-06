@@ -127,6 +127,12 @@ class AttendanceController extends Controller
                   $user_id = intval($user->USERID);
                   $checktime = Carbon::parse($check[3])->format('Ymd H:i:s');
                   $exists = AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->first();
+                  if ($employee) {
+                    $checktype = Util::attendance_checktype($job_schedules, $check[3]);
+                    $c->CHECKTYPE = $checktype->type;
+                  } else {
+                    $c->CHECKTYPE = 'X';
+                  }
                   if (!$exists) {
                     $c = new AttendanceCheck();
                     $c->USERID = $user_id;
@@ -135,28 +141,12 @@ class AttendanceController extends Controller
                     $c->SENSORID = strval($device->MachineNumber);
                     $c->sn = $device->sn;
                     $count++;
+                    $c->save();
                   } else {
                     $c = $exists;
-                  }
-                  if ($employee) {
-                    $checktype = Util::attendance_checktype($job_schedules, $check[3]);
-                    $c->CHECKTYPE = $checktype->type;
-                  } else {
-                    $c->CHECKTYPE = 'X';
-                  }
-                  try {
-                    $c->save();
-                  } catch (\Exception $error) {
-                    try {
+                    if ($exists->CHECKTYPE != $c->CHECKTYPE) {
                       $c->CHECKTIME = $checktime;
-                      if ($exists) {
-                        if ($exists->CHECKTYPE != $c->CHECKTYPE) {
-                          AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->update($c->toArray());
-                        }
-                      }
-                    } catch (\Exception $e) {
-                      \Log::error('Cannot save check where USERID=' . $user_id . ' and CHECKTIME=' . $checktime);
-                      \Log::error($e->getMessage());
+                      AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->update($c->toArray());
                     }
                   }
                 }

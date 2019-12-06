@@ -10,7 +10,15 @@ class EmployeeBonus
 {
   function __construct($contracts, $year, $pay_date, $procedure)
   {
-    $employee = $contracts[0]->employee;
+    foreach ($contracts->reverse() as $contract) {
+      if ($contract->payrolls()->count() > 0) {
+        $last_contract = $contract;
+        $last_payroll = $last_contract->payrolls()->latest()->first();
+        break;
+      }
+    }
+    $employee = $last_contract->employee;
+    $bonus_payroll = BonusPayroll::whereContractId($last_contract->id)->whereBonusProcedureId($procedure->id)->first();
 
     $this->code_image = null;
 
@@ -28,7 +36,7 @@ class EmployeeBonus
     $this->last_name = $employee->last_name;
     $this->mothers_last_name = $employee->mothers_last_name;
     $this->full_name = implode(" ", [$this->last_name, $this->mothers_last_name, $this->first_name, $this->second_name]);
-    $this->account_number = $employee->account_number;
+    $this->account_number = $bonus_payroll ? $bonus_payroll->account_number : $employee->account_number;
     $this->birth_date = Carbon::parse($employee->birth_date)->format('d/m/Y');
     $this->gender = $employee->gender;
     $this->charge = null;
@@ -45,8 +53,8 @@ class EmployeeBonus
     $this->ovt = (object)[
       'insurance_company_id' => null,
       'management_entity_id' => $employee->management_entity->ovt_id,
-      'contract_mode' => $employee->last_contract()->contract_mode->ovt_id,
-      'contract_type' => $employee->last_contract()->contract_type->ovt_id,
+      'contract_mode' => $last_contract->contract_mode->ovt_id,
+      'contract_type' => $last_contract->contract_type->ovt_id,
     ];
 
     // Extra data
@@ -54,15 +62,30 @@ class EmployeeBonus
     $this->position_group_id = null;
     $this->employer_number = null;
     $this->employer_number_id = null;
-    $this->base_wages = $this->get_latest_payrolls($employee->id, $year, $pay_date, $procedure);
+    $this->base_wages = $this->get_latest_payrolls($employee->id, $year, $pay_date, $procedure, $bonus_payroll);
     $this->average = 0;
     $this->bonus_percentage = (object)[];
-    $this->bonus = $this->calc_bonus($contracts, $year, $pay_date, $procedure);
+    $this->bonus = $this->calc_bonus($contracts, $year, $pay_date, $procedure, $bonus_payroll);
+    $this->valid = $this->worked_days->months >= 3 ? true : false;
+    $this->set_actual_data($last_payroll);
+    if ($this->valid && !$bonus_payroll) {
+      BonusPayroll::firstOrCreate([
+        'bonus_procedure_id' => $procedure->id,
+        'contract_id' => $last_contract->id
+      ], [
+        'start_date' => Carbon::createFromFormat('d/m/Y', $this->start_date)->toDateString(),
+        'end_date' => Carbon::createFromFormat('d/m/Y', $this->end_date)->toDateString(),
+        'months' => $this->worked_days->months,
+        'days' => $this->worked_days->days,
+        'wages' => $this->base_wages,
+        'account_number' => $this->account_number
+      ]);
+    }
   }
 
-  private function calc_bonus($contracts, $year, $pay_date, $procedure)
+  private function calc_bonus($contracts, $year, $pay_date, $procedure, $bonus_payroll)
   {
-    $this->calc_worked_moths($contracts, $year, $pay_date);
+    $this->calc_worked_moths($contracts, $year, $pay_date, $bonus_payroll);
 
     $worked_days = ($this->worked_days->months * 30 + $this->worked_days->days) / 360;
 
@@ -98,32 +121,29 @@ class EmployeeBonus
     return ($this->average * $worked_days);
   }
 
-  private function get_latest_payrolls($employee_id, $year, $pay_date, $procedure)
+  private function get_latest_payrolls($employee_id, $year, $pay_date, $procedure, $bonus_payroll = null)
   {
-    $payrolls = Payroll::where('employee_id', $employee_id)->leftjoin('procedures as p', 'p.id', '=', 'payrolls.procedure_id')->where('p.year', $year)->leftjoin('months as m', 'm.id', '=', 'p.month_id')->orderBy('m.order', 'DESC')->with(['contract' => function ($q) {
-      $q->orderBy('start_date', 'DESC');
-    }])->where('m.order', '<', Carbon::parse($pay_date)->month)->select('payrolls.*', 'm.order');
+    if ($bonus_payroll) {
+      $results = $bonus_payroll->wages;
 
-    if ($procedure->upper_limit_wage) {
-      $upper_limit_wage = $procedure->upper_limit_wage;
-      $payrolls = $payrolls->with(['charge' => function ($q) use ($upper_limit_wage) {
-        $q->where('base_wage', '<=', $upper_limit_wage);
-      }]);
+    } else {
+      $payrolls = Payroll::where('employee_id', $employee_id)->leftjoin('procedures as p', 'p.id', '=', 'payrolls.procedure_id')->where('p.year', $year)->leftjoin('months as m', 'm.id', '=', 'p.month_id')->orderBy('m.order', 'DESC')->with(['contract' => function ($q) {
+        $q->orderBy('start_date', 'DESC');
+      }])->where('m.order', '<', Carbon::parse($pay_date)->month)->select('payrolls.*', 'm.order');
+      if ($procedure->upper_limit_wage) {
+        $upper_limit_wage = $procedure->upper_limit_wage;
+        $payrolls = $payrolls->with(['charge' => function ($q) use ($upper_limit_wage) {
+          $q->where('base_wage', '<=', $upper_limit_wage);
+        }]);
+      }
+      $payrolls = $payrolls->limit(3)->get()->all();
+      if (count($payrolls) == 0) return [0];
+      $payrolls = array_reverse($payrolls);
+      $results = [];
+      foreach ($payrolls as $payroll) {
+        $results[] = $payroll->charge->base_wage;
+      }
     }
-
-    $payrolls = $payrolls->limit(3)->get()->all();
-
-    if (count($payrolls) == 0) return [0];
-
-    $this->set_actual_data($payrolls[0]);
-
-    $payrolls = array_reverse($payrolls);
-
-    $results = [];
-    foreach ($payrolls as $payroll) {
-      $results[] = $payroll->charge->base_wage;
-    }
-
     return $results;
   }
 
@@ -139,56 +159,66 @@ class EmployeeBonus
     $this->employer_number_id = $payroll->position_group->company_address->city->employer_number->id;
   }
 
-  private function calc_worked_moths($contracts, $year, $pay_date)
+  private function calc_worked_moths($contracts, $year, $pay_date, $bonus_payroll = null)
   {
-    $results = [];
-    foreach ($contracts as $i => $contract) {
-      $results[] = $this->calc_months_days($contract, $year);
-      $this->retirement_reason = $contract->retirement_reason ? $contract->retirement_reason->ovt_id : "";
-    }
-
-    $result = (object)[
-      'start' => null,
-      'end' => null,
-      'months' => 0,
-      'days' => 0
-    ];
-
-    $cuts = $this->calc_cuts($results);
-
-    foreach ($cuts as $i => $cut) {
-      if ($cut[0]->start->month < (Carbon::parse($pay_date)->month - 2)) {
-        $months = array_sum(array_column($cut, 'months'));
-        $days = array_sum(array_column($cut, 'days'));
-        while ($days >= 30) {
-          $days -= 30;
-          $months++;
-        }
-
-        if ($months >= 3) {
-          if (!$result->start) $result->start = reset($cut)->start;
-          $result->end = end($cut)->end;
-          $result->months += $months;
-          $result->days += $days;
+    if ($bonus_payroll) {
+      $this->start_date = Carbon::parse($bonus_payroll->start_date)->format('d/m/Y');
+      $this->end_date = Carbon::parse($bonus_payroll->end_date)->format('d/m/Y');
+      $this->worked_days = (object)[
+        'months' => $bonus_payroll->months,
+        'days' => $bonus_payroll->days,
+      ];
+    } else {
+      $results = [];
+      foreach ($contracts as $i => $contract) {
+        $results[] = $this->calc_months_days($contract, $year);
+        if(!next($contracts)) {
+          $employee = $contract->employee;
+          $this->retirement_reason = $contract->retirement_reason ? $contract->retirement_reason->ovt_id : "";
         }
       }
+      $result = (object)[
+        'start' => null,
+        'end' => null,
+        'months' => 0,
+        'days' => 0
+      ];
+      $cuts = $this->calc_cuts($results);
+      foreach ($cuts as $i => $cut) {
+        if ($cut[0]->start->month < (Carbon::parse($pay_date)->month - 2)) {
+          $months = array_sum(array_column($cut, 'months'));
+          $days = array_sum(array_column($cut, 'days'));
+          while ($days >= 30) {
+            $days -= 30;
+            $months++;
+          }
+          if ($months >= 3) {
+            if (!$result->start) $result->start = reset($cut)->start;
+            $result->end = end($cut)->end;
+            $result->months += $months;
+            $result->days += $days;
+          }
+        }
+      }
+      $unworked_days = $employee->days_non_payable_departures($year);
+      if ($result->months == 12 && $unworked_days > 0 || $result->days < $unworked_days) {
+        $result->months -= 1;
+        $result->days += 30;
+      }
+      $result->days -= $unworked_days;
+      while ($result->days >= 30) {
+        $result->days -= 30;
+        $result->months++;
+      }
+      $this->start_date = $result->start ? $result->start->toDateString() : $result->start;
+      $this->end_date = $result->end ? $result->end->toDateString() : $result->end;
+      $this->start_date = Carbon::parse($this->start_date)->format('d/m/Y');
+      $this->end_date = Carbon::parse($this->end_date)->format('d/m/Y');
+      $this->worked_days = (object)[
+        'months' => $result->months,
+        'days' => $result->days,
+      ];
     }
-
-    while ($result->days >= 30) {
-      $result->days -= 30;
-      $result->months++;
-    }
-
-    $this->start_date = $result->start ? $result->start->toDateString() : $result->start;
-    $this->end_date = $result->end ? $result->end->toDateString() : $result->end;
-
-    $this->start_date = Carbon::parse($this->start_date)->format('d/m/Y');
-    $this->end_date = Carbon::parse($this->end_date)->format('d/m/Y');
-
-    $this->worked_days = (object)[
-      'months' => $result->months,
-      'days' => $result->days,
-    ];
   }
 
   private function calc_months_days($contract, $year)
@@ -227,24 +257,27 @@ class EmployeeBonus
 
   private function calc_cuts($contracts)
   {
+    $graceful = 3;
     $cuts = [];
     $x = 0;
-
     foreach ($contracts as $i => $contract) {
       if ($i == 0) {
         $cuts[$x] = array();
         $cuts[$x][] = $contract;
       } else {
-        if ($contracts[$i - 1]->end->addDays(1)->toDateString() == $contract->start->toDateString()) {
-          $cuts[$x][] = $contract;
-        } else {
+        $last_end = $contracts[$i - 1]->end->addDays(1);
+        $currend_start = $contract->start;
+        $diff = $currend_start->diffInDays($last_end);
+        if ($diff <= $graceful) {
+          $contracts[$i - 1]->end = $currend_start->copy()->subDay();
+          $contracts[$i - 1]->days += $diff;
+        } elseif($last_end->toDateString() != $currend_start->toDateString()) {
           $x++;
           $cuts[$x] = array();
-          $cuts[$x][] = $contract;
         }
+        $cuts[$x][] = $contract;
       }
     }
-
     return $cuts;
   }
 

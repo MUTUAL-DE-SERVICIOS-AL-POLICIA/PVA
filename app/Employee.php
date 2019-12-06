@@ -306,4 +306,50 @@ class Employee extends Model
     }
     return $response;
   }
+
+  public function days_non_payable_departures($year)
+  {
+    $days = 0;
+    $requests = $this->departures()->whereHas('departure_reason', function($query) {
+      $query->wherePayable(false);
+    })->whereApproved(true)->where(function($query) use ($year) {
+      $query->orWhere(function($q) use ($year) {
+        $q->whereYear('departure', '=', $year);
+      })->orWhere(function($q) use ($year) {
+        $q->whereYear('return', '=', $year);
+      });
+    })->get();
+    foreach ($requests as $request) {
+      $departure = Carbon::parse($request->departure);
+      $return = Carbon::parse($request->return);
+      $difference = $return->diffInDays($departure);
+      if ($difference == 0) {
+        $hours = $return->diffInHours($departure);
+        if ($hours <= 4) {
+          $days += 0.5;
+        } else {
+          $days += 1;
+        }
+      } else {
+        // Payment without weekend
+        $work_days = $this->contracts()->whereDate('start_date', '<=', $departure->toDateString())->where(function ($query) use ($return) {
+          $query->orWhere(function($q) use ($return) {
+            $q->whereDate('end_date', '>=', $return->toDateString())->where('retirement_date', '=', null);
+          })->orWhere(function($q) use ($return) {
+            $q->whereDate('retirement_date', '>=', $return->toDateString());
+          });
+        })->first()->job_schedules()->pluck('workdays')->unique()->first();
+        $days += 1;
+        while ($departure->toDateString() != $return->toDateString()) {
+          if (in_array($departure->isoWeekday(), $work_days)) {
+            $days += 1;
+          }
+          $departure->addDay();
+        }
+        // Payment with weekend
+        // $days += 1 + $difference;
+      }
+    }
+    return $days;
+  }
 }
