@@ -173,9 +173,6 @@ class AttendanceController extends Controller
       } while ($i < 3);
       \Log::info('Sincronización con dispositivo ' . $device->MachineAlias . ' terminada.');
     }
-    // foreach ($errors as $error) {
-    //   \Log::error($error);
-    // }
     \Log::info('Attendace synchronization has ended');
     return response()->json([
       'errors' => $errors,

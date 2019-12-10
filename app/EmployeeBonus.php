@@ -200,7 +200,7 @@ class EmployeeBonus
           }
         }
       }
-      $unworked_days = $employee->days_non_payable_departures($year);
+      $unworked_days = $employee->days_non_payable_year($year);
       if ($result->months == 12 && $unworked_days > 0 || $result->days < $unworked_days) {
         $result->months -= 1;
         $result->days += 30;

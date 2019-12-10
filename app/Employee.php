@@ -307,21 +307,40 @@ class Employee extends Model
     return $response;
   }
 
-  public function days_non_payable_departures($year)
+  public function days_non_payable_month($date, $with_contract = false)
   {
+    $contracts = collect([]);
     $days = 0;
+    $start_month = Carbon::parse($date)->startOfMonth();
+    $end_month = Carbon::parse($date)->endOfMonth();
     $requests = $this->departures()->whereHas('departure_reason', function($query) {
       $query->wherePayable(false);
-    })->whereApproved(true)->where(function($query) use ($year) {
-      $query->orWhere(function($q) use ($year) {
-        $q->whereYear('departure', '=', $year);
-      })->orWhere(function($q) use ($year) {
-        $q->whereYear('return', '=', $year);
-      });
-    })->get();
+    })->whereApproved(true)->where(function($query) use ($start_month) {
+      $query->whereDate('departure', '>=', $start_month->toDateString());
+    })->where(function($query) use ($end_month) {
+      $query->whereDate('return', '<=', $end_month->toDateString());
+    })->orderBy('return', 'DESC')->get();
     foreach ($requests as $request) {
       $departure = Carbon::parse($request->departure);
       $return = Carbon::parse($request->return);
+      if ($with_contract) {
+        $contract = $this->contracts()->where(function ($query) use ($return) {
+          $query->orWhere(function($q) use ($return) {
+            $q->whereDate('start_date', '<=', $return->toDateString())->whereDate('end_date', '>=', $return->toDateString())->whereNull('retirement_date');
+          })->orWhere(function($q) use ($return) {
+            $q->whereDate('start_date', '<=', $return->toDateString())->whereDate('retirement_date', '>=', $return->toDateString())->whereNotNull('retirement_date');
+          });
+        })->orderBy('end_date', 'DESC')->orderBy('retirement_date', 'DESC')->limit(1)->first();
+        $last_contract = $contracts->contains(function($item, $key) use ($contract) {
+          return $key == $contract->id;
+        });
+        if (!$last_contract) {
+          $days = 0;
+          $contracts->merge([$contract->id => $days]);
+        } else {
+          $days = $contracts[$contract->id];
+        }
+      }
       $difference = $return->diffInDays($departure);
       if ($difference == 0) {
         $hours = $return->diffInHours($departure);
@@ -331,24 +350,25 @@ class Employee extends Model
           $days += 1;
         }
       } else {
-        // Payment without weekend
-        $work_days = $this->contracts()->whereDate('start_date', '<=', $departure->toDateString())->where(function ($query) use ($return) {
-          $query->orWhere(function($q) use ($return) {
-            $q->whereDate('end_date', '>=', $return->toDateString())->where('retirement_date', '=', null);
-          })->orWhere(function($q) use ($return) {
-            $q->whereDate('retirement_date', '>=', $return->toDateString());
-          });
-        })->first()->job_schedules()->pluck('workdays')->unique()->first();
-        $days += 1;
-        while ($departure->toDateString() != $return->toDateString()) {
-          if (in_array($departure->isoWeekday(), $work_days)) {
-            $days += 1;
-          }
-          $departure->addDay();
-        }
+        if ($departure->lessThan($start_month)) $departure = $start_month;
+        if ($return->greaterThan($end_month)) $return = $end_month;
         // Payment with weekend
-        // $days += 1 + $difference;
+        $days += 1 + $difference;
       }
+      if ($with_contract) {
+        $contracts[$contract->id] = $days;
+      }
+    }
+    return $with_contract ? $contracts : $days;
+  }
+
+  public function days_non_payable_year($year)
+  {
+    $days = 0;
+    $month = Carbon::create($year, 1, 1)->firstOfYear();
+    for ($i = 1; $i <= 12; $i++) {
+      $days += $this->days_non_payable_month($month->toDateString());
+      $month->addMonth()->startOfMonth();
     }
     return $days;
   }

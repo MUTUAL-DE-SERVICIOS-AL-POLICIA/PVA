@@ -231,6 +231,9 @@ class EmployeeController extends Controller
         $check->date = $checktime->toDateString();
         $check->time = $checktime->format('H:i');
         $check->color = 'orange';
+        $check->delay = (object) [
+          'minutes' => 0
+        ];
         if ($job_schedules) {
           $attendance = Util::attendance_checktype($job_schedules, $check->checktime, true);
           $check->delay = $attendance->delay;

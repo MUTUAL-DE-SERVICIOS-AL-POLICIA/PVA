@@ -82,7 +82,7 @@
       >
         <template slot="items" slot-scope="props">
           <tr :class="props.expanded ? 'info dark white--text' : (props.item.approved == null ? 'warning' : (props.item.approved == false ? 'error dark white--text' : ''))">
-            <td class="text-xs-center bordered" @click="expand(props)" v-if="$route.query.departureType == 'all'">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${props.item.second_name}` }}</td>
+            <td class="text-xs-center bordered" @click="expand(props)" v-if="$route.query.departureType == 'all'">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${props.item.second_name ? props.item.second_name : ''}` }}</td>
             <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).group }}</td>
             <td class="text-xs-center bordered" @click="expand(props)">{{ departureType(props.item).reason }}</td>
             <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.departure).format('L [a horas] HH:mm') }}</td>
