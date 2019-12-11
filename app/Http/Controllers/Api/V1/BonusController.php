@@ -247,8 +247,10 @@ class BonusController extends Controller
           'orientation' => 'landscape',
           'page-width' => '216',
           'page-height' => '330',
-          'margin-left' => '26',
-          'margin-right' => '0',
+          'margin-top' => '5',
+          'margin-right' => '10',
+          'margin-left' => '10',
+          'margin-bottom' => '15',
           'encoding' => 'UTF-8',
           'footer-html' => $footerHtml,
           'user-style-sheet' => public_path('css/payroll-print.min.css')

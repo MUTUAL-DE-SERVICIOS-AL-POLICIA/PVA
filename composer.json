@@ -9,6 +9,7 @@
   "type": "project",
   "require": {
     "php": "^7.1.22",
+    "askedio/laravel-soft-cascade": "~5.8",
     "barryvdh/laravel-cors": "^0.11.3",
     "barryvdh/laravel-snappy": "^0.4.4",
     "doctrine/dbal": "^2.9",

@@ -46,7 +46,12 @@
                   <div class="font-weight-light headline">AGUINALDO</div>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field flat disabled></v-text-field>
+                  <v-text-field
+                    flat
+                    :label="bonusYear.procedures.length == 0 ? '': 'Fecha de Pago'"
+                    :disabled="bonusYear.procedures.length == 0"
+                    :value="bonusYear.procedures.length > 0 ? $moment(bonusYear.procedures[0].pay_date).format('DD/MM/YYYY') : ''"
+                  ></v-text-field>
                 </v-flex>
               </v-card-title>
               <div>
@@ -415,7 +420,7 @@ export default {
         }
       ],
       bonusProcedure: {}
-    };
+    }
   },
   mounted() {
     this.getYears()
@@ -458,7 +463,7 @@ export default {
         }
         this.clearBonusProcedure()
         this.toastr.success('Guardado correctamente')
-        this.closeEditBonus();
+        this.closeEditBonus()
       } catch (e) {
         console.log(e)
       }
@@ -484,174 +489,174 @@ export default {
     },
     async getLastProcedure() {
       try {
-        let res = await axios.get(`/procedure/order/last`);
+        let res = await axios.get(`/procedure/order/last`)
         if (res.data.id) {
           if (!res.data.active) {
-            res = await axios.get(`/procedure/date/${res.data.id}`);
-            let newDate = this.$moment(res.data.first_date).add(1, "months");
-            this.newProcedure.year = newDate.year();
-            res = await axios.get(`/month/order/${newDate.month() + 1}`);
-            this.newProcedure.month_id = res.data.id;
-            this.newProcedure.month = res.data.order - 1;
+            res = await axios.get(`/procedure/date/${res.data.id}`)
+            let newDate = this.$moment(res.data.first_date).add(1, "months")
+            this.newProcedure.year = newDate.year()
+            res = await axios.get(`/month/order/${newDate.month() + 1}`)
+            this.newProcedure.month_id = res.data.id
+            this.newProcedure.month = res.data.order - 1
             if (this.newProcedure.year > this.$moment(this.$store.getters.dateNow).year() || (this.newProcedure.month == 0 && this.newProcedure.year == this.$moment(this.$store.getters.dateNow).year())) {
               this.years.unshift(this.newProcedure.year)
             }
           }
         }
         this.loading = false
-        return Promise.resolve();
+        return Promise.resolve()
       } catch (e) {
-        console.log(e);
-        return Promise.reject();
+        console.log(e)
+        return Promise.reject()
       }
     },
     commaDivider(index, cities) {
       if (index + 1 < cities.length) {
-        return ",";
+        return ","
       }
-      return "";
+      return ""
     },
     async xls(url) {
       try {
-        this.loading = true;
+        this.loading = true
         let res = await axios({
           method: "GET",
           url: url,
           responseType: "arraybuffer"
-        });
+        })
         const blob = new Blob([res.data], {
           type: res.headers["content-type"]
-        });
-        let link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        const contentDisposition = res.headers["content-disposition"];
-        let fileName = `sueldos_${url.split('/').slice(-1)[0]}_${url.split('/').slice(-2)[0]}`;
+        })
+        let link = document.createElement("a")
+        link.href = window.URL.createObjectURL(blob)
+        const contentDisposition = res.headers["content-disposition"]
+        let fileName = `sueldos_${url.split('/').slice(-1)[0]}_${url.split('/').slice(-2)[0]}`
         if (res.headers['content-type'].includes('sheet')) {
           fileName = `${fileName}.xlsx`
         } else if (res.headers['content-type'].includes('csv')) {
           fileName = `${fileName}.csv`
         }
         if (contentDisposition) {
-          let fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-          if (!fileNameMatch) fileNameMatch = contentDisposition.match(/filename=(.+)/);
+          let fileNameMatch = contentDisposition.match(/filename="(.+)"/)
+          if (!fileNameMatch) fileNameMatch = contentDisposition.match(/filename=(.+)/)
           if (fileNameMatch.length === 2) {
-            fileName = fileNameMatch[1];
+            fileName = fileNameMatch[1]
           }
         }
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        this.loading = false;
+        link.download = fileName
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        this.loading = false
       } catch (e) {
-        this.loading = false;
-        console.log(e);
+        this.loading = false
+        console.log(e)
       }
     },
     async print(url) {
       try {
-        this.loading = true;
+        this.loading = true
         let res = await axios({
           method: "GET",
           url: url,
           responseType: "arraybuffer"
-        });
+        })
         let blob = new Blob([res.data], {
           type: "application/pdf"
-        });
-        printJS(window.URL.createObjectURL(blob));
-        this.loading = false;
+        })
+        printJS(window.URL.createObjectURL(blob))
+        this.loading = false
       } catch (e) {
-        this.loading = false;
-        console.log(e);
+        this.loading = false
+        console.log(e)
       }
     },
     async download(url) {
       try {
-        this.loading = true;
-        const res = await axios.get(url);
+        this.loading = true
+        const res = await axios.get(url)
         const blob = new Blob([res.data], {
           type: res.headers["content-type"]
-        });
-        let link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        let fileName = `sueldos_${url.split('/').slice(-1)[0].split('?')[0]}_${url.split('/').slice(-2)[0]}`;
-        const contentDisposition = res.headers["content-disposition"];
+        })
+        let link = document.createElement("a")
+        link.href = window.URL.createObjectURL(blob)
+        let fileName = `sueldos_${url.split('/').slice(-1)[0].split('?')[0]}_${url.split('/').slice(-2)[0]}`
+        const contentDisposition = res.headers["content-disposition"]
         if (res.headers['content-type'].includes('sheet')) {
           fileName = `${fileName}.xlsx`
         } else if (res.headers['content-type'].includes('csv')) {
           fileName = `${fileName}.csv`
         }
         if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+          const fileNameMatch = contentDisposition.match(/filename="(.+)"/)
           if (fileNameMatch.length === 2) {
-            fileName = fileNameMatch[1];
+            fileName = fileNameMatch[1]
           }
         }
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        this.loading = false;
+        link.download = fileName
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        this.loading = false
       } catch (e) {
-        this.loading = false;
-        console.log(e);
+        this.loading = false
+        console.log(e)
       }
     },
     async getEmployerNumbers() {
       try {
-        let res = await axios.get(`/employer_number`);
-        this.employerNumbers = res.data;
-        this.changeYear();
+        let res = await axios.get(`/employer_number`)
+        this.employerNumbers = res.data
+        this.changeYear()
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
     async getYears(year) {
       try {
-        let res = await axios.get(`/procedure/year/list`);
-        this.years = res.data;
-        this.yearSelected = year || Math.max(...this.years);
+        let res = await axios.get(`/procedure/year/list`)
+        this.years = res.data
+        this.yearSelected = year || Math.max(...this.years)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
     async getManagementEntities() {
       try {
-        let res = await axios.get(`/management_entity`);
-        this.managementEntities = res.data;
+        let res = await axios.get(`/management_entity`)
+        this.managementEntities = res.data
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
     async getProcedures(year) {
       try {
-        await this.getLastProcedure();
-        let res = await axios.get(`/procedure/year/${year}`);
-        this.procedures = res.data;
+        await this.getLastProcedure()
+        let res = await axios.get(`/procedure/year/${year}`)
+        this.procedures = res.data
         if (year == this.newProcedure.year) {
           if (
             this.procedures.filter(obj => {
-              return this.newProcedure.month_id == obj.month_order;
+              return this.newProcedure.month_id == obj.month_order
             }).length == 0 &&
             this.procedures.filter(obj => {
-              return obj.active == true;
+              return obj.active == true
             }).length == 0
           ) {
-            this.procedures.unshift(this.newProcedure);
+            this.procedures.unshift(this.newProcedure)
           }
         }
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
     changeYear() {
       if (this.years.length == 0) {
-        this.years.unshift(this.newProcedure.year);
-        this.yearSelected = this.newProcedure.year;
+        this.years.unshift(this.newProcedure.year)
+        this.yearSelected = this.newProcedure.year
       }
-      this.getProcedures(this.yearSelected);
-      this.getBonusYear(this.yearSelected);
+      this.getProcedures(this.yearSelected)
+      this.getBonusYear(this.yearSelected)
     },
     async getBonusYear(year) {
       try {
@@ -668,17 +673,17 @@ export default {
     },
     async storeProcedure() {
       try {
-        this.loading = true;
+        this.loading = true
         let procedure = await axios.post(
           `/procedure`,
           this.newProcedure
-        );
-        procedure = procedure.data;
+        )
+        procedure = procedure.data
         let payrolls = await axios.post(
           `/procedure/${procedure.id}/payroll`
-        );
-        payrolls = payrolls.data;
-        this.getProcedures(this.newProcedure.year);
+        )
+        payrolls = payrolls.data
+        this.getProcedures(this.newProcedure.year)
         this.toastr.success(
           `Generados ${
             payrolls.generated
@@ -686,13 +691,13 @@ export default {
             .month(procedure.month_id - 1)
             .format("MMMM")
             .toUpperCase()}`
-        );
-        this.loading = false;
+        )
+        this.loading = false
       } catch (e) {
-        this.loading = false;
-        console.log(e);
+        this.loading = false
+        console.log(e)
       }
     }
   }
-};
+}
 </script>

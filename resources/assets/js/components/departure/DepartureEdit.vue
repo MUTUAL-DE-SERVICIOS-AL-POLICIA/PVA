@@ -426,7 +426,8 @@ export default {
       error: {
         text: null,
         value: false
-      }
+      },
+      contract: null
     }
   },
   mounted() {
@@ -442,6 +443,9 @@ export default {
       this.departure.id = departure.id
       this.dialog = true
     })
+    if (!this.departure.departure_reason_id) {
+      this.getContract()
+    }
   },
   computed: {
     limitHour() {
@@ -829,6 +833,19 @@ export default {
     }
   },
   methods: {
+    async getContract() {
+      try {
+        this.loading = true
+        let res = await axios.get(`employee/${this.$store.getters.id}/contract`)
+        this.contract = res.data
+        console.log(this.contract)
+        
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
     async makeRequest() {
       let res
       let valid = await this.$validator.validateAll()
