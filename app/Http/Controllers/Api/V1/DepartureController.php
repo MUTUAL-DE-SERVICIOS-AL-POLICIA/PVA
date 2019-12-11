@@ -160,10 +160,10 @@ class DepartureController extends Controller
         'orientation' => 'portrait',
         'page-width' => '216',
         'page-height' => '279',
-        'margin-top' => '1',
-        'margin-bottom' => '0',
-        'margin-left' => '25',
-        'margin-right' => '25',
+        'margin-top' => '15',
+        'margin-bottom' => '15',
+        'margin-left' => '20',
+        'margin-right' => '20',
         'encoding' => 'UTF-8',
         'user-style-sheet' => public_path('css/report-print.min.css')
       ];

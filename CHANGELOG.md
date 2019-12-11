@@ -2,6 +2,18 @@
 
 ---
 
+## [5.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.0) - 2019-12-11
+
+### Added
+
+* Unworked days calculus on procedure registration
+* Employee bonus with not payable departures
+* Bank account restriction after procedure generation
+
+### Fixed
+
+* End date saved for each employee to discard changes after bonus pay date
+
 ## [4.6.9](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.9) - 2019-11-18
 
 ### Added

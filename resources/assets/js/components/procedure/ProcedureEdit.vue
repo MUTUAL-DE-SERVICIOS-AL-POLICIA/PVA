@@ -154,7 +154,7 @@
                 data-vv-name='Días NO Trab.'
                 v-model="props.item.unworked_days"
                 type="number"
-                step="1"
+                step="0.5"
                 min="0"
                 :max="Number(props.item.unworked_days) + Number(workedDays(props.item))"
                 @keyup.enter.native="savePayroll(props.item)"
