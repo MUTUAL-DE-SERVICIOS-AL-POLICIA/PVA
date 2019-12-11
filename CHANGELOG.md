@@ -2,7 +2,7 @@
 
 ---
 
-## [4.6.9](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.9) - 2019-11-18
+## [5.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.0) - 2019-12-11
 
 ### Added
 
