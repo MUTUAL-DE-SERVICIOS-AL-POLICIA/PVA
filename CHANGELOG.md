@@ -2,6 +2,12 @@
 
 ---
 
+## [5.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.1) - 2019-12-12
+
+### Fixed
+
+* Fixed consultant contract one month restriction
+
 ## [5.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.0) - 2019-12-11
 
 ### Added
