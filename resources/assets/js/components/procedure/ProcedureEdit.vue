@@ -154,7 +154,7 @@
                 data-vv-name='Días NO Trab.'
                 v-model="props.item.unworked_days"
                 type="number"
-                step="1"
+                step="0.5"
                 min="0"
                 :max="Number(props.item.unworked_days) + Number(workedDays(props.item))"
                 @keyup.enter.native="savePayroll(props.item)"
@@ -204,7 +204,7 @@
                     <span>Validar</span>
                   </v-tooltip>
                 </v-flex>
-                <v-flex xs6 v-if="$store.getters.role == 'admin'">
+                <v-flex xs6>
                   <v-tooltip top>
                     <v-btn slot="activator" flat icon color="error" @click="deletePayroll(props.item)">
                       <v-icon>delete</v-icon>

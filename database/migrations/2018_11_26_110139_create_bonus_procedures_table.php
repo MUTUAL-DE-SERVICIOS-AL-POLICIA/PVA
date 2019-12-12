@@ -16,7 +16,7 @@ class CreateBonusProceduresTable extends Migration
     Schema::create('bonus_procedures', function (Blueprint $table) {
       $table->increments('id');
       $table->unsignedSmallInteger('year');
-      $table->foreign('year')->references('year')->on('bonus_years');
+      $table->foreign('year')->references('year')->on('bonus_years')->onUpdate('cascade')->onDelete('cascade');
       $table->date('pay_date');
       $table->string('name')->default('AGUINALDO DE NAVIDAD');
       $table->timestamps();

@@ -106,16 +106,13 @@ class AttendanceController extends Controller
               $user = AttendanceUser::where('BADGENUMBER', intval(utf8_decode($key)))->first();
               $employee = Employee::whereIdentityCard(explode(' ', $user->SSN)[0])->first();
               if ($employee) {
-                switch ($employee->consultant()) {
-                  case true:
-                    $job_schedules = $employee->last_consultant_contract()->job_schedules;
-                    break;
-                  case false:
-                    $job_schedules = $employee->last_contract()->job_schedules;
-                    break;
-                  case null:
-                    $employee = null;
-                    break;
+                $employee_type = $employee->consultant();
+                if ($employee_type === true) {
+                  $job_schedules = $employee->last_consultant_contract()->job_schedules;
+                } elseif ($employee_type === false) {
+                  $job_schedules = $employee->last_contract()->job_schedules;
+                } else {
+                  $employee = null;
                 }
               } else {
                 $message = 'No se encontró ningún empleado con CI: ' . $user->SSN;
@@ -138,26 +135,17 @@ class AttendanceController extends Controller
                   } else {
                     $c = $exists;
                   }
+                  $c->CHECKTIME = $checktime;
                   if ($employee) {
                     $checktype = Util::attendance_checktype($job_schedules, $check[3]);
                     $c->CHECKTYPE = $checktype->type;
                   } else {
                     $c->CHECKTYPE = 'X';
                   }
-                  try {
+                  if (!$exists) {
                     $c->save();
-                  } catch (\Exception $error) {
-                    try {
-                      $c->CHECKTIME = $checktime;
-                      if ($exists) {
-                        if ($exists->CHECKTYPE != $c->CHECKTYPE) {
-                          AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->update($c->toArray());
-                        }
-                      }
-                    } catch (\Exception $e) {
-                      \Log::error('Cannot save check where USERID=' . $user_id . ' and CHECKTIME=' . $checktime);
-                      \Log::error($e->getMessage());
-                    }
+                  } else {
+                    AttendanceCheck::where('USERID', $user_id)->where('CHECKTIME', $checktime)->update($c->toArray());
                   }
                 }
                 if ($count > 0) {
@@ -185,9 +173,6 @@ class AttendanceController extends Controller
       } while ($i < 3);
       \Log::info('Sincronización con dispositivo ' . $device->MachineAlias . ' terminada.');
     }
-    // foreach ($errors as $error) {
-    //   \Log::error($error);
-    // }
     \Log::info('Attendace synchronization has ended');
     return response()->json([
       'errors' => $errors,

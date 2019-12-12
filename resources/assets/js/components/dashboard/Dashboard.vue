@@ -201,28 +201,30 @@ export default {
   components: {
     VueJsonToCsv
   },
-  data: () => ({
-    phoneHeaders: [
-      {
-        text: "Ubicación",
-        value: "name",
-        align: "center"
-      }, {
-        text: "Dirección",
-        value: "position_group.name",
-        align: "center"
-      }, {
-        text: "No. Interno",
-        value: "phone_number",
-        align: "center"
-      },
-    ],
-    phoneSearch: "",
-    employees: [],
-    filteredEmployees: [],
-    procedures: [],
-    positionGroups: []
-  }),
+  data () {
+    return {
+      phoneHeaders: [
+        {
+          text: "Ubicación",
+          value: "name",
+          align: "center"
+        }, {
+          text: "Dirección",
+          value: "position_group.name",
+          align: "center"
+        }, {
+          text: "No. Interno",
+          value: "phone_number",
+          align: "center"
+        },
+      ],
+      phoneSearch: "",
+      employees: [],
+      filteredEmployees: [],
+      procedures: [],
+      positionGroups: []
+    }
+  },
   computed: {
     birthday() {
       return this.employees.sort((a, b) => { if (a.birth_date < b.birth_date) return -1; if (a.birth_date > b.birth_date) return 1; return 0 }).filter(o => {

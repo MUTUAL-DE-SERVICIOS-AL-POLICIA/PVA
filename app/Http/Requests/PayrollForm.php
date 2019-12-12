@@ -26,7 +26,7 @@ class PayrollForm extends FormRequest {
 			'employee_id' => 'required',
 			'position_id' => 'required',
 			'charge_id' => 'required',
-			'position_group_id' => 'required',
+			'position_group_id' => 'required'
 		];
 	}
 	public function messages() {

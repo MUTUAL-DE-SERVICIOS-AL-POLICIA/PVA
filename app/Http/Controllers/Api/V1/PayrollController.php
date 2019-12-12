@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PayrollForm;
+use Illuminate\Http\Request;
 use App\Payroll;
 use App\Procedure;
-use Illuminate\Http\Request;
+use App\Contract;
+use Carbon;
 
 /** @resource Payroll
  *
@@ -32,6 +34,7 @@ class PayrollController extends Controller
 	 */
   public function store(PayrollForm $request)
   {
+    $contract = Contract::findOrFail($request['contract_id']);
     $procedure = Procedure::findOrFail($request['procedure_id']);
     $year_shortened = substr(strval($procedure->year), -2);
     if (Payroll::where('code', 'LIKE', "%-$year_shortened")->count() == 0) {
@@ -51,7 +54,11 @@ class PayrollController extends Controller
         $code = implode([str_pad($last_code + 1, 4, '0', STR_PAD_LEFT), $year_shortened], '-');
       }
     }
-    return Payroll::create($request->all() + ['code' => $code]);
+    $unworked_days = $contract->employee->days_non_payable_month(Carbon::create($procedure->year, $procedure->month->order, 1)->toDateString(), true);
+    $last_contract = $unworked_days->contains(function($item, $key) use ($contract) {
+        return $key == $contract->id;
+    });
+    return Payroll::create($request->all() + ['code' => $code, 'unworked_days' => $last_contract ? $unworked_days[$contract->id] : 0]);
   }
 
   /**
