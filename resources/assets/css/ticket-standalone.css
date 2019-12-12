@@ -96,6 +96,7 @@ html, body {
   margin-top: 22px;
 }
 .right-charge {
+  height: 59px;
   min-height: 59px;
   max-height: 59px;
 }
