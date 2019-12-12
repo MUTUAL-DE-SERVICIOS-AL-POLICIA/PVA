@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Http\Controllers\Api\V1\AttendanceController;
+use Illuminate\Http\Request;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,11 +26,17 @@ class Kernel extends ConsoleKernel
    */
   protected function schedule(Schedule $schedule)
   {
-    // $schedule->command('inspire')
-    //      ->hourly();
+    $request = Request::create(null, null, []);
+    $attendance_controller = new AttendanceController();
     $schedule->call(function () {
-      \App::call('App\Http\Controllers\Api\V1\AttendanceController@store');
+        $attendance_controller->store($request);
     })->daily();
+    $schedule->call(function () {
+        $attendance_controller->store($request);
+    })->weekly()->sundays()->at('01:00');
+    $schedule->call(function () {
+        $attendance_controller->destroy('all');
+    })->weekly()->sundays()->at('01:30');
   }
 
   /**

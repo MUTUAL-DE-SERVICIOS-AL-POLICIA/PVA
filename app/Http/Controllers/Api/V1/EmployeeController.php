@@ -163,8 +163,7 @@ class EmployeeController extends Controller
     $request = new Request([
       'from' => $date_range->from,
       'to' => $date_range->to,
-      'employee_id' => $employee->id,
-      'approved' => 'true'
+      'employee_id' => $employee->id
     ]);
     $departures = app(\App\Http\Controllers\Api\V1\DepartureController::class)->index($request);
     foreach ($departures as $departure) {
@@ -214,20 +213,16 @@ class EmployeeController extends Controller
 
       $employee->full_name = $employee->fullName('uppercase', 'last_name_first');
       $employee->consultant = $employee->consultant();
-      switch ($employee->consultant) {
-        case true:
-          $employee->contract = $employee->last_consultant_contract();
-          $employee->position_name = $employee->contract->consultant_position->name;
-          $job_schedules = $employee->contract->job_schedules;
-          break;
-        case false:
-          $employee->contract = $employee->last_contract();
-          $employee->position_name = $employee->contract->position->name;
-          $job_schedules = $employee->contract->job_schedules;
-          break;
-        case null:
-          $job_schedules = null;
-          break;
+      if ($employee->consultant === true) {
+        $employee->contract = $employee->last_consultant_contract();
+        $employee->position_name = $employee->contract->consultant_position->name;
+        $job_schedules = $employee->contract->job_schedules;
+      } elseif ($employee->consultant === false) {
+        $employee->contract = $employee->last_contract();
+        $employee->position_name = $employee->contract->position->name;
+        $job_schedules = $employee->contract->job_schedules;
+      } else {
+        $job_schedules = null;
       }
 
       foreach ($checks as $check) {
@@ -235,6 +230,9 @@ class EmployeeController extends Controller
         $check->date = $checktime->toDateString();
         $check->time = $checktime->format('H:i');
         $check->color = 'orange';
+        $check->delay = (object) [
+          'minutes' => 0
+        ];
         if ($job_schedules) {
           $attendance = Util::attendance_checktype($job_schedules, $check->checktime, true);
           $check->delay = $attendance->delay;

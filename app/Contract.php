@@ -42,7 +42,12 @@ class Contract extends Model
 	public function job_schedules()
 	{
 		return $this->belongsToMany(JobSchedule::class, 'contract_job_schedule');
-	}
+    }
+
+    public function bonuses()
+    {
+        return $this->hasMany(BonusPayroll::class);
+    }
 
 	public function payrolls()
 	{

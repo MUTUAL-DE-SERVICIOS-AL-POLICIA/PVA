@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Carbon\Carbon;
 use App\Contract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PayrollForm;
@@ -39,15 +40,25 @@ class ProcedurePayrollController extends Controller
 		if (Payroll::where('procedure_id', $procedure->id)->count() == 0) {
 			$contracts = new Contract();
 			$contracts = $contracts->valid_date($procedure->year, $procedure->month->order);
+            $procedure_date = Carbon::create($procedure->year, $procedure->month->order, 1);
 			$p = new PayrollController();
 			$payroll = new PayrollForm();
-			foreach ($contracts as $key => $contract) {
+			foreach ($contracts as $contract) {
+                $unworked_days = $contract->employee->days_non_payable_month($procedure_date->toDateString(), true);
+                $last_contract = $unworked_days->contains(function($item, $key) use ($contract) {
+                    return $key == $contract->id;
+                });
+                if ($last_contract) {
+                    $payroll['unworked_days'] = $unworked_days[$contract->id];
+                } else {
+                    $payroll['unworked_days'] = 0;
+                }
 				$payroll['procedure_id'] = $procedure->id;
 				$payroll['contract_id'] = $contract->id;
 				$payroll['employee_id'] = $contract->employee->id;
 				$payroll['position_id'] = $contract->position->id;
 				$payroll['charge_id'] = $contract->position->charge->id;
-				$payroll['position_group_id'] = $contract->position->position_group->id;
+                $payroll['position_group_id'] = $contract->position->position_group->id;
 				$p->store($payroll);
 			}
 			return response()->json([
