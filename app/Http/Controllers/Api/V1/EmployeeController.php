@@ -163,8 +163,7 @@ class EmployeeController extends Controller
     $request = new Request([
       'from' => $date_range->from,
       'to' => $date_range->to,
-      'employee_id' => $employee->id,
-      'approved' => 'true'
+      'employee_id' => $employee->id
     ]);
     $departures = app(\App\Http\Controllers\Api\V1\DepartureController::class)->index($request);
     foreach ($departures as $departure) {

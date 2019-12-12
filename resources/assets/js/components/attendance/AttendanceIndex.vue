@@ -73,6 +73,7 @@
                 <div class="text-xs text-xs-center white--text grey darken-3 mb-2" :key="event.id">
                   <div>{{ event.reason }} [ {{ event.id }} ]</div>
                   <div>{{ event.from.time }} - {{ event.to.time }}</div>
+                  <div>{{ verifyDepartureState(event.approved) }}</div>
                 </div>
               </template>
               <template v-for="(event, index) in checks.filter(o => o.date == date)">
@@ -208,6 +209,15 @@ export default {
     })
   },
   methods: {
+    verifyDepartureState(state) {
+      if (state === null) {
+        return 'PENDIENTE'
+      } else if (state === true) {
+        return 'APROBADO'
+      } else if (state === false) {
+        return 'RECHAZADO'
+      }
+    },
     async getDepartures(id) {
       try {
         this.loading = true

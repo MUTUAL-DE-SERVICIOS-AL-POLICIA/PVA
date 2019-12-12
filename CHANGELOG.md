@@ -2,6 +2,13 @@
 
 ---
 
+## [5.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.1) - 2019-12-12
+
+### Fixed
+
+* Removed consultant contract one month restriction
+* Set log dily files creation permission to 0664
+
 ## [5.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.0) - 2019-12-11
 
 ### Added
@@ -13,6 +20,10 @@
 ### Fixed
 
 * End date saved for each employee to discard changes after bonus pay date
+
+### Changed
+
+* Ability to erase any generated departure request
 
 ## [4.6.9](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/4.6.9) - 2019-11-18
 

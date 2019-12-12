@@ -115,7 +115,7 @@
                   </v-btn>
                   <span>Editar</span>
                 </v-tooltip>
-                <v-tooltip top v-if="props.item.approved == null">
+                <v-tooltip top v-if="props.item.approved == null && $store.getters.role == 'admin'">
                   <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item.id)">
                     <v-icon>delete</v-icon>
                   </v-btn>
