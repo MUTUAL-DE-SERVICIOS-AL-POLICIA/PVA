@@ -6,7 +6,8 @@
 
 ### Fixed
 
-* Fixed consultant contract one month restriction
+* Removed consultant contract one month restriction
+* Set log dily files creation permission to 0664
 
 ## [5.0.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.0) - 2019-12-11
 
