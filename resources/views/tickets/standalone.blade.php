@@ -129,7 +129,7 @@
             <td class="font-large left-discounts-first-row"></td>
             <td class="font-large left-discounts-second-row" align="right"></td>
             @if ($bonus)
-              <td class="font-large left-discounts-third-row">NUEVO</td>
+              <td class="font-large left-discounts-third-row">NUEVO...!!!</td>
               <td class="font-large" align="right">^^^[_]^^^</td>
             @else
               <td class="font-large left-discounts-third-row">OTROS DESCUENTOS</td>
