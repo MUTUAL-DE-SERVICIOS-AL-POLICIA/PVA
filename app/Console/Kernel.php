@@ -28,13 +28,13 @@ class Kernel extends ConsoleKernel
   {
     $request = Request::create(null, null, []);
     $attendance_controller = new AttendanceController();
-    $schedule->call(function () {
+    $schedule->call(function () use ($attendance_controller) {
         $attendance_controller->store($request);
     })->daily();
-    $schedule->call(function () {
+    $schedule->call(function () use ($attendance_controller) {
         $attendance_controller->store($request);
     })->weekly()->sundays()->at('01:00');
-    $schedule->call(function () {
+    $schedule->call(function () use ($attendance_controller) {
         $attendance_controller->destroy('all');
     })->weekly()->sundays()->at('01:30');
   }
