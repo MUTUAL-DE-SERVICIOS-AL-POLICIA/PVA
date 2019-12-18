@@ -399,15 +399,8 @@ export default {
       if (value) {
         let date = this.$moment(value)
         this.datePicker.start.formattedDate = date.format('L')
-        if (date.date() == 1) {
-          this.datePicker.end.min = date.endOf('month').startOf('day').toISOString().split('T')[0]
-        } else if (date.date() > 1) {
-          this.datePicker.end.min = date.add(1, 'month').subtract(1, 'days').toISOString().split('T')[0]
-        }
-
-        if (this.$moment(this.selectedItem.end_date).diff(this.$moment(this.selectedItem.start_date), 'days') < 30) {
-          this.selectedItem.end_date = this.datePicker.end.min
-        }
+        this.datePicker.end.min = date.add(1, 'days').toISOString().split('T')[0]
+        this.selectedItem.end_date = date.endOf('month').startOf('day').toISOString().split('T')[0]
         this.monthSalaryCalc()
       }
     },

@@ -221,11 +221,11 @@ class PayrollPrintController extends Controller
     $options = [
       'orientation' => 'landscape',
       'page-width' => '216',
-      'page-height' => '356',
-      'margin-top' => '7',
-      'margin-bottom' => '12',
-      'margin-left' => '30',
-      'margin-right' => '6',
+      'page-height' => '330',
+      'margin-top' => '5',
+      'margin-right' => '10',
+      'margin-left' => '10',
+      'margin-bottom' => '15',
       'encoding' => 'UTF-8',
       'footer-html' => $footerHtml,
       'user-style-sheet' => public_path('css/payroll-print.min.css')

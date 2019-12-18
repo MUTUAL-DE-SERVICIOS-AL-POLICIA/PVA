@@ -73,38 +73,68 @@
           <tr>
             <td class="font-large left-discounts-first-row">SUELDOS</td>
             <td class="font-large left-discounts-second-row" align="right">{{ Util::formatMoney($payroll->quotable) }}</td>
-            <td class="font-large left-discounts-third-row">AFP.RV.{{ $bonus ? 0 : $procedure->employee_discount->elderly * 100 }}%</td>
-            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_old) }}</td>
+            @if ($bonus)
+              <td class="font-large left-discounts-third-row">FELIZ</td>
+              <td class="font-large" align="right">*&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            @else
+              <td class="font-large left-discounts-third-row">AFP.RV.{{ $procedure->employee_discount->elderly * 100 }}%</td>
+              <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_old) }}</td>
+            @endif
           </tr>
           <tr>
             <td class="font-large left-discounts-first-row"></td>
             <td class="font-large left-discounts-second-row" align="right"></td>
-            <td class="font-large left-discounts-third-row">AFP.RC.{{ $bonus ? 0 : $procedure->employee_discount->common_risk * 100 }}%</td>
-            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_common_risk) }}</td>
+            @if ($bonus)
+              <td class="font-large left-discounts-third-row">NAVIDAD</td>
+              <td class="font-large" align="right">/.\&nbsp;&nbsp;&nbsp;</td>
+            @else
+              <td class="font-large left-discounts-third-row">AFP.RC.{{ $procedure->employee_discount->common_risk * 100 }}%</td>
+              <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_common_risk) }}</td>
+            @endif
           </tr>
           <tr>
             <td class="font-large left-discounts-first-row"></td>
             <td class="font-large left-discounts-second-row" align="right"></td>
-            <td class="font-large left-discounts-third-row">AFP.CM.{{ $bonus ? 0 : $procedure->employee_discount->comission * 100 }}%</td>
-            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_commission) }}</td>
+            @if ($bonus)
+              <td class="font-large left-discounts-third-row">Y</td>
+              <td class="font-large" align="right">/..'\&nbsp;&nbsp;</td>
+            @else
+              <td class="font-large left-discounts-third-row">AFP.CM.{{ $procedure->employee_discount->comission * 100 }}%</td>
+              <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_commission) }}</td>
+            @endif
           </tr>
           <tr>
             <td class="font-large left-discounts-first-row"></td>
             <td class="font-large left-discounts-second-row" align="right"></td>
-            <td class="font-large left-discounts-third-row">AFP.SOL.ASE.{{ $bonus ? 0 : $procedure->employee_discount->solidary * 100 }}%</td>
-            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_solidary) }}</td>
+            @if ($bonus)
+              <td class="font-large left-discounts-third-row">PRÓSPERO</td>
+              <td class="font-large" align="right">/'.'\&nbsp;&nbsp;</td>
+            @else
+              <td class="font-large left-discounts-third-row">AFP.SOL.ASE.{{ $procedure->employee_discount->solidary * 100 }}%</td>
+              <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_solidary) }}</td>
+            @endif
           </tr>
           <tr>
             <td class="font-large left-discounts-first-row"></td>
             <td class="font-large left-discounts-second-row" align="right"></td>
-            <td class="font-large left-discounts-third-row">RC-IVA</td>
-            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_rc_iva) }}</td>
+            @if ($bonus)
+              <td class="font-large left-discounts-third-row">AÑO</td>
+              <td class="font-large" align="right">/.''.'\&nbsp;</td>
+            @else
+              <td class="font-large left-discounts-third-row">RC-IVA</td>
+              <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_rc_iva) }}</td>
+            @endif
           </tr>
           <tr>
             <td class="font-large left-discounts-first-row"></td>
             <td class="font-large left-discounts-second-row" align="right"></td>
-            <td class="font-large left-discounts-third-row">OTROS DESCUENTOS</td>
-            <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_faults) }}</td>
+            @if ($bonus)
+              <td class="font-large left-discounts-third-row">NUEVO...!!!</td>
+              <td class="font-large" align="right">^^^[_]^^^</td>
+            @else
+              <td class="font-large left-discounts-third-row">OTROS DESCUENTOS</td>
+              <td class="font-large" align="right">{{ Util::formatMoney($payroll->discount_faults) }}</td>
+            @endif
           </tr>
           <tr>
             <td class="left-discounts-vertical-space"></td>
@@ -143,7 +173,7 @@
       <div class="right-content">
         <div class="font-small right-text right-text-right">{{ $payroll->code }}</div>
         <div class="font-small right-text right-text-right">{{ $payroll->account_number ? 'ABONO EN CUENTA' : 'PAGO EN CHEQUE' }}</div>
-        <div class="font-small right-text right-text-right">PAGO DE HABERES {{ $payroll->month_shortened }} {{ $payroll->year }}</div>
+        <div class="font-small right-text right-text-right">{{ $bonus ? '' : 'PAGO DE HABERES' }} {{ $payroll->month_shortened }} {{ $payroll->year }}</div>
         <div class="font-small right-text right-text-right right-worked-days">{{ $payroll->worked_days }}</div>
         <div class="font-small right-text right-text-right">{{ $payroll->ci_ext }}</div>
         <div class="font-small right-text-left right-name">{{ $payroll->full_name }}</div>

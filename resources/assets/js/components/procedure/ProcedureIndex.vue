@@ -406,13 +406,13 @@ export default {
       bonusNames: ['AGUINALDO DE NAVIDAD', 'ESFUERZO POR BOLIVIA'],
       bonusPrintTypes: [
         {
-          name: 'PLANILLA',
+          name: 'PLANILLA [PDF]',
           type: 'pdf'
         }, {
-          name: 'BANCO',
+          name: 'BANCO [TXT]',
           type: 'txt'
         }, {
-          name: 'OVT',
+          name: 'OVT [CSV]',
           type: 'csv'
         }, {
           name: 'BOLETAS DE PAGO',
