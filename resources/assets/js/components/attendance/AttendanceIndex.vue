@@ -87,7 +87,7 @@
         </v-card>
         <v-card v-else>
           <v-card-text v-if="!loading">
-            <h2 class="red--text">No hay registros de asistencia</h2>
+            <h2 class="red--text">No existen registros de asistencia</h2>
           </v-card-text>
         </v-card>
       </v-flex>

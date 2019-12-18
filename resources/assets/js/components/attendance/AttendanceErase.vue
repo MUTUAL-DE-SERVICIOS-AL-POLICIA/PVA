@@ -24,7 +24,7 @@
                   <div class="headline font-weight-light"><v-icon large color="danger">warning</v-icon> ¿Seguro que desea {{ title.toLowerCase() }}?</div>
                 </v-card-text>
                 <v-alert v-for="(error, index) in data.errors" :key="index" :value="true" type="error" dismissible>{{ error }}</v-alert>
-                <v-alert :value="true" type="error">
+                <v-alert :value="true" type="error" v-if="data.devices">
                   <div color="red--text" class="title font-weight-light mb-3">Aún quedan los siguientes registros en los dispositivos:</div>
                   <v-data-table
                     :headers="headers"

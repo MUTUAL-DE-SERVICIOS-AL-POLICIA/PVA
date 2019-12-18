@@ -197,18 +197,24 @@ class EmployeePayroll
 
     $payroll_date = Carbon::create($payroll->procedure->year, $payroll->procedure->month->order);
 
-    $start_date = Carbon::parse($contract->start_date . 'T0:0:0');
+    $start_date = Carbon::parse($contract->start_date)->startOfDay();
 
-    $end_date = ($contract->end_date == null && $contract->retirement_date == null) ? $payroll_date->endOfMonth() : Carbon::parse($contract->end_date . 'T23:59:59.999999');
+    $end_date = ($contract->end_date == null && $contract->retirement_date == null) ? $payroll_date->endOfMonth() : Carbon::parse($contract->end_date)->endOfDay();
+
+    $end_of_month = $payroll_date->copy()->endOfMonth();
+
+    if ($end_date->greaterThan($end_of_month)) {
+      $end_date = $end_of_month;
+    }
 
     if ($this->retirement_date != null) {
-      $retirement_date = Carbon::parse($contract->retirement_date . 'T23:59:59.999999');
+      $retirement_date = Carbon::parse($contract->retirement_date)->endOfDay();
       if ($retirement_date->year == $payroll_date->year && $retirement_date->month == $payroll_date->month) {
         $end_date = $retirement_date;
       }
     }
 
-    $last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month)->endOfMonth()->day;
+    $last_day_of_month = $end_of_month->day;
     $worked_days = 0;
 
     if (is_null($contract->end_date) && is_null($contract->retirement_date) && $start_date->year <= $payroll_date->year) {
