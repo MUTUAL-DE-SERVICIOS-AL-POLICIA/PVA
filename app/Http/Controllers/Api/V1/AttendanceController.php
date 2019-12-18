@@ -69,7 +69,7 @@ class AttendanceController extends Controller
     }
     return response()->json([
       'errors' => $errors,
-      'devices' => $devices
+      'devices' => json_encode($devices)
     ], 200);
   }
 
