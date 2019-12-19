@@ -14,6 +14,7 @@ use App\CompanyAccount;
 use App\Helpers\Util;
 use Carbon\Carbon;
 use Response;
+use Exception;
 
 class BonusController extends Controller
 {
@@ -105,9 +106,19 @@ class BonusController extends Controller
         })
         ->orWhere(function ($q) use ($year) {
           $q
-            ->where('retirement_date', null)
-            ->where('end_date', null)
+            ->whereNull('retirement_date')
+            ->whereNull('end_date')
             ->whereYear('start_date', '<=', $year);
+        })
+        ->orWhere(function ($q) use ($year) {
+          $q
+            ->whereYear('start_date', '<=', $year)
+            ->whereYear('retirement_date', '>=', $year);
+        })
+        ->orWhere(function ($q) use ($year) {
+          $q
+            ->whereYear('start_date', '<=', $year)
+            ->whereYear('end_date', '>=', $year);
         });
     })->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('start_date')->get()->groupBy('employee_id');
 
@@ -115,7 +126,12 @@ class BonusController extends Controller
 
     $employees = [];
     foreach ($grouped_contracts as $e => $contracts) {
-      $e = new EmployeeBonus($contracts, $year, $pay_date, $procedure);
+      try {
+        $e = new EmployeeBonus($contracts, $year, $pay_date, $procedure);
+      } catch (Exception $e) {
+        continue;
+      }
+      
       if ($e->worked_days->months >= 3) {
         $employees[] = $e;
       }
