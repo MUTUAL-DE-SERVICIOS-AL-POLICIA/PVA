@@ -24,6 +24,7 @@ class ProcedureForm extends FormRequest {
 		return [
 			'year' => 'required',
 			'month_id' => 'required|exists:months,id',
+			'worked_days' => 'required|integer|min:10|max:25'
 		];
 	}
 

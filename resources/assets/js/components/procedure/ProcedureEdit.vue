@@ -10,6 +10,7 @@
         </div>
       </v-tooltip>
       <v-spacer></v-spacer>
+      <ProcedureRegister ref="procedureRegister" @storeProcedure="saveWorkedDays" :worked_days="procedure.workedDays"/>
       <v-menu
       v-model="menuDate"
       :close-on-content-click="false"
@@ -269,18 +270,21 @@
 </template>
 
 <script>
-import Vue from "vue";
-import PayrollAdd from "./PayrollAdd";
-import RemoveItem from "../RemoveItem";
+import Vue from "vue"
+import PayrollAdd from "./PayrollAdd"
+import RemoveItem from "../RemoveItem"
+import ProcedureRegister from "./ProcedureRegister"
 
 export default {
   name: "ProcedureEdit",
   components: {
     PayrollAdd,
-    RemoveItem
+    RemoveItem,
+    ProcedureRegister
   },
   data() {
     return {
+      valid: false,
       withoutBorders: ' ml-2 mr-2 pl-0 pr-0',
       bus: new Vue(),
       loading: true,
@@ -294,7 +298,8 @@ export default {
         },
         employee_discount: {
           rc_iva: 0
-        }
+        },
+        worked_days: null
       },
       payrolls: [],
       contracts: [],
@@ -410,9 +415,28 @@ export default {
       } else {
         this.selectedDate = null
       }
-    },
+    }
   },
   methods: {
+    async saveWorkedDays(worked_days) {
+      try {
+        let res = await axios.patch(`procedure/${this.procedure.id}`, {
+          worked_days: worked_days
+        })
+        this.procedure.worked_days = res.data.worked_days
+        this.toastr.success(
+          `Actualizado correctamente`
+        )
+      } catch(e) {
+        console.log(e)
+        this.procedure.worked_days = null
+        this.toastr.error(
+          `Error al actualizar`
+        )
+      } finally {
+        this.$refs.procedureRegister.setWorkedDays(this.procedure.worked_days)
+      }
+    },
     async printPayroll(code) {
       try {
         this.loading = true
@@ -484,6 +508,7 @@ export default {
         if (res.data.pay_date){
           this.selectedDate = this.$moment(res.data.pay_date).format("DD/MM/YYYY");
         }
+        this.$refs.procedureRegister.setWorkedDays(res.data.worked_days)
       } catch (e) {
         console.log(e);
       }

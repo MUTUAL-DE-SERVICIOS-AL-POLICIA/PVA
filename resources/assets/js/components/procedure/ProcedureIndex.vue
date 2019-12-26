@@ -351,13 +351,14 @@
                 </v-card-actions>
                 <v-card-actions v-else>
                   <v-spacer></v-spacer>
-                  <v-btn
+                  <!-- <v-btn
                     color="info"
                     @click="storeProcedure"
                     v-if="$store.getters.permissions.includes('create-procedure-eventual')"
                   >
                     <div class="caption">Registrar</div>
-                  </v-btn>
+                  </v-btn> -->
+                  <ProcedureRegister v-if="$store.getters.permissions.includes('create-procedure-eventual')" @storeProcedure="storeProcedure"/>
                 </v-card-actions>
               </div>
             </v-card>
@@ -371,6 +372,7 @@
 <script>
 import Vue from "vue"
 import ProcedureAdd from "./ProcedureAdd"
+import ProcedureRegister from "./ProcedureRegister"
 import RemoveItem from "../RemoveItem"
 import Loading from "../Loading"
 
@@ -378,6 +380,7 @@ export default {
   name: "ProcedureIndex",
   components: {
     ProcedureAdd,
+    ProcedureRegister,
     RemoveItem,
     Loading
   },
@@ -671,17 +674,14 @@ export default {
         this.clearBonusProcedure()
       }
     },
-    async storeProcedure() {
+    async storeProcedure(worked_days) {
       try {
         this.loading = true
-        let procedure = await axios.post(
-          `/procedure`,
-          this.newProcedure
-        )
+        let procedure = await axios.post(`procedure`, {...this.newProcedure, ...{
+          worked_days: worked_days
+        }})
         procedure = procedure.data
-        let payrolls = await axios.post(
-          `/procedure/${procedure.id}/payroll`
-        )
+        let payrolls = await axios.post(`procedure/${procedure.id}/payroll`)
         payrolls = payrolls.data
         this.getProcedures(this.newProcedure.year)
         this.toastr.success(

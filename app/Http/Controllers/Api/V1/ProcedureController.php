@@ -47,6 +47,7 @@ class ProcedureController extends Controller
         $procedure->employee_discount_id = $discount->id;
         $procedure->employer_contribution_id = $contribution->id;
         $procedure->minimum_salary_id = $minimum_salary->id;
+        $procedure->worked_days = $request['worked_days'];
         $procedure->active = true;
         $procedure->save();
         return $procedure;
