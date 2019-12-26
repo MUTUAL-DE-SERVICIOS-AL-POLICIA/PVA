@@ -3,8 +3,9 @@
 namespace App;
 
 use App\Helpers\Util;
-use Carbon;
 use \Milon\Barcode\DNS2D;
+use Exception;
+use Carbon;
 
 class EmployeeBonus
 {
@@ -16,6 +17,9 @@ class EmployeeBonus
         $last_payroll = $last_contract->payrolls()->latest()->first();
         break;
       }
+    }
+    if (!isset($last_contract)) {
+      throw new Exception('This contract have not payrolls');
     }
     $employee = $last_contract->employee;
     $bonus_payroll = BonusPayroll::whereContractId($last_contract->id)->whereBonusProcedureId($procedure->id)->first();
@@ -232,7 +236,7 @@ class EmployeeBonus
     } else {
       $end = $contract->retirement_date ? Carbon::parse($contract->retirement_date) : Carbon::parse($contract->end_date);
     }
-
+    if ($end->year > $year) $end = Carbon::create($year)->endOfYear();
     $months = $end->month - $start->month - 1;
     $last_day_of_month = Carbon::parse($end->format('Y-m-d'));
     $last_day_of_month = $last_day_of_month->endOfMonth()->startOfDay()->day;
