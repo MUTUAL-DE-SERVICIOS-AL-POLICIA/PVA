@@ -224,7 +224,30 @@
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y class="mr-2" v-if="$store.getters.role == 'financiera' || $store.getters.role == 'admin'">
+                  <v-menu offset-y class="mr-2" v-if="['admin', 'financiera'].includes($store.getters.role)">
+                    <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
+                      <span class="caption">REFRIGERIO</span>
+                      <v-icon small>arrow_drop_down</v-icon>
+                    </v-btn>
+                    <v-card
+                      class="scroll-y"
+                    >
+                      <v-list
+                        v-for="(item, index) in livingExpenses"
+                        v-bind:item="item"
+                        v-bind:index="index"
+                        v-bind:key="item.id"
+                        class="mt-0 mb-0 pt-0 pb-0"
+                      >
+                        <div>
+                          <v-list-tile @click="xls(`/payroll/print/afp/${item.id}/${procedure.year}/${procedure.month_order}`)">
+                            <span class="caption">{{ item.name }}</span>
+                          </v-list-tile>
+                        </div>
+                      </v-list>
+                    </v-card>
+                  </v-menu>
+                  <!-- <v-menu offset-y class="mr-2" v-if="$store.getters.role == 'financiera' || $store.getters.role == 'admin'">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span class="caption">AFP</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -246,7 +269,7 @@
                         </div>
                       </v-list>
                     </v-card>
-                  </v-menu>
+                  </v-menu> -->
                   <v-menu offset-y v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'financiera' || $store.getters.role == 'admin'">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span class="caption">Planillas</span>
@@ -400,6 +423,15 @@ export default {
       yearSelected: null,
       templateTypes: ["H", "P"],
       managementEntities: [],
+      livingExpenses: [
+        {
+          id: 1,
+          name: 'REPORTE [PDF]'
+        }, {
+          id: 2,
+          name: 'BANCO [TXT]'
+        }
+      ],
       employerNumbers: [],
       bonusYear: {
         bonus: 0,
