@@ -12,7 +12,10 @@ use App\Http\Requests\ProcedureForm;
 use App\Procedure;
 use App\Payroll;
 use App\Company;
+use App\CompanyAccount;
 use Illuminate\Http\Request;
+use Response;
+use Util;
 
 /** @resource Procedure
  *
@@ -208,6 +211,13 @@ class ProcedureController extends Controller
       $payrolls[] = $p;
     }
 
+    $total_payment = 0;
+    foreach ($payrolls as $payroll) {
+        $payroll->worked_days = $procedure->worked_days - $payroll->unworked_days;
+        $payroll->payment = $procedure->employer_contribution->living_expenses * $payroll->worked_days;
+        $total_payment += $payroll->payment;
+    }
+
     $file_name = "refrigerios_" . $procedure->month->name . "_" . $procedure->year . ".pdf";
 
     $data = [
@@ -216,15 +226,16 @@ class ProcedureController extends Controller
       'procedure' => $procedure,
       'title' => (object)[
         'name' => 'PLANILLA DE REFRIGERIOS',
-        'subtitle' => 'PERSONAL EVENTUAL'
-      ]
+        'subtitle' => 'EVENTUAL'
+      ],
+      'total_payment' => $total_payment
     ];
 
     if (!$request->has('report_type')) {
       return response()->json($data);
     } else {
       if ($request->report_type == 'pdf') {
-        $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_message' => $data['procedure']->active ? 'Borrador' : null, 'print_date' => $data['procedure']->active, 'date' => null))->render();
+        $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_message' => $data['procedure']->active ? 'Borrador' : null, 'print_date' => true, 'date' => null))->render();
 
         $options = [
         'orientation' => 'portrait',
@@ -236,13 +247,35 @@ class ProcedureController extends Controller
         'margin-bottom' => '15',
         'encoding' => 'UTF-8',
         'footer-html' => $footerHtml,
-        'user-style-sheet' => public_path('css/payroll-print.min.css')
+        'user-style-sheet' => public_path('css/report-print.min.css')
         ];
 
         $pdf = \PDF::loadView('payroll.living_expenses', $data);
         $pdf->setOptions($options);
 
         return $pdf->stream($file_name);
+      } elseif ($request->report_type == 'txt') {
+        $total_employees = count($data['employees']);
+        if ($total_employees == 0) {
+          abort(404);
+        }
+        $content = "";
+        $content .= "refrigerios del mes de " . strtolower($procedure->month->name) . " " . $procedure->year . " " . Util::fillZerosLeft(strval($total_employees), 4) . Carbon::now()->format('dmY') . "\r\n";
+        $content .= CompanyAccount::where('active', true)->first()->account . Util::fillZerosLeft(strval(Util::format_number($data['total_payment'], 2, '', '.')), 12) . "\r\n";
+        foreach ($data['employees'] as $i => $employee) {
+          if ($employee->account_number) {
+            $content .= $employee->account_number . Util::fillZerosLeft(strval(Util::format_number($employee->payment, 2, '', '.')), 12) . "1";
+            if ($i < ($total_employees - 1)) {
+              $content .= "\r\n";
+            }
+          }
+        }
+        $filename = implode('_', ["refrigerios", strtolower($procedure->month->name), $procedure->year]) . ".txt";
+        $headers = [
+          'Content-type' => 'text/plain',
+          'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)
+        ];
+        return Response::make($content, 200, $headers);
       }
     }
   }

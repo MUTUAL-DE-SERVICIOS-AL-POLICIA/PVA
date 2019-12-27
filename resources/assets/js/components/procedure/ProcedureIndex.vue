@@ -224,7 +224,7 @@
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y class="mr-2" v-if="['admin', 'financiera', 'rrhh'].includes($store.getters.role)">
+                  <v-menu offset-y class="mr-2" v-if="['admin', 'financiera', 'rrhh'].includes($store.getters.role) && procedure.worked_days">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span class="caption">REFRIGERIO</span>
                       <v-icon small>arrow_drop_down</v-icon>

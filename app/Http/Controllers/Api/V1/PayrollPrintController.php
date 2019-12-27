@@ -262,10 +262,11 @@ class PayrollPrintController extends Controller
     $content .= CompanyAccount::where('active', true)->first()->account . Util::fillZerosLeft(strval(Util::format_number($response->data['total_discounts']->payable_liquid, 2, '', '.')), 12) . "\r\n";
 
     foreach ($response->data['employees'] as $i => $employee) {
-      $content .= $employee->account_number . Util::fillZerosLeft(strval(Util::format_number($employee->payable_liquid, 2, '', '.')), 12) . "1";
-
-      if ($i < ($total_employees - 1)) {
-        $content .= "\r\n";
+      if ($employee->account_number) {
+        $content .= $employee->account_number . Util::fillZerosLeft(strval(Util::format_number($employee->payable_liquid, 2, '', '.')), 12) . "1";
+        if ($i < ($total_employees - 1)) {
+          $content .= "\r\n";
+        }
       }
     }
 
