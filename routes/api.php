@@ -297,6 +297,8 @@ Route::group([
       Route::delete('location/{id}', 'Api\V1\LocationController@destroy')->name('location_delete');
       // Departure Reason
       Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['update']);
+      // City
+      Route::resource('city', 'Api\V1\CityController')->only(['update']);
     });
 
     // RRHH routes
