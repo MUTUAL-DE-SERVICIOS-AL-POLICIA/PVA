@@ -447,6 +447,7 @@ Route::group([
       'middleware' => 'role:admin|rrhh|financiera',
     ], function () {
       Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['show']);
+      Route::get('procedure/{id}/living_expenses', 'Api\V1\ProcedureController@living_expenses');
     });
 
     // JURIDICA-RRHH routes

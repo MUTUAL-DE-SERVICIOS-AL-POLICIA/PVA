@@ -73,7 +73,7 @@
                         v-bind:key="item.type"
                         class="mt-0 mb-0 pt-0 pb-0"
                       >
-                        <v-list-tile @click="bonusPrint(procedure.id, item.type)">
+                        <v-list-tile @click="printReport(`bonus/print/${procedure.id}?report_type=${item.type}`, item.type)">
                           <v-list-tile-content class="caption">
                             {{ item.name }}
                           </v-list-tile-content>
@@ -224,7 +224,7 @@
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y class="mr-2" v-if="['admin', 'financiera'].includes($store.getters.role)">
+                  <v-menu offset-y class="mr-2" v-if="['admin', 'financiera', 'rrhh'].includes($store.getters.role)">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span class="caption">REFRIGERIO</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -236,18 +236,18 @@
                         v-for="(item, index) in livingExpenses"
                         v-bind:item="item"
                         v-bind:index="index"
-                        v-bind:key="item.id"
+                        v-bind:key="item.type"
                         class="mt-0 mb-0 pt-0 pb-0"
                       >
                         <div>
-                          <v-list-tile @click="xls(`/payroll/print/afp/${item.id}/${procedure.year}/${procedure.month_order}`)">
+                          <v-list-tile @click="printReport(`procedure/${procedure.id}/living_expenses?report_type=${item.type}`, item.type)">
                             <span class="caption">{{ item.name }}</span>
                           </v-list-tile>
                         </div>
                       </v-list>
                     </v-card>
                   </v-menu>
-                  <!-- <v-menu offset-y class="mr-2" v-if="$store.getters.role == 'financiera' || $store.getters.role == 'admin'">
+                  <v-menu offset-y class="mr-2" v-if="['admin', 'financiera'].includes($store.getters.role)">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span class="caption">AFP</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -269,7 +269,7 @@
                         </div>
                       </v-list>
                     </v-card>
-                  </v-menu> -->
+                  </v-menu>
                   <v-menu offset-y v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'financiera' || $store.getters.role == 'admin'">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span class="caption">Planillas</span>
@@ -374,13 +374,6 @@
                 </v-card-actions>
                 <v-card-actions v-else>
                   <v-spacer></v-spacer>
-                  <!-- <v-btn
-                    color="info"
-                    @click="storeProcedure"
-                    v-if="$store.getters.permissions.includes('create-procedure-eventual')"
-                  >
-                    <div class="caption">Registrar</div>
-                  </v-btn> -->
                   <ProcedureRegister v-if="$store.getters.permissions.includes('create-procedure-eventual')" @storeProcedure="storeProcedure"/>
                 </v-card-actions>
               </div>
@@ -425,11 +418,11 @@ export default {
       managementEntities: [],
       livingExpenses: [
         {
-          id: 1,
-          name: 'REPORTE [PDF]'
+          name: 'REPORTE [PDF]',
+          type: 'pdf'
         }, {
-          id: 2,
-          name: 'BANCO [TXT]'
+          name: 'BANCO [TXT]',
+          type: 'txt'
         }
       ],
       employerNumbers: [],
@@ -503,8 +496,7 @@ export default {
         console.log(e)
       }
     },
-    bonusPrint(id, type) {
-      let url = `/bonus/print/${id}?report_type=${type}`
+    printReport(url, type) {
       if (type == 'pdf' || type == 'ticket') {
         this.print(url)
       } else {

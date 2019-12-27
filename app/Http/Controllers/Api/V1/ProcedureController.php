@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api\V1;
 
 use Carbon\Carbon;
 use App\EmployeeDiscount;
+use App\EmployeePayroll;
 use App\EmployerContribution;
 use App\MinimumSalary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProcedureForm;
 use App\Procedure;
+use App\Payroll;
+use App\Company;
 use Illuminate\Http\Request;
 
 /** @resource Procedure
@@ -183,6 +186,64 @@ class ProcedureController extends Controller
       return trim($extracto[1][1]);
     } else {
       return false;
+    }
+  }
+
+  public function living_expenses(Request $request, $id)
+  {
+    $procedure = Procedure::findOrFail($id);
+    $procedure->employer_contribution;
+    $company = Company::first();
+    $grouped_payrolls = Payroll::where('procedure_id', $procedure->id)->leftJoin('employees as e', 'e.id', '=', 'payrolls.employee_id')->leftJoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('c.start_date')->get()->groupBy('employee_id');
+    $payrolls = [];
+
+    foreach ($grouped_payrolls as $payroll_group) {
+      foreach ($payroll_group as $key => $pr) {
+        if ($key == 0) {
+          $p = new EmployeePayroll($pr);
+        } else {
+          $p->mergePayroll(new EmployeePayroll($pr));
+        }
+      }
+      $payrolls[] = $p;
+    }
+
+    $file_name = "refrigerios_" . $procedure->month->name . "_" . $procedure->year . ".pdf";
+
+    $data = [
+      'employees' => $payrolls,
+      'company' => $company,
+      'procedure' => $procedure,
+      'title' => (object)[
+        'name' => 'PLANILLA DE REFRIGERIOS',
+        'subtitle' => 'PERSONAL EVENTUAL'
+      ]
+    ];
+
+    if (!$request->has('report_type')) {
+      return response()->json($data);
+    } else {
+      if ($request->report_type == 'pdf') {
+        $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_message' => $data['procedure']->active ? 'Borrador' : null, 'print_date' => $data['procedure']->active, 'date' => null))->render();
+
+        $options = [
+        'orientation' => 'portrait',
+        'page-width' => '216',
+        'page-height' => '279',
+        'margin-top' => '5',
+        'margin-right' => '10',
+        'margin-left' => '10',
+        'margin-bottom' => '15',
+        'encoding' => 'UTF-8',
+        'footer-html' => $footerHtml,
+        'user-style-sheet' => public_path('css/payroll-print.min.css')
+        ];
+
+        $pdf = \PDF::loadView('payroll.living_expenses', $data);
+        $pdf->setOptions($options);
+
+        return $pdf->stream($file_name);
+      }
     }
   }
 }
