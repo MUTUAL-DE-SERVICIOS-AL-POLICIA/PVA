@@ -2,6 +2,18 @@
 
 ---
 
+## [5.0.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.3) - 2019-12-26
+
+### Fixed
+
+* Consultant worked days on procedure printable template
+
+## [5.0.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.2) - 2019-12-19
+
+### Fixed
+
+* Bonus procedure contract without payroll exception
+
 ## [5.0.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.1) - 2019-12-12
 
 ### Fixed
