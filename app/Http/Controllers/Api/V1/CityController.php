@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\City;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 /** @resource City
  *
@@ -17,7 +18,7 @@ class CityController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return City::get();
+		return City::orderBy('name')->get();
 	}
 
 	/**
@@ -28,5 +29,12 @@ class CityController extends Controller {
 	 */
 	public function show($id) {
 		return City::findOrFail($id);
+    }
+
+    public function update(Request $request, $id) {
+		$city = City::findOrFail($id);
+		$city->fill($request->all());
+		$city->save();
+		return $city;
 	}
 }

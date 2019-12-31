@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>
-        Configuración de la Institución
+        Datos Institucionales
       </v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
@@ -102,6 +102,56 @@
         </v-container>
       </template>
     </v-data-table>
+    <v-toolbar>
+      <v-toolbar-title>
+        Números de Empleador
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-toolbar>
+    <v-data-iterator
+      :rows-per-page-items="[9]"
+      :total-items="9"
+      :items="employerNumbers"
+      item-key="id"
+      content-tag="v-layout"
+      :expand="false"
+      row
+      wrap
+    >
+      <template v-slot:item="props">
+        <v-flex
+          xs12
+          sm6
+          md4
+          lg3
+        >
+          <v-card :class="props.item.cities.length == 0 ? 'danger' : ''">
+            <v-card-title>
+              <h4>
+                <v-text-field
+                  :value="props.item.number"
+                  @change="updateEmployerNumber(props.item.id, $event)"
+                ></v-text-field>
+              </h4>
+            </v-card-title>
+            <v-switch
+              v-model="props.expanded"
+              :label="(props.expanded) ? 'Ocultar' : 'Ciudades asociadas'"
+              class="pl-3 mt-0"
+            ></v-switch>
+            <v-divider></v-divider>
+            <v-list v-if="props.expanded" dense class="mb-4 grey lighten-2">
+              <template v-for="city in cities">
+                <v-list-tile :key="city.id">
+                  <v-btn @click="switchEmployerNumberCity(props.item.id, city.id)" round :color="hasCity(props.item.cities, city.id) ? 'success' : (!city.employer_number_id ? 'error' : '')" :dark="hasCity(props.item.cities, city.id)">{{ city.name }}</v-btn>
+                </v-list-tile>
+              </template>
+            </v-list>
+          </v-card>
+        </v-flex>
+      </template>
+      <template v-slot:footer></template>
+    </v-data-iterator>
   </v-container>
 </template>
 
@@ -110,6 +160,8 @@ export default {
   name: 'CompanyConfig',
   data: () => ({
     loading: true,
+    employerNumbers: [],
+    cities: [],
     companies: [],
     headers: [
       { align: "center", sortable: false, text: "Nombre", class: ["ma-0", "pa-0"], value: "name", width: "25%"},
@@ -124,10 +176,74 @@ export default {
       return this.$moment(value).format("DD/MM/YYYY");
     }
   },
+  beforeMount() {
+    this.getCities()
+  },
   mounted() {
     this.getCompanies()
+    this.getEmployerNumbers()
   },
   methods: {
+    async updateEmployerNumber(employerNumberId, value) {
+      let index = this.employerNumbers.findIndex(o => o.id == employerNumberId)
+      if (this.employerNumbers[index].number != value) {
+        try {
+          this.loading = true
+          let res = await axios.patch(`employer_number/${employerNumberId}`, {
+            number: value
+          })
+          this.employerNumbers[index].number = value
+          this.toastr.success('Actualizado correctamente')
+        } catch (e) {
+          console.log(e)
+          this.toastr.error('Error al actualizar')
+        } finally {
+          this.loading = false
+        }
+      }
+    },
+    async switchEmployerNumberCity(employerNumberId, cityId) {
+      let employerNumber = this.employerNumbers.find(o => o.id == employerNumberId)
+      try {
+        this.loading = true
+        let res = await axios.patch(`city/${cityId}`, {
+          employer_number_id: this.hasCity(employerNumber.cities, cityId) ? null : employerNumberId
+        })
+        this.getEmployerNumbers()
+        this.getCities()
+        this.toastr.success('Actualizado correctamente')
+      } catch (e) {
+        console.log(e)
+        this.toastr.error('Error al actualizar')
+      } finally {
+        this.loading = false
+      }
+    },
+    hasCity(citiesList, cityId) {
+      return citiesList.map(o => o.id).includes(cityId)
+    },
+    async getEmployerNumbers() {
+      try {
+        this.loading = true
+        let res = await axios.get(`employer_number`)
+        this.employerNumbers = res.data
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
+    async getCities() {
+      try {
+        this.loading = true
+        let res = await axios.get(`city`)
+        this.cities = res.data
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
     async getCompanies() {
       try {
         this.loading = true

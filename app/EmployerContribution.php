@@ -10,7 +10,7 @@ class EmployerContribution extends Model {
 	public $timestamps = true;
 	public $guarded = ['id'];
 	protected $dates = ['deleted_at'];
-	protected $fillable = ['insurance_company', 'professional_risk', 'solidary', 'housing', 'active'];
+	protected $fillable = ['insurance_company', 'professional_risk', 'solidary', 'housing', 'active', 'living_expenses'];
 
 	public function procedures() {
 		return $this->hasMany(Procedure::class);

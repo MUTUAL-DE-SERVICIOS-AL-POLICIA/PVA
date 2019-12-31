@@ -73,7 +73,7 @@
                         v-bind:key="item.type"
                         class="mt-0 mb-0 pt-0 pb-0"
                       >
-                        <v-list-tile @click="bonusPrint(procedure.id, item.type)">
+                        <v-list-tile @click="printReport(`bonus/print/${procedure.id}?report_type=${item.type}`, item.type)">
                           <v-list-tile-content class="caption">
                             {{ item.name }}
                           </v-list-tile-content>
@@ -224,7 +224,30 @@
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-menu offset-y class="mr-2" v-if="$store.getters.role == 'financiera' || $store.getters.role == 'admin'">
+                  <v-menu offset-y class="mr-2" v-if="['admin', 'financiera', 'rrhh'].includes($store.getters.role) && procedure.worked_days">
+                    <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
+                      <span class="caption">REFRIGERIO</span>
+                      <v-icon small>arrow_drop_down</v-icon>
+                    </v-btn>
+                    <v-card
+                      class="scroll-y"
+                    >
+                      <v-list
+                        v-for="(item, index) in livingExpenses"
+                        v-bind:item="item"
+                        v-bind:index="index"
+                        v-bind:key="item.type"
+                        class="mt-0 mb-0 pt-0 pb-0"
+                      >
+                        <div>
+                          <v-list-tile @click="printReport(`procedure/${procedure.id}/living_expenses?report_type=${item.type}`, item.type)">
+                            <span class="caption">{{ item.name }}</span>
+                          </v-list-tile>
+                        </div>
+                      </v-list>
+                    </v-card>
+                  </v-menu>
+                  <v-menu offset-y class="mr-2" v-if="['admin', 'financiera'].includes($store.getters.role)">
                     <v-btn slot="activator" :color="procedure.active ? 'info' : 'primary'">
                       <span class="caption">AFP</span>
                       <v-icon small>arrow_drop_down</v-icon>
@@ -351,13 +374,7 @@
                 </v-card-actions>
                 <v-card-actions v-else>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    color="info"
-                    @click="storeProcedure"
-                    v-if="$store.getters.permissions.includes('create-procedure-eventual')"
-                  >
-                    <div class="caption">Registrar</div>
-                  </v-btn>
+                  <ProcedureRegister v-if="$store.getters.permissions.includes('create-procedure-eventual')" @storeProcedure="storeProcedure"/>
                 </v-card-actions>
               </div>
             </v-card>
@@ -371,6 +388,7 @@
 <script>
 import Vue from "vue"
 import ProcedureAdd from "./ProcedureAdd"
+import ProcedureRegister from "./ProcedureRegister"
 import RemoveItem from "../RemoveItem"
 import Loading from "../Loading"
 
@@ -378,6 +396,7 @@ export default {
   name: "ProcedureIndex",
   components: {
     ProcedureAdd,
+    ProcedureRegister,
     RemoveItem,
     Loading
   },
@@ -397,6 +416,15 @@ export default {
       yearSelected: null,
       templateTypes: ["H", "P"],
       managementEntities: [],
+      livingExpenses: [
+        {
+          name: 'REPORTE [PDF]',
+          type: 'pdf'
+        }, {
+          name: 'BANCO [TXT]',
+          type: 'txt'
+        }
+      ],
       employerNumbers: [],
       bonusYear: {
         bonus: 0,
@@ -468,8 +496,7 @@ export default {
         console.log(e)
       }
     },
-    bonusPrint(id, type) {
-      let url = `/bonus/print/${id}?report_type=${type}`
+    printReport(url, type) {
       if (type == 'pdf' || type == 'ticket') {
         this.print(url)
       } else {
@@ -671,17 +698,14 @@ export default {
         this.clearBonusProcedure()
       }
     },
-    async storeProcedure() {
+    async storeProcedure(worked_days) {
       try {
         this.loading = true
-        let procedure = await axios.post(
-          `/procedure`,
-          this.newProcedure
-        )
+        let procedure = await axios.post(`procedure`, {...this.newProcedure, ...{
+          worked_days: worked_days
+        }})
         procedure = procedure.data
-        let payrolls = await axios.post(
-          `/procedure/${procedure.id}/payroll`
-        )
+        let payrolls = await axios.post(`procedure/${procedure.id}/payroll`)
         payrolls = payrolls.data
         this.getProcedures(this.newProcedure.year)
         this.toastr.success(
