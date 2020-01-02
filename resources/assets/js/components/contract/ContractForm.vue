@@ -82,7 +82,7 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="selectedItem.id && $store.getters.role != 'admin'"
+                      :disabled="disableEndDate"
                     >
                       <v-text-field
                         slot="activator"
@@ -93,7 +93,7 @@
                         name="Fecha de inicio"
                         :error-messages="errors.collect('Fecha de inicio')"
                         readonly
-                        :disabled="selectedItem.id && $store.getters.role != 'admin'"
+                        :disabled="disableEndDate"
                         autocomplete='cc-exp-month'
                       ></v-text-field>
                       <v-date-picker
