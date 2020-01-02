@@ -144,7 +144,8 @@ Las planillas mensuales cuentan con las opciones de:
 * Imprimir boletas de pago
 * Imprimir boleta de pago separada
 * Descargar archivo TXT para débito automático en Banco
-* Descargar archivo CSV para declaración en la ![Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
+* Descargar archivo CSV para declaración en la [Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
+* Reporte de pago de refrigerios y enlace TXT para pago automático en banco
 * Descargar registro de novedades para las AFPs
 * Imprimir planillas filtradas de acuerdo a los formatos establecidos en MUSERPOL
 
@@ -153,12 +154,27 @@ Las planillas mensuales cuentan con las opciones de:
 Las planillas de aguinaldo cuentan con las opciones de:
 
 * Imprimir planillas
+* Imprimir boletas de pago
 * Descargar archivo TXT para débito automático en Banco
-* Descargar archivo CSV para declaración en la ![Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
+* Descargar archivo CSV para declaración en la [Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
 * Editar fecha de pago y nombre de Planilla
 * Eliminar Planilla (opción solo disponible para el rol administrador)
 
 #### EDICIÓN DE PLANILLAS
+
+Para la edición de una planilla mensual se debe registrar el mes a pagar haciendo click en el botón **REGISTRAR**
+
+![IMAGE](./img/register_procedure.png)
+
+A continuación se debe definir los días laborales del mes para ser contados en el reporte de refrigerios:
+
+![IMAGE](./img/procedure_worked_days.png)
+
+Ahora se puede proceder a editar la planilla del mes generado. Para ello se debe hacer click en el botón editar.
+
+![IMAGE](./img/edit_button_procedure.png)
+
+Esto nos llevará a la gestión de la planilla.
 
 ![IMAGE](./img/edit_procedure.png)
 

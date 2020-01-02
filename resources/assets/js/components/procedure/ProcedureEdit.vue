@@ -10,7 +10,7 @@
         </div>
       </v-tooltip>
       <v-spacer></v-spacer>
-      <ProcedureRegister ref="procedureRegister" @storeProcedure="saveWorkedDays" :worked_days="procedure.workedDays"/>
+      <ProcedureRegister v-if="procedure.active" ref="procedureRegister" @storeProcedure="saveWorkedDays" :worked_days="procedure.workedDays" message="Días Laborales"/>
       <v-menu
       v-model="menuDate"
       :close-on-content-click="false"

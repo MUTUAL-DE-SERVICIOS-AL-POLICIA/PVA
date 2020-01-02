@@ -66,6 +66,9 @@
     "amend-cmd": [
       "@php artisan migrate:rollback"
     ],
+    "pre-install-cmd": [
+      "COMPOSER_PROCESS_TIMEOUT=600 ./version-switch.sh"
+    ],
     "post-install-cmd": [
       "COMPOSER_PROCESS_TIMEOUT=600 ./post-install.sh"
     ],

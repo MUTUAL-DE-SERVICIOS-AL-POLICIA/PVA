@@ -10,7 +10,7 @@
         flat
         v-if="worked_days"
       >
-        <div class="caption pr-2">Dias trabajados:</div>
+        <div class="caption pr-2">Dias laborales:</div>
         <div class="body-1 font-weight-bold">{{ worked_days }}</div>
       </v-btn>
       <v-btn
@@ -18,12 +18,12 @@
         v-on="on"
         v-else
       >
-        <div class="caption">Registrar</div>
+        <div class="caption">{{ message }}</div>
       </v-btn>
     </template>
     <v-card>
       <v-toolbar dark color="secondary">
-        <v-toolbar-title class="white--text">Días trabajados</v-toolbar-title>
+        <v-toolbar-title class="white--text">Días laborales</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click.native="close()">
           <v-icon>close</v-icon>
@@ -63,6 +63,12 @@
 <script>
 export default {
   name: 'procedure-register',
+  props: {
+    message: {
+      type: String,
+      default: 'REGISTRAR'
+    }
+  },
   data() {
     return {
       dialog: false,
