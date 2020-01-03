@@ -176,7 +176,7 @@ class AttendanceController extends Controller
     \Log::info('Attendace synchronization has ended');
     return response()->json([
       'errors' => $errors,
-      'added' => $users
+      'added' => Util::latin1_to_utf8($users)
     ], 200);
   }
 

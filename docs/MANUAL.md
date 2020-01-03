@@ -1,6 +1,6 @@
 # MANUAL DE USUARIO DE PLATAFORMA VIRTUAL ADMINISTRATIVA - MUSERPOL
 
-## INGRESO AL SISTEMA.
+## INGRESO AL SISTEMA
 
 Este sistema es compatible con los navegadores Firefox y Chrome, para acceder al sistema se debe acceder al enlace:
 [http://pva.muserpol.gob.bo](http://pva.muserpol.gob.bo).
@@ -8,7 +8,7 @@ Una vez dentro se deben ingresar las credenciales en los campos de usuario y con
 
 ![IMAGE](./img/login.png)
 
-#### CAMBIO DE CONTRASEÑA
+### CAMBIO DE CONTRASEÑA
 
 La primera acción a tomar es cambiar la contraseña proporcionada por el responsable de la Unidad de Sistemas y Soporte Técnico, esta acción se debe ejecutar en la [Intranet de la institución](intranet.muserpol.gob.bo):
 
@@ -25,7 +25,7 @@ Debe llenar el formulario que anterior, de la siguiente manera:
 - **3)** Nueva contraseña
 - **4)** Confirmación de la nueva contraseña
 
-#### CAMBIO DE CONTRASEÑA PARA EL ADMINISTRADOR
+### CAMBIO DE CONTRASEÑA PARA EL ADMINISTRADOR
 
 Después del login, debe hacer click en el botón ubicado en la parte superior derecha de la ventana con el nombre de usuario ADMIN, esta acción abrirá el menú lateral:
 
@@ -37,7 +37,7 @@ A continuación debe hacer click en la opción de Perfil que se muestra a contin
 
 Debe llenar el formulario que aparecerá en la nueva ventana, con lo cual, tras Guardar tendrá cambiada su contraseña.
 
-#### CERRAR SESION
+### CERRAR SESION
 
 Para salir de la sesión actual bastará con hacer click en la opción Cerrar Sesión del menú superior derecho.
 
@@ -73,7 +73,7 @@ Esta vista contiene las siguientes opciones:
 
 ![IMAGE](./img/form_employee.png)
 
-Cada registro de empleado cuenta con múltiples opciones, una de ellas es poder VER el detalle la información con solo hacer click en la fila correspondiente, como se muestra a continuación.
+Cada registro de empleado cuenta con múltiples opciones, una de ellas es poder VER el detalle la información, para ello se debe hacer click en la fila correspondiente, como se muestra a continuación.
 
 ![IMAGE](./img/show_employee.png)
 
@@ -84,8 +84,11 @@ Por otra parte, cada registro cuenta con 4 opciones:
 - **1)** Dar de baja a un funcionario, éste registro será visible en la pestaña de *INACTIVOS*
 - **2)** Editar los datos del funcionario
 - **3)** Imprimir el Certificado de Haberes y Aportes Laborales
+- **4)** Eliminar funcionario registrado *(Solo si no cuenta con ningún contrato registrado)*
 
 ![IMAGE](./img/print_certificate.png)
+
+![IMAGE](./img/print_certificate_pdf.png)
 
 La lista de empleados cuenta con un código de 4 colores que ayuda a completar el llenado de datos en los casos faltantes:
 
@@ -95,6 +98,63 @@ La lista de empleados cuenta con un código de 4 colores que ayuda a completar e
 - **AMARILLO**: EL funcionario no tiene los datos adicionales registrados
 - **ROJO**: El funcionario no tiene cuenta bancaria o número NUA/CUA registrados
 - **BLANCO**: el funcionario cuenta con todos los datos registrados
+
+## CONFIGURACIÓN DE DATOS INSTITUCIONALES
+
+Para el correcto funcionamiento y visualización de las planillas es necesario configurar los datos de la institución.
+
+![IMAGE](./img/company_config.png)
+
+En esta ventana se puede configurar:
+
+* Nombre de la institución
+* Acŕonimo
+* Número de Identificación Tributaria
+* Resolución de Designación de Director
+* Fecha de Designación de Director
+
+Para cambiar cualquiera de estos datos basta con actualizar el dato deseado y presionar la tecla *ENTER*.
+
+### CONFIGURACIÓN DE NÚMEROS DE EMPLEADOR
+
+Cada número de empleador está relacionado con una o más ciudades, para añadir un nuevo número se debe hacer click en el botón **+** en la parte superior derecha.
+
+![IMAGE](./img/employer_number_add.png)
+
+Debe llenarse el formulario que se abrirá.
+
+![IMAGE](./img/employer_number_form.png)
+
+Para actualizar un número se debe hacer click en el botón azul de *Lápiz* y llenar el formulario de manera similar a la de creación de nuevos números.
+
+![IMAGE](./img/employer_number_edit.png)
+
+![IMAGE](./img/employer_number_update.png)
+
+Al eliminar un número de empleador las ciudades asociadas al mismo se quedan sin ninguna asociación. Por lo cual no serán tomadas en cuenta en la generación de Planillas de Pago.
+
+![IMAGE](./img/employer_number_delete.png)
+
+Esta acción requiere confirmación.
+
+![IMAGE](./img/employer_number_delete_confirm.png)
+
+#### ASOCIAR CIUDADES A NÚMERO DE EMPLEADOR
+
+Para asociar una o más ciudades a un número de empleador se debe hacer click en el switch *Ciudades Asociadas*.
+
+![IMAGE](./img/employer_number_color.png)
+
+El listado de número de empleador y ciudades se distingue por cuatro colores:
+
+* <span style="color:red">**ROJO**</span>: Ciudades sin número de empleador.
+* <span style="color:yellow">**AMARILLO**</span>: Números de empleador sin ciudades asociadas.
+* <span style="color:green">**VERDE**</span>: Ciudades asociadas al número de empleador actual.
+* <span style="color:black">**BLANCO**</span>: Números de empleador con al menos una ciudad asociada.
+
+![IMAGE](./img/employer_number_city.png)
+
+Para asociar o desasociar una ciudad basta con hacer click en el nombre de la ciudad deseada.
 
 ## GESTIÓN DE PERSONAL EVENTUAL
 
@@ -115,9 +175,15 @@ En la pestaña de contratos eventuales se despliegan 4 opciones:
 - **4)** Acciones que contemplan:
 
   * Impresión de contrato, alta y baja del seguro
-  * Recontratar personal
   * Editar contrato
-  * Eliminar, visible solo en caso de que el contrato no figure en ninguna planilla
+  * Eliminar, disponible solo en caso de que el contrato no figure en ninguna planilla
+  * Recontratar personal
+
+![IMAGE](./img/contract_pdf.png)
+
+Al recontratar a un funcionario, el formulario es llenado automáticamente con los datos del último contrato, en caso de cambio de cargo será necesario registrar un contrato como nuevo.
+
+![IMAGE](./img/re_contract_form.png)
 
 ### GESTIÓN DE PLANILLAS DE PERSONAL EVENTUAL
 
@@ -139,12 +205,13 @@ A continuación se muestra la lista de planillas de cada mes de la gestión sele
 
 Las planillas mensuales cuentan con las opciones de:
 
-* Editar Planilla (Para planillas abiertas)
-* Ver Planilla (Para planillas cerradas)
+* Editar Planilla de Pago (Para planillas abiertas)
+* Ver Planilla de Pago (Para planillas cerradas)
 * Imprimir boletas de pago
 * Imprimir boleta de pago separada
 * Descargar archivo TXT para débito automático en Banco
-* Descargar archivo CSV para declaración en la ![Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
+* Descargar archivo CSV para declaración en la [Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
+* Planillas de pago de refrigerios y enlace TXT para pago automático en banco
 * Descargar registro de novedades para las AFPs
 * Imprimir planillas filtradas de acuerdo a los formatos establecidos en MUSERPOL
 
@@ -153,12 +220,29 @@ Las planillas mensuales cuentan con las opciones de:
 Las planillas de aguinaldo cuentan con las opciones de:
 
 * Imprimir planillas
+* Imprimir boletas de pago
 * Descargar archivo TXT para débito automático en Banco
-* Descargar archivo CSV para declaración en la ![Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
+* Descargar archivo CSV para declaración en la [Oficina Virtual de Trámites del Ministerio de Trabajo](https://ovt.mintrabajo.gob.bo)
 * Editar fecha de pago y nombre de Planilla
 * Eliminar Planilla (opción solo disponible para el rol administrador)
 
-#### EDICIÓN DE PLANILLAS
+### EDICIÓN DE PLANILLAS
+
+#### GENERACIÓN DE UNA PLANILLA
+
+Para la edición de una planilla mensual se debe registrar el mes a pagar haciendo click en el botón **REGISTRAR**
+
+![IMAGE](./img/register_procedure.png)
+
+A continuación se debe definir los días laborales del mes para ser contados en el reporte de refrigerios:
+
+![IMAGE](./img/procedure_worked_days.png)
+
+Ahora se puede proceder a editar la planilla del mes generado. Para ello se debe hacer click en el botón editar.
+
+![IMAGE](./img/edit_button_procedure.png)
+
+Esto nos llevará a la gestión de la planilla.
 
 ![IMAGE](./img/edit_procedure.png)
 
@@ -171,13 +255,94 @@ La edición de planillas contempla el registro de:
 
 Al registrar cualquiera de estos valores bastará con pulsar la tecla *ENTER* para que sean guardados. Alternativamente se puede llenar toda una fila y pulsar el botón *GUARDAR*.
 
-Las opciones de Eliminar Planilla y Eliminar Registro están habilitadas solo para el rol de administrador. La última de estas opciones abre un formulario:
+#### ADICIÓN Y ELIMINACIÓN DE FILAS EN LA PLANILLA
+
+Para eliminar una fila de la planilla se debe hacer click en el botón **Eliminar** de la fila deseada.
+
+![IMAGE](./img/button_delete_procedure.png)
+
+Esta opción requiere la confirmación del usuario antes de ejecutar la eliminación.
+
+![IMAGE](./img/form_delete_procedure.png)
+
+Para añadir una fila inexistente en la planilla se debe hacer click en el botón **+** ubicado en la parte superior derecha.
+
+![IMAGE](./img/button_add_procedure.png)
+
+En el formulario se debe buscar el funcionario que no se encuentra en la planilla actual.
 
 ![IMAGE](./img/form_edit_procedure.png)
 
-La impresión de Planillas incluye las Planillas de Haberes (H.) y las Planillas Patronales (P.) agrupadas de acuerdo al criterio actual de MUSERPOL.
+#### CERRAR PLANILLA
+
+Para cerrar una planilla se debe establecer el día de pago a fin de recuperar las UFVs para el cálculo del IVA.
+
+![IMAGE](./img/procedure_pay_date.png)
+
+Ahora se habilitará el botón de **Cerrar Planilla** con el cual la planilla ya no se puede editar hasta que se vuelva a reabrir.
+
+![IMAGE](./img/procedure_close.png)
+
+Esta acción requiere confirmación.
+
+![IMAGE](./img/procedure_close_confirm.png)
+
+Ahora la planilla cambiará a color verde. Para ingresar a la planilla cerrada se debe hacer click en el botón **VER**.
+
+![IMAGE](./img/procedure_view.png)
+
+En este modo se tienen dos opciones disponibles:
+
+1. Reabrir planilla.
+2. Imprimir una boleta de pago individual.
+
+![IMAGE](./img/procedure_reopen.png)
+
+![IMAGE](./img/ticket_standalone.png)
+
+#### GENERACIÓN DE REPORTES
+
+La impresión de Planillas de Pago incluye las Planillas de Haberes (H.) y las Planillas Patronales (P.), Planillas de Banco (B.) y Planillas Generales (A.) agrupadas de acuerdo al criterio actual del área de Recursos Humanos de MUSERPOL.
 
 ![print](./img/print_procedure.png)
+
+![print](./img/report_pdf_procedure.png)
+
+A su vez, se generan las planillas de acuerdo a los números patronales asignados por la empresa aseguradora, en este caso la Caja Nacional de Salud, cada número de empleador es asociado con una o más regionales, por lo cual el sistema genera automaticamente el reporte de acuerdo a los números patronales registrados.
+
+![print](./img/print_regional_procedure.png)
+
+![print](./img/report_regional_procedure.png)
+
+La impresión de Planillas de Refrigerio incluye el Listado de Personal con los días trabajados y el monto total a pagar, así como el monto por persona. También se incluye el archivo TXT en el formato para el pago automatizado provisto por el Banco Unión S.A.
+
+![print](./img/print_expenses_procedure.png)
+
+![print](./img/report_pdf_expenses_procedure.png)
+
+![print](./img/report_txt_expenses_procedure.png)
+
+El botón **OVT [CSV]** descarga la planilla mensual de acuerdo al formato requerido por el Ministerio de Trabajo en su sistema de [Oficina Virtual de Trámites](https://ovt.mintrabajo.gob.bo/#/loginRoe) para la importación automática.
+
+![print](./img/ovt_button.png)
+
+![print](./img/ovt.png)
+
+Este archivo puede ser abierto en MS Excel, LibreOffice o cualquier editor de texto. Sin embargo se recomienda no abrirlo ya que puede cambiar la codificación establecida por el Ministerio de Trabajo.
+
+![print](./img/ovt_csv.png)
+
+El botón **Banco [TXT]** descarga el archivo de texto generado para el pago automático mediante el sistema [UNISueldo](http://www.bancounion.com.bo/index.php?option=com_content&task=view&id=151&Itemid=208) del Banco Unión S.A.
+
+![print](./img/bank.png)
+
+![print](./img/bank_txt.png)
+
+El botón **Imprimir boletas** genera el archivo PDF para la impresión de boletas de pago de acuerdo a la plantilla utlizada por MUSERPOL, donde se imprimen tres boletas por página en tamaño Legal US.
+
+![print](./img/ticket.png)
+
+La opción de Eliminar Planilla está habilitada solo para el rol de administrador.
 
 ## GESTIÓN DE CONSULTORES
 
@@ -209,7 +374,11 @@ Este formulario contiene los siguientes campos:
 
 En el panel derecho de la ventana se puede ver un resumen del total ganado y la suma de días trabajados por cada mes del tiempo de contrato.
 
-### GESTIÓN DE CONTRATOS DE CONSULTORES
+Al recontratar a un consultor, el formulario se llenará automáticamente con los datos del último contrato, por lo cual en caso de cambio de cargo es necesario generar un nuevo contrato.
+
+![IMAGE](./img/form_consultant_recontract.png)
+
+### GESTIÓN DE PLANILLAS DE CONSULTORES
 
 Esta pestaña cuenta con las mismas opciones que el módulo de planillas de personal eventual pero con la diferencia de que tan solo se pueden descargar:
 
@@ -219,9 +388,33 @@ Esta pestaña cuenta con las mismas opciones que el módulo de planillas de pers
 
 ![IMAGE](./img/consultant_payroll_index.png)
 
-## REGISTRO DE ASISTENCIA
+![IMAGE](./img/consultant_payroll_edit.png)
 
-En la pantalla inicial se encuentra habilitado un ícono con el título "REGISTRO DE ASISTENCIA" que sirve de acceso directo para navegar hasta la ventana de la lista de registros de asistencia.
+Los pasos para cerrar la planilla son los mismos que en el caso de planillas del personal eventual.
+
+![IMAGE](./img/consultant_payroll_printable.png)
+
+![IMAGE](./img/consultant_payroll_pdf.png)
+
+![IMAGE](./img/consultant_payroll_txt.png)
+
+## CONFIGURACIÓN DE HORARIOS LABORALES
+
+Para el correcto funcionamiento y visualización de registros de asistencia es necesario configurar los límites de cada horario de trabajo establecido en la base de datos, así como los días laborales de acuerdo a los contratos emitidos por la institución.
+
+![IMAGE](./img/attendance_config.png)
+
+## CONFIGURACIÓN DE DISPOSITIVOS BIOMÉTRICOS
+
+![IMAGE](./img/attendance_device_list.png)
+
+Para el correcto almacenamiento y sincronización de los registros de marcado el sistema dispone del listado de los dispositivos biométricos donde se pueden verificar los datos más importantes de cada dispositivo y también se puede configurar la hora de cada uno de los dispositivos biométricos sin tener que conectarse individualmente, es decir que, la administración de los dispositivos se centralizó en este mismo sistema.
+
+![IMAGE](./img/attendance_device_edit.png)
+
+## REGISTROS DE ASISTENCIA
+
+En la pantalla inicial se encuentra habilitado un ícono con el título "REGISTRO DE ASISTENCIA" que sirve de acceso directo para navegar hasta la ventana de la lista de registros de marcaciones en el biométrico.
 
 ![IMAGE](./img/attendance_dashboard.png)
 
@@ -231,36 +424,62 @@ En la pantalla inicial se encuentra habilitado un ícono con el título "REGISTR
 
 En esta ventana se visualizan los registros de asistencia o marcado por día en un calendario que discrimina la asistencia por mes de acuerdo al rango de fechas especificado por el personal de Recursos Humanos; es decir, por ejemplo para el mes de Junio se toman en cuenta los registros desde el día 20 del mes de Mayo hasta el día 19 del mes de Junio. Los registros posteriores al 20 de cada mes son tomados en cuenta para el siguiente mes.
 
-Los registros marcados en rojo indican un retraso en el ingreso, los registros en verde indican el ingreso antes de la hora definida como atraso, los registros azules indican las salidas, los registros amarillos indican los marcados que no concuerdan con el ingreso o salida, es decir no están dentro de horarios establecidos. Por último la línea ploma divide los registros del primer y el segundo turno laborales.
+Los registros marcados en rojo indican un retraso en el ingreso, los registros en verde indican el ingreso antes de la hora definida como atraso, los registros azules indican las salidas, los registros amarillos indican los marcados que no concuerdan con el rango de ingreso o salida, es decir no están dentro de horarios establecidos por el área de Recursos Humanos. Por último la línea ploma divide los registros del primer y el segundo turno laborales en su caso.
 
 Para verificar registros antiguos basta con seleccionar el mes deseado en el botón verde superior derecho.
 
 ![IMAGE](./img/attendance_select_month.png)
 
-### LISTA DE REGISTROS DE ASISTENCIA POR EMPLEADO
+Cabe reacalcar que en este calendario también se visualizan las solicitudes de permisos y licencias de acuerdo a las fechas de la solicitud y el estado que puede ser:
 
-Los funcionarios con rol de Recursos Humanos pueden además seleccionar cualquier funcionario de la lista de funcionarios activos a fin de obtener la lista de registros de asistencia, en este caso también está disponible la selección del mes.
+* Pendiente
+* Aprobado
+* Rechazado
+
+![IMAGE](./img/attendance_departure.png)
+
+### GENERACIÓN DE REPORTES DE ASISTENCIA
+
+#### REPORTE INDIVIDUAL POR FUNCIONARIO
+
+Los funcionarios con rol de Recursos Humanos pueden seleccionar cualquier funcionario de la lista de funcionarios activos a fin de obtener la lista de registros de asistencia, en este caso también está disponible la selección del mes.
 
 ![IMAGE](./img/attendance_select_employee.png)
 
-- **1)** Imprime los registros de asistencia del personal eventual o consultor de acuerdo a la selección de un rango de fechas
-- **2)** Imprime los registros de asistencia del mes solo del funcionario seleccionado
+- **1)** Imprime los registros de asistencia del personal eventual o consultores de acuerdo a la selección de un rango de fechas
 
 ![IMAGE](./img/attendance_print_dialog.png)
 
 ![IMAGE](./img/attendance_print.png)
 
-### CONFIGURACIÓN DE HORARIOS DE TRABAJO
+- **2)** Imprime los registros de asistencia del mes solo del funcionario seleccionado
 
-Para el correcto funcionamiento y visualización de registros de asistencia es necesario configurar los límites de cada horario de trabajo establecido en la base de datos, así como los días laborales de acuerdo a los contratos emitidos por la institución.
-
-![IMAGE](./img/attendance_config.png)
+![IMAGE](./img/attendance_print_standalone.png)
 
 ### SINCRONIZACIÓN DE REGISTROS DE ASISTENCIA
 
 El usuario administrador puede sincronizar los datos de los dispositivos biométricos con la base de datos y a su vez borrar dichos registros a fin de evitar el desbordamiento de las bases de datos de cada dispositivo biométrico.
 
 ![IMAGE](./img/attendance_sync.png)
+
+El resultado indica el conteo de marcaciones por funcionario y por dispositivo. Esta operación se realiza automáticamente cada noche a horas 00:00.
+
+![IMAGE](./img/attendance_sync_result.png)
+
+## CONFIGURACIÓN DE PARÁMETROS Y TIPOS DE SOLICITUDES
+
+Para el correcto funcionamiento y visualización de las solicitudes de salidas y licencias es necesario configurar los datos necesarios para cada tipo de solicitud disponible. Esta acción es posible con un usuario con el rol de administrador.
+
+![IMAGE](./img/departure_config.png)
+
+En esta pantalla se deben definir los siguientes datos para cada tipo de solicitud:
+
+* Grupo: Personal, Comisión, Salud, Familiar o Extracurricular
+* Mediante nota
+* Con descripción o texto por defecto
+* Pagable o No pagable
+* Si se reinicia anualmente, mensualmente o no cuenta con reinicia
+* Días, horas o cantidad para el lapso de reinicio seleccionado
 
 ## SALIDAS Y LICENCIAS
 
@@ -308,18 +527,20 @@ Seleccione la opción de "Aprobar Permisos" que mostrará la siguiente vista:
 
 ![IMAGE](./img/admin_departure.png)
 
-Aquí se muestra un listado de todas las solicitudes generadas, para aprobar basta con cambiar el interruptor ubicado en la parte derecha de cada solicitud. El código de colores que se muestra en la pestaña de información es el siguiente:
+Aquí se muestra un listado de todas las solicitudes generadas, para aprobar una se debe hacer click en el botón de *check* verde o bien para rechazarla en el botón *x* rojo. El código de colores que se muestra en la pestaña de información es el siguiente:
 
 * <span style="color:yellow">**AMARILLO**</span>: Solicitudes pendientes de aprobación o rechazo.
 * <span style="color:red">**ROJO**</span>: Solicitudes rechazadas.
 * <span style="color:blue">**AZUL**</span>: Solicitud seleccionada.
 * <span style="color:black">**BLANCO**</span>: Solicitudes aprobadas.
 
-El botón *REPORTE* imprime un reporte de las solicitudes generadas entre el día 20 del mes anterior y el día 19 del mes en curso.
+El botón **REPORTE** imprime un reporte de las solicitudes generadas donde se debe seleccionar un rango de fechas y el tipo de personal que puede ser eventual o consultores.
+
+![IMAGE](./img/report_form_departure.png)
 
 ![IMAGE](./img/report_departure.png)
 
-## ALMACENES
+## GESTIÓN DE ALMACENES
 
 ### SOLICITUDES DE PEDIDOS DE ALMACÉN
 
@@ -372,7 +593,7 @@ Para registrar la entrega de materiales o anular la solicitud se debe presionar 
 
 La impresión debe realizarse en una hoja tamaño oficio, está será dividida en dos a fin de obtener un ejemplar para el solicitante y otro para el encargado de almacén.
 
-### STOCK DE MATERIALES
+### STOCK DE MATERIALES DE ALMACÉN
 
 Esta opción solo está disponible para el encargado de almacén.
 
@@ -381,20 +602,74 @@ Esta opción solo está disponible para el encargado de almacén.
 - **1)** Buscar material por nombre.
 - **2)** Filtro de materiales por grupo.
 
+## GESTIÓN DE AGENDA TELEFÓNICA
+
+![IMAGE](./img/ev_phone.png)
+
+El sistema de Escritorio Virtual de MUSERPOL cuenta con un listado de teléfono internos que se puede imprimir.
+
+![IMAGE](./img/ev_phone_print.png)
+
+![IMAGE](./img/ev_phone_pdf.png)
+
+La administración de esta agenda se realiza en la ventana de *AGENDA TELEFÓNICA*. Desde esta ventana es que se puede agregar, eliminar o editar el listado de los teléfonos internos.
+
+![IMAGE](./img/phone_list.png)
+
+Las opciones para cada fila son:
+
+1. Editar los datos del interno
+2. Eliminar el número de interno
+
+Para agregar un nuevo número de interno se debe hacer click en el botón **+** verde, ubicado en la parte superior derecha de la ventana, esto abrirá un formulario donde se debe seleccionar una Unidad o Dirección del organigrama de MUSERPOL, el área donde estará ubicado el teléfono y por último el número de interno asignado al teléfono.
+
+![IMAGE](./img/phone_edit.png)
+
 ## ADMINISTRACIÓN DE USUARIOS
 
 Gestión de roles para cada cuenta de usuario con acceso al sistema, esta lista es generada mediante la lista de usuarios disponible en el servidor de identificación centralizada LDAP.
 
 ![IMAGE](./img/users.png)
 
+Cada usuario puede ser asociado solamente a uno de los cinco roles disponibles:
+
+* Administrador
+* Recursos Humanos
+* Juridica
+* Financiera
+* Almacenes
+
+Las opciones disponibles para la gestión de usuarios son las siguientes:
+
+![IMAGE](./img/user_options.png)
+
+1. Eliminar usuario (Solo funciona en caso de que el usuario no hubiera realizado ninguna acción en el sistema)
+2. Desactivar usuario (Desactiva el ingreso del usuario al sistema)
+
+### SINCRONIZACIÓN DE FUNCIONARIOS CON EL SERVIDOR CENTRALIZADO DE CONTRASEÑAS
+
+El botón de **SINCRONIZAR LDAP** extrae una lista de los funcionarios dados de alta en el sistema de Recursos Humanos y aquellos que fueron dados de baja, el sistema genera un usuario para las personas dadas de alta y deshabilita los usuarios de las que han sido dadas de baja para prevenir el acceso a los sistemas terminada la relación laboral.
+
+![IMAGE](./img/ldap_sync.png)
+
+### ASOCIACIÓN DE PERMISOS A ROLES
+
+En esta pestaña se pueden asociar los permisos disponibles a uno de los roles listados anteriormente.
+
+![IMAGE](./img/permission.png)
+
+### ASOCIACIÓN DE PERMISOS A ROLES
+
+Esta pestaña muestra el listado de los usuarios registrados en el sistema centralizado de contraseñas LDAP, cada fila cuenta con tres acciones disponibles.
+
+![IMAGE](./img/ldap_list.png)
+
+1. Agregar usuario para que pueda ingresar al sistema y se le asigne un rol
+2. Sincronizar cargo para coordinar entre el sistema de Recursos Humanos y el centralizador de contraseñas LDAP
+3. Reiniciar contraseña, al igual que cuando un usuario es generado por primera vez, el reinicio de contraseña establece la contraseña igualandola al nombre de usuario. Se debe recomendar a todos los usuarios el cambio de su contraseña por defecto, y también en intervalos regulares de tiempo.
+
 ## REGISTRO DE ACTIVIDADES
 
 Cada acción generada por los usuarios es guardada como respaldo de la actividad en caso de ser necesaria la evidencia de los cambios que realizó algún usuario.
 
 ![IMAGE](./img/activities.png)
-
-## CONFIGURACIÓN DE DATOS INSTITUCIONALES
-
-Para la correcta impresión del nombre de la institución, así como su acrónimo y datos adicionales, es necesario configurar los datos institucionales; entre otros, la resolución y fecha de designación de la máxima autoridad ejecutiva.
-
-![IMAGE](./img/company_config.png)

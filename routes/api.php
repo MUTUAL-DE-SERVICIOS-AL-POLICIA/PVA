@@ -297,6 +297,8 @@ Route::group([
       Route::delete('location/{id}', 'Api\V1\LocationController@destroy')->name('location_delete');
       // Departure Reason
       Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['update']);
+      // City
+      Route::resource('city', 'Api\V1\CityController')->only(['update']);
     });
 
     // RRHH routes
@@ -447,6 +449,7 @@ Route::group([
       'middleware' => 'role:admin|rrhh|financiera',
     ], function () {
       Route::resource('bonus_procedure', 'Api\V1\BonusYearController')->only(['show']);
+      Route::get('procedure/{id}/living_expenses', 'Api\V1\ProcedureController@living_expenses');
     });
 
     // JURIDICA-RRHH routes

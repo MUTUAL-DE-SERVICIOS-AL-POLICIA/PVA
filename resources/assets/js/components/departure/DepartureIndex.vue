@@ -347,7 +347,6 @@ export default {
     async getLastContract(id) {
       try {
         let res = await axios.get(`employee/${id}/contract`)
-        console.log (res.data)
         return res.data
       } catch (e) {
         console.log(e)
@@ -446,7 +445,6 @@ export default {
           approved: state
         })
         if (this.departureTypeSelected == 'all') {
-          console.log()
           this.departures[this.departures.findIndex(o => o.id == id)].approved = res.data.approved
         } else {
           this.departures = this.departures.filter(o => o.id != id)
