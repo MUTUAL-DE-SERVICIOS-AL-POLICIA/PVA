@@ -9,6 +9,10 @@
 * Employer number crud
 * Living expenses for procedure worked days
 
+### Changed
+
+* Non editable inputs with some roles on eventual contract form
+
 ## [5.0.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.0.3) - 2019-12-26
 
 ### Fixed
