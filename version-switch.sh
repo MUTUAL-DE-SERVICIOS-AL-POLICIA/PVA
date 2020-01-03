@@ -3,6 +3,7 @@
 APP_ENV=$(grep APP_ENV .env | cut -d '=' -f2)
 PROD="production"
 
+git pull
 if [[ "$APP_ENV" == "$PROD" ]]; then
     git fetch --tags
     latestVersion=$(git describe --tags `git rev-list --tags --max-count=1`)

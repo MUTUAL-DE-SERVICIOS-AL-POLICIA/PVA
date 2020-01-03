@@ -17,6 +17,7 @@
           <div>
             <v-alert :value="true" type="error">CIUDADES SIN NÚMERO DE EMPLEADOR</v-alert>
             <v-alert :value="true" type="warning" class="black--text">NÚMEROS DE EMPLEADOR SIN CIUDADES ASOCIADAS</v-alert>
+            <v-alert :value="true" type="success">CIUDAD ASOCIADA AL NÚMERO DE EMPLEADOR</v-alert>
           </div>
         </v-tooltip>
         <v-spacer></v-spacer>
