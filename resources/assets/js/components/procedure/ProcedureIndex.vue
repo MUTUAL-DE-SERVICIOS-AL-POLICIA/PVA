@@ -214,13 +214,13 @@
                   <v-btn icon @click="download(`/payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'" class="ml-0">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
-                      <span>TXT Banco</span>
+                      <span>Banco [TXT]</span>
                     </v-tooltip>
                   </v-btn>
                   <v-btn icon @click="download(`/payroll/print/ovt/${procedure.year}/${procedure.month_order}?report_type=H&report_name=OVT&valid_contracts=0&with_account=0`)" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'" class="ml-0">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">work</v-icon>
-                      <span>CSV OVT</span>
+                      <span>OVT [CSV]</span>
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>

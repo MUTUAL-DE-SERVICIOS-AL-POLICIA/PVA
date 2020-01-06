@@ -444,7 +444,7 @@ export default {
       this.dialog = true
     })
     if (!this.departure.departure_reason_id) {
-      this.getContract()
+      if (this.$route.query.departureType == 'user') this.getContract()
     }
   },
   computed: {
@@ -838,8 +838,6 @@ export default {
         this.loading = true
         let res = await axios.get(`employee/${this.$store.getters.id}/contract`)
         this.contract = res.data
-        console.log(this.contract)
-        
       } catch (e) {
         console.log(e)
       } finally {

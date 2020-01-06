@@ -64,7 +64,7 @@
                   <v-btn icon @click="download(`/consultant_payroll/print/txt/${procedure.year}/${procedure.month_order}`)" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'" class="ml-0">
                     <v-tooltip top>
                       <v-icon slot="activator" :color="procedure.active ? 'info' : 'primary'">account_balance</v-icon>
-                      <span>TXT Banco</span>
+                      <span>Banco [TXT]</span>
                     </v-tooltip>
                   </v-btn>
                   <v-spacer></v-spacer>
