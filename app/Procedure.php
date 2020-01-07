@@ -11,7 +11,7 @@ class Procedure extends Model
 	protected $dates = ['deleted_at'];
 	public $timestamps = true;
 	public $guarded = ['id'];
-	protected $fillable = ['year', 'month_id', 'employee_discount_id', 'employer_contribution_id', 'active', 'pay_date', 'ufv'];
+	protected $fillable = ['year', 'month_id', 'employee_discount_id', 'employer_contribution_id', 'active', 'pay_date', 'ufv', 'worked_days'];
 
 	public function month()
 	{

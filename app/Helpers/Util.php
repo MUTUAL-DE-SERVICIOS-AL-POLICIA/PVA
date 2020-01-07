@@ -478,4 +478,19 @@ class Util
     }
     return $attendance;
   }
+
+  public static function latin1_to_utf8($data) {
+    if (is_string($data)) {
+      return mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+    } elseif (is_array($data)) {
+      $ret = [];
+      foreach ($data as $i => $d) $ret[$i] = self::latin1_to_utf8($d);
+      return $ret;
+    } elseif (is_object($data)) {
+      foreach ($data as $i => $d) $data->$i = self::latin1_to_utf8($d);
+      return $data;
+    } else {
+      return $data;
+    }
+  }
 }
