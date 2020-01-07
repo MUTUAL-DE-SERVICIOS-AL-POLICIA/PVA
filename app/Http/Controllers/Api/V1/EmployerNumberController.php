@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\City;
 use App\Company;
+use App\InsuranceCompany;
 use App\EmployerNumber;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployerNumberEditForm;
@@ -25,7 +27,7 @@ class EmployerNumberController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return EmployerNumber::with('cities')->get();
+		return EmployerNumber::with('cities')->orderBy('number')->get();
 	}
 
 	/**
@@ -35,8 +37,13 @@ class EmployerNumberController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function store(EmployerNumberStoreForm $request) {
+        $insurance_company = InsuranceCompany::whereActive(true)->first();
+        if (!$insurance_company) {
+            abort(404);
+        }
 		$employer_number = new EmployerNumber($request->all());
 		$employer_number->company_id = $this->company->id;
+		$employer_number->insurance_company_id = $insurance_company->id;
 		$employer_number->save();
 		return $employer_number;
 	}
@@ -72,7 +79,8 @@ class EmployerNumberController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
-		$employer_number = EmployerNumber::findOrFail($id);
+        $employer_number = EmployerNumber::findOrFail($id);
+        City::whereEmployerNumberId($employer_number->id)->update(['employer_number_id' => null]);
 		$employer_number->delete();
 		return $employer_number;
 	}
