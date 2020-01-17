@@ -174,7 +174,7 @@ class DepartureController extends Controller
       $options = [
         'orientation' => 'portrait',
         'page-width' => '216',
-        'page-height' => '356',
+        'page-height' => '279',
         'margin-top' => '1',
         'margin-bottom' => '0',
         'margin-left' => '2.5',
@@ -225,6 +225,36 @@ class DepartureController extends Controller
     ];
 
     $pdf = \PDF::loadView('departure.report', $data);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
+  }
+
+  public function transfer(Request $request, $id)
+  {
+    $departure = Departure::findOrFail($id);
+    $departure->destiny = $request->destiny;
+
+    $data = [
+      'departure' => $departure,
+      'transfers' => $request->transfers
+    ];
+
+    $file_name = implode('_', ['solicitud', 'pasajes', $data['departure']->employee->first_name, $data['departure']->employee->last_name, $departure->departure]) . '.pdf';
+
+    $options = [
+      'orientation' => 'portrait',
+      'page-width' => '216',
+      'page-height' => '279',
+      'margin-top' => '3',
+      'margin-bottom' => '3',
+      'margin-left' => '5',
+      'margin-right' => '5',
+      'encoding' => 'UTF-8',
+      'user-style-sheet' => public_path('css/report-print.min.css')
+    ];
+
+    $pdf = \PDF::loadView('departure.transfers', $data);
     $pdf->setOptions($options);
 
     return $pdf->stream($file_name);

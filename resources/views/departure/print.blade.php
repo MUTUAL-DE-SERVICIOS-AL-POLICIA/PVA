@@ -11,7 +11,7 @@ $consultant = $departure->employee->consultant();
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>PLATAFORMA VIRTUAL - MUSERPOL</title>
-    <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all"/>
+    <link rel="stylesheet" href="{{ public_path('/css/report-print.min.css') }}" media="all"/>
     <style>
       .data-row {
         height: 17px;
@@ -61,7 +61,7 @@ $consultant = $departure->employee->consultant();
       <tr>
         <th class="w-25 text-left no-padding no-margins align-middle">
           <div class="text-left">
-            <img src="{{ public_path("/img/logo.png") }}" class="w-30">
+            <img src="{{ public_path('/img/logo.png') }}" class="w-30">
           </div>
         </th>
         <th class="w-50 align-top">

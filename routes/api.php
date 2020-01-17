@@ -26,6 +26,7 @@ Route::group([
   Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
   Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
   Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
+  Route::post('departure/{departure_id}/transfer', 'Api\V1\DepartureController@transfer')->name('transfer');
   // Material
   Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
   Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
