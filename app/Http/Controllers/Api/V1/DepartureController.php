@@ -175,10 +175,10 @@ class DepartureController extends Controller
         'orientation' => 'portrait',
         'page-width' => '216',
         'page-height' => '279',
-        'margin-top' => '1',
-        'margin-bottom' => '0',
-        'margin-left' => '2.5',
-        'margin-right' => '2.5',
+        'margin-top' => '2',
+        'margin-bottom' => '4',
+        'margin-left' => '5',
+        'margin-right' => '10',
         'encoding' => 'UTF-8',
         'user-style-sheet' => public_path('css/report-print.min.css')
       ];
@@ -246,10 +246,10 @@ class DepartureController extends Controller
       'orientation' => 'portrait',
       'page-width' => '216',
       'page-height' => '279',
-      'margin-top' => '3',
-      'margin-bottom' => '3',
+      'margin-top' => '2',
+      'margin-bottom' => '4',
       'margin-left' => '5',
-      'margin-right' => '5',
+      'margin-right' => '10',
       'encoding' => 'UTF-8',
       'user-style-sheet' => public_path('css/report-print.min.css')
     ];

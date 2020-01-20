@@ -77,7 +77,7 @@
                       clearable
                     ></v-text-field></td>
                     <td><v-text-field
-                      v-validate="{required: true, decimal: [1, '.'], min_value: [1, '.']}"
+                      v-validate="{required: true, decimal: [1, '.'], min_value: [1, '.'], max_value: [200, '.']}"
                       :error-messages="errors.collect(`cost${props.index}`)"
                       :data-vv-name="`cost${props.index}`"
                       data-vv-as="importe"
@@ -90,7 +90,7 @@
                     <td class="text-xs-center">
                       <v-tooltip top>
                         <template v-slot:activator="{ on }">
-                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon :disabled="!props.item.from || !props.item.to || !props.item.cost" color="success" @click="addReturn(props.item.index)">
+                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon :disabled="!props.item.from || !props.item.to || !props.item.cost || maxTransfers == transfers.length" color="success" @click="addReturn(props.item.index)">
                             <v-icon>sync</v-icon>
                           </v-btn>
                         </template>
