@@ -9,6 +9,7 @@
         v-on="on"
         flat
         v-if="worked_days"
+        :disabled="!active"
       >
         <div class="caption pr-2">Dias laborales:</div>
         <div class="body-1 font-weight-bold">{{ worked_days }}</div>
@@ -17,6 +18,7 @@
         color="info"
         v-on="on"
         v-else
+        :disabled="!active"
       >
         <div class="caption">{{ message }}</div>
       </v-btn>
@@ -67,6 +69,10 @@ export default {
     message: {
       type: String,
       default: 'REGISTRAR'
+    },
+    active: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

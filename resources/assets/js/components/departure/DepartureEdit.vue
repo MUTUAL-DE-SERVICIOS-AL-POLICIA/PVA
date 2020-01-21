@@ -24,7 +24,7 @@
           <v-stepper-content step="1">
             <v-card>
               <v-card-text>
-                <v-layout v-show="!updateDeparture">
+                <v-layout v-if="!updateDeparture">
                   <v-flex xs5 pr-5>
                     <v-select
                       :items="groups"

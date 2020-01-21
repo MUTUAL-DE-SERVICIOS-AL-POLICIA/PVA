@@ -400,11 +400,11 @@ class Util
     ]);
   }
 
-  public static function departure_string_length($text)
+  public static function string_class_length($text, $tiny = true)
   {
-    if (strlen($text) > 80) return 'text-xxxs';
-    if (strlen($text) > 60) return 'text-xxs';
-    return 'text-xs';
+    if (strlen($text) > 80) return $tiny ? 'text-xxxs' : 'text-xxs';
+    if (strlen($text) > 60) return $tiny ? 'text-xxs' : 'text-xs';
+    return $tiny ? 'text-xs': 'text-sm';
   }
 
   public static function filter_checks($checks)
