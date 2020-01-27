@@ -104,8 +104,7 @@ export default {
       try {
         this.step = 2
         this.loading = true
-        // if (process.env.NODE_ENV == 'production') {
-        if (process.env.NODE_ENV != 'production') {
+        if (process.env.NODE_ENV == 'production') {
           let res = await axios.post(`attendance`)
           this.data = res.data
         } else {

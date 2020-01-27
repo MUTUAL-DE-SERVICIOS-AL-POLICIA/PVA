@@ -1,12 +1,13 @@
 <?php
 use App\Company;
-use \Carbon\Carbon;
 use \Milon\Barcode\DNS2D;
+use \Carbon\Carbon;
 
 $company = Company::select()->first();
 $contract = $departure->employee->contract_in_date($departure->departure);
 $consultant = $departure->employee->consultant();
 $copies = 2;
+$max_transfers = 12;
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +30,7 @@ $copies = 2;
         text-align: center;
         overflow: hidden;
         white-space: nowrap;
-        margin-top: 6px;
+        margin-top: 8px;
         margin-bottom: 14px;
       }
       .scissors-rule > span {
@@ -71,24 +72,24 @@ $copies = 2;
             <div class="font-thin uppercase leading-tight text-xs">
               <div>{{ mb_strtoupper($company->name) }} "{{ $company->shortened }}"</div>
               <div>DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS</div>
-              <div>UNIDAD DE RECURSOS HUMANOS</div>
+              <div>UNIDAD ADMINISTRATIVA</div>
             </div>
           </th>
           <th class="w-25 align-top">
-            <table class="table-code text-xs">
+            <table class="table-code text-xxs">
               <tbody>
                 <tr>
                   <td class="text-center bg-grey-darker text-white">Nº </td>
                   <td class="uppercase">{{ $departure->id }}</td>
                 </tr>
                 <tr>
-                  <td class="text-center bg-grey-darker text-white">Fecha solicitud</td>
-                  @php ($date = Carbon::parse($departure->created_at)->format('d/m/Y'))
+                  <td class="text-center bg-grey-darker text-white">Fecha comisión</td>
+                  @php ($date = Carbon::parse($departure->departure)->format('d/m/Y'))
                   <td class="uppercase">{{ $date }}</td>
                 </tr>
                 <tr>
-                  <td class="text-center bg-grey-darker text-white">Tipo</td>
-                  <td class="uppercase">{{ $departure->departure_reason->departure_group->name }}</td>
+                  <td class="text-center bg-grey-darker text-white">Formulario</td>
+                  <td class="uppercase">3</td>
                 </tr>
               </tbody>
             </table>
@@ -99,81 +100,91 @@ $copies = 2;
         </tr>
       </table>
       <div class="block">
-        <div class="font-semibold leading-tight text-sm text-center my-10 uppercase">
-          @if ($departure->departure_reason->departure_group->name == 'COMISIÓN')
-            {{ $departure->departure_reason->description }}
-          @else
-            {{ $departure->departure_reason->name }}
-          @endif
+        <div class="font-semibold leading-tight text-xs text-center m-b-5 uppercase">
+          RECIBO DE MOVILIDAD
         </div>
         <table class="table-info w-50 m-b-5 text-center uppercase" style="float: left; margin-left: 1px;">
-          <tr class="bg-grey-darker text-xs text-white">
+          <tr class="bg-grey-darker text-xxs text-white">
             <td>NOMBRE</td>
           </tr>
           <tr>
-            @php ($name = $departure->employee->fullName())
-            <td class="{{ Util::string_class_length($name, false) }} data-row py-5 text-sm">{{ $name }}</td>
+            <td class="{{ Util::string_class_length($departure->employee->fullName()) }} data-row py-5">{{ $departure->employee->fullName() }}</td>
+          </tr>
+          <tr class="bg-grey-darker text-xxs text-white">
+            <td>MOTIVO</td>
+          </tr>
+          <tr>
+            <td class="{{ Util::string_class_length($departure->description) }} data-row py-5">{{ $departure->description }}</td>
           </tr>
         </table>
         <table class="table-info w-49 m-b-5 text-center uppercase" style="float: right; margin-left: 1px;">
-          <tr class="bg-grey-darker text-xs text-white">
+          <tr class="bg-grey-darker text-xxs text-white">
             <td class="w-50">DESDE</td>
             <td class="w-50">HASTA</td>
           </tr>
-          <tr class="text-sm">
+          <tr class="text-xs">
             <td class="w-50 py-5">
-              <span>{{ Carbon::parse($departure->departure)->format('d/m/Y') }}</span>
-              <span>&nbsp;</span>
+              @php ($fromDate = Carbon::parse($departure->departure)->format('d/m/Y'))
+              @php ($toDate = Carbon::parse($departure->return)->format('d/m/Y'))
+              @if ($fromDate != $toDate)
+                <span>{{ $fromDate }}</span>
+                <span>&nbsp;</span>
+              @endif
               <span>{{ Carbon::parse($departure->departure)->format('H:i') }}</span>
             </td>
             <td class="w-50 py-5">
-              <span>{{ Carbon::parse($departure->return)->format('d/m/Y') }}</span>
-              <span>&nbsp;</span>
+              @if ($fromDate != $toDate)
+                <span>{{ Carbon::parse($departure->return)->format('d/m/Y') }}</span>
+                <span>&nbsp;</span>
+              @endif
               <span>{{ Carbon::parse($departure->return)->format('H:i') }}</span>
             </td>
           </tr>
-        </table>
-        <table class="table-info w-100 m-b-10 uppercase text-center">
-          <tr class="bg-grey-darker text-xs text-white">
-            <td>CARGO</td>
+          <tr class="bg-grey-darker text-xxs text-white">
+            <td class="w-50" colspan='2'>DESTINO</td>
           </tr>
           <tr>
-            @if ($consultant)
-              <td class="{{ Util::string_class_length($contract->consultant_position->name, false) }} data-row py-5">{{ $contract->consultant_position->name }}</td>
-            @else
-              <td class="{{ Util::string_class_length($contract->position->name, false) }} data-row py-5">{{ $contract->position->name }}</td>
-            @endif
-          </tr>
-          <tr class="bg-grey-darker text-xs text-white">
-            <td>ÁREA</td>
-          </tr>
-          <tr>
-            @if ($consultant)
-              <td class="{{ Util::string_class_length($contract->consultant_position->position_group->name, false) }} data-row py-5">{{ $contract->consultant_position->position_group->name }}</td>
-            @else
-              <td class="{{ Util::string_class_length($contract->position->position_group->name, false) }} data-row py-5">{{ $contract->position->position_group->name }}</td>
-            @endif
+            <td class="{{ Util::string_class_length($departure->destiny) }} data-row py-5" colspan='2'>{{ $departure->destiny }}</td>
           </tr>
         </table>
-        <table class="table-info w-100 m-b-10 uppercase">
+        <table class="table-info w-100 m-b-10 uppercase text-xs">
           <thead>
-            <tr class="bg-grey-darker text-xs text-white text-center">
-              <td>DETALLE</td>
+            <tr>
+              <th class="w-8 text-center bg-grey-darker text-white">Nº</th>
+              <th class="w-41 text-center bg-grey-darker text-white border-left-white">DESDE</th>
+              <th class="w-41 text-center bg-grey-darker text-white border-left-white">HASTA</th>
+              <th class="w-10 text-center bg-grey-darker text-white">IMPORTE</th>
             </tr>
           </thead>
-          <tbody>
-            <tr class="{{ Util::string_class_length($departure->description, false) }} text-left" style="height: 80px; max-height: 80px;">
-              <td class="text-xs px-15">{{ $departure->description }}</td>
+          <tbody class="table-striped">
+            @foreach ($transfers as $n => $transfer)
+            <tr class="font-thin">
+              <td class="text-center">{{ ++$n }}</td>
+              <td class="{{ Util::string_class_length($transfer['from']) }} text-center">{{ $transfer['from'] }}</td>
+              <td class="{{ Util::string_class_length($transfer['to']) }} text-center">{{ $transfer['to'] }}</td>
+              <td class="text-right px-15">{{ Util::formatMoney($transfer['cost']) }}</td>
+            </tr>
+            @endforeach
+            @for ($n = sizeof($transfers) + 1; $n <= $max_transfers; $n++)
+              <tr>
+                <td colspan="3">&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+            @endfor
+            @php ($f = new NumberFormatter('es', NumberFormatter::SPELLOUT))
+            @php ($total = Util::formatMoney(array_sum(array_column($transfers, 'cost'))))
+            <tr>
+              <td class="text-center font-semibold bg-grey-lightest text-sm" colspan="3">TOTAL: {{ mb_strtoupper($f->format(intval($total))) }} {{ str_pad(round(fmod($total, 1), 1) * 100, 2, '0', STR_PAD_LEFT) }}/100 Bolivianos</td>
+              <td class="text-right px-15 font-bold bg-grey-lightest text-sn-1">{{ $total }}</td>
             </tr>
           </tbody>
         </table>
         <table class="w-100">
           <tbody>
-            <tr class="align-bottom text-center font-bold text-xxs" style="height: 200px; vertical-align: bottom;">
-              <td class="border rounded w-25">Solicitante</td>
-              <td class="border rounded w-25">Autorizado</td>
-              <td class="border rounded w-25">RRHH</td>
-              <td class="border rounded w-25">Destino</td>
+            <tr class="align-bottom text-center font-bold text-xxxs" style="height: 120px; vertical-align: bottom;">
+              <td class="border rounded text-center w-33 font-bold text-xxxs">Recibí conforme</td>
+              <td class="border rounded text-center w-33 font-bold text-xxxs">Autorizado</td>
+              <td class="border rounded text-center w-33 font-bold text-xxxs">Entregué conforme</td>
             </tr>
           </tbody>
         </table>
@@ -193,11 +204,11 @@ $copies = 2;
         </td>
       </tr>
     </table>
-    @if($i != 2)
+    @if ($i < $copies)
     <div class="scissors-rule">
       <span>&#9986;</span>
     </div>
     @endif
-    @endfor
+  @endfor
   </body>
 </html>

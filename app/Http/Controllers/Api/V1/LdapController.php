@@ -42,7 +42,6 @@ class LdapController extends Controller
 
     $added = array_diff($employees, $entries);
     $success_added = 0;
-
     foreach ($added as $key => $e) {
       $new_entry = Employee::findOrFail($e);
       $last_contract = $new_entry->last_contract();
@@ -82,12 +81,31 @@ class LdapController extends Controller
 
     $removed = array_diff($entries, $employees);
     $success_removed = 0;
-
     foreach ($removed as $key => $e) {
       if ($ldap->delete_entry($e)) {
         $success_removed++;
       } else {
         $removed[$key] = $e;
+      }
+    }
+
+    $ldap = new Ldap();
+    $search = $ldap->list_entries();
+    $success_updated = 0;
+    foreach ($search as $ldap_employee) {
+      $employee = Employee::find($ldap_employee->employeeNumber);
+      $last_contract = $employee->last_contract();
+      $last_consultant_contract = $employee->last_consultant_contract();
+      if ($last_contract) {
+        $position = $last_contract->position->name;
+      } elseif ($last_consultant_contract) {
+        $position = $last_consultant_contract->consultant_position->name;
+      }
+      if ($ldap_employee->title != $position) {
+        $ldap->modify_entry($employee->id, [
+          'title' => $position
+        ]);
+        $success_updated++;
       }
     }
 
@@ -102,8 +120,9 @@ class LdapController extends Controller
       ],
       'diff' => (object)[
         'added' => $success_added,
-        'removed' => $success_removed
-      ],
+        'removed' => $success_removed,
+        'updated' => $success_updated
+      ]
     ];
 
     if (env('ZAMMAD_SYNC')) {

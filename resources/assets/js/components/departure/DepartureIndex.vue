@@ -104,7 +104,7 @@
               </div>
               <div v-else>
                 <v-tooltip top>
-                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'info'" @click.native="print(props.item.id)">
+                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : ''" @click.native="print(props.item.id)">
                     <v-icon>print</v-icon>
                   </v-btn>
                   <span>Imprimir</span>
@@ -121,6 +121,7 @@
                   </v-btn>
                   <span>Eliminar</span>
                 </v-tooltip>
+                <Transfer :departure="props.item" :color="props.expanded ? 'warning' : 'success'" v-if="departureType(props.item).group == 'COMISIÓN'"/>
               </div>
             </td>
           </tr>
@@ -164,6 +165,7 @@ import RemoveItem from "../RemoveItem"
 import DepartureEdit from './DepartureEdit'
 import ReportPrint from '../ReportPrint'
 import ManteinanceDialog from "../ManteinanceDialog"
+import Transfer from './Transfer'
 
 export default {
   name: 'Departure',
@@ -172,6 +174,7 @@ export default {
     RemoveItem,
     DepartureEdit,
     ReportPrint,
+    Transfer,
     ManteinanceDialog
   },
   data() {

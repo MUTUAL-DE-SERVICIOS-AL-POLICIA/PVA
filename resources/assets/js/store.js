@@ -12,7 +12,8 @@ export default {
     token: {
       type: localStorage.getItem('token_type') || null,
       value: localStorage.getItem('token') || null
-    }
+    },
+    departure: {}
   },
   getters: {
     ldapAuth(state) {
@@ -48,6 +49,9 @@ export default {
         }).join(''))
         return moment().isAfter(moment.unix(JSON.parse(token).exp))
       }
+    },
+    departure(state) {
+      return state.departure
     }
   },
   mutations: {
@@ -85,6 +89,9 @@ export default {
     },
     'setDate': function(state, newValue) {
       state.dateNow = newValue
+    },
+    'setDeparture': function(state, data) {
+      state.departure = data
     }
   },
   actions: {
