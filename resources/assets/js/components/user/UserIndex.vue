@@ -69,12 +69,13 @@
                             </ul>
                           </v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile>
+                        <v-list-tile style="min-height: 50px;">
                           <v-list-tile-content>Cambios:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">
+                          <v-list-tile-content class="align-end py-5">
                             <ul style="list-style: none; padding-left: 0;">
                               <li>+ {{ message.diff.added }}</li>
                               <li>- {{ message.diff.removed }}</li>
+                              <li>C {{ message.diff.updated }}</li>
                             </ul>
                           </v-list-tile-content>
                         </v-list-tile>
