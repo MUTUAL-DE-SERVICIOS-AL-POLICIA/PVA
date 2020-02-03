@@ -29,8 +29,8 @@ $copies = 2;
         text-align: center;
         overflow: hidden;
         white-space: nowrap;
-        margin-top: 6px;
-        margin-bottom: 14px;
+        margin-top: 12px;
+        margin-bottom: 8px;
       }
       .scissors-rule > span {
         position: relative;
@@ -169,7 +169,7 @@ $copies = 2;
         </table>
         <table class="w-100">
           <tbody>
-            <tr class="align-bottom text-center font-bold text-xxs" style="height: 200px; vertical-align: bottom;">
+            <tr class="align-bottom text-center font-bold text-xxs" style="height: 180px; vertical-align: bottom;">
               <td class="border rounded w-25">Solicitante</td>
               <td class="border rounded w-25">Autorizado</td>
               <td class="border rounded w-25">RRHH</td>

@@ -30,8 +30,8 @@ $max_transfers = 12;
         text-align: center;
         overflow: hidden;
         white-space: nowrap;
-        margin-top: 8px;
-        margin-bottom: 14px;
+        margin-top: 9px;
+        margin-bottom: 13px;
       }
       .scissors-rule > span {
         position: relative;
@@ -181,7 +181,7 @@ $max_transfers = 12;
         </table>
         <table class="w-100">
           <tbody>
-            <tr class="align-bottom text-center font-bold text-xxxs" style="height: 120px; vertical-align: bottom;">
+            <tr class="align-bottom text-center font-bold text-xxxs" style="height: 100px; vertical-align: bottom;">
               <td class="border rounded text-center w-33 font-bold text-xxxs">Recibí conforme</td>
               <td class="border rounded text-center w-33 font-bold text-xxxs">Autorizado</td>
               <td class="border rounded text-center w-33 font-bold text-xxxs">Entregué conforme</td>
