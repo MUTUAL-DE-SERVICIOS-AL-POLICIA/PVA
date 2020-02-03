@@ -2,6 +2,20 @@
 
 ---
 
+## [5.2.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.2.0) - 2020-01-20
+
+### Added
+
+* Departure transfers form and printable template
+
+### Changed
+
+* Departure printable template layout
+
+### Fixed
+
+* Ldap title update on sync exec
+
 ## [5.1.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.1.0) - 2020-01-02
 
 ### Added
