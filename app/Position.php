@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon;
 
 class Position extends Model
 {
@@ -46,5 +47,23 @@ class Position extends Model
 	public function payrolls()
 	{
 		return $this->hasMany(Payroll::class);
-	}
+    }
+
+    public function get_employee()
+    {
+        $contracts = $this->contracts()->where(function($query) {
+            $query->orWhere(function($q) {
+                $q->whereNull('end_date')->whereNull('retirement_date');
+            })->orWhere(function($q) {
+                $q->whereDate('end_date', '>=', Carbon::now()->endOfDay());
+            })->orWhere(function($q) {
+                $q->whereDate('retirement_date', '>=', Carbon::now()->endOfDay());
+            });
+        })->get();
+        if ($contracts->count() != 1) {
+            return (object)[];
+        } else {
+        }
+        return $contracts->first()->employee;
+    }
 }

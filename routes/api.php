@@ -38,6 +38,8 @@ Route::group([
   Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
   // Position Group
   Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
+  // Position current employee
+  Route::get('position/{id}/employee', 'Api\V1\PositionController@employee')->name('position_employee');
   Route::group([
     'prefix' => 'position_group/{superior_id}',
   ], function () {
