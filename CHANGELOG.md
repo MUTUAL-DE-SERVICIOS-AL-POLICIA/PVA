@@ -2,6 +2,20 @@
 
 ---
 
+## [5.2.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.2.1) - 2020-02-19
+
+### Added
+
+* Departure cite validation
+
+### Changed
+
+* Unique departure cite constraint
+
+### Fixed
+
+* Remaining time when nullified departures
+
 ## [5.2.0](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.2.0) - 2020-01-20
 
 ### Added

@@ -18,9 +18,11 @@ class PositionController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
-    return Position::with('charge', 'position_group')->get();
+    $query = Position::with('charge', 'position_group');
+    if ($request->has('name')) $query = $query->whereName($request->name);
+    return $query->get();
   }
 
   /**
@@ -72,5 +74,11 @@ class PositionController extends Controller
     $position = Position::findOrFail($id);
     $position->delete();
     return $position;
+  }
+
+  public function employee($id)
+  {
+    $position = Position::findOrFail($id);
+    return $position->get_employee();
   }
 }

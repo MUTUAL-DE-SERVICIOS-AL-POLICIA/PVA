@@ -171,11 +171,15 @@ class Employee extends Model
 
     $departures = $this->departures()->whereHas('departure_reason', function ($query) {
       return $query->where('name', 'PERMISO POR HORAS');
-    })->whereBetween('departure', [$start_date, $end_date])->get();
+    })->whereBetween('departure', [$start_date, $end_date])->where(function($query) {
+        $query->orWhere('approved', true)->orWhere('approved', null);
+    })->get();
 
     $records = $this->departures()->whereHas('departure_reason', function ($query) {
       return $query->where('name', 'REGULARIZACIÓN DE MARCADO');
-    })->whereBetween('departure', [$start_date, $end_date])->count();
+    })->whereBetween('departure', [$start_date, $end_date])->where(function($query) {
+        $query->orWhere('approved', true)->orWhere('approved', null);
+    })->count();
 
     $total_time = DepartureReason::where('name', 'PERMISO POR HORAS')->first()->hours * 60;
     $total_time_records = DepartureReason::where('name', 'REGULARIZACIÓN DE MARCADO')->first()->hours;
@@ -251,7 +255,9 @@ class Employee extends Model
 
     $departures = $this->departures()->whereHas('departure_reason', function ($query) use ($id) {
       return $query->whereId($id);
-    })->whereBetween('departure', [$start_date, $end_date])->get();
+    })->whereBetween('departure', [$start_date, $end_date])->where(function($query) {
+        $query->orWhere('approved', true)->orWhere('approved', null);
+    })->get();
 
     $response = [
       'time_remaining' => 0,

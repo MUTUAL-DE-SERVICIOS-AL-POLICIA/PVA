@@ -65,36 +65,21 @@ class Contract extends Model
 		$last_day_of_month = Carbon::create($year, $month, 1)->endOfMonth()->format('Y-m-d');
 
 		return Contract::where(function ($query) use ($year, $month, $last_day_of_month, $first_day_of_month) {
-			$query
-				->orWhere(function ($q) use ($last_day_of_month) {
-					$q
-						->whereNull('retirement_date')
-						->whereNull('end_date')
-						->whereDate('start_date', '<=', $last_day_of_month);
-				})
-				->orWhere(function ($q) use ($first_day_of_month, $last_day_of_month) {
-					$q
-						->whereNotNull('retirement_date')
-						->whereDate('retirement_date', '>=', $first_day_of_month)
-						->whereDate('start_date', '<=', $last_day_of_month);
-				})
-				->orWhere(function ($q) use ($year, $month) {
-					$q
-						->whereNull('retirement_date')
-						->whereYear('end_date', $year)
-						->whereMonth('end_date', $month);
-				})
-				->orWhere(function ($q) use ($year, $month) {
-					$q
-						->whereYear('start_date', $year)
-						->whereMonth('start_date', $month);
-				})
-				->orWhere(function ($q) use ($first_day_of_month, $last_day_of_month) {
-					$q
-						->whereNull('retirement_date')
-						->whereDate('end_date', '>=', $first_day_of_month)
-						->whereDate('start_date', '<=', $last_day_of_month);
-				});
+			$query->orWhere(function ($q) use ($last_day_of_month) {
+                $q->whereNull('retirement_date')->whereNull('end_date')->whereDate('start_date', '<=', $last_day_of_month);
+            })
+            ->orWhere(function ($q) use ($first_day_of_month, $last_day_of_month) {
+                $q->whereNotNull('retirement_date')->whereDate('retirement_date', '>=', $first_day_of_month)->whereDate('start_date', '<=', $last_day_of_month);
+            })
+            ->orWhere(function ($q) use ($year, $month) {
+                $q->whereNull('retirement_date')->whereYear('end_date', $year)->whereMonth('end_date', $month);
+            })
+            ->orWhere(function ($q) use ($year, $month) {
+                $q->whereYear('start_date', $year)->whereMonth('start_date', $month);
+            })
+            ->orWhere(function ($q) use ($first_day_of_month, $last_day_of_month) {
+                $q->whereNull('retirement_date')->whereDate('end_date', '>=', $first_day_of_month)->whereDate('start_date', '<=', $last_day_of_month);
+            });
 		})->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('contracts.start_date')->get();
 	}
 }

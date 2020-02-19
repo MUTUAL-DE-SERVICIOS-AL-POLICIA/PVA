@@ -85,21 +85,7 @@ class DepartureController extends Controller
    */
   public function store(DepartureForm $request)
   {
-    $departure = null;
-    if ($request->has('cite')) {
-      if ($request['cite'] != null) $departure = Departure::whereCite($request['cite'])->first();
-    }
-    if (!$departure) {
-      $departure = Departure::create($request->all());
-      return $departure;
-    } else {
-      return response()->json([
-        'message' => 'bad database formed',
-        'errors' => [
-          'type' => ['El CITE ya existe'],
-        ]
-      ], 409);
-    }
+    return Departure::create($request->all());
   }
 
   /**
@@ -160,8 +146,8 @@ class DepartureController extends Controller
         'orientation' => 'portrait',
         'page-width' => '216',
         'page-height' => '279',
-        'margin-top' => '15',
-        'margin-bottom' => '15',
+        'margin-top' => '8',
+        'margin-bottom' => '16',
         'margin-left' => '20',
         'margin-right' => '20',
         'encoding' => 'UTF-8',
@@ -258,5 +244,27 @@ class DepartureController extends Controller
     $pdf->setOptions($options);
 
     return $pdf->stream($file_name);
+  }
+
+  public function verify_cite(Request $request)
+  {
+    $request->validate([
+      'cite' => 'required|string|min:2'
+    ]);
+    $departure = Departure::where(function($query) {
+      $query->orWhere('approved', true)->orWhere('approved', null);
+    })->whereCite($request['cite'])->first();
+    if (!$departure) {
+      return response()->json([
+        'message' => 'Valid cite',
+      ], 200);
+    } else {
+      return response()->json([
+        'message' => 'bad database formed',
+        'errors' => [
+          'type' => ['El CITE ya existe'],
+        ]
+      ], 409);
+    }
   }
 }

@@ -17,9 +17,8 @@ git submodule update --init --recursive
 * Copy the modified files to laradock folder
 
 ```sh
+cp -f docs/docker/php-fpm/Dockerfile laradock/php-fpm/
 cp -f docs/docker/docker-compose.yml laradock/
-cp -f docs/docker/Dockerfile-Workspace laradock/workspace/Dockerfile
-cp -f docs/docker/Dockerfile-PHP-FPM laradock/php-fpm/Dockerfile
 cp -f docs/docker/env-example laradock/.env
 ```
 
@@ -31,16 +30,16 @@ cd laradock
 
 * Modify `.env` file with desired data
 
+* Build the images
+
+```sh
+docker-compose up build --parallel nginx php-fpm workspace postgres
+```
+
 * Up the compose with nginx server
 
 ```sh
-docker-compose up -d --build nginx php-fpm
-```
-
-* Instead you can use apache2 server
-
-```sh
-docker-compose up -d --build apache2 php-fpm
+docker-compose up -d nginx php-fpm workspace postgres
 ```
 
 ## Install project dependencies
@@ -60,26 +59,26 @@ docker-compose exec php-fpm /var/www/install-roboto-fonts.sh
 * Within the container called `workspace` you need to run
 
 ```sh
-docker-compose exec workspace composer run-script post-root-package-install
-```
-
-```sh
-docker-compose exec workspace composer install
-```
-
-* To change the application to development mode you need to run
-
-```sh
-docker-compose exec workspace yarn dev
+docker-compose exec --user laradock workspace composer run-script post-root-package-install
 ```
 
 * Generate laravel's session and jwt auth keys
 
 ```sh
-docker-compose exec workspace composer run-script post-create-project-cmd
+docker-compose exec --user laradock workspace composer run-script post-create-project-cmd
 ```
 
-* Modify `.env` file according to the right credentials
+* Modify `.env` file according to the right credentials and install the dependencies
+
+```sh
+docker-compose exec --user laradock workspace composer install
+```
+
+* To change the application to development mode you need to run
+
+```sh
+docker-compose exec --user laradock workspace yarn dev
+```
 
 ## Issues
 
