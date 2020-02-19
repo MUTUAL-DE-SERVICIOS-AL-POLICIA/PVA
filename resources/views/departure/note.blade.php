@@ -20,25 +20,24 @@ $consultant = $departure->employee->consultant();
     </style>
   </head>
   <body>
-    <div class="page-break px-4" style="padding-top: 3px;">
     <table class="w-100">
       <thead>
         <tr>
           <th class="w-50 text-left no-padding no-margins">
             <div class="text-left">
-              <img src="{{ public_path("/img/logo.png") }}" class="w-50">
+              <img src="{{ public_path("/img/logo.png") }}" class="w-30">
             </div>
           </th>
           <th class="w-50 text-right no-padding no-margins">
             <div class="text-right">
-              <img src="{{ public_path("/img/escudo_bolivia.gif") }}" class="w-25">
+              <img src="{{ public_path("/img/escudo_bolivia.gif") }}" class="w-15">
             </div>
           </th>
         </tr>
       </thead>
     </table>
     <hr width="100%">
-    <div class="text-right" style="margin-top: 1cm;">
+    <div class="text-right">
       <div>
         @if ($consultant)
           {{ ucwords(mb_strtolower($contract->consultant_position->position_group->company_address->city->name)) }}, {{ Carbon::parse($departure->created_at)->ISOFormat('LL') }}

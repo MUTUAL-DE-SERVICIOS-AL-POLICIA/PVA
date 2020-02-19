@@ -1028,6 +1028,13 @@ export default {
       try {
         let valid = await this.$validator.validateAll()
         if (valid && !this.loading) {
+          if (this.reasonSelected.note) {
+            let res = await axios.get(`departure/verify/cite`, {
+              params: {
+                cite: this.departure.cite
+              }
+            })
+          }
           this.step += 1
         }
       } catch (e) {
