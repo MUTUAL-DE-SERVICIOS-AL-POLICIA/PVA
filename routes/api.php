@@ -70,6 +70,8 @@ Route::group([
   Route::get('consultant_position', 'Api\V1\ConsultantPositionController@index')->name('consultant_positions_list');
   Route::get('consultant_position/{id}', 'Api\V1\ConsultantPositionController@show')->name('consultant_position_details');
   Route::get('consultant_position/find/with_name', 'Api\V1\ConsultantPositionController@find')->name('consultant_positions_find');
+  // City
+  Route::resource('city', 'Api\V1\CityController')->only(['index', 'show']);
   // With credentials
   Route::group([
     'middleware' => 'jwt.auth'
@@ -89,8 +91,6 @@ Route::group([
         Route::get('', 'Api\V1\EmployeeContractController@get_contract')->name('employee_contracts_details');
       });
     });
-    // City
-    Route::resource('city', 'Api\V1\CityController')->only(['index', 'show']);
     // Management Entity
     Route::resource('management_entity', 'Api\V1\ManagementEntityController')->only(['index', 'show']);
     // Insurance Company
