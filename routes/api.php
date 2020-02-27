@@ -27,6 +27,7 @@ Route::group([
   Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
   Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
   Route::post('departure/{departure_id}/transfer', 'Api\V1\DepartureController@transfer')->name('transfer');
+  Route::get('departure/verify/cite', 'Api\V1\DepartureController@verify_cite')->name('departure_verify_cite');
   // Material
   Route::resource('material', 'Api\V1\MaterialController')->only(['index', 'show']);
   Route::resource('subarticle', 'Api\V1\SubarticleController')->only(['index', 'store', 'show']);
@@ -38,6 +39,8 @@ Route::group([
   Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
   // Position Group
   Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
+  // Position current employee
+  Route::get('position/{id}/employee', 'Api\V1\PositionController@employee')->name('position_employee');
   Route::group([
     'prefix' => 'position_group/{superior_id}',
   ], function () {
@@ -67,6 +70,8 @@ Route::group([
   Route::get('consultant_position', 'Api\V1\ConsultantPositionController@index')->name('consultant_positions_list');
   Route::get('consultant_position/{id}', 'Api\V1\ConsultantPositionController@show')->name('consultant_position_details');
   Route::get('consultant_position/find/with_name', 'Api\V1\ConsultantPositionController@find')->name('consultant_positions_find');
+  // City
+  Route::resource('city', 'Api\V1\CityController')->only(['index', 'show']);
   // With credentials
   Route::group([
     'middleware' => 'jwt.auth'
@@ -86,8 +91,6 @@ Route::group([
         Route::get('', 'Api\V1\EmployeeContractController@get_contract')->name('employee_contracts_details');
       });
     });
-    // City
-    Route::resource('city', 'Api\V1\CityController')->only(['index', 'show']);
     // Management Entity
     Route::resource('management_entity', 'Api\V1\ManagementEntityController')->only(['index', 'show']);
     // Insurance Company
