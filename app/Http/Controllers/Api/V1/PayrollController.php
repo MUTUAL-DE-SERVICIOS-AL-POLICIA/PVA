@@ -51,7 +51,7 @@ class PayrollController extends Controller
           $last_code = Payroll::orderBy('code', 'DESC')->select('code')->first();
           $last_code = intval(substr($last_code->code, 0, 4));
         }
-        $code = implode([str_pad($last_code + 1, 4, '0', STR_PAD_LEFT), $year_shortened], '-');
+        $code = implode('-', [str_pad($last_code + 1, 4, '0', STR_PAD_LEFT), $year_shortened]);
       }
     }
     $unworked_days = $contract->employee->days_non_payable_month(Carbon::create($procedure->year, $procedure->month->order, 1)->toDateString(), true);

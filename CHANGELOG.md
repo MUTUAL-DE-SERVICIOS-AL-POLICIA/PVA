@@ -2,6 +2,12 @@
 
 ---
 
+## [5.2.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.2.2) - 2020-02-27
+
+### Fixed
+
+* February payroll worked days calculus
+
 ## [5.2.1](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.2.1) - 2020-02-19
 
 ### Added
