@@ -237,7 +237,7 @@ class EmployeePayroll
     } elseif ($start_date->year <= $payroll_date->year && $start_date->month == $payroll_date->month) {
       $worked_days = 30 - $start_date->day + 1;
     } elseif ($end_date->year >= $payroll_date->year && $end_date->month == $payroll_date->month) {
-      $worked_days = $end_date->day > 30 ? 30 : $end_date->day;
+      $worked_days = ($end_date->day > 30 || $end_date->day == $payroll_date->endOfMonth()->day) ? 30 : $end_date->day;
     } elseif (($start_date->year <= $payroll_date->year && $start_date->month < $payroll_date->month) || ($end_date->year >= $payroll_date->year && $end_date->month > $payroll_date->month)) {
       $worked_days = 30;
     } else {
