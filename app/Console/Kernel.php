@@ -31,15 +31,15 @@ class Kernel extends ConsoleKernel
     $schedule->call(function () use ($attendance_controller, $request) {
         $attendance_controller->store($request);
     })->daily();
-    $schedule->call(function () use ($attendance_controller, $request) {
-        $attendance_controller->store($request);
-    })->weekly()->sundays()->at('01:00');
-    $schedule->call(function () use ($attendance_controller, $request) {
-        $attendance_controller->store($request);
-    })->weekly()->sundays()->at('01:30');
     $schedule->call(function () use ($attendance_controller) {
-        $attendance_controller->destroy('all');
-    })->weekly()->sundays()->at('02:00');
+      do {
+        for ($i = 1; $i <= 3; $i++) {
+          $response = $attendance_controller->store($request);
+          sleep(30*60);
+        }
+      } while (count($response->getData()->added) > 0);
+      $attendance_controller->destroy('all');
+    })->weekly()->sundays()->at('01:00');
   }
 
   /**
