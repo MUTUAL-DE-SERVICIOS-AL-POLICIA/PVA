@@ -2,6 +2,13 @@
 
 ---
 
+## [5.2.3](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.2.3) - 2020-02-28
+
+### Fixed
+
+* Fixed float unworked days on procedure edit view
+* Fixed erase attendance devices only when no data to sync
+
 ## [5.2.2](https://github.com/MUTUAL-DE-SERVICIOS-AL-POLICIA/PVA-RRHH/tree/5.2.2) - 2020-02-27
 
 ### Fixed
