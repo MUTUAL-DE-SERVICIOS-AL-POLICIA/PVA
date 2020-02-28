@@ -484,7 +484,7 @@ export default {
       try {
         if (this.procedure.active) {
           await axios.patch(`/payroll/${payroll.id}`, {
-            unworked_days: parseInt(payroll.unworked_days),
+            unworked_days: payroll.unworked_days,
             rc_iva: Number(payroll.rc_iva),
             faults: Number(payroll.faults),
             previous_month_balance: Number(payroll.previous_month_balance)
