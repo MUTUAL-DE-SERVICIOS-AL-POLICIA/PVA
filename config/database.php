@@ -71,6 +71,19 @@ return [
       'prefix' => '',
     ],
 
+      'driver' => 'mysql',
+      'host' => env('DB_SIGEC_HOST', '127.0.0.1'),
+      'port' => env('DB_SIGEC_PORT', '3306'),
+      'database' => env('DB_SIGEC_DATABASE', 'db'),
+      'username' => env('DB_SIGEC_USERNAME', 'admin'),
+      'password' => env('DB_SIGEC_PASSWORD', 'admin'),
+      'charset' => 'utf8',
+      'collation' => 'utf8_unicode_ci',
+      'prefix' => '',
+      'strict' => true,
+      'engine' => null,
+    ],
+
   ],
 
   /*
