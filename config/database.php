@@ -71,6 +71,7 @@ return [
       'prefix' => '',
     ],
 
+    'sigec' => [
       'driver' => 'mysql',
       'host' => env('DB_SIGEC_HOST', '127.0.0.1'),
       'port' => env('DB_SIGEC_PORT', '3306'),
