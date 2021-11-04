@@ -136,6 +136,17 @@ class LdapController extends Controller
       }
     }
 
+    if (env('DB_SIGEC_SYNC')) {
+      $sigec = $this->sigec_sync();
+      if (array_key_exists('result', $sigec)) {
+        $response['sigec'] = $sigec['result'];
+      } elseif (array_key_exists('error', $sigec)) {
+        $response['sigec']['error'] = $sigec['error'];
+      } else {
+        $response['sigec'] = $sigec;
+      }
+    }
+
     return response()->json($response);
   }
 
@@ -255,6 +266,13 @@ class LdapController extends Controller
     }
 
     curl_close($request);
+    return $result;
+  }
+
+  private function sigec_sync()
+  {
+    //
+    
     return $result;
   }
 }
