@@ -11,26 +11,16 @@ class Ldap
 
   public function __construct()
   {
-$LDAP_HOST="172.16.1.8";
-$LDAP_PORT=3891;
-$LDAP_SSL=false;
-$LDAP_ADMIN_PREFIX="cn";
-$LDAP_ADMIN_USERNAME="admin";
-$LDAP_ADMIN_PASSWORD="admin";
-$LDAP_ACCOUNT_PREFIX="uid";
-$LDAP_ACCOUNT_SUFFIX="ou=usuarios";
-$LDAP_BASEDN="dc=muserpol,dc=gob,dc=bo";
-$LDAP_TIMEOUT=6;
     $this->config = array(
-      'ldap_host' => $LDAP_HOST,
-      'ldap_port' => $LDAP_PORT,
-      'ldap_ssl' => $LDAP_SSL,
-      'user_id_key' => $LDAP_ACCOUNT_PREFIX,
-      'admin_id_key' => $LDAP_ADMIN_PREFIX,
-      'admin_username' => $LDAP_ADMIN_USERNAME,
-      'admin_password' => $LDAP_ADMIN_PASSWORD,
-      'base_dn' => $LDAP_BASEDN,
-      'timeout' => $LDAP_TIMEOUT
+      'ldap_host' => env("LDAP_HOST"),
+      'ldap_port' => env("LDAP_PORT"),
+      'ldap_ssl' => env("LDAP_SSL"),
+      'user_id_key' => env("LDAP_ACCOUNT_PREFIX"),
+      'admin_id_key' => env("LDAP_ADMIN_PREFIX"),
+      'admin_username' => env("LDAP_ADMIN_USERNAME"),
+      'admin_password' => env("LDAP_ADMIN_PASSWORD"),
+      'base_dn' => env("LDAP_BASEDN"),
+      'timeout' => env("LDAP_TIMEOUT")
     );
 
     $this->config['account_suffix'] = implode(',', [env("LDAP_ACCOUNT_SUFFIX"), $this->config['base_dn']]);
