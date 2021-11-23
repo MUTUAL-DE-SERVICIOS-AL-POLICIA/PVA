@@ -7,6 +7,8 @@ Route::group([
   // Login
   Route::post('auth', 'Api\V1\AuthController@store')->name('login');
   Route::get('date', 'Api\V1\DateController@show')->name('date_now');
+  //ruta de prueba de sincronizacion ldap correspondencia
+  //Route::get('correspondencia', 'Api\V1\LdapController@sync_correspondence');
   // Public resource
   Route::get('payroll/faults/{year}', 'Api\V1\PayrollController@getYearFaults')->name('payroll_year_faults');
   Route::get('contract/last_contract/{employee_id}', 'Api\V1\ContractController@last_contract')->name('contract_last');
