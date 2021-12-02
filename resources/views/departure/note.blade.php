@@ -1,11 +1,9 @@
 <?php
 use \Carbon\Carbon;
 use \Milon\Barcode\DNS2D;
-
 $contract = $departure->employee->contract_in_date($departure->departure);
 $consultant = $departure->employee->consultant();
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -54,10 +52,10 @@ $consultant = $departure->employee->consultant();
         Señor:
       </div>
       <div>
-        Cnl. Desp. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->first()->contracts[0]->employee->fullName() }}
+        Cnl. Desp. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->orderBy('created_at', 'ASC')->first()->contracts[0]->employee->fullName() }}
       </div>
       <div class="font-bold">
-        {{ App\Position::first()->name }}
+        DIRECTOR GENERAL EJECUTIVO
       </div>
       <div class="underline font-bold">
         Presente.-
