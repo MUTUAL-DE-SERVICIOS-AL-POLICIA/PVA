@@ -52,7 +52,8 @@ $consultant = $departure->employee->consultant();
         Señor:
       </div>
       <div>
-        Cnl. Desp. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->orderBy('created_at', 'ASC')->first()->contracts[0]->employee->fullName() }}
+        Cnl. Desp. EDGAR JOSE CORTEZ ALBORNOZ
+        <!--Cnl. Desp. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->orderBy('created_at', 'ASC')->first()->contracts[0]->employee->fullName() }}-->
       </div>
       <div class="font-bold">
         DIRECTOR GENERAL EJECUTIVO
