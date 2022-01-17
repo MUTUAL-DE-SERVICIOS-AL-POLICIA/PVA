@@ -111,6 +111,7 @@
                               account_number: { title: 'CUENTA BANCARIA' },
                               birth_date: { title: 'FECHA NACIMIENTO' },
                               position: { title: 'CARGO' },
+                              management_entity.name: { title: 'AFP' },
                               nua_cua: { title: 'NUA_CUA' },
                               gender: { title: 'GÉNERO' },
                               phone_number: { title: 'CELULAR'},
