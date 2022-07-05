@@ -109,6 +109,7 @@ class Ldap
         $result = [];
 
         foreach ($entries as $key => $value) {
+          //if (is_array($value) && $value[$this->config['user_id_key']]) {
           if ($value[$this->config['user_id_key']]) {
             $result[] = [
               $this->config['user_id_key'] => $value[$this->config['user_id_key']][0],
@@ -163,6 +164,7 @@ class Ldap
         $result = [];
 
         foreach ($entries as $key => $entry) {
+          //if (is_array($entry) && $entry['ou'][0]) {
           if ($entry['ou'][0]) {
             $result[] = $entry['ou'][0];
           }
@@ -288,6 +290,7 @@ class Ldap
         $result = [];
 
         foreach ($entries as $key => $value) {
+          //if (is_array($value) && $value[$this->config['user_id_key']]) {
           if ($value[$this->config['user_id_key']]) {
             $result[] = (object)[
               $this->config['user_id_key'] => $value[$this->config['user_id_key']][0],

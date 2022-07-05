@@ -7,6 +7,7 @@ use App\Employee;
 use App\User;
 use Ldap;
 use Carbon;
+use Illuminate\Support\Facades\DB;
 
 class LdapController extends Controller
 {
@@ -30,7 +31,6 @@ class LdapController extends Controller
   {
     $ldap = new Ldap();
     $ldap->create_group();
-
     $employees = Employee::where('active', true)->pluck('id')->toArray();
 
     $search = $ldap->list_entries();
@@ -136,6 +136,8 @@ class LdapController extends Controller
       }
     }
 
+    //llamado a la sincronizacion con el sistema de correspondencia
+    $response['correspondence'] = $this->sync_correspondence();
     return response()->json($response);
   }
 
@@ -209,7 +211,7 @@ class LdapController extends Controller
   private function zammad_sync()
   {
     $route = 'api/v1/integration/ldap/job_start';
-    $max_request = 10;
+    $max_request = 10000;
 
     $headers = [
       'Content-Type:application/json',
@@ -256,5 +258,78 @@ class LdapController extends Controller
 
     curl_close($request);
     return $result;
+  }
+
+  //procedimiento de sincronizacion con el sistema de correspondencia
+  public function sync_correspondence()
+  {
+    DB::beginTransaction();
+    try{
+      $query = "UPDATE users set habilitado = 0 where nivel <> 5";
+      $query = DB::connection('sigec')->select($query);
+      $employees = Employee::where('active', true)->get();
+      $new_register = 0;
+      $update_register = 0;
+      $active_without_contracts = 0;
+      //se crea la sesion con el ldap
+      $ldap = new Ldap();
+      foreach($employees as $employee)
+      {
+        $query = "SELECT * from users where id = $employee->id";
+        $query = DB::connection('sigec')->select($query);
+        if($query)
+        { 
+          if($employee->contracts->where('active',true)->count() > 0)
+          {
+            $entry = $ldap->get_entry($employee->id);
+            $position = $entry['title'];
+            $update = "UPDATE users set habilitado = 1, cargo = '$position'  where id = $employee->id";
+            $update = DB::connection('sigec')->select($update);
+            $update_register++;
+          }
+          else
+          {
+            $active_without_contracts++;
+          }
+        }
+        else
+        {
+          //condicional si el empleado cuenta con contratos activos para habilitarlo en el sistema de correspondencia
+          if($employee->contracts->where('active',true)->count() > 0)
+          {
+            $ldap = new Ldap();
+            $entry = $ldap->get_entry($employee->id);
+            $id_office = $entry['employeeNumber'];
+            $mosca = (substr($employee->first_name, 0, 1).substr($employee->second_name, 0, 1).substr($employee->last_name, 0, 1).substr($employee->mothers_last_name, 0, 1));
+            $position = $entry['title'];
+            $gender = $employee->gender=="M" ? "hombre" : "mujer";
+            $username = $entry['uid'];
+            $password = hash_hmac('sha256', $employee->identity_card, '2, 4, 6, 7, 9, 15, 20, 23, 25, 30');
+            $mail = $entry['mail'];
+            $insert = "INSERT INTO users(id, superior, id_oficina, dependencia, username, password, nombre, mosca, cargo, email, logins, fecha_creacion, habilitado, nivel, genero, prioridad, id_entidad, super, cedula_identidad)
+            VALUES (".$employee->id.", 0, ".$id_office.", 1, '$username','$password', '".$employee->fullname()."', '$mosca', '$position', '$mail', 0, ".strtotime(Carbon::now()).", ".true.", 2, '$gender', 0, 24, 0, '".$employee->identity_card."')";
+            $query = DB::connection('sigec')->select($insert);
+            $role = "INSERT INTO roles_users(user_id, role_id) VALUES ($employee->id,2)";
+            $query = DB::connection('sigec')->select($role);
+            $role = "INSERT INTO roles_users(user_id, role_id) VALUES ($employee->id,1)";
+            $query = DB::connection('sigec')->select($role);
+            $new_register++;
+          }
+          else
+            $active_without_contracts++;
+        }
+      }
+      DB::commit();
+      $response = [
+        'new register' => $new_register,
+        'update register' => $update_register,
+        'without contracts' => $active_without_contracts
+      ];
+      return $response;
+    }catch(\Exception $e){
+      DB::rollback();
+      //throw $e;
+        return ['message' => $e->getMessage()];
+    }
   }
 }

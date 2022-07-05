@@ -103,11 +103,16 @@
                             v-if="filter.downloadable"
                             :json-data="filter.data.filter(o => { return o.active == true })"
                             :labels = "{
+                              identity_card: { title: 'CARNET DE IDENTIDAD' },
                               last_name: { title: 'APELLIDO PATERNO' },
                               mothers_last_name: { title: 'APELLIDO MATERNO' },
                               first_name: { title: 'PRIMER NOMBRE' },
                               second_name: { title: 'SEGUNDO NOMBRE' },
+                              account_number: { title: 'CUENTA BANCARIA' },
+                              birth_date: { title: 'FECHA NACIMIENTO' },
                               position: { title: 'CARGO' },
+                              management_entity_id: { title: 'AFP' },
+                              nua_cua: { title: 'NUA_CUA' },
                               gender: { title: 'GÉNERO' },
                               phone_number: { title: 'CELULAR'},
                               landline_number: { title: 'TELÉFONO'}
