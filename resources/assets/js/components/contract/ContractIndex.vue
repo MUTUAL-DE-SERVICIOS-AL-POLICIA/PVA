@@ -78,6 +78,7 @@
               </v-btn>
               <v-list>
                 <v-list-tile @click="print(props.item, 'printEventual')" v-if="$store.getters.role == 'juridica' || $store.getters.role == 'admin'"> Contrato</v-list-tile>
+                <v-list-tile @click="printAddendum(props.item)" v-if="$store.getters.role == 'juridica' || $store.getters.role == 'admin'"> Adenda</v-list-tile>
                 <v-list-tile @click="print(props.item, 'printUp')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Alta del seguro</v-list-tile>
                 <v-list-tile @click="print(props.item, 'printLow')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Baja del seguro</v-list-tile>
               </v-list>
@@ -303,7 +304,22 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    }
+    },
+    async printAddendum(item) {
+      try {
+        let res = await axios({
+          method: "GET",
+          url: `/contract_addendum/print/${item.id}`,
+          responseType: "arraybuffer"
+        });
+        let blob = new Blob([res.data], {
+          type: "application/pdf"
+        });
+        printJS(window.URL.createObjectURL(blob));
+      } catch (e) {
+        console.log(e);
+      }
+    },
   }
 };
 </script>

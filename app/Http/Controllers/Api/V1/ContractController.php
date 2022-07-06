@@ -147,6 +147,52 @@ class ContractController extends Controller
   }
 
   /**
+   * PDF the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return pdf
+   */
+  function print_addendum($id)
+  {
+    $data = [
+      'company' => Company::first(),
+      'contract' => Contract::findOrFail($id),
+      'before_last_contract' => $this->before_last_contract(Contract::findOrFail($id)->employee_id, $id) ? $this->before_last_contract(Contract::findOrFail($id)->employee_id, $id) : Contract::findOrFail($id),
+      'mae' => Contract::where([['position_id', '1'], ['active', 'true']])->first(),
+      'employer_number' => EmployerNumber::where('insurance_company_id', '1')->first(),
+    ];
+
+    $footerHtml = view()->make('partials.footer')->with(array('footer_margin' => '1cm', 'paginator' => true, 'print_date' => false, 'date' => $data['contract']->start_date))->render();
+
+    $headerHtml = view()->make('partials.head')->render();
+
+    $options = [
+      'orientation' => 'portrait',
+      'page-width' => '216',
+      'page-height' => '310',
+      'margin-top' => '35',
+      'margin-right' => '15',
+      'margin-left' => '25',
+      'margin-bottom' => '16',
+      'encoding' => 'UTF-8',
+      'header-html' => $headerHtml,
+      'footer-html' => $footerHtml,
+      'user-style-sheet' => public_path('css/contract-print.min.css')
+    ];
+
+    $file_name = 'contrato.pdf';
+    $pdf = \PDF::loadView('contract.printEventualAddendum' , $data);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
+  }
+  
+  public function before_last_contract($employee_id, $contract_id)
+  {
+    return Contract::where('employee_id', $employee_id)->where('id', '<', $contract_id)->orderBy('id', 'desc')->first();
+  }
+
+  /**
    * Display the specified resource from storage.
    *
    * @param  int  $id
