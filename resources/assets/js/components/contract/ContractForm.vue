@@ -451,7 +451,7 @@ export default {
   },
   computed: {
     disableEndDate() {
-      if (this.selectedItem.id && this.$store.getters.role == 'admin') {
+      if (this.selectedItem.id && (this.$store.getters.role == 'admin' || this.$store.getters.role == 'rrhh')) {
         return false
       } else if (this.selectedItem.id && this.recontract && (this.$store.getters.role == 'admin' || this.$store.getters.role == 'rrhh')) {
         return false
