@@ -38,7 +38,8 @@ class PayrollPrintController extends Controller
       $total_contributions = new TotalPayrollEmployer();
       $company = Company::select()->first();
 
-      $payrolls = Payroll::where('procedure_id', $procedure->id)->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('c.start_date')->select('payrolls.*')->get();
+      //$payrolls = Payroll::where('procedure_id', $procedure->id)->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('c.start_date')->select('payrolls.*')->get();
+      $payrolls = Payroll::where('procedure_id', $procedure->id)->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->orderby('c.employee_id')->select('payrolls.*')->get();
 
       foreach ($payrolls as $key => $payroll) {
         $contract = $payroll->contract;
