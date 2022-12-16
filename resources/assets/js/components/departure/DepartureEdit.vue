@@ -578,13 +578,6 @@ export default {
       }
     },
     'departure.departure'(val) {
-      let inWeekend = !this.$moment(val).isBusinessDay()
-      if (val && !this.reasonSelected.days) {
-        if (inWeekend) {
-          this.toastr.error('No se puede solicitar licencia en día Sábado ni Domingo')
-          this.departure.departure = null
-        }
-      }
       if (val && this.reasonSelected.days) {
         if (this.reasonSelected.name != 'MATERNIDAD') {
           this.departure.return = this.$moment(val).startOf('day').businessAdd(this.reasonSelected.days - (inWeekend ? 0 : 1)).format('YYYY-MM-DD')
