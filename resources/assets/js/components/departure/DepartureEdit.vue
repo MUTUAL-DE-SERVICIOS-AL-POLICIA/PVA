@@ -804,13 +804,6 @@ export default {
                 value: true
               }
               this.step = 1
-            } else if (birthDate.weekday() == 5 || birthDate.weekday() == 6) {
-              message = `No puede solicitar esta licencia en ${birthDate.format('dddd')}`
-              this.error = {
-                text: message,
-                value: true
-              }
-              this.step = 1
             } else {
               this.departure.departure = birthDate.toISOString()
               this.reasonSelected.date = {
