@@ -55,7 +55,7 @@
               <v-layout wrap>
                 <v-flex xs12 sm6 md6 lg6 pr-2>
                   <v-text-field
-                    v-validate="'required|alpha_spaces'"
+                    v-validate="'alpha_spaces'"
                     :error-messages="errors.collect('Apellido Paterno')"
                     data-vv-name="Apellido Paterno"
                     v-model="edit.last_name"
@@ -65,7 +65,7 @@
                 </v-flex>
                 <v-flex xs12 sm6 md6 lg6 pl-2>
                   <v-text-field
-                    v-validate="'required|alpha_spaces'"
+                    v-validate="'alpha_spaces'"
                     :error-messages="errors.collect('Apellido Materno')"
                     data-vv-name="Apellido Materno"
                     v-model="edit.mothers_last_name"
