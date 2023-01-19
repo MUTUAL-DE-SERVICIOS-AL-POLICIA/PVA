@@ -55,7 +55,7 @@
               <v-layout wrap>
                 <v-flex xs12 sm6 md6 lg6 pr-2>
                   <v-text-field
-                    v-validate="'alpha_spaces'"
+                    v-validate="'required|alpha_spaces'"
                     :error-messages="errors.collect('Primer Apellido')"
                     data-vv-name="Primer Apellido"
                     v-model="edit.last_name"
