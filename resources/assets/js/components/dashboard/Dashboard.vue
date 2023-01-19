@@ -104,8 +104,8 @@
                             :json-data="filter.data.filter(o => { return o.active == true })"
                             :labels = "{
                               identity_card: { title: 'CARNET DE IDENTIDAD' },
-                              last_name: { title: 'APELLIDO PATERNO' },
-                              mothers_last_name: { title: 'APELLIDO MATERNO' },
+                              last_name: { title: 'PRIMER APELLIDO' },
+                              mothers_last_name: { title: 'SEGUNDO APELLIDO' },
                               first_name: { title: 'PRIMER NOMBRE' },
                               second_name: { title: 'SEGUNDO NOMBRE' },
                               account_number: { title: 'CUENTA BANCARIA' },
@@ -176,8 +176,8 @@
                       :labels = "{
                         first_name: { title: 'PRIMER NOMBRE' },
                         second_name: { title: 'SEGUNDO NOMBRE' },
-                        last_name: { title: 'APELLIDO PATERNO' },
-                        mothers_last_name: { title: 'APELLIDO MATERNO' },
+                        last_name: { title: 'PRIMER APELLIDO ' },
+                        mothers_last_name: { title: 'SEGUNDO APELLIDO' },
                         birthDate: { title: 'CUMPLEAÑOS' }
                       }"
                       :csv-title="`cumpleañeros_${$moment($store.getters.dateNow).format('M_Y')}`"
