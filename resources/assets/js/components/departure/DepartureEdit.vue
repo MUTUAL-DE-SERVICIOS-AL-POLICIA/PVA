@@ -147,7 +147,6 @@
                           offset-y
                           max-width="290px"
                           min-width="290px"
-                          :disabled="!reasonSelected.date.start.editable"
                         >
                           <template v-slot:activator="{ on }">
                             <v-text-field
@@ -156,7 +155,6 @@
                               hint="día/mes/año"
                               persistent-hint
                               prepend-icon="event"
-                              readonly
                               v-on="on"
                               v-validate="(step == 2 && reasonSelected.date.start.editable) ? 'required' : ''"
                               name="Fecha de Salida"
@@ -797,14 +795,7 @@ export default {
             let birthDate = this.$moment(remainingDepartures.birth_date).year(dateNow.year())
             let startDate = birthDate.clone().subtract(8, 'days')
             let endDate = birthDate.clone().add(8, 'days')
-            if (!dateNow.isBetween(startDate, endDate)) {
-              message = 'No puede solicitar esta licencia aún'
-              this.error = {
-                text: message,
-                value: true
-              }
-              this.step = 1
-            } else {
+            
               this.departure.departure = birthDate.toISOString()
               this.reasonSelected.date = {
                 start: {
@@ -816,7 +807,6 @@ export default {
                   visible: false
                 }
               }
-            }
           }
           this.loading = false
         }
