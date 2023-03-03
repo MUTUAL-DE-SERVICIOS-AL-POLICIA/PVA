@@ -753,7 +753,7 @@ export default {
                 }
               }
             }
-            if (['MATRIMONIO', 'NACIMIENTO DE HIJOS', 'MATERNIDAD', 'FALLECIMIENTO DE PADRES, CONYUGE, HERMANOS O HIJOS', 'FALLECIMIENTO DE SUEGROS O CUÑADOS', ''].includes(this.reasonSelected.name)) {
+            if (['MATRIMONIO', 'NACIMIENTO DE HIJOS', 'MATERNIDAD', 'FALLECIMIENTO DE PADRES, ABUELOS, CONYUGE, HERMANOS O HIJOS - NIETOS O PARENTESCO ADOPTIVO', 'FALLECIMIENTO DE SUEGROS O CUÑADOS', ''].includes(this.reasonSelected.name)) {
               if (this.reasonSelected.name == 'MATERNIDAD') {
                 this.departure.description = 'Adjunto documento de baja médica'
               }
