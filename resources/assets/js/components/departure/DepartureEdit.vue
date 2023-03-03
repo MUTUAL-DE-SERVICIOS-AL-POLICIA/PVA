@@ -391,13 +391,13 @@ export default {
       ],
       records: [
         {
-          text: 'Sin marcado al ingreso',
+          text: 'Ingreso',
           value: 1
         }, {
-          text: 'Sin marcado a la salida',
+          text: 'Salida',
           value: 2
         }, {
-          text: 'Con ambos marcados',
+          text: 'Definir hora',
           value: 3
         }
       ],
@@ -491,7 +491,7 @@ export default {
     'departure.timeToAdd' (val) {
       if (this.departure.timeToAdd == -1) {
         this.departure.time.start.hours = 8
-        this.departure.time.start.minutes = 0
+        this.departure.time.start.minutes = 30
         this.departure.time.end.hours = 18
         this.departure.time.end.minutes = 30
       } else {
@@ -633,13 +633,13 @@ export default {
           this.reasonSelected.period = true
           this.reasonSelected.records = [
             {
-              text: 'Sin marcado al ingreso',
+              text: 'Ingreso',
               value: 1
             }, {
-              text: 'Sin marcado a la salida',
+              text: 'Salida',
               value: 2
             }, {
-              text: 'Con ambos marcados',
+              text: 'Definir hora',
               value: 3
             }
           ]
@@ -915,7 +915,7 @@ export default {
         time: {
           start: {
             hours: 8,
-            minutes: 0
+            minutes: 30
           },
           end: {
             hours: 18,
@@ -953,7 +953,7 @@ export default {
         case 2:
           if (this.departure.period) {
             this.departure.time.end.hours = this.departure.period == 1 ? 12 : 18
-            this.departure.time.end.minutes = this.departure.period == 1 ? 0 : 30
+            this.departure.time.end.minutes = this.departure.period == 1 ? 30 : 30
             returnDate = this.$moment(this.departure.departure).hours(this.departure.time.end.hours).minutes(this.departure.time.end.minutes)
             departureDate = returnDate.clone().subtract(timeUnit, time)
             this.departure.time.start.hours = departureDate.hours()
@@ -963,7 +963,7 @@ export default {
         default:
           if (this.departure.period) {
             this.departure.time.start.hours = this.departure.period == 1 ? 8 : 14
-            this.departure.time.start.minutes = this.departure.period == 1 ? 0 : 30
+            this.departure.time.start.minutes = this.departure.period == 1 ? 30 : 30
             departureDate = this.$moment(this.departure.departure).hours(this.departure.time.start.hours).minutes(this.departure.time.start.minutes)
             returnDate = departureDate.clone().add(timeUnit, time)
             this.departure.time.end.hours = returnDate.hours()
@@ -971,7 +971,7 @@ export default {
           }
           if (this.departure.timeToAdd == 8 && timeUnit == 'hours') {
             this.departure.time.start.hours = 8
-            this.departure.time.start.minutes = 0
+            this.departure.time.start.minutes = 30
             this.departure.time.end.hours = 18
             this.departure.time.end.minutes = 30
           }
