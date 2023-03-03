@@ -52,11 +52,12 @@ $consultant = $departure->employee->consultant();
         Señor:
       </div>
       <div>
-        Cnl. Desp. EDGAR JOSE CORTEZ ALBORNOZ
+        Cnl. DESP. EDGAR JOSE CORTEZ ALBORNOZ
         <!--Cnl. Desp. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->orderBy('created_at', 'ASC')->first()->contracts[0]->employee->fullName() }}-->
       </div>
       <div class="font-bold">
-        DIRECTOR GENERAL EJECUTIVO
+        DIRECTOR GENERAL EJECUTIVO<br>
+        MUSERPOL
       </div>
       <div class="underline font-bold">
         Presente.-
@@ -68,8 +69,13 @@ $consultant = $departure->employee->consultant();
     @else
       @php ($addon = '')
     @endif
+    @if($departure->departure_reason->name != 'SIN GOCE DE HABERES')
+      @php ($type = 'LICENCIA')
+    @else
+      @php ($type = 'PERMISO')
+    @endif
     <div class="text-right font-bold uppercase" style="margin-top: 1cm;">
-      REF.: SOLICITUD DE LICENCIA {{ $addon }} {{ $departure->departure_reason->name }}
+      REF.: SOLICITUD DE {{$type}} {{ $addon }} {{ $departure->departure_reason->name }}
     </div>
     </div>
     <div class="text-left" style="margin-top: 1cm;">
@@ -80,28 +86,26 @@ $consultant = $departure->employee->consultant();
         <div class ="text-justify">
           <span>
               Mediante la presente, tengo a bien dirigirme a su Autoridad a objeto de solicitar se me autorice la LICENCIA {{ $addon }} {{ $departure->departure_reason->name }}, amparado por
-              @if ($departure->departure_reason->name != 'EXAMEN DE PRÓSTATA' && $departure->departure_reason->name != 'EXAMEN DE COLON')
+              @if ($departure->departure_reason->name != 'EXAMEN DE PRÓSTATA' && $departure->departure_reason->name != 'EXAMEN DE COLON'&& $departure->departure_reason->name != 'CON GOCE DE HABERES' && $departure->departure_reason->name != 'MAMOGRAFÍA/PAPANICOLAOU' && $departure->departure_reason->name !='DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS' && $departure->departure_reason->name != 'NACIMIENTO DE HIJOS')
                 el Reglamento Interno de Personal de la Mutual de Servicio al Policía,
               @endif
           </span>
             @switch ($departure->departure_reason->name)
               @case('CON GOCE DE HABERES')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso g) Para la resolución de asuntos de índole personal se otorgaran 2 días hábiles fraccionados en el transcurso de 1 año, previa autorización del inmediato superior, los cuales no podrán ser consecutivos (ni anteriores ni posteriores) a las vacaciones o feriados.
+                La ley 2027 Estatuto por la función Pública y Art. 25 permiso personal con goce de haberes del Reglamento Interno de Personal. Para la resolución de asuntos de índole personal se otorgaran 2 días hábiles fraccionados en el transcurso de 1 año, previa autorización del inmediato superior, los cuales no podrán ser consecutivos.
                 </span>
               @break
               @case('SIN GOCE DE HABERES')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 34 LICENCIA SIN GOCE DE HABER, Incisos:
+                  DEL REGIMEN DE ASISTENCIA, Artículo 27 PERMISO SIN GOCE DE HABER.
                   <ol type="a">
                     <li>Cuando la servidora o servidor público no pueda acceder a una licencia con cargo a vacación.</li>
                     <li>Por la asistencia a cursos de capacitación, Post Grado como participante particular (sin patrocinio de MUSERPOL).</li>
                     <li>Por motivos de estudio o realización de un trabajo de grado, hasta tres días calendario hasta antes de su examen o defensa del trabajo de grado, previa certificación de la autoridad universitaria competente.</li>
-                    <li>Por motivo de salud (tratamientos a la o el servidor o miembro de su familia que no sean pagados por el Seguro de Social) por periodos no mayores a treinta días.</li>
-                    <li>Por el tiempo de Cumplimiento del Servicio Militar, conforme a Ley.</li>
-                    <li>Por otros motivos no incluidos en los incisos anteriores, por periodos no mayores a cinco días.</li>
+                    <li>Por motivos de salud  (tratamiento a la o el servidor miembro de su familia que no sean pagados por Seguro de Social) por períodos no mayores a treinta días.</li>
                   </ol>
-                  Toda autorización para licencia sin goce de haberes deberá ser puesta a consideración y aprobación del Director General Ejecutivo para posteriormente ser remitida a la Unidad de Recursos Humanos para su cómputo. Las licencias sin goce de haberes podrán ser otorgados por un tiempo máximo de 10 días hábiles. En caso de que se requiera un tiempo mayor la autorización podrá ser aprobada por la Unidad de Recursos Humanos por un plazo máximo de 10 días adicionales. La Máxima Autoridad Ejecutiva, es quien autorizará la licencia especial sin goce de haberes a partir del día 21 del mes con duración máxima de tres meses. La autorización deberá ser respaldada mediante Resolución Administrativa expresa.
+                  Toda autorización para licencia sin goce de haberes deberá ser puesta a consideración y aprobación del Director General Ejecutivo para posteriormente ser remitida a la Unidad de Recursos Humanos para su cómputo.
                 </span>
               @break
               @case('REGULARIZACIÓN DE MARCADO')
@@ -131,22 +135,22 @@ $consultant = $departure->employee->consultant();
               @break
               @case('NACIMIENTO DE HIJOS')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso b) Por nacimiento de hijos, el padre gozará de tres (3) días hábiles de licencia, con obligación de presentar el certificado de nacimiento expedido por el oficial de registro civil.
+                el artículo único del Decreto Supremo Nº 1212 del 1º de mayo de 2015 Por nacimiento de hijos, el padre gozará de tres (3) días hábiles de licencia, con obligación de presentar el certificado de nacimiento correspondiente.
                 </span>
               @break
-              @case('FALLECIMIENTO DE PADRES, CONYUGE, HERMANOS O HIJOS')
+              @case('FALLECIMIENTO DE PADRES, ABUELOS, CONYUGE, HERMANOS O HIJOS - NIETOS O PARENTESCO ADOPTIVO')
                 <span>
                   DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso a) Por fallecimiento de padres, cónyuge, hermanos o hijos gozará de tres (3) días hábiles de licencia, debiendo presentar el Certificado de Defunción expedido por el oficial de registro civil, hasta los 5 días de finalizada la licencia.
                 </span>
               @break
               @case('FALLECIMIENTO DE SUEGROS O CUÑADOS')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo III DE LAS LICENCIAS, Artículo 33 LICENCIA CON GOCE DE HABER, Inciso a) Por fallecimiento de parientes políticos, suegros y cuñados, el funcionario gozará de dos (2) días hábiles de licencia, debiendo presentar el Certificado de Defunción expedido por el oficial de registro civil, hasta los 5 días de finalizada la licencia.
+                  DEL REGIMEN DE ASISTENCIA, ASUETO, Artículo 21 Por fallecimiento de parientes políticos, suegros y cuñados, el funcionario gozará de dos (2) días hábiles de licencia, debiendo presentar el Certificado de Defunción expedido por el oficial de registro civil, hasta los 5 días de finalizada la licencia.
                 </span>
               @break
               @case('DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo I DE LA JORNADA DE TRABAJO, Artículo 24 TOLERANCIA POR DOCENCIA, ESTUDIOS UNIVERSITARIOS, MAESTRíAS, POSTGRADOS y OTROS CURSOS AUTORIZADOS POR LA INSTITUCiÓN. Las servidoras y/o servidores públicos que acrediten ante la Unidad de Recursos Humanos, mediante la presentación de los documentos pertinentes (certificados u otros), su calidad de docente universitario, normalista o estudiante de Universidad, Institutos Superiores u otros equivalentes; previa autorización respectiva del Jefe de Área y/o Inmediato superior, tendrán una toleranéia máxima de dos horas diarias. La tolerancia otorgada para docentes y estudiantes deberá ser compensada en el trabajo con una hora diaria. Para tiempos menores se aplicara la proporción equivalente. La solicitud se realizara con el respectivo formulario de Tolerancia para docentes, estudiantes, universitarios y de post grado. Este beneficio se suspenderá en los periodos de vacaciones de las Universidades y los centros de educación superior, por abandono o inasistencia reiterada a la institución de enseñanza y cuando se compruebe que el servidor público utiliza la tolerancia en actividades ajenas a la enseñanza o estudios. La Unidad de Recursos Humanos queda facultada para solicitar o verificar en cualquier momento la información acerca de los docentes o universitarios beneficiarios de la tolerancia para los fines que correspondan. Vencido el tiempo de tolerancia diaria, se computarán los minutos de atraso, abandono o falta de acuerdo a lo establecido en el presente Reglamento. Todo estudiante universitario, para solicitar y/o renovar su horario, necesariamente deberá presentar su certificación de materias aprobadas en e! periodo lectivo anterior, certificación de inscripción en el nuevo periodo académico y materias a llevar en el nuevo periodo semestral o anual, además de los horarios y duración del mismo. Asimismo el servidor público Universitario, está obligado a vencer, como mínimo, el 70% de las materias tomadas en el semestre y/o año. El incumplimiento a este requisito, será sancionado con la suspensión del beneficio.
+                  Art. 21 del Decreto Supremo Nº 25749 del 24 de abril de 2000 TOLERANCIA POR DOCENCIA, ESTUDIOS UNIVERSITARIOS, MAESTRÍAS, POSTGRADOS y OTROS CURSOS AUTORIZADOS POR LA INSTITUCIÓN. Las servidoras y/o servidores públicos que acrediten ante la Unidad de Recursos Humanos, mediante la presentación de los documentos pertinentes (certificados u otros), su calidad de docente universitario, normalista o estudiante de Universidad, Institutos Superiores u otros equivalentes; previa autorización respectiva del Jefe de Área y/o Inmediato superior, tendrán una toleranéia máxima de dos horas diarias. La tolerancia otorgada para docentes y estudiantes deberá ser compensada en el trabajo con una hora diaria. Para tiempos menores se aplicara la proporción equivalente. La solicitud se realizara con el respectivo formulario de Tolerancia para docentes, estudiantes, universitarios y de post grado. Este beneficio se suspenderá en los periodos de vacaciones de las Universidades y los centros de educación superior, por abandono o inasistencia reiterada a la institución de enseñanza y cuando se compruebe que el servidor público utiliza la tolerancia en actividades ajenas a la enseñanza o estudios. La Unidad de Recursos Humanos queda facultada para solicitar o verificar en cualquier momento la información acerca de los docentes o universitarios beneficiarios de la tolerancia para los fines que correspondan. Vencido el tiempo de tolerancia diaria, se computarán los minutos de atraso, abandono o falta de acuerdo a lo establecido en el presente Reglamento. Todo estudiante universitario, para solicitar y/o renovar su horario, necesariamente deberá presentar su certificación de materias aprobadas en el periodo lectivo anterior, certificación de inscripción en el nuevo periodo académico y materias a llevar en el nuevo periodo semestral o anual, además de los horarios y duración del mismo. Asimismo el servidor público Universitario, está obligado a vencer, como mínimo, el 70% de las materias tomadas en el semestre y/o año. El incumplimiento a este requisito, será sancionado con la suspensión del beneficio.
                 </span>
               @break
             @endswitch
@@ -163,10 +167,7 @@ $consultant = $departure->employee->consultant();
             @if ($from->toDateString() == $to->toDateString())
               el día
               <span class="font-bold">{{ $from->ISOFormat('LL') }}</span>
-              de horas
-              <span class="font-bold">{{ $from->format('H:i') }}</span>
-              a horas
-              <span class="font-bold">{{ $to->format('H:i') }}</span>
+            
             @else
               @if ($departure->departure_reason->name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS')
                 desde el día
@@ -179,19 +180,16 @@ $consultant = $departure->employee->consultant();
                 <span class="font-bold">{{ $to->format('H:i') }}</span>
               @else
                 desde el día
-                <span class="font-bold">{{ $from->ISOFormat('LL') }} {{ $from->format('H:i') }}</span>
+                <span class="font-bold">{{ $from->ISOFormat('LL') }} </span>
                 al día
-                <span class="font-bold">{{ $to->ISOFormat('LL') }} {{ $to->format('H:i') }}</span>
+                <span class="font-bold">{{ $to->ISOFormat('LL') }} </span>
               @endif
             @endif
             .
         </div>
       </div>
       <div class="py-15">
-        Sin otro particular, saludo a Ud. con las consideraciones más distinguidas.
-      </div>
-      <div class="py-15">
-        Atentamente,
+        Sin otro particular, saludo a usted atentamente.
       </div>
       <div class="text-center m-t-75">
         @php($employee = $departure->employee)

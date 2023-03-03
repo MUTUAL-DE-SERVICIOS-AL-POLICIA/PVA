@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-toolbar>
-      <v-toolbar-title>Planillas Eventuales</v-toolbar-title>
+      <v-toolbar-title>Planillas Personal de Planta</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-flex xs2>
         <v-select

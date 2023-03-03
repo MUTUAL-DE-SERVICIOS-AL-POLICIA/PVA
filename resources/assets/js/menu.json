@@ -12,19 +12,19 @@
     "permission": "read-employee",
     "params": {}
   }, {
-    "title": "Eventuales",
+    "title": "Personal de Planta",
     "icon": "person",
     "permission": "read-eventual",
     "group": [
       {
         "href": "contractIndex",
-        "title": "Contratos Eventuales",
+        "title": "Contratos Personal de Planta",
         "icon": "gavel",
         "permission": "read-eventual",
         "params": {}
       }, {
         "href": "procedureIndex",
-        "title": "Planillas Eventuales",
+        "title": "Planillas Personal de Planta",
         "icon": "storage",
         "permission": "read-procedure-eventual",
         "params": {}

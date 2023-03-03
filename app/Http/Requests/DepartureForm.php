@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Carbon;
 
 class DepartureForm extends FormRequest
 {
@@ -27,9 +28,10 @@ class DepartureForm extends FormRequest
       case 'POST':
         {
           return [
+            'now'=>Carbon::now(),
             'departure_reason_id' => 'required|exists:departure_reasons,id',
             'employee_id' => 'required|exists:employees,id',
-            'departure' => 'required|date',
+            'departure' => ['required','date',$this->departure_reason_id==1||$this->departure_reason_id==4?'after:now':''],
             'return' => 'required|date'
           ];
         }
@@ -51,7 +53,8 @@ class DepartureForm extends FormRequest
       'departure.required' => 'La fecha de solicitud no puede estar vacía',
       'departure.date' => 'Formato de fecha de solicitud inválido',
       'departure.required' => 'La fecha de retorno no puede estar vacía',
-      'departure.date' => 'Formato de fecha de retorno inválido'
+      'departure.date' => 'Formato de fecha de retorno inválido',
+      'departure.after' => 'La fecha y hora de salida debe ser antes de la fecha y hora actual: '.Carbon::now()
     ];
   }
 }
