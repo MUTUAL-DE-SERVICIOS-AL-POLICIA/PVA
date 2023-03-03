@@ -78,7 +78,7 @@
         En señal de conformidad y para su fiel y estricto cumplimiento, firman las partes el presente Contrato en cuatro ejemplares de un mismo tenor y validez.
         </p>
         <p>        
-            La Paz, {{ Carbon::parse($contract->start_date)->isoFormat('LL') }}
+            La Paz, {{ Carbon::parse($contract->start_date)->subDays(1)->isoFormat('LL') }}
         </p>
 
         <p class="firma center title-text">

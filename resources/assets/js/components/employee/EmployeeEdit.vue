@@ -56,20 +56,20 @@
                 <v-flex xs12 sm6 md6 lg6 pr-2>
                   <v-text-field
                     v-validate="'required|alpha_spaces'"
-                    :error-messages="errors.collect('Apellido Paterno')"
-                    data-vv-name="Apellido Paterno"
+                    :error-messages="errors.collect('Primer Apellido')"
+                    data-vv-name="Primer Apellido"
                     v-model="edit.last_name"
-                    label="Apellido Paterno"
+                    label="Primer Apellido"
                     autocomplete='last-name'
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md6 lg6 pl-2>
                   <v-text-field
-                    v-validate="'required|alpha_spaces'"
-                    :error-messages="errors.collect('Apellido Materno')"
-                    data-vv-name="Apellido Materno"
+                    v-validate="'alpha_spaces'"
+                    :error-messages="errors.collect('Segundo Apellido')"
+                    data-vv-name="Segundo Apellido"
                     v-model="edit.mothers_last_name"
-                    label="Apellido Materno"
+                    label="Segundo Apellido"
                     autocomplete='family-name'
                   ></v-text-field>
                 </v-flex>

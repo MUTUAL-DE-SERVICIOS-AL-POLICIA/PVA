@@ -579,12 +579,12 @@ export default {
     },
     'departure.departure'(val) {
       let inWeekend = !this.$moment(val).isBusinessDay()
-      if (val && !this.reasonSelected.days) {
+      /*if (val && !this.reasonSelected.days) {
         if (inWeekend) {
           this.toastr.error('No se puede solicitar licencia en día Sábado ni Domingo')
           this.departure.departure = null
         }
-      }
+      }*/
       if (val && this.reasonSelected.days) {
         if (this.reasonSelected.name != 'MATERNIDAD') {
           this.departure.return = this.$moment(val).startOf('day').businessAdd(this.reasonSelected.days - (inWeekend ? 0 : 1)).format('YYYY-MM-DD')
@@ -799,13 +799,6 @@ export default {
             let endDate = birthDate.clone().add(8, 'days')
             if (!dateNow.isBetween(startDate, endDate)) {
               message = 'No puede solicitar esta licencia aún'
-              this.error = {
-                text: message,
-                value: true
-              }
-              this.step = 1
-            } else if (birthDate.weekday() == 5 || birthDate.weekday() == 6) {
-              message = `No puede solicitar esta licencia en ${birthDate.format('dddd')}`
               this.error = {
                 text: message,
                 value: true
