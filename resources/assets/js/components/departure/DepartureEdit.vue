@@ -776,14 +776,14 @@ export default {
           if (this.reasonSelected.timeRemaining == 0 && this.reasonSelected.reset) {
             if (this.reasonSelected.reset == 'monthly') message = 'No le quedán permisos disponibles para este mes'
             if (this.reasonSelected.reset == 'annually') message = 'No le quedán licencias disponibles para el año en curso'
-            if (this.reasonSelected.name == 'CUMPLEAÑOS') {
+            /*if (this.reasonSelected.name == 'CUMPLEAÑOS') {
               let birthDate = remainingDepartures.birth_date
-              birthDate = this.birthDate.birth_date
+              //birthDate = this.birthDate.birth_date
               let dateNow = this.$moment(this.$store.getters.dateNow)
               let startDate = this.$moment(birthDate).year(dateNow.year()).subtract(8, 'days')
               let endDate = this.$moment(birthDate).year(dateNow.year()).add(8, 'days')
-              if (!dateNow.isBetween(startDate, endDate)) message = 'No le quedán licencias disponibles para el año en curso'
-            }
+              //if (!dateNow.isBetween(startDate, endDate)) message = 'No le quedán licencias disponibles para el año en curso'
+            }*/
             this.error = {
               text: message,
               value: true
@@ -793,20 +793,12 @@ export default {
           if (this.reasonSelected.name == 'CUMPLEAÑOS') {
             let dateNow = this.$moment(this.$store.getters.dateNow)
             let birthDate = this.$moment(remainingDepartures.birth_date).year(dateNow.year())
-            let startDate = birthDate.clone().subtract(8, 'days')
-            let endDate = birthDate.clone().add(8, 'days')
-            
-              this.departure.departure = birthDate.toISOString()
-              this.reasonSelected.date = {
-                start: {
-                  editable: false,
-                  visible: true
-                },
-                end: {
-                  editable: false,
-                  visible: false
-                }
-              }
+            /*let startDate = birthDate.clone().subtract(8, 'days')
+            let endDate = birthDate.clone().add(8, 'days')*/
+            this.reasonSelected.options = null
+            this.reasonSelected.records = null
+            this.departure.departure = birthDate.toISOString()
+            this.departure.timeToAdd = 4
           }
           this.loading = false
         }
