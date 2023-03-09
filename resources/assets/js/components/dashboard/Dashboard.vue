@@ -281,7 +281,7 @@ export default {
                 obj.data = this.employees.filter(o => {
                   return o.consultant == false
                 })
-                obj.title = 'Eventuales'
+                obj.title = 'Personal de Planta'
                 obj.icon = 'person'
                 obj.color = 'teal lighten-1'
                 obj.downloadable = true

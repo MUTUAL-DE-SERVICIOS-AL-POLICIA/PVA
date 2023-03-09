@@ -335,6 +335,8 @@ class Employee extends Model
             $q->whereDate('start_date', '<=', $return->toDateString())->whereDate('end_date', '>=', $return->toDateString())->whereNull('retirement_date');
           })->orWhere(function($q) use ($return) {
             $q->whereDate('start_date', '<=', $return->toDateString())->whereDate('retirement_date', '>=', $return->toDateString())->whereNotNull('retirement_date');
+          })->orWhere(function($q) use ($return) {
+            $q->whereDate('start_date', '<=', $return->toDateString())->whereNotNull('start_date');
           });
         })->orderBy('end_date', 'DESC')->orderBy('retirement_date', 'DESC')->limit(1)->first();
         $last_contract = $contracts->contains(function($item, $key) use ($contract) {
