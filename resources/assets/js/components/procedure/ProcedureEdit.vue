@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-toolbar>
-      <v-toolbar-title>EVENTUALES {{ procedure.month.name }}</v-toolbar-title>
+      <v-toolbar-title>PERSONAL DE PLANTA {{ procedure.month.name }}</v-toolbar-title>
       <v-tooltip color="white" role="button" bottom>
         <v-icon slot="activator" class="ml-4">info</v-icon>
         <div>

@@ -52,7 +52,7 @@ export default {
       this.url = `${this.type}_${this.url}`
       this.title = `${this.title} Consultores`
     } else {
-      this.title = `${this.title} Eventuales`
+      this.title = `${this.title} Personal de Planta`
     }
 
     this.bus.$on("openDialog", () => {
