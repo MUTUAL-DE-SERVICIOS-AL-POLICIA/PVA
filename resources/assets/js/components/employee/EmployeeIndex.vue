@@ -3,7 +3,7 @@
     <v-toolbar>
       <v-toolbar-title>
         <v-select
-          :items="['Todos los Empleados', 'Eventuales', 'Consultores', 'Sin contratos']"
+          :items="['Todos los Empleados', 'Personal de Planta', 'Consultores', 'Sin contratos']"
           v-model="employeeType"
           class="title font-weight-medium"
         ></v-select>
@@ -59,7 +59,7 @@
         <tr :class="rowColor(props.item)">
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
-          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'EVENTUAL') }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'PERSONAL DE PLANTA') }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center pl-2">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
@@ -208,7 +208,7 @@ export default {
     filteredEmployees() {
       if (this.employeeType == 'Todos los Empleados') {
         return this.employees
-      } else if (this.employeeType == 'Eventuales') {
+      } else if (this.employeeType == 'Personal de Planta') {
         return this.employees.filter(o => {
           return o.consultant == false
         })
