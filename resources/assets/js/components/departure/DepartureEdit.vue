@@ -719,8 +719,8 @@ export default {
               this.reasonSelected.options = null
               this.reasonSelected.records = this.reasonSelected.records.filter(o => o.value != 3)
             }
-            if (['TRABAJO', 'REUNIÓN', 'CURSO/TALLER', 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS', 'CONSULTA MÉDICA', 'ACTIVIDAD CULTURAL O DEPORTIVA'].includes(this.reasonSelected.name)) {
-              if (this.reasonSelected.name == 'ACTIVIDAD CULTURAL O DEPORTIVA') {
+            if (['TRABAJO', 'REUNIÓN', 'CURSO/TALLER', 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS', 'CONSULTA MÉDICA', 'ACTIVIDAD CULTURAL, DEPORTIVA Y OTRAS'].includes(this.reasonSelected.name)) {
+              if (this.reasonSelected.name == 'ACTIVIDAD CULTURAL, DEPORTIVA Y OTRAS') {
                 this.departure.description = 'Adjunto documento de respaldo correspondiente'
               }
               if (this.reasonSelected.name == 'CONSULTA MÉDICA') {
