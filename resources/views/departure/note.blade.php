@@ -191,7 +191,7 @@ $consultant = $departure->employee->consultant();
       <div class="py-15">
         Sin otro particular, saludo a usted atentamente.
       </div>
-      <div class="text-center m-t-75">
+      <div class="text-center m-t-25">
         @php($employee = $departure->employee)
         <div>
           <hr width="{{ strlen($employee->fullName())*10 }}">
