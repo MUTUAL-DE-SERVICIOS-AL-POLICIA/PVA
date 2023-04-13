@@ -74,11 +74,11 @@ $consultant = $departure->employee->consultant();
     @else
       @php ($type = 'PERMISO')
     @endif
-    <div class="text-right font-bold uppercase" style="margin-top: 1cm;">
+    <div class="text-right font-bold uppercase">
       REF.: SOLICITUD DE {{$type}} {{ $addon }} {{ $departure->departure_reason->name }}
     </div>
     </div>
-    <div class="text-left" style="margin-top: 1cm;">
+    <div class="text-left">
       <div class="py-15">
         De mi mayor consideración:
       </div>
