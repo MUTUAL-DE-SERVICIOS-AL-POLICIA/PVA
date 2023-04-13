@@ -47,7 +47,7 @@ $consultant = $departure->employee->consultant();
         {{ $departure->cite }}
       </div>
     </div>
-    <div class="text-left" style="margin-top: 1cm;">
+    <div class="text-left">
       <div>
         Señor:
       </div>
