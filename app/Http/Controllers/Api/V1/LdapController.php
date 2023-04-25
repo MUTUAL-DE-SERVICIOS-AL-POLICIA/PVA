@@ -76,8 +76,8 @@ class LdapController extends Controller
         }
       } else {
         $added[$key] = $new_entry;
-        $new_entry->active = false;
-        $new_entry->save();
+        //$new_entry->active = false;
+        //$new_entry->save();
       }
     }
 
