@@ -47,12 +47,12 @@ $consultant = $departure->employee->consultant();
         {{ $departure->cite }}
       </div>
     </div>
-    <div class="text-left" style="margin-top: 1cm;">
+    <div class="text-left">
       <div>
         Señor:
       </div>
       <div>
-        Cnl. DESP. EDGAR JOSE CORTEZ ALBORNOZ
+        CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS
         <!--Cnl. Desp. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->orderBy('created_at', 'ASC')->first()->contracts[0]->employee->fullName() }}-->
       </div>
       <div class="font-bold">
@@ -74,11 +74,11 @@ $consultant = $departure->employee->consultant();
     @else
       @php ($type = 'PERMISO')
     @endif
-    <div class="text-right font-bold uppercase" style="margin-top: 1cm;">
+    <div class="text-right font-bold uppercase">
       REF.: SOLICITUD DE {{$type}} {{ $addon }} {{ $departure->departure_reason->name }}
     </div>
     </div>
-    <div class="text-left" style="margin-top: 1cm;">
+    <div class="text-left">
       <div class="py-15">
         De mi mayor consideración:
       </div>
@@ -191,7 +191,7 @@ $consultant = $departure->employee->consultant();
       <div class="py-15">
         Sin otro particular, saludo a usted atentamente.
       </div>
-      <div class="text-center m-t-75">
+      <div class="text-center m-t-50">
         @php($employee = $departure->employee)
         <div>
           <hr width="{{ strlen($employee->fullName())*10 }}">

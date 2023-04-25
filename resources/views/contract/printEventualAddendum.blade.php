@@ -25,7 +25,7 @@
         <p>
             <ol>
                 <li>
-                    <span class="title-text">La MUTUAL DE SERVICIOS AL POLICÍA, (MUSERPOL), </span><span> con domicilio en la Avenida 6 de Agosto No. 2354, de la ciudad de La Paz, representada legalmente por el </span><span class="title-text">CNL. DESP. EDGAR JOSÉ CORTEZ ALBORNOZ</span><span> con </span><span class="title-text">C.I. No 3351371 L.P.</span><span> en su calidad de <span class="title-text">DIRECTOR GENERAL EJECUTIVO,</span><span> designado mediante Resolución Suprema No. 24840 de 18 de febrero de 2019.</span>
+                    <span class="title-text">La MUTUAL DE SERVICIOS AL POLICÍA, (MUSERPOL), </span><span> con domicilio en la Avenida 6 de Agosto No. 2354, de la ciudad de La Paz, representada legalmente por el </span><span class="title-text">CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS</span><span> con </span><span class="title-text">C.I. No 3475563</span><span> en su calidad de <span class="title-text">DIRECTOR GENERAL EJECUTIVO,</span><span> designado mediante Resolución Suprema Nº {{ $company->directors_designation_number }} de fecha {{ Carbon::parse($company->directors_designation_date)->ISOFormat('LL') }}.</span>
                 </li>
                 <li>
                     <span class="title-text">{{ Util::fullName($contract->employee) }}</span><span> con</span><span class="title-text"> C.I. N°  {{ Util::ciExt($contract->employee) }}.</span><span>, mayor de edad y hábil por derecho, con domicilio en la ciudad de La Paz, que en lo sucesivo se denominará  “CONTRATADO”, quienes celebran y suscriben el presente Contrato Modificatorio, de acuerdo a los términos y condiciones siguientes:</span>
