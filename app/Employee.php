@@ -69,50 +69,25 @@ class Employee extends Model
   {
     $contract = $this->last_contract();
     $consultant_contract = $this->last_consultant_contract();
-    $type = null;
-    if ($contract && $consultant_contract) {
-      if (Carbon::parse($contract->start_date)->greaterThan(Carbon::parse($consultant_contract->start_date))) {
-        $type = 'eventual';
-      } else {
-        $type = 'consultant';
-      }
-    } elseif (!$contract && $consultant_contract) {
-      $type = 'consultant';
-    } elseif ($contract && !$consultant_contract) {
-      $type = 'eventual';
+    $status = null;
+    if($contract && $consultant_contract)
+    {
+      if(Carbon::now()->between($consultant_contract->start_date, $consultant_contract->end_date) && $consultant_contract->retirement_date != null && $consultant_contract->active)
+        $contract = null;
+      elseif(Carbon::now() > $contract->start_date && $contract->retirement_date == null && $contract->active)
+        $consultant_contract = null;
     }
-    switch ($type) {
-      case 'eventual':
-        if ($contract->end_date != null) {
-          if ($contract->retirement_date) {
-            if (Carbon::parse($contract->retirement_date)->greaterThan(Carbon::now())) {
-              return false;
-            }
-          } else {
-            if (Carbon::parse($contract->end_date)->greaterThan(Carbon::now())) {
-              return false;
-            }
-          }
-        } else {
-          return false;
-        }
-        return null;
-        break;
-      case 'consultant':
-        if ($consultant_contract->end_date != null) {
-          if ($consultant_contract->retirement_date) {
-            if (Carbon::parse($consultant_contract->retirement_date)->greaterThan(Carbon::now())) return true;
-          } else {
-            if (Carbon::parse($consultant_contract->end_date)->greaterThan(Carbon::now())) return true;
-          }
-        } else {
-          return true;
-        }
-        return null;
-        break;
-      default:
-        return null;
+    if($consultant_contract)
+    {
+      if($consultant_contract->retirement_date == null && $consultant_contract->end_date != null && Carbon::now()->between($consultant_contract->start_date, $consultant_contract->end_date) && $consultant_contract->active)
+        $status = true;
     }
+    if($contract)
+    {
+      if($contract->retirement_date == null && Carbon::now()->greaterThan($contract->start_date) && $contract->active)
+        $status = false;
+    }
+    return $status;
   }
 
   public function consultant_payrolls()
