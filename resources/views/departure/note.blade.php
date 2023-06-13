@@ -74,9 +74,15 @@ $consultant = $departure->employee->consultant();
     @else
       @php ($type = 'PERMISO')
     @endif
+    @if($departure->departure_reason->name != 'REGULARIZACIÓN DE MARCADO')
     <div class="text-right font-bold uppercase">
       REF.: SOLICITUD DE {{$type}} {{ $addon }} {{ $departure->departure_reason->name }}
     </div>
+    @else
+    <div class="text-right font-bold uppercase">
+      REF.: {{ $departure->departure_reason->name }}
+    </div>
+    @endif
     </div>
     <div class="text-left">
       <div class="py-15">
@@ -84,12 +90,14 @@ $consultant = $departure->employee->consultant();
       </div>
       <div class="py-15">
         <div class ="text-justify">
+          @if ($departure->departure_reason->name != 'REGULARIZACIÓN DE MARCADO' )
           <span>
               Mediante la presente, tengo a bien dirigirme a su Autoridad a objeto de solicitar se me autorice la LICENCIA {{ $addon }} {{ $departure->departure_reason->name }}, amparado por
               @if ($departure->departure_reason->name != 'EXAMEN DE PRÓSTATA' && $departure->departure_reason->name != 'EXAMEN DE COLON'&& $departure->departure_reason->name != 'CON GOCE DE HABERES' && $departure->departure_reason->name != 'MAMOGRAFÍA/PAPANICOLAOU' && $departure->departure_reason->name !='DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS' && $departure->departure_reason->name != 'NACIMIENTO DE HIJOS')
                 el Reglamento Interno de Personal de la Mutual de Servicio al Policía,
               @endif
           </span>
+          @endif
             @switch ($departure->departure_reason->name)
               @case('CON GOCE DE HABERES')
                 <span>
@@ -110,7 +118,11 @@ $consultant = $departure->employee->consultant();
               @break
               @case('REGULARIZACIÓN DE MARCADO')
                 <span>
-                  DEL REGIMEN DE ASISTENCIA, Capítulo I DE LA JORNADA DE TRABAJO, Artículo 22 CONTROL DE ASISTENCIA, En el caso de error u omisión en el registro de la asistencia la o el servidor, este deberá ser justificado a través de Nota Interna dirigida a la Dirección General Ejecutiva, previamente aprobado por el jefe inmediato superior de área, la cual deberá ser presentada en el plazo máximo de 48 horas después del error u omisión (o primer día hábil). Pasado este tiempo no se considerará ningún tipo de reclamo.
+                  Yo {{$departure->employee->fullName() }}, en fecha {{ Carbon::parse($departure->departure)->ISOFormat('LL') }}, por descuido no realice la marcación correspondiente, siendo de conocimiento de mi inmediato Superior o Superior Jerarquico, quien avala la presente, teniendo conocimiento que esta omision es sancionada a través del reglamento Interno de Personal.
+                  <br>
+                  Por lo que, mediante la presente, tengo a bien dirigirme a su autoridad con la finalidad de solicitar autorice la <b>Regularizacion de Marcado</b>, apoyado en el Reglamento interno de personal de la Mutual de Servicios al Policía, Capitulo VI Regimen Disciplinario, Articulo 45°, <b>parágrafo III OMISION EN EL REGISTRO DE ASISTENCIA</b> y presentar dentro del plazo de 24 horas.
+                  <br>
+                  Agradeciendo a su autoridad, me despido de usted con las mas distinguida consideración, atentamente
                 </span>
               @break
               @case('MAMOGRAFÍA/PAPANICOLAOU')
@@ -160,6 +172,7 @@ $consultant = $departure->employee->consultant();
             {{ $departure->description }}
           </div>
         @endif
+        @if ($departure->departure_reason->name != 'REGULARIZACIÓN DE MARCADO' )
         <div>
             Para dicho efecto solicito la licencia
             @php ($from = Carbon::parse($departure->departure))
@@ -167,7 +180,7 @@ $consultant = $departure->employee->consultant();
             @if ($from->toDateString() == $to->toDateString())
               el día
               <span class="font-bold">{{ $from->ISOFormat('LL') }}</span>
-            
+
             @else
               @if ($departure->departure_reason->name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS')
                 desde el día
@@ -191,6 +204,8 @@ $consultant = $departure->employee->consultant();
       <div class="py-15">
         Sin otro particular, saludo a usted atentamente.
       </div>
+      @endif
+      <br>
       <div class="text-center m-t-50">
         @php($employee = $departure->employee)
         <div>
@@ -210,6 +225,24 @@ $consultant = $departure->employee->consultant();
           C.I.: {{ Util::ciExt($employee) }}
         </div>
       </div>
+      @if ($departure->departure_reason->name == 'REGULARIZACIÓN DE MARCADO' )
+      <br>
+      <div class="text-center m-t-50">
+        <hr width="300">
+        Vo.Bo. Inmediato superior
+        <br>
+        o Superior Jerarquico
+      </div>
+      <br>
+      <br>
+      <p style="font-size: xx-small">
+        <b>c.c. Archivo
+        <br>
+        PRESENTAR HASTA 24 HORAS DE LA OMISIÓN DEL MARCADO
+        <br>
+        EN LA GESTIÓN SE TIENE DOS OPORTUNIDADES DE REGULARIZACIÓN.</b>
+    </p>
+      @endif
     </div>
   </body>
 </html>
