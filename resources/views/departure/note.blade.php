@@ -74,15 +74,8 @@ $consultant = $departure->employee->consultant();
     @else
       @php ($type = 'PERMISO')
     @endif
-    @if($departure->departure_reason->name != 'REGULARIZACIÓN DE MARCADO')
     <div class="text-right font-bold uppercase">
       REF.: SOLICITUD DE {{$type}} {{ $addon }} {{ $departure->departure_reason->name }}
-    </div>
-    @else
-    <div class="text-right font-bold uppercase">
-      REF.: {{ $departure->departure_reason->name }}
-    </div>
-    @endif
     </div>
     <div class="text-left">
       <div class="py-15">
