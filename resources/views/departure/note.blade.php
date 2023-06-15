@@ -77,6 +77,7 @@ $consultant = $departure->employee->consultant();
     <div class="text-right font-bold uppercase">
       REF.: SOLICITUD DE {{$type}} {{ $addon }} {{ $departure->departure_reason->name }}
     </div>
+  </div>
     <div class="text-left">
       <div class="py-15">
         De mi mayor consideración:
