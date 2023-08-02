@@ -41,6 +41,7 @@
       <ContractForm :contract="{}" :bus="bus"/>
       <RemoveItem :bus="bus"/>
     </v-toolbar>
+    <CasForm :bus="bus"/>
     <div v-if="loading">
       <Loading/>
     </div>
@@ -95,6 +96,14 @@
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
+            <!--registro de cas-->
+            <v-tooltip top>
+              <v-btn :class="withoutBorders" slot="activator" flat icon @click="addItemCas(props.item.employee)" color="info">
+                <v-icon>insert_chart_outlined</v-icon>
+              </v-btn>
+              <span>Registrar CAS</span>
+            </v-tooltip>
+            <!--registro de cas-->
             <v-tooltip top v-if="$store.getters.permissions.includes('delete-eventual') && props.item.payrolls_count == 0">
               <v-btn :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
@@ -136,13 +145,15 @@ import Vue from "vue";
 import ContractForm from "./ContractForm";
 import RemoveItem from "../RemoveItem";
 import Loading from "../Loading";
+import CasForm from "./CasForm";
 
 export default {
   name: "ContractIndex",
   components: {
     ContractForm,
     RemoveItem,
-    Loading
+    Loading,
+    CasForm
   },
   data() {
     return {
@@ -233,6 +244,10 @@ export default {
     },
     editItem(item, mode) {
       this.bus.$emit("openDialog", $.extend({}, item, { mode: mode }));
+    },
+    addItemCas(employee) {
+      this.bus.$emit("openDialogCas",$.extend({}, employee));
+
     },
     async removeItem(item) {
       let payroll = await axios.get(

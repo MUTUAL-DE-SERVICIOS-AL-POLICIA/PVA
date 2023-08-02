@@ -355,4 +355,14 @@ class Employee extends Model
     }
     return $days;
   }
+
+  public function get_cas()
+  {
+    return $this->hasMany(CasCertification::class);
+  }
+
+  public function GetActiveCasAttribute()
+  {
+    return $this->get_cas->where('active', true)->first();
+  }
 }

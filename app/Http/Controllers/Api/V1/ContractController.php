@@ -22,7 +22,7 @@ class ContractController extends Controller
    */
   public function index()
   {
-    return Contract::with('job_schedules', 'employee', 'insurance_company', 'employee.city_identity_card', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')->withCount('payrolls')->orderBy('end_date', 'ASC')->get();
+    return Contract::with('job_schedules', 'employee', 'insurance_company', 'employee.city_identity_card', 'employee.get_cas', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')->withCount('payrolls')->orderBy('end_date', 'ASC')->get();
   }
 
   /**
@@ -186,7 +186,7 @@ class ContractController extends Controller
 
     return $pdf->stream($file_name);
   }
-  
+
   public function before_last_contract($employee_id, $contract_id)
   {
     return Contract::where('employee_id', $employee_id)->where('id', '<', $contract_id)->orderBy('id', 'desc')->first();
