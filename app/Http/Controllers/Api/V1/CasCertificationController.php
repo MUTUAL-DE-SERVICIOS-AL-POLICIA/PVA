@@ -57,7 +57,7 @@ class CasCertificationController extends Controller
 
     public function destroy($id)
     {
-      $cas = CasContract::findOrFail($id);
+      $cas = CasCertification::findOrFail($id);
       $cas->delete();
       return $cas;
     }
