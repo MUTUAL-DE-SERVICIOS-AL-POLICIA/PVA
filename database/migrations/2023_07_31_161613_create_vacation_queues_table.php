@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCasCertificationsTable extends Migration
+class CreateVacationQueuesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateCasCertificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('cas_certifications', function (Blueprint $table) {
+        Schema::create('vacation_queues', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('years');
-            $table->integer('months');
-            $table->integer('days');
-            $table->string('certification_number');
-            $table->date('issue_date');
-            $table->boolean('active');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->decimal('days', 5, 2);
+            $table->decimal('rest_days', 5, 2);
+            $table->date('max_date');
+            $table->date('from_date');
             $table->integer('employee_id')->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees');
             $table->timestamps();
@@ -34,6 +34,6 @@ class CreateCasCertificationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cas_certifications');
+        Schema::dropIfExists('vacation_queues');
     }
 }
