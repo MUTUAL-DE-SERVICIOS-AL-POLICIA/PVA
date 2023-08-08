@@ -134,6 +134,20 @@
         "icon": "dock",
         "permission": "admin",
         "params": {}
+      },
+      {
+        "href": "vacationsRange",
+        "title": "Vacaciones",
+        "icon": "flight_takeoff",
+        "permission": "read-procedure-eventual",
+        "params": {}
+      },
+      {
+        "href": "seniorityRange",
+        "title": "Antiguedad",
+        "icon": "account_circle",
+        "permission": "read-procedure-eventual",
+        "params": {}
       }
     ]
   }, {

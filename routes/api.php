@@ -19,6 +19,11 @@ Route::group([
   Route::get('employee/{id}/departure', 'Api\V1\EmployeeController@departure')->name('employees_departure');
   // Cas Certification
   Route::resource('cas_certification', 'Api\V1\CasCertificationController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  // Vacaciones
+  Route::resource('vacations', 'Api\V1\VacationController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  // Bono de Antiguedad
+  Route::resource('seniority_bonus', 'Api\V1\SeniorityBonusController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  Route::get('seniority_bonus_calculate', 'Api\V1\SeniorityBonusController@getBonusCalculate');
   // Position Group
   Route::get('position_group', 'Api\V1\PositionGroupController@index')->name('position_group_list');
   // Location
