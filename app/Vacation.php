@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vacation extends Model
 {
-    public $timestamps = true;
+  public $timestamps = true;
 	public $guarded = ['id'];
-	protected $fillable = ['from', 'to', 'days', 'sctive'];
+	protected $fillable = ['from', 'to', 'days', 'active'];
 }
