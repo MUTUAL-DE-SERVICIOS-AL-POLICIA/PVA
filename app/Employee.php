@@ -365,4 +365,10 @@ class Employee extends Model
   {
     return $this->get_cas->where('active', true)->first();
   }
+
+  public function vacation_queues()
+  {
+    return $this->hasMany(VacationQueue::class);
+  }
+
 }
