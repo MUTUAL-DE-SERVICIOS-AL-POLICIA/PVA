@@ -8,7 +8,7 @@ class VacationQueue extends Model
 {
     public $timestamps = true;
     public $guarded = ['id'];
-    protected $fillable = ['start_date', 'end_date', 'days', 'rest_days', 'max_date', 'from_date', 'employee_id'];
+    protected $fillable = ['start_date', 'end_date', 'days', 'rest_days', 'max_date', 'employee_id'];
 
     public function employee()
     {
