@@ -39,7 +39,7 @@ class VacationController extends Controller
  */
   public function show($id)
   {
-    Vacation::findOrFail($id);
+    return Vacation::findOrFail($id);
   }
 
   /**
@@ -52,7 +52,7 @@ class VacationController extends Controller
   {
     $vacation = Vacation::findOrFail($id);
     $vacation->fill($request->all());
-    $vacation->save();
+    return $vacation->save();
   }
 
   public function destroy($id)
