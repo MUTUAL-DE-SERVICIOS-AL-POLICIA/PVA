@@ -8,7 +8,7 @@ class DepartureReason extends Model
 {
   public $timestamps  = true;
   public $guarded     = ['id'];
-  protected $fillable = ['name', 'departure_group_id', 'name', 'note', 'day', 'hour', 'each', 'pay', 'count', 'description'];
+  protected $fillable = ['name', 'days', 'hours', 'reset', 'payable', 'description', 'departure_group_id', 'note', 'description_needed', 'count'];
 
   public function departure_group()
   {

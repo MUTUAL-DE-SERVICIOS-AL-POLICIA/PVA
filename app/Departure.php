@@ -12,7 +12,7 @@ class Departure extends Model
 
   public $timestamps  = true;
   public $guarded     = ['id'];
-  protected $fillable = ['departure_reason_id', 'description', 'approved', 'employee_id', 'departure', 'return', 'cite'];
+  protected $fillable = ['departure_reason_id', 'description', 'approved', 'employee_id', 'departure', 'return', 'cite', 'code'];
 
   public function employee()
   {
@@ -26,6 +26,6 @@ class Departure extends Model
 
   public function days_on_vacation()
   {
-    return $this->HasMany(DaysOnVacation::class)
+    return $this->HasMany(DaysOnVacation::class);
   }
 }

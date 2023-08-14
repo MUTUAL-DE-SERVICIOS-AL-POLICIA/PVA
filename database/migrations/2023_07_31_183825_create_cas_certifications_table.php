@@ -21,6 +21,7 @@ class CreateCasCertificationsTable extends Migration
             $table->string('certification_number');
             $table->date('issue_date');
             $table->boolean('active');
+            $table->boolean('for_vacation');
             $table->integer('employee_id')->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees');
             $table->timestamps();
