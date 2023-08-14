@@ -473,7 +473,10 @@ Route::group([
       Route::patch('contract/{id}', 'Api\V1\ContractController@update')->name('contract_update');
       Route::patch('consultant_contract/{id}', 'Api\V1\ConsultantContractController@update')->name('consultant_contract_update');
     });
-
+    
+    // Minimum Salary
+    Route::resource('minimum_salary', 'Api\V1\MinimumSalaryController')->only(['index', 'store', 'show', 'update', 'destroy']);
+  
     // ALMACENES routes
     Route::group([
       'middleware' => 'role:admin|almacenes',
