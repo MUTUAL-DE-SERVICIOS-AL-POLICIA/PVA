@@ -20,7 +20,6 @@ class CreateVacationQueuesTable extends Migration
             $table->decimal('days', 5, 2);
             $table->decimal('rest_days', 5, 2);
             $table->date('max_date');
-            $table->date('from_date');
             $table->integer('employee_id')->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees');
             $table->timestamps();
