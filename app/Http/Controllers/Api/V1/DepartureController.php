@@ -85,7 +85,7 @@ class DepartureController extends Controller
    */
   public function store(DepartureForm $request)
   {
-    $lastCode = Departure::orderByDesc('id')->value('code');
+    $lastCode = Departure::latest()->first()->code;
     $newCode = $lastCode + 1;
     $departure = Departure::create(array_merge($request->all(), [
         'code' => $newCode,
