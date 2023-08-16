@@ -6,11 +6,14 @@ use App\Contract;
 use App\Departure;
 use App\PositionGroup;
 use App\Employee;
+use App\VacationQueue;
 use App\DepartureReason;
 use App\EmployeeDeparture;
+use App\DaysOnVacation;
 use App\Http\Requests\DepartureForm;
 use App\Http\Controllers\Controller;
 use Carbon;
+use DB;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 
@@ -271,6 +274,55 @@ class DepartureController extends Controller
           'type' => ['El CITE ya existe'],
         ]
       ], 409);
+    }
+  }
+
+  public function vacation_departure(DepartureForm $request)
+  {
+    DB::beginTransaction();
+    try{
+      $vacation_queue = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', $request->departure)->where('rest_days','>','0')->get();
+      if($vacation_queue->sum('rest_days') > 0 && count($request->days) <= $vacation_queue->sum('rest_days'))
+      {
+        $lastCode = Departure::latest()->first()->code;
+        $newCode = $lastCode + 1;
+        $departure = Departure::create(array_merge($request->all(), [
+          'code' => $newCode,
+        ]));
+        $c = 1;
+        foreach($request->days as $day)
+        {
+          $journal = 1;
+          if($c==1 || $c==count($request->days))
+          {
+            if($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
+              $journal = 0.5;
+          }
+          $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=',Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
+          $remanent->rest_days = $remanent->rest_days - $journal;
+          $remanent->save();
+          $save_day = new DaysOnVacation([
+            'date' => $day['date'],
+            'day' => $journal,
+          ]);
+          $departure->days_on_vacation()->save($save_day);
+          $c++;
+        }
+        DB::commit();
+        return response()->json([
+          'message' => 'Registro exitoso',
+        ], 200);
+      }
+      else{
+        return response()->json([
+          'message' => 'Dias de Vacación no disponibles',
+        ], 200);
+      }
+    }catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+        'message' => 'Cite Duplicado',
+      ], 500);
     }
   }
 }

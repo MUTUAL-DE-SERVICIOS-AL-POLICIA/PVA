@@ -46,6 +46,10 @@ Route::group([
   Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
   // Employee
   Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
+  //Cola de vacaciones
+  Route::get('queue_vacation', 'Api\V1\VacationQueueController@queue_vacation');
+  //Registro del permiso de vacacion
+  Route::post('vacation_departure', 'Api\V1\DepartureController@vacation_departure');
   // Position Group
   Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
   // Position current employee
@@ -473,10 +477,10 @@ Route::group([
       Route::patch('contract/{id}', 'Api\V1\ContractController@update')->name('contract_update');
       Route::patch('consultant_contract/{id}', 'Api\V1\ConsultantContractController@update')->name('consultant_contract_update');
     });
-    
+
     // Minimum Salary
     Route::resource('minimum_salary', 'Api\V1\MinimumSalaryController')->only(['index', 'store', 'show', 'update', 'destroy']);
-  
+
     // ALMACENES routes
     Route::group([
       'middleware' => 'role:admin|almacenes',
