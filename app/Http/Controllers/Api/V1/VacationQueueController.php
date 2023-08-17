@@ -72,8 +72,11 @@ class VacationQueueController extends Controller
     }
 
 
-    public function count_days($employee_id, $date)
+    public function count_days(Request $request)
     {
+        $employee_id = $request->input('employee_id');
+        $date = $request->input('date');
+    
         $count = 0;
         $count = Employee::findOrFail($employee_id)
             ->vacation_queues()
