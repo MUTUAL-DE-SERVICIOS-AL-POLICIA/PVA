@@ -51,6 +51,8 @@ Route::group([
   Route::get('count_days/{employee_id}/{date}', 'Api\V1\VacationQueueController@count_days');
   //Registro del permiso de vacacion
   Route::post('vacation_departure', 'Api\V1\DepartureController@vacation_departure');
+  //Anulacion del permiso de vacacion
+  Route::post('cancel_vacation_departure/{departure_id}', 'Api\V1\DepartureController@cancel_vacation_departure');
   // Position Group
   Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
   // Position current employee
