@@ -39,7 +39,7 @@ class CasCertificationController extends Controller
    */
     public function show($id)
     {
-      CasCertification::findOrFail($id);
+      return CasCertification::findOrFail($id);
     }
 
     /**
@@ -48,11 +48,12 @@ class CasCertificationController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-    public function update($id)
+    public function update(Request $request, $id)
     {
       $cas = CasCertification::findOrFail($id);
       $cas->fill($request->all());
       $cas->save();
+      return $cas;
     }
 
     public function destroy($id)
