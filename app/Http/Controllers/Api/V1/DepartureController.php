@@ -132,7 +132,7 @@ class DepartureController extends Controller
   public function destroy($id)
   {
     $departure = Departure::findOrFail($id);
-    if ($departure->approved === null) $departure->delete();
+    if ($departure->approved === null && $departure->departure_reason->name != 'VACACIONES') $departure->delete();
     return $departure;
   }
 
@@ -322,6 +322,43 @@ class DepartureController extends Controller
       DB::rollback();
       return response()->json([
         'message' => 'Cite Duplicado',
+      ], 500);
+    }
+  }
+
+  public function cancel_vacation_departure($id)
+  {
+    DB::beginTransaction();
+    try{
+      $departure = Departure::find($id);
+      if($departure && $departure->departure_reason->name == 'VACACIONES')
+      {
+        $departure->days_on_vacation;
+        foreach($departure->days_on_vacation as $day)
+        {
+          $vacation_queue = VacationQueue::where('employee_id', $departure->employee_id)->where('max_date', '>=', $day->date)->orderBy('max_date', 'asc')->first();
+          $vacation_queue->rest_days = $vacation_queue->rest_days + $day->day;
+          $vacation_queue->update();
+        }
+        if ($departure->approved === null)
+        {
+          $departure->days_on_vacation()->delete();
+          $departure->delete();
+        }
+        DB::commit();
+        return response()->json([
+          'message' => 'Permiso de Vacacion eliminado',
+        ], 200);
+      }else{
+        DB::commit();
+        return response()->json([
+          'message' => 'Registro inexistente',
+        ], 200);
+      }
+    }catch(\Exception $e){
+      DB::rollback();
+      return response()->json([
+        'message' => "Algo sucedio",
       ], 500);
     }
   }
