@@ -6,6 +6,7 @@ use App\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\VacationQueue;
+use Carbon\Carbon;
 
 class VacationQueueController extends Controller
 {
@@ -70,4 +71,15 @@ class VacationQueueController extends Controller
         return $vacation_queue;
     }
 
+
+    public function count_days($employee_id, $date)
+    {
+        $count = 0;
+        $count = Employee::findOrFail($employee_id)
+            ->vacation_queues()
+            ->where('max_date', '>=', $date)
+            ->sum('rest_days');
+
+        return response()->json(['count' => max($count, 0)]);
+    }
 }
