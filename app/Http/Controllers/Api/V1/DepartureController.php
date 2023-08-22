@@ -280,25 +280,22 @@ class DepartureController extends Controller
   public function vacation_departure(DepartureForm $request)
   {
     DB::beginTransaction();
-    try{
-      $vacation_queue = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', $request->departure)->where('rest_days','>','0')->get();
-      if($vacation_queue->sum('rest_days') > 0 && count($request->days) <= $vacation_queue->sum('rest_days'))
-      {
+    try {
+      $vacation_queue = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', $request->departure)->where('rest_days', '>', '0')->get();
+      if ($vacation_queue->sum('rest_days') > 0 && count($request->days) <= $vacation_queue->sum('rest_days')) {
         $lastCode = Departure::latest()->first()->code;
         $newCode = $lastCode + 1;
         $departure = Departure::create(array_merge($request->all(), [
           'code' => $newCode,
         ]));
         $c = 1;
-        foreach($request->days as $day)
-        {
+        foreach ($request->days as $day) {
           $journal = 1;
-          if($c==1 || $c==count($request->days))
-          {
-            if($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
+          if ($c == 1 || $c == count($request->days)) {
+            if ($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
               $journal = 0.5;
           }
-          $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=',Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
+          $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
           $remanent->rest_days = $remanent->rest_days - $journal;
           $remanent->save();
           $save_day = new DaysOnVacation([
@@ -312,13 +309,12 @@ class DepartureController extends Controller
         return response()->json([
           'message' => 'Registro exitoso',
         ], 200);
-      }
-      else{
+      } else {
         return response()->json([
           'message' => 'Dias de Vacación no disponibles',
         ], 200);
       }
-    }catch (\Exception $e) {
+    } catch (\Exception $e) {
       DB::rollback();
       return response()->json([
         'message' => 'Cite Duplicado',
@@ -361,5 +357,39 @@ class DepartureController extends Controller
         'message' => "Algo sucedio",
       ], 500);
     }
+  }
+
+  /**
+   * PDF the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return pdf
+   */
+  public function print_note_vacation($id)
+  {
+    $data = array(
+      'departure' => Departure::with(['departure_reason' => function ($query) {
+        return $query->with('departure_group');
+      }])->findOrFail($id)
+    );
+
+    $file_name = implode('_', ['solicitud', 'permiso', 'vacaciones', $data['departure']->employee->first_name, $data['departure']->employee->last_name]) . '.pdf';
+
+    $options = [
+      'orientation' => 'portrait',
+      'page-width' => '216',
+      'page-height' => '279',
+      'margin-top' => '8',
+      'margin-bottom' => '16',
+      'margin-left' => '20',
+      'margin-right' => '20',
+      'encoding' => 'UTF-8',
+      'user-style-sheet' => public_path('css/report-print.min.css')
+    ];
+
+    $pdf = \PDF::loadView('vacation.note', $data);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
   }
 }

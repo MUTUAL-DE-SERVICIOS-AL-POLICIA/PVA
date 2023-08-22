@@ -21,6 +21,11 @@ class Employee extends Model
     return Util::fullName($this, $style, $order);
   }
 
+  public function getFullNameAttribute()
+  {
+    return rtrim(preg_replace('/[[:blank:]]+/', ' ', join(' ', [$this->last_name, $this->mothers_last_name, $this->surname_husband, $this->first_name, $this->second_name])));
+  }
+
   public function city_identity_card()
   {
     return $this->belongsTo(City::class, 'city_identity_card_id', 'id');

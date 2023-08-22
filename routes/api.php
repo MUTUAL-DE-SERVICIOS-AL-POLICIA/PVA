@@ -53,6 +53,8 @@ Route::group([
   Route::post('vacation_departure', 'Api\V1\DepartureController@vacation_departure');
   //Anulacion del permiso de vacacion
   Route::post('cancel_vacation_departure/{departure_id}', 'Api\V1\DepartureController@cancel_vacation_departure');
+  // Reportes de vacaciones
+  Route::get('departure_vacation/print/{departure_id}', 'Api\V1\DepartureController@print_note_vacation');
   // Position Group
   Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
   // Position current employee
