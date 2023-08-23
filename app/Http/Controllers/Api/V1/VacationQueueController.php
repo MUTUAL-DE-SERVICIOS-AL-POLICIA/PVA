@@ -6,7 +6,11 @@ use App\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\VacationQueue;
+use App\Vacation;
+use App\Contract;
+use App\DaysOnVacation;
 use Carbon\Carbon;
+use DB;
 
 class VacationQueueController extends Controller
 {
@@ -74,15 +78,65 @@ class VacationQueueController extends Controller
 
     public function count_days(Request $request)
     {
-        $employee_id = $request->input('employee_id');
-        $date = $request->input('date');
-    
-        $count = 0;
-        $count = Employee::findOrFail($employee_id)
+      $request->validate([
+        'employee_id' => 'required|exists:employees,id',
+        'date' => 'required|date'
+      ]);
+      $count =
+      $employee_id = $request->input('employee_id');
+      $date = $request->input('date');
+      $count = Employee::findOrFail($employee_id)
             ->vacation_queues()
-            ->where('max_date', '>=', $date)
+            ->where('max_date', '>=', Carbon::parse($date)->format('Y-m-d'))
             ->sum('rest_days');
+      $days = DaysOnVacation::get();
 
-        return response()->json(['count' => max($count, 0)]);
+      return response()->json([
+        'count' => max($count, 0),
+        'days' => $days,
+      ]);
+    }
+
+    public function queue_vacation()
+    {
+      DB::beginTransaction();
+      try
+      {
+        $employees_contracts = Contract::where('active', true)->get();
+        foreach($employees_contracts as $employee_contract)
+        {
+          if(VacationQueue::where('employee_id', $employee_contract->employee_id)->whereYear('end_date', Carbon::now()->year)->count() == 0)
+          {
+            if(Carbon::parse($employee_contract->start_date)->addDay()->format('m-d')  == Carbon::now()->format('m-d'))
+            {
+              $cas = $employee_contract->employee->get_cas->where('active', true)->where('for_vacation', true)->first();
+              if($cas)
+              {
+                if($cas->days == 0 && $cas->months == 0 && $cas->years > 0)
+                  $days = Vacation::where('from','<', $cas->years)->where('active', true)->orderby('id', 'desc')->first()->days;
+                elseif($cas->days > 0 && $cas->years > 0 || $cas->months > 0 && $cas->years > 0)
+                  $days = Vacation::where('from','<=', $cas->years)->where('active', true)->orderBy('id', 'desc')->first()->days;
+                elseif($cas->years == 0)
+                  $days = Vacation::where('active', true)->orderBy('id', 'desc')->first()->days;
+              }
+              else{
+                $days = Vacation::where('active', true)->orderBy('id', 'asc')->first()->days;
+              }
+              $queue_vacation = Vacationqueue::create([
+                'start_date' => Carbon::now()->subYear()->subDay(),
+                'end_date' => Carbon::now()->subDay(),
+                'days' => $days,
+                'rest_days' => $days,
+                'max_date' => Carbon::now()->addYear(2)->format('Y-m-d'),
+                'employee_id' => $employee_contract->employee_id,
+              ]);
+            }
+          }
+        }
+        DB::commit();
+      }catch (\Exception $e) {
+        DB::rollback();
+        return $e;
+      }
     }
 }

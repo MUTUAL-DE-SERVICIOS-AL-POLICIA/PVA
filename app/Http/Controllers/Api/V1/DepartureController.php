@@ -277,7 +277,7 @@ class DepartureController extends Controller
     }
   }
 
-  public function vacation_departure(DepartureForm $request)
+  public function vacation_departure(request $request)
   {
     DB::beginTransaction();
     try {
@@ -285,6 +285,7 @@ class DepartureController extends Controller
       if ($vacation_queue->sum('rest_days') > 0 && count($request->days) <= $vacation_queue->sum('rest_days')) {
         $lastCode = Departure::latest()->first()->code;
         $newCode = $lastCode + 1;
+        $sw = true;
         $departure = Departure::create(array_merge($request->all(), [
           'code' => $newCode,
         ]));
@@ -294,6 +295,13 @@ class DepartureController extends Controller
           if ($c == 1 || $c == count($request->days)) {
             if ($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
               $journal = 0.5;
+          }
+          else{
+            if($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
+              {
+                $sw = false;
+                break;
+              }
           }
           $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
           $remanent->rest_days = $remanent->rest_days - $journal;
@@ -305,19 +313,29 @@ class DepartureController extends Controller
           $departure->days_on_vacation()->save($save_day);
           $c++;
         }
-        DB::commit();
+        if($sw)
+        {
+          DB::commit();
         return response()->json([
           'message' => 'Registro exitoso',
+          'departure' => $departure,
         ], 200);
+        }
+        else{
+          DB::rollback();
+          return response()->json([
+            'message' => 'los Dias intermedios no pueden ser medias jornadas',
+          ], 405);
+        }
       } else {
         return response()->json([
           'message' => 'Dias de Vacación no disponibles',
-        ], 200);
+        ], 405);
       }
     } catch (\Exception $e) {
       DB::rollback();
       return response()->json([
-        'message' => 'Cite Duplicado',
+        'message' => 'Algo salio mal',
       ], 500);
     }
   }
@@ -349,12 +367,12 @@ class DepartureController extends Controller
         DB::commit();
         return response()->json([
           'message' => 'Registro inexistente',
-        ], 200);
+        ], 409);
       }
     }catch(\Exception $e){
       DB::rollback();
       return response()->json([
-        'message' => "Algo sucedio",
+        'message' => "Cite Duplicado",
       ], 500);
     }
   }
