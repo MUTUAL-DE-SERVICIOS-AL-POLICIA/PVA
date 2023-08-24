@@ -1,90 +1,85 @@
-<?php
-use \App\Helpers\Util;
-?>
-
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Hola 2023</title>
-    </head>
 
-    <body>
-        <div>
-            <div class="header-left">
-                <img id="header-image" src="{{ public_path().'/img/logo.png' }}">
-            </div>
-            <div class="header-center">
-                <h2>
-                    Reporte Saldos General
-                </h2>
-            </div>
-            <div class="header-right">
-                Aca estará el cuadro derecho
-            </div>
-        </div>
-        <table align="center">
-            <thead>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ public_path('/css/report-print.min.css') }}" media="all" />
+    <title>Reporte de Vacaciones</title>
+    <style>
+        body {
+            border: 0;
+            line-height: 2;
+        }
+    </style>
+</head>
+
+<body>
+    <table class="w-100">
+        <thead>
+            <tr>
+                <th class="w-33 text-left no-padding no-margins">
+                    <div class="text-left">
+                        <img src="{{ public_path('/img/logo.png') }}" class="w-40">
+                    </div>
+                </th>
+                <th class="w-33 text-center no-padding no-margins">
+                    <h3>REPORTE DE VACACIONES</h3>
+                </th>
+                <th class="w-33 text-right no-padding no-margins">
+                    <div class="text-right">
+                        <img src="{{ public_path('/img/escudo_bolivia.gif') }}" class="w-20">
+                    </div>
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <table class="table-info w-100 m-b-10 uppercase text-center">
+        <thead>
+            <tr class="bg-grey-darker text-xs text-white">
+                <th rowspan="2" width="3%">N°</th>
+                <th rowspan="2" width="15%">Apellidos y Nombres</th>
+                <th rowspan="2" width="10%">N° Carnet de Identidad</th>
+                <th rowspan="2" width="10%">Fecha de Ingreso</th>
+                <th rowspan="2" width="10%">N° de CAS</th>
+                <th rowspan="2" width="10%">Fecha de emisión de CAS</th>
+                <th width="15%" colspan="3">Años de Calificados</th>
+                <th rowspan="2" width="10%">N° de días asignados según CAS</th>
+                <th rowspan="2" width="10%">N° de días de vacaciones usadas</th>
+                <th rowspan="2" width="7%">Saldo</th>
+            </tr>
+            <tr class="bg-grey-darker text-xs text-white">
+                <th>Años</th>
+                <th>Meses</th>
+                <th>Días</th>
+            </tr>
+        </thead>
+        <tbody class="text-xxs">
+            @foreach ($employees as $employee)
                 <tr>
-                    <th rowspan="2" width="15%">Nombre y Apellidos</th>
-                    <th rowspan="2" width="10%">N° Carnet de Identidad</th>
-                    <th rowspan="2" width="10%">Fecha de Ingreso</th>
-                    <th rowspan="2" width="10%">N° de CAS</th>
-                    <th rowspan="2" width="10%">Fecha de emisión de CAS</th>
-                    <th width="15%" colspan="3">Años de Calificados</th>
-                    <th rowspan="2" width="10%">N° de días asignados según CAS</th>
-                    <th rowspan="2" width="10%">N° de días de vacación usadas</th>
-                    <th rowspan="2" width="10%">Saldo</th>
+                    <td class="data-row py-2">{{ $num = $num + 1 }}</td>
+                    <td class="data-row py-2">{{ $employee->fullName }}</td>
+                    <td class="data-row py-2">{{ $employee->identity_card }}</td>
+                    <td class="data-row py-2">{{ $employee->last_contract()->start_date }}</td>
+
+                    @if ($employee->activeCas)
+                        <td class="data-row py-2">{{ $employee->activeCas->certification_number }}</td>
+                        <td class="data-row py-2">{{ $employee->activeCas->issue_date }}</td>
+                        <td class="data-row py-2">{{ $employee->activeCas->years }}</td>
+                        <td class="data-row py-2">{{ $employee->activeCas->months }}</td>
+                        <td class="data-row py-2">{{ $employee->activeCas->days }}</td>
+                        <td class="data-row py-2">{{ intval($employee->vacation_queues()->latest()->first()->days) }}
+                        </td>
+                    @else
+                        <td colspan="6">Sin registro.</td>
+                    @endif
+                    <td class="data-row py-2">A</td>
+                    <td class="data-row py-2">B</td>
                 </tr>
-                <tr>
-                    <th>Años</th>
-                    <th>Meses</th>
-                    <th>Días</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="name">Amilkar Barda Ponce</td>
-                    <td>1254896</td>
-                    <td>02/01/2023</td>
-                    <td>ER-55556</td>
-                    <td>20/08/2020</td>
-                    <td>10</td>
-                    <td>04</td>
-                    <td>23</td>
-                    <td>30</td>
-                    <td>24</td>
-                    <td>6</td>
-                </tr>
-                <tr>
-                    <td class="name">Leonel Vargas Ramírez</td>
-                    <td>1254896</td>
-                    <td>02/01/2023</td>
-                    <td>ER-55556</td>
-                    <td>20/08/2020</td>
-                    <td>10</td>
-                    <td>04</td>
-                    <td>23</td>
-                    <td>30</td>
-                    <td>24</td>
-                    <td>6</td>
-                </tr>
-                <tr>
-                    <td class="name">Ximena Hurtado Carrasco</td>
-                    <td>1254896</td>
-                    <td>02/01/2023</td>
-                    <td>ER-55556</td>
-                    <td>20/08/2020</td>
-                    <td>10</td>
-                    <td>04</td>
-                    <td>23</td>
-                    <td>30</td>
-                    <td>24</td>
-                    <td>6</td>
-                </tr>
-            </tbody>
-        </table>
-    </body>
+            @endforeach
+        </tbody>
+    </table>
+</body>
+
 </html>

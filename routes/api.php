@@ -55,6 +55,8 @@ Route::group([
   Route::post('cancel_vacation_departure/{departure_id}', 'Api\V1\DepartureController@cancel_vacation_departure');
   // Reportes de vacaciones
   Route::get('departure_vacation/print/{departure_id}', 'Api\V1\DepartureController@print_note_vacation');
+  Route::get('print_report_vacation', 'Api\V1\DepartureController@print_report_vacation');
+  Route::get('print_vacation_individual/{employee_id}', 'Api\V1\DepartureController@print_vacation_individual');
   // Position Group
   Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
   // Position current employee
