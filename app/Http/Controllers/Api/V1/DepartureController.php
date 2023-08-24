@@ -410,4 +410,78 @@ class DepartureController extends Controller
 
     return $pdf->stream($file_name);
   }
+
+  public function print_report_vacation(Request $request)
+  {
+    $num = 0;
+    $position_group_id = $request->input('position_group_id');
+    $fechaFormateada = Carbon::now()->format('d-m-Y');
+
+    $employees = Employee::whereIn('id', function ($query) {
+      $query->select('employee_id')
+        ->from('contracts')
+        ->whereIn('contract_type_id', [1, 5])
+        ->where('active', true)
+        ->whereNull('deleted_at')
+        ->latest('start_date');
+    })
+      ->with('contracts.position.position_group')
+      ->when($position_group_id !== null, function ($query) use ($position_group_id) {
+        $query->whereHas('contracts.position', function ($subQuery) use ($position_group_id) {
+          $subQuery->where('position_group_id', '=', $position_group_id);
+        });
+      })
+      ->orderBy('last_name')
+      ->get();
+
+    $data = [
+      'num' => $num,
+      'employees' => $employees
+    ];
+    $file_name = implode('_', ['reporte', 'general', 'vacaciones', $fechaFormateada]) . '.pdf';
+
+    $options = [
+      'orientation' => 'landscape',
+      'page-width' => '216',
+      'page-height' => '279',
+      'margin-top' => '10',
+      'margin-bottom' => '10',
+      'margin-left' => '10',
+      'margin-right' => '10',
+      'encoding' => 'UTF-8',
+    ];
+
+    $pdf = \PDF::loadView('vacation.report_general', $data);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
+  }
+
+  public function print_vacation_individual($employee_id)
+  {
+    $contract_id = Employee::find($employee_id)->last_contract()->id;
+
+    $data = array(
+      'contract' => Contract::with(['position' => function ($query) {
+        return $query->with('position_group');
+      }])->findOrFail($contract_id)
+    );
+
+    $file_name = implode('_', ['reporte', 'vacaciones', $data['contract']->first_name, $data['contract']->last_name]) . '.pdf';
+    $options = [
+      'orientation' => 'portrait',
+      'page-width' => '216',
+      'page-height' => '279',
+      'margin-top' => '8',
+      'margin-bottom' => '16',
+      'margin-left' => '20',
+      'margin-right' => '20',
+      'encoding' => 'UTF-8',
+    ];
+
+    $pdf = \PDF::loadView('vacation.report_individual', $data);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
+  }
 }
