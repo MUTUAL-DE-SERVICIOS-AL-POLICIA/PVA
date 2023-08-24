@@ -11,6 +11,6 @@ class DaysOnVacation extends Model
 
     public function departure()
     {
-        return $this->BelongsTo(Departure::class);
+        return $this->belongsTo(Departure::class);
     }
 }
