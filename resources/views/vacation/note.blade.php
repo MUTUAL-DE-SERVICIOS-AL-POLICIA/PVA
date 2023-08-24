@@ -2,7 +2,6 @@
 use Carbon\Carbon;
 
 $contract = $departure->employee->contract_in_date($departure->departure);
-$consultant = $departure->employee->consultant();
 ?>
 
 <!DOCTYPE html>
@@ -88,7 +87,7 @@ $consultant = $departure->employee->consultant();
     <div class="text-center">VACACIÓN</div>
     <table class="table-info w-50 m-b-5 text-center uppercase" style="float: left; margin-left: 1px;">
         <tr class="bg-grey-darker text-xs text-white">
-            <td>NOMBREs y apellidos</td>
+            <td>Nombres y Apellidos</td>
         </tr>
         <tr>
             @php($name = $departure->employee->fullName())
@@ -97,8 +96,8 @@ $consultant = $departure->employee->consultant();
     </table>
     <table class="table-info w-49 m-b-5 text-center uppercase" style="float: right; margin-left: 1px;">
         <tr class="bg-grey-darker text-xs text-white">
-            <td class="w-50">DESDE</td>
-            <td class="w-50">HASTA</td>
+            <td class="w-50">Desde</td>
+            <td class="w-50">Hasta</td>
         </tr>
         <tr class="text-sm">
             <td class="w-50 py-5">
@@ -115,36 +114,25 @@ $consultant = $departure->employee->consultant();
     </table>
     <table class="table-info w-100 m-b-10 uppercase text-center">
         <tr class="bg-grey-darker text-xs text-white">
-            <td>CARGO</td>
+            <td>Cargo</td>
         </tr>
         <tr>
-            @if ($consultant)
-                <td class="{{ Util::string_class_length($contract->consultant_position->name, false) }} data-row py-5">
-                    {{ $contract->consultant_position->name }}</td>
-            @else
-                <td class="{{ Util::string_class_length($contract->position->name, false) }} data-row py-5">
-                    {{ $contract->position->name }}</td>
-            @endif
+            <td class="{{ Util::string_class_length($contract->position->name, false) }} data-row py-5">
+                {{ $contract->position->name }}</td>
         </tr>
         <tr class="bg-grey-darker text-xs text-white">
-            <td>ÁREA</td>
+            <td>Área</td>
         </tr>
         <tr>
-            @if ($consultant)
-                <td
-                    class="{{ Util::string_class_length($contract->consultant_position->position_group->name, false) }} data-row py-5">
-                    {{ $contract->consultant_position->position_group->name }}</td>
-            @else
-                <td
-                    class="{{ Util::string_class_length($contract->position->position_group->name, false) }} data-row py-5">
-                    {{ $contract->position->position_group->name }}</td>
-            @endif
+            <td
+                class="{{ Util::string_class_length($contract->position->position_group->name, false) }} data-row py-5">
+                {{ $contract->position->position_group->name }}</td>
         </tr>
     </table>
     <table class="table-info w-100 m-b-10 uppercase">
         <thead>
             <tr class="bg-grey-darker text-xs text-white text-center">
-                <td>DETALLE</td>
+                <td>Detalle</td>
             </tr>
         </thead>
         <tbody>
@@ -167,7 +155,8 @@ $consultant = $departure->employee->consultant();
             </tr>
             <tr>
                 <td colspan="2" class="w-100 text-center">
-                    <br><br><hr width="300">Solicitante
+                    <br><br>
+                    <hr width="300">Solicitante
                 </td>
             </tr>
         </thead>
