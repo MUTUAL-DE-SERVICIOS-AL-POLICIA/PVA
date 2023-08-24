@@ -9,6 +9,8 @@ use App\VacationQueue;
 use App\Vacation;
 use App\Contract;
 use App\DaysOnVacation;
+use App\Departure;
+use App\DepartureReason;
 use Carbon\Carbon;
 use DB;
 
@@ -89,8 +91,16 @@ class VacationQueueController extends Controller
             ->vacation_queues()
             ->where('max_date', '>=', Carbon::parse($date)->format('Y-m-d'))
             ->sum('rest_days');
-      $days = DaysOnVacation::get();
-
+      $departures = Departure::where('employee_id',$employee_id)->where('departure', '>=', $date)->where('departure_reason_id', 24)->get();
+      $days = array();
+      foreach($departures as $departure)
+      {
+        foreach($departure->days_on_vacation as $days_on_vacation)
+          array_push($days, [
+            'date' => $days_on_vacation->date,
+            'day' => $days_on_vacation->day
+          ]);
+      }
       return response()->json([
         'count' => max($count, 0),
         'days' => $days,
