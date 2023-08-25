@@ -1,9 +1,9 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="closeDialog">
-    <v-tooltip slot="activator" top v-if="$store.getters.permissions.includes('create-consultant')">
+    <!-- <v-tooltip slot="activator" top v-if="$store.getters.permissions.includes('create-consultant')">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nuevo Registro CAS</span>
-    </v-tooltip>
+    </v-tooltip> --> 
     <v-card>
       <v-toolbar dark color="secondary">
         <v-toolbar-title class="white--text">{{ formTitle }}</v-toolbar-title>
@@ -13,6 +13,41 @@
           <v-layout wrap>
             <v-flex xs12 sm6 md6>
               <v-form ref="form">
+                <v-text-field
+                  v-model="selectedItem.certification_number"
+                  label="Número de Certificacion CAS"
+                  autocomplete='cc-number'
+                  clearable
+                ></v-text-field>
+                <v-layout wrap>
+                  <v-flex>
+                    <v-menu
+                      :close-on-content-click="false"
+                      v-model="datePicker.emission_date.display"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                    >
+                      <v-text-field
+                        slot="activator"
+                        v-model="datePicker.emission_date.formattedDate"
+                        label="Fecha de Emisión"
+                        prepend-icon="event"
+                        v-validate="'required'"
+                        name="Fecha de emisión de CAS"
+                        :error-messages="errors.collect('Fecha de inicio')"
+                      ></v-text-field>
+                      <v-date-picker
+                        locale="es-bo"
+                        v-model="selectedItem.emission_date"
+                        no-title
+                        @input="datePicker.emission_date.display = false"
+                        first-day-of-week="1"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-flex>
+                </v-layout>
                 <v-text-field
                   v-validate="'numeric|max_value:99'"
                   :maxlength="2"
@@ -43,62 +78,27 @@
                   autocomplete='cc-number'
                   clearable
                 ></v-text-field>
-                <v-text-field
-                  v-model="selectedItem.certification_number"
-                  label="Numero de Certificacion CAS"
-                  autocomplete='cc-number'
-                  clearable
-                ></v-text-field>
-                <v-layout wrap>
-                  <v-flex xs12 sm6 md6>
-                    <v-menu
-                      :close-on-content-click="false"
-                      v-model="datePicker.emission_date.display"
-                      offset-y
-                      full-width
-                      max-width="290px"
-                      min-width="290px"
-                    >
-                      <v-text-field
-                        slot="activator"
-                        v-model="datePicker.emission_date.formattedDate"
-                        label="Fecha de Emisión"
-                        prepend-icon="event"
-                        v-validate="'required'"
-                        name="Fecha de emisión de CAS"
-                        :error-messages="errors.collect('Fecha de inicio')"
-                      ></v-text-field>
-                      <v-date-picker
-                        locale="es-bo"
-                        v-model="selectedItem.emission_date"
-                        no-title
-                        @input="datePicker.emission_date.display = false"
-                        first-day-of-week="1"
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-flex>
-                </v-layout>
               </v-form>
             </v-flex>
             <v-flex xs12 sm6 md6>
               <v-card>
-                <v-card-title class="pa-0"><strong>DATOS DE CAS ACTIVO</strong></v-card-title>
+                <v-card-title><strong>EMPLEADO: </strong> {{ employee.last_name }} {{ employee.mothers_last_name }} {{ employee.first_name }} {{ employee.second_name }}</v-card-title>
+                <v-card-title><strong>REGISTRO DEL ÚLTIMO CAS ACTIVO:</strong></v-card-title>
                 <v-card-text>
-                  <p><strong>Empleado: </strong> {{ employee.last_name }} {{ employee.mothers_last_name }} {{ employee.first_name }} {{ employee.second_name }}</p>
                   <table class="v-datatable v-table">
                     <thead>
                       <div v-if="employee.get_cas.length > 0">
                         <div v-for="cas in employee.get_cas" :key="cas.id">
                           <template v-if="cas.active">
+                            <tr><td><strong>Nro. Cert. CAS</strong></td><td>{{ cas.certification_number }}</td></tr>
+                            <tr><td><strong>Fecha de emisión</strong></td><td>{{ cas.issue_date }}</td></tr>
                             <tr><td><strong>Años</strong></td><td>{{ cas.years }}</td></tr>
                             <tr><td><strong>Meses</strong></td><td>{{ cas.months }}</td></tr>
                             <tr><td><strong>Dias</strong></td><td>{{ cas.days }}</td></tr>
-                            <tr><td><strong>Nro. Cert. CAS</strong></td><td>{{ cas.certification_number }}</td></tr>
-                            <tr><td><strong>Fecha de emisión</strong></td><td>{{ cas.issue_date }}</td></tr>
                           </template>
                         </div>
                       </div>
-                      <div v-else><strong>NO CUENTA CON CAS REGISTRADO</strong></div>
+                      <div v-else><strong class="red--text">-- No se cuenta con ningún registro --</strong></div>
                     </thead>
                   </table>
                 </v-card-text>
