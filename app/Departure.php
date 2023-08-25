@@ -28,4 +28,10 @@ class Departure extends Model
   {
     return $this->HasMany(DaysOnVacation::class);
   }
+  // realiza la suma de días según el permiso solicitado
+  public function sum_days($departure_id)
+  {
+    return DaysOnVacation::where('departure_id', $departure_id)
+      ->sum('day');
+  }
 }
