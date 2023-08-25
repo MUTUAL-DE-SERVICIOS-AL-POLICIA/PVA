@@ -393,22 +393,26 @@ class DepartureController extends Controller
 
     $file_name = implode('_', ['solicitud', 'permiso', 'vacaciones', $data['departure']->employee->first_name, $data['departure']->employee->last_name]) . '.pdf';
 
-    $options = [
-      'orientation' => 'portrait',
-      'page-width' => '216',
-      'page-height' => '279',
-      'margin-top' => '8',
-      'margin-bottom' => '16',
-      'margin-left' => '20',
-      'margin-right' => '20',
-      'encoding' => 'UTF-8',
-      'user-style-sheet' => public_path('css/report-print.min.css')
-    ];
+    if ($data['departure']->departure_reason->note && $data['departure']->departure_reason->name == 'VACACIONES') {
+      $options = [
+        'orientation' => 'portrait',
+        'page-width' => '216',
+        'page-height' => '279',
+        'margin-top' => '8',
+        'margin-bottom' => '16',
+        'margin-left' => '20',
+        'margin-right' => '20',
+        'encoding' => 'UTF-8',
+        'user-style-sheet' => public_path('css/report-print.min.css')
+      ];
 
-    $pdf = \PDF::loadView('vacation.note', $data);
-    $pdf->setOptions($options);
+      $pdf = \PDF::loadView('vacation.note', $data);
+      $pdf->setOptions($options);
 
-    return $pdf->stream($file_name);
+      return $pdf->stream($file_name);
+    } else {
+      return abort(404, 'Permiso no encontrado');
+    }
   }
 
   public function print_report_vacation(Request $request)
