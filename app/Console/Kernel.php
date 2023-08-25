@@ -25,22 +25,7 @@ class Kernel extends ConsoleKernel
   protected function schedule(Schedule $schedule)
   {
     $request = Request::create(null, null, []);
-    $attendance_controller = new AttendanceController();
     $queue_controller = new VacationQueueController();
-    $schedule->call(function () use ($attendance_controller, $request) {
-        $attendance_controller->store($request);
-    })->daily();
-    $schedule->call(function () use ($attendance_controller, $request) {
-      do {
-        for ($i = 1; $i <= 3; $i++) {
-          $response = $attendance_controller->store($request);
-          sleep(30*60);
-        }
-      } while (count($response->getData()->added) > 0);
-      \Log::debug('Assistance checks: '.count($response->getData()->added));
-      //$attendance_controller->destroy('all');
-    })->weekly()->sundays()->at('01:00');
-
     $schedule->call(function () use ($queue_controller, $request) {
       $queue_controller->queue_vacation($request);
     })->everyDay();
