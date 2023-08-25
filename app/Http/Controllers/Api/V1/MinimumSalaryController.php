@@ -50,10 +50,10 @@ class MinimumSalaryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $minimum_salary = MinimumSalary::findOrFail($id);
-        $minimum_salary->fill($request->all());
-        $minimum_salary->save();
-        return $minimum_salary;
+            $minimum_salary = MinimumSalary::findOrFail($id);
+            $minimum_salary->fill($request->all());
+            $minimum_salary->save();
+            //return $minimum_salary;
     }
 
     /**
