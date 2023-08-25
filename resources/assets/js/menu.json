@@ -145,7 +145,7 @@
       {
         "href": "seniorityRange",
         "title": "Salario Mínimo y Antiguedad",
-        "icon": "mdi-cash-multiple",
+        "icon": "trending_up",
         "permission": "read-procedure-eventual",
         "params": {}
       }
