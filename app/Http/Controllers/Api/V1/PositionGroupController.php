@@ -73,4 +73,14 @@ class PositionGroupController extends Controller
     $position_group->delete();
     return $position_group;
   }
+    
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function list()
+  {
+    return PositionGroup::where('active', true)->whereNull('deleted_at')->get();
+  }
 }

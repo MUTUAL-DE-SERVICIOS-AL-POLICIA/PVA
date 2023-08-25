@@ -26,6 +26,7 @@ Route::group([
   Route::get('seniority_bonus_calculate', 'Api\V1\SeniorityBonusController@getBonusCalculate');
   // Position Group
   Route::get('position_group', 'Api\V1\PositionGroupController@index')->name('position_group_list');
+  Route::get('position_group_list', 'Api\V1\PositionGroupController@list')->name('list');
   // Location
   Route::get('location/list', 'Api\V1\LocationController@list')->name('location_lists');
   Route::get('location', 'Api\V1\LocationController@index')->name('location_list');

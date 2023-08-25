@@ -39,7 +39,9 @@ $employee = $contract->employee;
         </thead>
         <tbody>
             <tr class="w-100 text-center no-padding no-margins">
-                <td colspan="2"><h3>REPORTE DE VACACIONES INDIVIDUAL</h3></td>
+                <td colspan="2">
+                    <h3>REPORTE DE VACACIONES INDIVIDUAL</h3>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -100,10 +102,10 @@ $employee = $contract->employee;
                 <tr>
                     <td>{{ $num }}</td>
                     <td>{{ $departure->description }}</td>
-                    <td>{{ $departure->created_at }}</td>
-                    <td>{{ $departure->departure }}</td>
-                    <td>{{ $departure->return }}</td>
-                    <td>A</td>
+                    <td>{{ Carbon::parse($departure->created_at)->format('d-m-Y') }}</td>
+                    <td>{{ Carbon::parse($departure->departure)->format('d-m-Y') }}</td>
+                    <td>{{ Carbon::parse($departure->return)->format('d-m-Y') }}</td>
+                    <td>{{ $departure->sum_days($departure->id) }}</td>
                     <td>B</td>
                 </tr>
                 <?php $num++; ?>
