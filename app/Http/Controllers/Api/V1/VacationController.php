@@ -52,7 +52,10 @@ class VacationController extends Controller
   {
     $vacation = Vacation::findOrFail($id);
     $vacation->fill($request->all());
-    return $vacation->save();
+    if($vacation->save())
+      return response()->json(['message'=>'Se actualizó correctamente']);
+    else
+      return response()->json(['message'=>'Error al actualizar'],500);
   }
 
   public function destroy($id)
