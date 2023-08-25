@@ -53,6 +53,7 @@ class SeniorityBonusController extends Controller
   {
     $seniority_bonus = SeniorityBonus::findOrFail($id);
     $seniority_bonus->fill($request->all());
+    $seniority_bonus->percentage = $seniority_bonus->percentage/100;
     $seniority_bonus->save();
   }
 
@@ -66,13 +67,14 @@ class SeniorityBonusController extends Controller
   public function getBonusCalculate()
   {
     $bonuses = SeniorityBonus::orderBy('id','asc')->get();
-    if(MinimumSalary::where('active', True)->first())
-      $minimun_salary_active = MinimumSalary::where('active', True)->first()->value;
+    if(MinimumSalary::where('active', true)->first())
+      $minimun_salary_active = MinimumSalary::where('active', true)->first()->value;
     else
       $minimun_salary_active = 0;
     foreach($bonuses as $bonus)
     {
-      $bonus->calculated = round((($bonus->percentage)/100*$minimun_salary_active),2);
+      $bonus->calculated = round((($bonus->percentage)*$minimun_salary_active),2);
+      $bonus->percentage = $bonus->percentage*100;
     }
     return $bonuses;
   }
