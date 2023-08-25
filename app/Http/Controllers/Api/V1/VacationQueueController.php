@@ -96,10 +96,30 @@ class VacationQueueController extends Controller
       foreach($departures as $departure)
       {
         foreach($departure->days_on_vacation as $days_on_vacation)
+        {
+          $morning = true;
+          $afternoon = true;
+          if($days_on_vacation->date == Carbon::parse($days_on_vacation->departure->departure)->format('Y-m-d') && $days_on_vacation->day == 0.5)
+          {
+            if(Carbon::parse($departure->departure)->format('H:i') == '08:30')
+              $afternoon = false;
+            elseif(Carbon::parse($departure->departure)->format('H:i') == '14:30')
+              $morning = false;
+          }
+          elseif($days_on_vacation->date == Carbon::parse($days_on_vacation->departure->return)->format('Y-m-d') && $days_on_vacation->day == 0.5)
+          {
+            if(Carbon::parse($departure->return)->format('H:i') == '08:30')
+              $afternoon = false;
+            elseif(Carbon::parse($departure->return)->format('H:i') == '14:30')
+              $morning = false;
+          }
           array_push($days, [
             'date' => $days_on_vacation->date,
-            'day' => $days_on_vacation->day
+            'day' => $days_on_vacation->day,
+            'morning' => $morning,
+            'afternoon' => $afternoon
           ]);
+        }
       }
       return response()->json([
         'count' => max($count, 0),

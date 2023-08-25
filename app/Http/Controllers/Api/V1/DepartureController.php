@@ -335,7 +335,7 @@ class DepartureController extends Controller
     } catch (\Exception $e) {
       DB::rollback();
       return response()->json([
-        'message' => 'Algo salio mal',
+        'message' => 'Cite Duplicado',
       ], 500);
     }
   }
