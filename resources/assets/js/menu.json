@@ -144,8 +144,8 @@
       },
       {
         "href": "seniorityRange",
-        "title": "Antiguedad",
-        "icon": "account_circle",
+        "title": "Salario Mínimo y Antiguedad",
+        "icon": "mdi-cash-multiple",
         "permission": "read-procedure-eventual",
         "params": {}
       }

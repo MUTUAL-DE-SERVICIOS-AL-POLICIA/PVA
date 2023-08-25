@@ -20,8 +20,8 @@ import CompanyConfig from './components/configuration/CompanyConfig'
 import DepartureIndex from './components/departure/DepartureIndex'
 import AttendanceIndex from './components/attendance/AttendanceIndex'
 import AttendanceDeviceConfig from './components/configuration/AttendanceDeviceConfig'
-import VacationsRange from './components/vacation/VacationIndex'
-import SeniorityRange from './components/vacation/SeniorityIndex'
+import VacationsRange from './components/configuration/VacationConfig'
+import SeniorityRange from './components/configuration/MinimumSalarySeniorityConfig'
 
 export const routes = [
   {
