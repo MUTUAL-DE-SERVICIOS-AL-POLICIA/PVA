@@ -40,8 +40,8 @@
       ></v-divider>
       <ContractForm :contract="{}" :bus="bus"/>
       <RemoveItem :bus="bus"/>
+      <CasForm :bus="bus"/>
     </v-toolbar>
-    <CasForm :bus="bus"/>
     <div v-if="loading">
       <Loading/>
     </div>
