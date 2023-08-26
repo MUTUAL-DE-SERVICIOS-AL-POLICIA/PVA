@@ -50,7 +50,7 @@
                                                     v-on="on"
                                                 ></v-text-field>
                                             </template>
-                                            <v-date-picker v-model="tentative_date" @input="menu = false"></v-date-picker>
+                                            <v-date-picker v-model="tentative_date" @input="menu = false" locale="es" first-day-of-week="1"></v-date-picker>
                                         </v-menu>
                                     </v-flex>
                                 </v-layout>
@@ -100,9 +100,8 @@
                                                         :key="turn"
                                                         @click="toggleTurnSelection(day, turn)"
                                                         :class="['day-div',
-                                                            (busy_days.find((obj) => obj.date === day.date).morning && turn == 'mañana') ? 'busy-morning do-not-select' :
-                                                            // Si voy por else entonces nunca pintará la tarde
-                                                            (busy_days.find((obj) => obj.date === day.date).afternoon && turn == 'tarde') ? 'busy-afternoon do-not-select' :
+                                                            (busy_days.find((obj) => obj.date === day.date).morning && turn == 'mañana') ? 'busy-morning do-not-select' : '',
+                                                            (busy_days.find((obj) => obj.date === day.date).afternoon && turn == 'tarde') ? 'busy-afternoon do-not-select' : '',
                                                             ((isTurnSelected(day, turn) && turn == 'mañana') ? 'morning' : (isTurnSelected(day, turn) && turn == 'tarde') ? 'afternoon': ''),
 
                                                             amount_days == 0.0 ? 'do-not-select' : '',
@@ -284,7 +283,7 @@ export default {
             vacation_id: null,
             loading: false,
             menu: false,
-            busy_days: []
+            busy_days: [],
         }
     },
     mounted() {
