@@ -64,6 +64,7 @@
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
         <DepartureEdit class="ml-3" :bus="bus" v-show="$route.query.departureType == 'user'"></DepartureEdit>
+        <VacationRequest class="ml-3" v-show="$route.query.departureType == 'user'"></VacationRequest>
         <RemoveItem :bus="bus"/>
       </v-toolbar>
       <div v-if="loading">
@@ -166,6 +167,7 @@ import DepartureEdit from './DepartureEdit'
 import ReportPrint from '../ReportPrint'
 import ManteinanceDialog from "../ManteinanceDialog"
 import Transfer from './Transfer'
+import VacationRequest from './VacationRequest.vue'
 
 export default {
   name: 'Departure',
@@ -175,7 +177,8 @@ export default {
     DepartureEdit,
     ReportPrint,
     Transfer,
-    ManteinanceDialog
+    ManteinanceDialog,
+    VacationRequest
   },
   data() {
     return {
