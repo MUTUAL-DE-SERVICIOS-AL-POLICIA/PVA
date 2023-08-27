@@ -2,7 +2,7 @@
     <v-dialog
         v-model="dialog"
         :max-width="max_width"
-        @keydown.esc="dialog = false"
+        @keydown.esc="clearAll"
         persistent
     >
         <!-- B O T Ó N   I N I C I A   D I Á L O G O -->
@@ -15,7 +15,7 @@
             <v-toolbar dark color="secondary">
                 <v-toolbar-title class="white--text">Solicitud de Vacaciones</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon dark @click.native="closeDialog">
+                <v-btn icon dark @click.native="clearAll">
                     <v-icon>close</v-icon>
                 </v-btn>
             </v-toolbar>
@@ -80,6 +80,7 @@
                                                 <div
                                                     v-if="$moment(day.date, 'YYYY-MM-DD').isBusinessDay() &&
                                                     (day.date >= $store.getters.dateNow && day.date <= date_max) &&
+                                                    (day.date >= tentative_date) &&
                                                     (!busy_days.find((obj) => obj.date === day.date))"
                                                     class="father"
                                                 >
@@ -94,7 +95,7 @@
                                                         <span>{{ turn.toUpperCase() }}</span>
                                                     </div>
                                                 </div>
-                                                <div v-else-if="busy_days.some((obj) => obj.date === day.date)" class="father">
+                                                <div v-else-if="busy_days.some((obj) => obj.date === day.date) && day.date >= tentative_date" class="father">
                                                     <div
                                                         v-for="turn in ['mañana', 'tarde']"
                                                         :key="turn"
@@ -199,13 +200,13 @@
                     </v-stepper-content>
                 </v-stepper-items>
                 <div class="text-xs-right mt-3">
-                    <v-btn color="primary" v-if="step > 1" @click.native="step -= 1">
+                    <v-btn color="primary" v-if="step > 1" @click.native="returnStep">
                         Volver
                     </v-btn>
                     <v-btn color="error" v-if="step < 2" @click.native="nextStep" :disabled="!is_valid">
                         Siguiente
                     </v-btn>
-                    <v-btn color="error" v-if="(step == 2)" @click.native="reconfirmation = true" :disabled="validate">
+                    <v-btn color="error" v-if="step == 2" @click.native="reconfirmation = true" :disabled="validate">
                         Imprimir
                     </v-btn>
                 </div>
@@ -252,6 +253,7 @@ export default {
     components: {
         Loading,
     },
+    props: ["bus"],
     data() {
         return {
             dialog: false,
@@ -326,6 +328,7 @@ export default {
                 let response = await axios.get('departure_reason')
                 this.departure_reasons = response.data
             } catch(e) {
+                this.message_alert = "Hubo un error"
                 console.log(e)
             }
         },
@@ -339,8 +342,10 @@ export default {
                 });
                 this.amount_days = parseFloat(response.data.count).toFixed(1)
                 this.busy_days = response.data.days
+                console.log("Días de vacación ya tomados")
                 console.log(this.busy_days)
             } catch(e) {
+                this.message_alert = "Hubo un error"
                 console.log(e)
             }
         },
@@ -360,7 +365,7 @@ export default {
                 let time = ''
 
 
-                if(start['date'] == end['date']) { // 01 - sept
+                if(start['date'] == end['date']) { // Es la misma fecha?
                     let date_aux = null
                     let date_aux_two = null
                     if(start['morning'] && end['afternoon']) { // Escogío ambos?
@@ -390,18 +395,24 @@ export default {
                         end = date_aux.format("YYYY-MM-DD HH:mm:ss")
                     }
                 } else {
-                    time = '14:30:00'
+                    time = start['morning'] ? '08:30:00' : '14:30:00'
                     let date_morning = this.$moment(start['date'])
                     let [ hour, minute, second ] = time.split(':')
                     date_morning.set({ hour, minute, second })
                     start = date_morning.format("YYYY-MM-DD HH:mm:ss")
 
-                    time = '08:30:00'
+                    time = end['morning'] ? '08:30:00' : '14:30:00'
                     let date_afternoon = this.$moment(end['date'])
                     let [ hours, minutes, seconds ] = time.split(':')
                     date_afternoon.set({ hour: hours, minute: minutes, second: seconds })
                     end = date_afternoon.format("YYYY-MM-DD HH:mm:ss")
                 }
+                // console.log("Días para tomar vacaciones")
+                // console.log(this.selected_days)
+                // console.log("departure ")
+                // console.log(start)
+                // console.log("return")
+                // console.log(end)
 
                 let response = await axios.post('vacation_departure', {
                     departure_reason_id: departure_reason.id,
@@ -415,10 +426,12 @@ export default {
                 this.vacation_id = response.data.departure.id
                 this.message_alert = response.data.message
                 if(this.vacation_id) this.getVacationRequest()
+                this.clearAll();
 
             } catch(e) {
                 this.reconfirmation = false
                 this.value = true
+                this.message_alert = "Hubo un error en la generación de la solicitud"
                 console.log(e)
             }
         },
@@ -435,15 +448,19 @@ export default {
                 })
                 printJS(window.URL.createObjectURL(blob))
                 this.clearAll()
+                this.bus.$emit('updatePermissionList')
                 this.loading = false
             } catch(e) {
                 console.log(e)
+                this.message_alert = "Hubo un error en la generación del documento"
                 this.loading = false
             }
         },
-        closeDialog() {
-            this.step = 1
-            this.dialog = false
+        returnStep() {
+            this.step -= 1
+            this.selected_days = []
+            this.cite = ''
+            this.tentative_date = null
         },
         nextStep() {
             if(this.step === 1) {
@@ -491,6 +508,8 @@ export default {
             this.dialog = false
             this.tentative_date = null
             this.step = 1
+            this.cite = ''
+            this.selected_days = []
         }
     }
 }
@@ -507,6 +526,7 @@ export default {
     padding: 5px;
     cursor: pointer;
     color:#afaaaa;
+    transition: transform 50ms, box-shadow 50ms;
 }
 .custom-class {
     box-shadow: 0 0 5px rgba(0,0,0,0.3);
@@ -519,6 +539,7 @@ export default {
     background-color:#65c7bd;
     transition-duration: initial;
     color: black;
+    transform: translate(1px, 1px);
 }
 .icon {
     padding-top: 8px;

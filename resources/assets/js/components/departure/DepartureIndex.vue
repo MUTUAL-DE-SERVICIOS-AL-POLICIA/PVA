@@ -64,7 +64,7 @@
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
         <DepartureEdit class="ml-3" :bus="bus" v-show="$route.query.departureType == 'user'"></DepartureEdit>
-        <VacationRequest class="ml-3" v-show="$route.query.departureType == 'user'"></VacationRequest>
+        <VacationRequest class="ml-3" v-show="$route.query.departureType == 'user'" :bus="bus"></VacationRequest>
         <RemoveItem :bus="bus"/>
       </v-toolbar>
       <div v-if="loading">
@@ -300,6 +300,9 @@ export default {
     this.getDepartureGroups()
     this.getDepartureReasons()
     this.getDepartures()
+    this.bus.$on('updatePermissionList', () => {
+      this.getDepartures()
+    })
   },
   watch: {
     '$route.query.departureType'(newVal, oldVal) {
