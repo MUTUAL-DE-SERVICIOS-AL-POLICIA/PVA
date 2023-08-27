@@ -91,7 +91,8 @@ class VacationQueueController extends Controller
             ->vacation_queues()
             ->where('max_date', '>=', Carbon::parse($date)->format('Y-m-d'))
             ->sum('rest_days');
-      $departures = Departure::where('employee_id',$employee_id)->where('departure', '>=', $date)->where('departure_reason_id', 24)->get();
+      $daysV = DaysOnVacation::where('date','>=', $date)->pluck('departure_id');
+      $departures = Departure::where('employee_id',$employee_id)->where('departure_reason_id', 24)->whereIn('id',$daysV)->get();
       $days = array();
       foreach($departures as $departure)
       {
