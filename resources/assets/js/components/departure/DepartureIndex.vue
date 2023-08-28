@@ -117,7 +117,7 @@
                   <span>Editar</span>
                 </v-tooltip>
                 <v-tooltip top v-if="props.item.approved == null && $store.getters.role == 'admin'">
-                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item.id)">
+                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item)">
                     <v-icon>delete</v-icon>
                   </v-btn>
                   <span>Eliminar</span>
@@ -349,8 +349,12 @@ export default {
         }
       }
     },
-    removeItem(id) {
-      this.bus.$emit("openDialogRemove", `departure/${id}`);
+    removeItem(item) {
+      if(item.departure_reason_id==24){
+        this.bus.$emit("openDialogRemove", `cancel_vacation_departure/${item.id}`);
+      }else{
+        this.bus.$emit("openDialogRemove", `departure/${item.id}`);
+      }
       this.getRemainingDepartures()
     },
     async getLastContract(id) {
