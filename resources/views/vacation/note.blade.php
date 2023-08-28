@@ -16,6 +16,12 @@ $contract = $departure->employee->contract_in_date($departure->first()->departur
             border: 0;
             line-height: 2;
         }
+
+        .noon {
+            background-color: #c0c0c0;
+            /* Color plomo claro */
+            /* Otros estilos que desees aplicar */
+        }
     </style>
 </head>
 
@@ -76,10 +82,9 @@ $contract = $departure->employee->contract_in_date($departure->first()->departur
         </div>
         <div class="text-justify">
             <span>
-                Yo: {{ $departure->employee->fullName() }} con el cargo de "{{ $contract->position->name }}"
-                perteneciente al área de {{ $contract->position->position_group->name }}, mediante la
-                presente, tengo a bien dirigirme a su Autoridad
-                con el propósito de solicitar se me autorice
+                Yo: <b>{{ $departure->employee->fullName() }}</b> con el cargo de <b>{{ $contract->position->name }}</b>
+                perteneciente al área de <b>{{ $contract->position->position_group->name }}</b>, mediante la
+                presente, tengo a bien dirigirme a su Autoridad con el propósito de solicitar me autorice
                 tomar vacaciones, toda vez que he coordinado con mi Jefe Inmediato Superior y Superior Jerárquico, no
                 comprometiendo el desarrollo de las actividades laborales en mi área correspondiente, habiendo
                 considerado las previsiones para el efecto, de acuerdo al siguiente detalle:
@@ -87,17 +92,8 @@ $contract = $departure->employee->contract_in_date($departure->first()->departur
         </div>
     </div>
     <div class="text-center">VACACIÓN</div>
-    {{-- <table class="table-info w-50 m-b-5 text-center uppercase" style="float: left; margin-left: 1px;">
-        <tr class="bg-grey-darker text-xs text-white">
-            <td>Nombres y Apellidos</td>
-        </tr>
-        <tr>
-            @php($name = $departure->employee->fullName())
-            <td class="{{ Util::string_class_length($name, false) }} data-row py-5 text-sm">{{ $name }}</td>
-        </tr>
-    </table> --}}
 
-    {{-- <table class="table-info w-49 m-b-5 text-center uppercase" style="float: right; margin-left: 1px;">
+    <table class="table-info w-100 m-b-10 text-center uppercase">
         <tr class="bg-grey-darker text-xs text-white">
             <td class="w-50">Desde</td>
             <td class="w-50">Hasta</td>
@@ -114,25 +110,27 @@ $contract = $departure->employee->contract_in_date($departure->first()->departur
                 <span>{{ Carbon::parse($departure->return)->format('H:i') }}</span>
             </td>
         </tr>
-    </table> --}}
-
-    <table class="table-info w-100 m-b-10 uppercase text-center">
-        <tr class="bg-grey-darker text-xs text-white">
-            <td>Cargo</td>
+    </table>
+    <br>
+    {{-- listado de dias --}}
+    <table class="table-info w-100 m-b-10 text-center uppercase">
+        <tr>
+            @foreach ($departure->days_on_vacation->sortBy('date') as $index => $vacation)
+                @if ($index > 0 && $index % 4 == 0)
         </tr>
         <tr>
-            <td class="{{ Util::string_class_length($contract->position->name, false) }} data-row py-5">
-                {{ $contract->position->name }}</td>
-        </tr>
-        <tr class="bg-grey-darker text-xs text-white">
-            <td>Área</td>
-        </tr>
-        <tr>
-            <td
-                class="{{ Util::string_class_length($contract->position->position_group->name, false) }} data-row py-5">
-                {{ $contract->position->position_group->name }}</td>
+            @endif
+            <td class="bg-grey-darker text-xs text-white">{{ Carbon::parse($vacation->date)->isoFormat('dddd') }}</td>
+            @if ($vacation->day < 1)
+                <td class="noon">M</td>
+                <td class="noon">{{ Carbon::parse($vacation->date)->format('d-m-Y') }}</td>
+            @else
+                <td colspan="2">{{ Carbon::parse($vacation->date)->format('d-m-Y') }}</td>
+            @endif
+            @endforeach
         </tr>
     </table>
+    {{-- sección de firmas --}}
     <br><br><br>
     <table class="w-100">
         <thead>
