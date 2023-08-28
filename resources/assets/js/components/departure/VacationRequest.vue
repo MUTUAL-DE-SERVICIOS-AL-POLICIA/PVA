@@ -183,8 +183,8 @@
                                         icon="info"
                                         border="left"
                                     >
-                                        <div class="text-left">
-                                            - Considere no tomar en cuenta <b>feriados</b>.<br />
+                                        <div class="text-left text-color">
+                                            Considere no tomar en cuenta <b>feriados</b>.<br />
                                         </div>
                                     </v-alert>
                                     <v-alert
@@ -451,6 +451,7 @@ export default {
             this.selected_days = []
             this.cite = ''
             this.tentative_date = null
+            this.date = this.$store.getters.dateNow
         },
         nextStep() {
             if(this.step === 1) {
@@ -500,6 +501,7 @@ export default {
             this.step = 1
             this.cite = ''
             this.selected_days = []
+            this.date = this.$store.getters.dateNow
         }
     }
 }
@@ -589,6 +591,9 @@ export default {
 }
 .clickable {
     cursor:pointer;
+}
+.text-color {
+    color: black;
 }
 
 </style>
