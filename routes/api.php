@@ -53,7 +53,7 @@ Route::group([
   //Registro del permiso de vacacion
   Route::post('vacation_departure', 'Api\V1\DepartureController@vacation_departure');
   //Anulacion del permiso de vacacion
-  Route::post('cancel_vacation_departure/{departure_id}', 'Api\V1\DepartureController@cancel_vacation_departure');
+  Route::delete('cancel_vacation_departure/{departure_id}', 'Api\V1\DepartureController@cancel_vacation_departure');
   // Reportes de vacaciones
   Route::get('departure_vacation/print/{departure_id}', 'Api\V1\DepartureController@print_note_vacation');
   Route::get('print_report_vacation', 'Api\V1\DepartureController@print_report_vacation');
