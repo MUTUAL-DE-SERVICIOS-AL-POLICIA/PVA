@@ -339,7 +339,8 @@ export default {
                     }
                 });
                 this.amount_days = parseFloat(response.data.count).toFixed(1)
-                this.busy_days = response.data.days
+                this.busy_days = this.discardEqualElement(response.data.days)
+                console.log(this.busy_days)
             } catch(e) {
                 this.message_alert = "Hubo un error"
                 console.log(e)
@@ -391,13 +392,14 @@ export default {
                         end = date_aux.format("YYYY-MM-DD HH:mm:ss")
                     }
                 } else {
-                    time = start['morning'] ? '08:30:00' : '14:30:00'
+                    // Si es día completo?
+                    time = start['morning'] && start['afternoon'] ? '08:30:00' : (start['morning'] ? '08:30:00' : '14:30:00')
                     let date_morning = this.$moment(start['date'])
                     let [ hour, minute, second ] = time.split(':')
                     date_morning.set({ hour, minute, second })
                     start = date_morning.format("YYYY-MM-DD HH:mm:ss")
 
-                    time = end['morning'] ? '08:30:00' : '14:30:00'
+                    time = end['morning'] && end['afternoon'] ? '14:30:00' : (end['morning'] ? '08:30:00' : '14:30:00')
                     let date_afternoon = this.$moment(end['date'])
                     let [ hours, minutes, seconds ] = time.split(':')
                     date_afternoon.set({ hour: hours, minute: minutes, second: seconds })
@@ -502,6 +504,19 @@ export default {
             this.cite = ''
             this.selected_days = []
             this.date = this.$store.getters.dateNow
+        },
+        discardEqualElement(days) {
+            const days_vacation = new Set();
+            for (const day of days) {
+                const existing_day = Array.from(days_vacation).find((d) => d.date === day.date)
+                if (existing_day) {
+                    existing_day.afternoon = day.afternoon !== undefined ? true : false
+                    existing_day.morning = day.morning !== undefined ? true: false
+                } else {
+                    days_vacation.add(day)
+                }
+            }
+            return Array.from(days_vacation)
         }
     }
 }
