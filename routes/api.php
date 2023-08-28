@@ -19,6 +19,7 @@ Route::group([
   Route::get('employee/{id}/departure', 'Api\V1\EmployeeController@departure')->name('employees_departure');
   // Cas Certification
   Route::resource('cas_certification', 'Api\V1\CasCertificationController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  Route::get('getCasEmployee/{id}','Api\V1\CasCertificationController@getCasEmployee');
   // Vacaciones
   Route::resource('vacations', 'Api\V1\VacationController')->only(['index', 'show', 'store', 'update', 'destroy']);
   // Bono de Antiguedad
