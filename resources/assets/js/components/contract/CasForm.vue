@@ -1,12 +1,8 @@
 <template>
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="closeDialog">
-    <!-- <v-tooltip slot="activator" top v-if="$store.getters.permissions.includes('create-consultant')">
-      <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
-      <span>Nuevo Registro CAS</span>
-    </v-tooltip> --> 
     <v-card>
       <v-toolbar dark color="secondary">
-        <v-toolbar-title class="white--text">{{ formTitle }}</v-toolbar-title>
+        <v-toolbar-title class="white--text">{{ formTitle }} - {{fullName(employee)}}</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <v-container grid-list-md layout>
@@ -37,6 +33,7 @@
                         v-validate="'required'"
                         name="Fecha de emisión de CAS"
                         :error-messages="errors.collect('Fecha de inicio')"
+                        clearable
                       ></v-text-field>
                       <v-date-picker
                         locale="es-bo"
@@ -48,6 +45,8 @@
                     </v-menu>
                   </v-flex>
                 </v-layout>
+                <v-layout>
+                <v-flex xs12 sm4 md4>
                 <v-text-field
                   v-validate="'numeric|max_value:99'"
                   :maxlength="2"
@@ -58,6 +57,8 @@
                   autocomplete='cc-number'
                   clearable
                 ></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm4 md4>
                 <v-text-field
                   v-validate="'numeric|max_value:11'"
                   :maxlength="2"
@@ -68,6 +69,8 @@
                   autocomplete='cc-number'
                   clearable
                 ></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm4 md4>
                 <v-text-field
                   v-validate="'numeric|max_value:31'"
                   :maxlength="2"
@@ -78,23 +81,24 @@
                   autocomplete='cc-number'
                   clearable
                 ></v-text-field>
+                </v-flex>
+                </v-layout>
               </v-form>
             </v-flex>
             <v-flex xs12 sm6 md6>
               <v-card>
-                <v-card-title><strong>EMPLEADO: </strong> {{ employee.last_name }} {{ employee.mothers_last_name }} {{ employee.first_name }} {{ employee.second_name }}</v-card-title>
-                <v-card-title><strong>REGISTRO DEL ÚLTIMO CAS ACTIVO:</strong></v-card-title>
+                <v-card-title><strong>ÚLTIMO CAS ACTIVO:</strong></v-card-title>
                 <v-card-text>
                   <table class="v-datatable v-table">
                     <thead>
                       <div v-if="employee.get_cas.length > 0">
                         <div v-for="cas in employee.get_cas" :key="cas.id">
                           <template v-if="cas.active">
-                            <tr><td><strong>Nro. Cert. CAS</strong></td><td>{{ cas.certification_number }}</td></tr>
-                            <tr><td><strong>Fecha de emisión</strong></td><td>{{ cas.issue_date }}</td></tr>
-                            <tr><td><strong>Años</strong></td><td>{{ cas.years }}</td></tr>
-                            <tr><td><strong>Meses</strong></td><td>{{ cas.months }}</td></tr>
-                            <tr><td><strong>Dias</strong></td><td>{{ cas.days }}</td></tr>
+                            <tr><td><strong>Nro. Cert. CAS:</strong></td><td>{{ cas.certification_number }}</td></tr>
+                            <tr><td><strong>Fecha de emisión:</strong></td><td>{{ cas.issue_date }}</td></tr>
+                            <tr><td><strong>Años:</strong> {{ cas.years }}</td>
+                                <td><strong>Meses:</strong> {{ cas.months }}</td>
+                                <td><strong>Dias:</strong> {{ cas.days }}</td></tr>
                           </template>
                         </div>
                       </div>
@@ -131,7 +135,7 @@ export default {
           get_cas:[]
       },
       dialog: false,
-      formTitle: "Adicionar Registo de CAS",
+      formTitle: "REGISTRO DE CAS",
       datePicker: {
           emission_date: {
             formattedDate: null,
@@ -148,13 +152,13 @@ export default {
     }
   },
   created() {
-    this.getEmployees()
+    //this.getEmployees()
   },
   mounted() {
     this.bus.$on("openDialogCas", item => {
       if (item) {
         this.employee = item
-        this.formTitle = 'Adicionar registro de CAS'
+        this.formTitle = 'REGISTRO DE CAS'
         this.dialog = true
 
       }
@@ -196,14 +200,14 @@ export default {
       this.bus.$emit("closeDialog")
       this.clearForm()
     },
-    async getEmployees() {
-      try {
-        let res = await axios.get("/employee")
-        this.employees = res.data
-      } catch (e) {
-        console.log(e)
-      }
-    },
+    // async getEmployees() {
+    //   try {
+    //     let res = await axios.get("/employee")
+    //     this.employees = res.data
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // },
     async saveCas(){
       try {
         let res
@@ -221,7 +225,17 @@ export default {
       } catch (e) {
         console.log(e)
       }
-    }
+    },
+    fullName(employee) {
+      let names = `${employee.last_name || ""} ${employee.mothers_last_name ||
+        ""} ${employee.surname_husband || ""} ${employee.first_name ||
+        ""} ${employee.second_name || ""} `;
+      names = names
+        .replace(/\s+/gi, " ")
+        .trim()
+        .toUpperCase();
+      return names;
+    },
   }
 }
 </script>
