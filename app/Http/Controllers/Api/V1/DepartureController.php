@@ -419,7 +419,7 @@ class DepartureController extends Controller
   {
     $num = 0;
     $position_group_id = $request->input('position_group_id');
-    $fechaFormateada = Carbon::now()->format('d-m-Y');
+    $formatted_date = Carbon::now()->format('d-m-Y');
 
     $employees = Employee::whereIn('id', function ($query) {
       $query->select('employee_id')
@@ -442,7 +442,7 @@ class DepartureController extends Controller
       'num' => $num,
       'employees' => $employees
     ];
-    $file_name = implode('_', ['reporte', 'general', 'vacaciones', $fechaFormateada]) . '.pdf';
+    $file_name = implode('_', ['reporte', 'general', 'vacaciones', $formatted_date]) . '.pdf';
 
     $options = [
       'orientation' => 'landscape',
