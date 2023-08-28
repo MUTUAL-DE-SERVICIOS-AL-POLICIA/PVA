@@ -26,7 +26,7 @@
                         <v-card>
                             <v-card-text>
                                 <v-layout>
-                                    <v-flex> <!-- xs5 pr-5 -->
+                                    <v-flex>
                                         <h4 pb-1>Fecha tentativa</h4>
                                         <v-menu
                                             v-model="menu"
@@ -50,7 +50,14 @@
                                                     v-on="on"
                                                 ></v-text-field>
                                             </template>
-                                            <v-date-picker v-model="tentative_date" @input="menu = false" locale="es" first-day-of-week="1"></v-date-picker>
+                                            <v-date-picker
+                                                v-model="tentative_date"
+                                                @input="menu = false"
+                                                locale="es"
+                                                first-day-of-week="1"
+                                                :min="date_min"
+                                                :max="date_max"
+                                            ></v-date-picker>
                                         </v-menu>
                                     </v-flex>
                                 </v-layout>
@@ -265,10 +272,7 @@ export default {
             rules: [v => !!v || 'Este campo es requerido'],
             amount_days: 0.0,
             selected_days: [],
-            morning: false,
-            afternoon: false,
             departure_reasons: [],
-            flag: false,
             date: null,
             date_max: null,
             date_min: null,
@@ -279,8 +283,6 @@ export default {
                          '05':'MAY', '06':'JUN', '07':'JUL', '08':'AGO',
                          '09':'SEP', '10':'OCT', '11':'NOV', '12':'DIC'},
             message_alert: '',
-            color_alert: '',
-            icon_alert: '',
             value: false,
             vacation_id: null,
             loading: false,
@@ -291,15 +293,11 @@ export default {
     mounted() {
         this.date = this.$store.getters.dateNow
         let date_aux = new Date(this.date)
-        // this.date_max = date_aux.getFullYear() + 2 + "-12" + "-31"
-        this.date_min = date_aux.getFullYear() + "-12"
-        this.date_max = date_aux.getFullYear() + 2 + "-12"
-        // console.log(this.date_min)
-        // console.log(this.date_max)
+        this.date_min = date_aux.toISOString().slice(0,10)
+        this.date_max = date_aux.getFullYear() + 2 + "-12-31"
         this.getDepartureReasons()
     },
     watch: {
-        // TODO: NO permitir que introduzca con teclado
         tentative_date(newValue, oldValue) {
             if(newValue !== null) {
                 this.is_valid = this.$moment(newValue, 'YYYY-MM-DD').isBusinessDay()
@@ -342,8 +340,6 @@ export default {
                 });
                 this.amount_days = parseFloat(response.data.count).toFixed(1)
                 this.busy_days = response.data.days
-                console.log("Días de vacación ya tomados")
-                console.log(this.busy_days)
             } catch(e) {
                 this.message_alert = "Hubo un error"
                 console.log(e)
@@ -407,12 +403,6 @@ export default {
                     date_afternoon.set({ hour: hours, minute: minutes, second: seconds })
                     end = date_afternoon.format("YYYY-MM-DD HH:mm:ss")
                 }
-                // console.log("Días para tomar vacaciones")
-                // console.log(this.selected_days)
-                // console.log("departure ")
-                // console.log(start)
-                // console.log("return")
-                // console.log(end)
 
                 let response = await axios.post('vacation_departure', {
                     departure_reason_id: departure_reason.id,
@@ -539,7 +529,8 @@ export default {
     background-color:#65c7bd;
     transition-duration: initial;
     color: black;
-    transform: translate(1px, 1px);
+    /* transform: translate(1px, 1px); */
+    transform: scale(0.96);
 }
 .icon {
     padding-top: 8px;
