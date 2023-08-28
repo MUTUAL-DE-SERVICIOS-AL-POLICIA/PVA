@@ -105,7 +105,7 @@
               </div>
               <div v-else>
                 <v-tooltip top>
-                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : ''" @click.native="print(props.item.id)">
+                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : ''" @click.native="print(props.item).id">
                     <v-icon>print</v-icon>
                   </v-btn>
                   <span>Imprimir</span>
@@ -284,9 +284,9 @@ export default {
     }
   },
   mounted() {
-    this.bus.$on('printDeparture', departureId => {
-      this.print(departureId)
-      this.getDeparture(departureId)
+    this.bus.$on('printDeparture', departure => {
+      this.print(departure)
+      this.getDeparture(departure.id)
       this.getRemainingDepartures()
     })
     this.bus.$on('removed', departureId => {
@@ -374,14 +374,23 @@ export default {
       }
       props.expanded = !props.expanded
     },
-    async print(id) {
+    async print(item) {
       try {
         this.loading = true
-        let res = await axios({
+        let res
+        if(item.departure_reason_id==24){
+          res = await axios({
           method: 'GET',
-          url: `departure/print/${id}`,
+          url: `departure_vacation/print/${item.id}`,
           responseType: "arraybuffer"
-        })
+          })
+        }else{
+          res = await axios({
+          method: 'GET',
+          url: `departure/print/${item.id}`,
+          responseType: "arraybuffer"
+          })
+        }
         let blob = new Blob([res.data], {
           type: "application/pdf"
         })

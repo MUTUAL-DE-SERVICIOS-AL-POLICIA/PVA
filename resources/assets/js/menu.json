@@ -150,7 +150,13 @@
         "params": {}
       }
     ]
-  }, {
+  },  {
+    "href": "reportIndex",
+    "title": "Reportes",
+    "icon": "report",
+    "permission": "read-eventual",
+    "params": {}
+  },{
     "href": "userIndex",
     "title": "Usuarios",
     "icon": "security",

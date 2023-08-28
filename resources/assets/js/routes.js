@@ -22,6 +22,7 @@ import AttendanceIndex from './components/attendance/AttendanceIndex'
 import AttendanceDeviceConfig from './components/configuration/AttendanceDeviceConfig'
 import VacationsRange from './components/configuration/VacationConfig'
 import SeniorityRange from './components/configuration/MinimumSalarySeniorityConfig'
+import ReportIndex from './components/report/ReportIndex'
 
 export const routes = [
   {
@@ -195,6 +196,14 @@ export const routes = [
     path: '/seniority_range',
     component: SeniorityRange,
     name: 'seniorityRange',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/report',
+    component: ReportIndex,
+    name: 'reportIndex',
     meta: {
       requiresAuth: true
     }
