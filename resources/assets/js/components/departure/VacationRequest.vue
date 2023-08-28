@@ -339,7 +339,8 @@ export default {
                     }
                 });
                 this.amount_days = parseFloat(response.data.count).toFixed(1)
-                this.busy_days = response.data.days
+                this.busy_days = this.discardEqualElement(response.data.days)
+                console.log(this.busy_days)
             } catch(e) {
                 this.message_alert = "Hubo un error"
                 console.log(e)
@@ -502,6 +503,19 @@ export default {
             this.cite = ''
             this.selected_days = []
             this.date = this.$store.getters.dateNow
+        },
+        discardEqualElement(days) {
+            const days_vacation = new Set();
+            for (const day of days) {
+                const existing_day = Array.from(days_vacation).find((d) => d.date === day.date)
+                if (existing_day) {
+                    existing_day.afternoon = day.afternoon !== undefined ? true : false
+                    existing_day.morning = day.morning !== undefined ? true: false
+                } else {
+                    days_vacation.add(day)
+                }
+            }
+            return Array.from(days_vacation)
         }
     }
 }
