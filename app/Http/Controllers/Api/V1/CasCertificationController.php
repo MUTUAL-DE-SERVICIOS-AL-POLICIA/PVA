@@ -62,4 +62,9 @@ class CasCertificationController extends Controller
       $cas->delete();
       return $cas;
     }
+
+    public function getCasEmployee($id)
+    {
+      return CasCertification::where('employee_id',$id)->orderBy('created_at','desc')->get();
+    }
 }
