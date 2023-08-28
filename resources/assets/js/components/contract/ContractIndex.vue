@@ -82,6 +82,7 @@
                 <v-list-tile @click="printAddendum(props.item)" v-if="$store.getters.role == 'juridica' || $store.getters.role == 'admin'"> Adenda</v-list-tile>
                 <v-list-tile @click="print(props.item, 'printUp')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Alta del seguro</v-list-tile>
                 <v-list-tile @click="print(props.item, 'printLow')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Baja del seguro</v-list-tile>
+                <v-list-tile @click="printVacationIndividual(props.item.employee_id)" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">Vacaciones</v-list-tile>
               </v-list>
             </v-menu>
             <v-tooltip top v-if="['rrhh', 'admin'].includes($store.getters.role) && checkEnd(props.item) != '' && props.item.active == true">
@@ -335,6 +336,22 @@ export default {
         console.log(e);
       }
     },
+    async printVacationIndividual(id){
+      try {
+        console.log(id)
+        let res = await axios({
+          method: 'GET',
+          url: `/print_vacation_individual/${id}`,
+          responseType: 'arraybuffer'
+        })
+      let blob = new Blob([res.data],{
+        type: "aplication/pdf"
+      })
+      printJS(window.URL.createObjectURL(blob))
+      } catch (e) {
+        console.log(e)
+      }
+    }
   }
 };
 </script>
