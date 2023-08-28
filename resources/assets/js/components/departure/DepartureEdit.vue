@@ -330,7 +330,7 @@
           Siguiente
         </v-btn>
         <v-btn color="error" v-if="(step == 2 && !error.value) || updateDeparture" @click.native="makeRequest" :disabled="loading">
-          Imprimir
+          Imprimirss
         </v-btn>
       </div>
     </v-card>
@@ -848,7 +848,7 @@ export default {
           catch (e) {
           console.log(e)
         } finally {
-          this.bus.$emit('printDeparture', res.data.id)
+          this.bus.$emit('printDeparture', res.data)
           this.closeDialog()
         }
       }
