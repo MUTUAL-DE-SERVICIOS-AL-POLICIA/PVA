@@ -330,7 +330,7 @@
           Siguiente
         </v-btn>
         <v-btn color="error" v-if="(step == 2 && !error.value) || updateDeparture" @click.native="makeRequest" :disabled="loading">
-          Imprimirss
+          Imprimir
         </v-btn>
       </div>
     </v-card>
