@@ -392,13 +392,14 @@ export default {
                         end = date_aux.format("YYYY-MM-DD HH:mm:ss")
                     }
                 } else {
-                    time = start['morning'] ? '08:30:00' : '14:30:00'
+                    // Si es día completo?
+                    time = start['morning'] && start['afternoon'] ? '08:30:00' : (start['morning'] ? '08:30:00' : '14:30:00')
                     let date_morning = this.$moment(start['date'])
                     let [ hour, minute, second ] = time.split(':')
                     date_morning.set({ hour, minute, second })
                     start = date_morning.format("YYYY-MM-DD HH:mm:ss")
 
-                    time = end['morning'] ? '08:30:00' : '14:30:00'
+                    time = end['morning'] && end['afternoon'] ? '14:30:00' : (end['morning'] ? '08:30:00' : '14:30:00')
                     let date_afternoon = this.$moment(end['date'])
                     let [ hours, minutes, seconds ] = time.split(':')
                     date_afternoon.set({ hour: hours, minute: minutes, second: seconds })
