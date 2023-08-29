@@ -401,8 +401,7 @@ class DepartureController extends Controller
     DB::beginTransaction();
     try{
       $departure = Departure::find($id);
-      //return $departure;
-      if($departure && $departure->departure_reason->name == 'VACACIONES' && $departure->approved == false)
+      if($departure && $departure->departure_reason->name == 'VACACIONES' && $departure->approved != true)
       {
         $departure->days_on_vacation;
         foreach($departure->days_on_vacation as $day)
@@ -411,7 +410,7 @@ class DepartureController extends Controller
           $vacation_queue->rest_days = $vacation_queue->rest_days + $day->day;
           $vacation_queue->update();
         }
-        if ($departure->approved === null)
+        if ($departure->approved == null)
         {
           $departure->days_on_vacation()->delete();
           $departure->delete();
