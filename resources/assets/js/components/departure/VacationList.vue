@@ -21,29 +21,19 @@
           </div>
         </v-tooltip>
         <v-spacer></v-spacer>
-        <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
+        <!-- <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
           <v-chip
-            v-if="!$store.getters.consultant" :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
+            v-if="!$store.getters.consultant" :color="remainingDepartures.annually.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
             class="mr-3"
           >
             <v-avatar
               class="body-2 font-weight-black"
-              :color="remainingDepartures.monthly.time_remaining > 0 ? 'primary' : 'error'"
-            >{{ remainingDepartures.monthly.time_remaining / 60 }}</v-avatar>
-            <div class="subheading font-weight-regular">Hrs/Mes</div>
-          </v-chip>
-          <v-chip
-            v-if="!$store.getters.consultant" :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
-            class="mr-3"
-          >
-            <v-avatar
-              class="body-2 font-weight-black"
-              :color="remainingDepartures.annually.time_remaining > 0 ? 'info' : 'error'"
+              :color="remainingDepartures.annually.time_remaining > 0 ? 'success' : 'error'"
             >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
-            <div class="subheading font-weight-regular">Días/Año</div>
+            <div class="subheading font-weight-regular">Días vigentes</div>
           </v-chip>
-        </div>
-        <ReportPrint v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" url="departure/report/print"/>
+        </div> -->
+        <ReportPrint v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" url="vacation/report/print"/>
         <v-divider
           class="mx-2"
           inset
@@ -63,7 +53,6 @@
         <v-btn color="info" @click="showDate = !showDate">
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
-        <DepartureEdit class="ml-3" :bus="bus" v-show="$route.query.departureType == 'user'"></DepartureEdit>
         <VacationRequest class="ml-3" v-show="$route.query.departureType == 'user'" :bus="bus"></VacationRequest>
         <RemoveItem :bus="bus"/>
       </v-toolbar>
