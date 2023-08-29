@@ -282,8 +282,9 @@ class DepartureController extends Controller
   }
 
   // reporte de permisos de vacaciones
-  function report_print_vacation(Request $request)
+  function report_print_vacation(Request $request, $type)
   {
+    $request['type'] = $type;
     $request['approved'] = 'all';
 
     $data = array('departures' => $this->index_vacation($request));
@@ -295,6 +296,7 @@ class DepartureController extends Controller
     $data['title'] = (object)[
       'name' => 'SOLICITUDES DE PERMISOS POR VACACIONES',
       'date' => $date,
+      'type' => ($type == 'consultant') ? 'CONSULTORES' : 'EVENTUALES'
     ];
 
     $file_name = implode('_', ['solicitudes', 'vacaciones', $date->from, $date->to]) . '.pdf';
