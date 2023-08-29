@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 //use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Departure extends Model
 {
-  //use SoftDeletes;
-
+  use SoftDeletes;
+  protected $dates = ['deleted_at'];
   public $timestamps  = true;
   public $guarded     = ['id'];
   protected $fillable = ['departure_reason_id', 'description', 'approved', 'employee_id', 'departure', 'return', 'cite', 'code'];
