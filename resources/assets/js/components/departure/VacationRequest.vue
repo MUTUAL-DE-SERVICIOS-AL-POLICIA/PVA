@@ -317,6 +317,7 @@ export default {
             }
         },
         cite(newValue, oldValue) {
+            if(this.cite) this.cite = newValue.toUpperCase()
             this.validate = !this.selected_days.length > 0 || !newValue
         }
     },
