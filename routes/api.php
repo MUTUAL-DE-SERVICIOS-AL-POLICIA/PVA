@@ -36,6 +36,7 @@ Route::group([
   Route::resource('departure_group', 'Api\V1\DepartureGroupController')->only(['index', 'show']);
   Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
   Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  Route::get('departure_vacation', 'Api\V1\DepartureController@index_vacation');
   Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
   Route::post('departure/{departure_id}/transfer', 'Api\V1\DepartureController@transfer')->name('transfer');
   Route::get('departure/verify/cite', 'Api\V1\DepartureController@verify_cite')->name('departure_verify_cite');
