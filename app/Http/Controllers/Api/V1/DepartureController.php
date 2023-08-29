@@ -281,6 +281,45 @@ class DepartureController extends Controller
     return $pdf->stream($file_name);
   }
 
+  // reporte de permisos de vacaciones
+  function report_print_vacation(Request $request)
+  {
+    $request['approved'] = 'all';
+
+    $data = array('departures' => $this->index_vacation($request));
+    $date = (object)[
+      'from' => $request['from'],
+      'to' => $request['to']
+    ];
+
+    $data['title'] = (object)[
+      'name' => 'SOLICITUDES DE PERMISOS POR VACACIONES',
+      'date' => $date,
+    ];
+
+    $file_name = implode('_', ['solicitudes', 'vacaciones', $date->from, $date->to]) . '.pdf';
+
+    $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_date' => true, 'date' => Carbon::now()->ISOFormat('L H:m')))->render();
+
+    $options = [
+      'orientation' => 'landscape',
+      'page-width' => '216',
+      'page-height' => '279',
+      'margin-top' => '8',
+      'margin-bottom' => '16',
+      'margin-left' => '5',
+      'margin-right' => '5',
+      'encoding' => 'UTF-8',
+      'footer-html' => $footerHtml,
+      'user-style-sheet' => public_path('css/report-print.min.css')
+    ];
+
+    $pdf = \PDF::loadView('vacation.report', $data);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
+  }
+
   public function transfer(Request $request, $id)
   {
     $departure = Departure::findOrFail($id);
