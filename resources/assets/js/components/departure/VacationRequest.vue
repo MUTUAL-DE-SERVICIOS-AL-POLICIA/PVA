@@ -57,6 +57,7 @@
                                                 first-day-of-week="1"
                                                 :max="date_max"
                                             ></v-date-picker>
+                                                <!-- Fecha mínima permitida para la solicitud de vacaciones -->
                                                 <!-- :min="date_min" -->
                                         </v-menu>
                                     </v-flex>
@@ -91,6 +92,7 @@
                                                     (!busy_days.find((obj) => obj.date === day.date))"
                                                     class="father"
                                                 >
+                                                    <!-- Fecha mínima permitida para la solicitud de vacaciones -->
                                                     <!-- (day.date >= $store.getters.dateNow && day.date <= date_max) && -->
                                                     <div
                                                         v-for="turn in ['mañana', 'tarde']"
@@ -294,6 +296,7 @@ export default {
     mounted() {
         this.date = this.$store.getters.dateNow
         let date_aux = new Date(this.date)
+        // Fecha mínima permitida para la solicitud de vacaciones
         // this.date_min = date_aux.toISOString().slice(0,10)
         this.date_max = date_aux.getFullYear() + 2 + "-12-31"
         this.getDepartureReasons()
