@@ -9,7 +9,7 @@
             item-text="dislayName"
             item-value="value"
             class="subheading font-weight-medium"
-            label="Solicitudes"
+            label="Solicitudes de Vacación"
           ></v-select>
         </v-toolbar-title>
         <v-tooltip color="white" role="button" bottom>
@@ -90,17 +90,23 @@
             <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] HH:mm') }}</td>
             <td class="text-xs-center bordered">
               <div v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
-                <v-tooltip top v-show="props.item.approved === null || props.item.approved === false">
+                <v-tooltip top v-show="props.item.approved === null">
                   <v-btn slot="activator" small icon color="success" @click.native="switchActive(props.item.id, true)">
                     <v-icon>check</v-icon>
                   </v-btn>
                   <span>Aprobar</span>
                 </v-tooltip>
                 <v-tooltip top v-show="props.item.approved === null || props.item.approved === true">
-                  <v-btn slot="activator" small icon color="error" @click.native="switchActive(props.item.id, false)">
+                  <v-btn slot="activator" small icon color="danger" @click.native="switchActive(props.item.id, false)">
                     <v-icon>clear</v-icon>
                   </v-btn>
                   <span>Rechazar</span>
+                </v-tooltip>
+                <v-tooltip top v-show="props.item.approved === false">
+                  <v-btn slot="activator" small icon color="error" @click.native="removeItem(props.item)">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                  <span>Eliminar</span>
                 </v-tooltip>
               </div>
               <div v-else>
@@ -116,12 +122,12 @@
                   </v-btn>
                   <span>Editar</span>
                 </v-tooltip>
-                <v-tooltip top v-if="props.item.approved == null && $store.getters.role == 'admin'">
+                <!-- <v-tooltip top v-if="props.item.approved == null && $store.getters.role == 'admin'">
                   <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item)">
                     <v-icon>delete</v-icon>
                   </v-btn>
                   <span>Eliminar</span>
-                </v-tooltip>
+                </v-tooltip> -->
                 <Transfer :departure="props.item" :color="props.expanded ? 'warning' : 'success'" v-if="departureType(props.item).group == 'COMISIÓN'"/>
               </div>
             </td>
@@ -153,7 +159,7 @@
         :landscape="true"
         type="month"
         locale="es-BO"
-        :max="($route.query.departureType == 'user' && !$store.getters.consultant) ? $moment($store.getters.dateNow).add(1, 'months').format() : $store.getters.dateNow"
+        :max="$moment($store.getters.dateNow).add(12, 'months').format()"
       ></v-date-picker>
     </v-dialog>
   </v-container>
@@ -350,11 +356,7 @@ export default {
       }
     },
     removeItem(item) {
-      if(item.departure_reason_id==24){
         this.bus.$emit("openDialogRemove", `cancel_vacation_departure/${item.id}`);
-      }else{
-        this.bus.$emit("openDialogRemove", `departure/${item.id}`);
-      }
       this.getRemainingDepartures()
     },
     async getLastContract(id) {
@@ -446,7 +448,7 @@ export default {
       try {
         this.loading = true
         let range = this.dateRange
-        let res = await axios.get(`departure`, {
+        let res = await axios.get(`departure_vacation`, {
           params: {
             from: range.from,
             to: range.to,
