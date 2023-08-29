@@ -63,9 +63,25 @@
       "departureType": "all"
     }
   }, {
+    "href": "vacationList",
+    "title": "Aprobar Vacación",
+    "icon": "done",
+    "permission": "read-departure",
+    "params": {
+      "departureType": "all"
+    }
+  }, {
     "href": "departureIndex",
     "title": "Permisos",
     "icon": "directions_run",
+    "permission": "!admin",
+    "params": {
+      "departureType": "user"
+    }
+  }, {
+    "href": "vacationList",
+    "title": "Vacaciones",
+    "icon": "beach_access",
     "permission": "!admin",
     "params": {
       "departureType": "user"

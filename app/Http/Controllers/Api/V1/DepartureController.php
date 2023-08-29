@@ -281,6 +281,47 @@ class DepartureController extends Controller
     return $pdf->stream($file_name);
   }
 
+  // reporte de permisos de vacaciones
+  function report_print_vacation(Request $request, $type)
+  {
+    $request['type'] = $type;
+    $request['approved'] = 'all';
+
+    $data = array('departures' => $this->index_vacation($request));
+    $date = (object)[
+      'from' => $request['from'],
+      'to' => $request['to']
+    ];
+
+    $data['title'] = (object)[
+      'name' => 'SOLICITUDES DE PERMISOS POR VACACIONES',
+      'date' => $date,
+      'type' => ($type == 'consultant') ? 'CONSULTORES' : 'EVENTUALES'
+    ];
+
+    $file_name = implode('_', ['solicitudes', 'vacaciones', $date->from, $date->to]) . '.pdf';
+
+    $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_date' => true, 'date' => Carbon::now()->ISOFormat('L H:m')))->render();
+
+    $options = [
+      'orientation' => 'landscape',
+      'page-width' => '216',
+      'page-height' => '279',
+      'margin-top' => '8',
+      'margin-bottom' => '16',
+      'margin-left' => '5',
+      'margin-right' => '5',
+      'encoding' => 'UTF-8',
+      'footer-html' => $footerHtml,
+      'user-style-sheet' => public_path('css/report-print.min.css')
+    ];
+
+    $pdf = \PDF::loadView('vacation.report', $data);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
+  }
+
   public function transfer(Request $request, $id)
   {
     $departure = Departure::findOrFail($id);
@@ -401,8 +442,7 @@ class DepartureController extends Controller
     DB::beginTransaction();
     try{
       $departure = Departure::find($id);
-      //return $departure;
-      if($departure && $departure->departure_reason->name == 'VACACIONES' && $departure->approved == false)
+      if($departure && $departure->departure_reason->name == 'VACACIONES' && $departure->approved != true)
       {
         $departure->days_on_vacation;
         foreach($departure->days_on_vacation as $day)
@@ -411,7 +451,7 @@ class DepartureController extends Controller
           $vacation_queue->rest_days = $vacation_queue->rest_days + $day->day;
           $vacation_queue->update();
         }
-        if ($departure->approved === null)
+        if ($departure->approved == null)
         {
           $departure->days_on_vacation()->delete();
           $departure->delete();

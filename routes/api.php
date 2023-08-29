@@ -36,6 +36,7 @@ Route::group([
   Route::resource('departure_group', 'Api\V1\DepartureGroupController')->only(['index', 'show']);
   Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
   Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  Route::get('departure_vacation', 'Api\V1\DepartureController@index_vacation');
   Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
   Route::post('departure/{departure_id}/transfer', 'Api\V1\DepartureController@transfer')->name('transfer');
   Route::get('departure/verify/cite', 'Api\V1\DepartureController@verify_cite')->name('departure_verify_cite');
@@ -55,6 +56,7 @@ Route::group([
   //Anulacion del permiso de vacacion
   Route::delete('cancel_vacation_departure/{departure_id}', 'Api\V1\DepartureController@cancel_vacation_departure');
   // Reportes de vacaciones
+  Route::get('vacation/report/print/{type}', 'Api\V1\DepartureController@report_print_vacation')->name('report_print_vacation');
   Route::get('departure_vacation/print/{departure_id}', 'Api\V1\DepartureController@print_note_vacation');
   Route::get('print_report_vacation', 'Api\V1\DepartureController@print_report_vacation');
   Route::get('print_vacation_individual/{employee_id}', 'Api\V1\DepartureController@print_vacation_individual');

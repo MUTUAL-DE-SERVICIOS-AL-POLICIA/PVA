@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     $queue_controller = new VacationQueueController();
     $schedule->call(function () use ($queue_controller, $request) {
       $queue_controller->queue_vacation($request);
-    })->everyDay();
+    })->dailyAt('00:00');
   }
 
   /**
