@@ -14,4 +14,8 @@ class DepartureReason extends Model
   {
     return $this->belongsTo(DepartureGroup::class);
   }
+  public function departures()
+  {
+    return $this->hasMany(Departure::class);
+  }
 }
