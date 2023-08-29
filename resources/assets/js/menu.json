@@ -63,6 +63,14 @@
       "departureType": "all"
     }
   }, {
+    "href": "vacationList",
+    "title": "Aprobar Vacación",
+    "icon": "beach_access",
+    "permission": "read-departure",
+    "params": {
+      "departureType": "all"
+    }
+  }, {
     "href": "departureIndex",
     "title": "Permisos",
     "icon": "directions_run",

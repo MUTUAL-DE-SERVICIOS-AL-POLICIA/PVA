@@ -23,6 +23,7 @@ import AttendanceDeviceConfig from './components/configuration/AttendanceDeviceC
 import VacationsRange from './components/configuration/VacationConfig'
 import SeniorityRange from './components/configuration/MinimumSalarySeniorityConfig'
 import ReportIndex from './components/report/ReportIndex'
+import VacationList from './components/departure/VacationList'
 
 export const routes = [
   {
@@ -204,6 +205,14 @@ export const routes = [
     path: '/report',
     component: ReportIndex,
     name: 'reportIndex',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/vacationList',
+    component: VacationList,
+    name: 'vacationList',
     meta: {
       requiresAuth: true
     }
