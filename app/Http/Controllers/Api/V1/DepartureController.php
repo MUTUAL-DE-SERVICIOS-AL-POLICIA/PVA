@@ -518,21 +518,16 @@ class DepartureController extends Controller
     $position_group_id = $request->input('position_group_id');
     $formatted_date = Carbon::now()->format('d-m-Y');
 
-    $employees = Employee::whereIn('id', function ($query) {
-      $query->select('employee_id')
-        ->from('contracts')
-        ->whereIn('contract_type_id', [1, 5])
-        ->where('active', true)
-        ->whereNull('deleted_at')
-        ->latest('start_date');
-    })
-      ->with('contracts.position.position_group')
-      ->when($position_group_id !== null, function ($query) use ($position_group_id) {
-        $query->whereHas('contracts.position', function ($subQuery) use ($position_group_id) {
-          $subQuery->where('position_group_id', '=', $position_group_id);
-        });
-      })
-      ->orderBy('last_name')
+    $employees = Employee::select('employees.*', 'pg.id AS position_group_id', 'pg.name AS position_group_name')
+      ->join('contracts as c', 'employees.id', '=', 'c.employee_id')
+      ->join('positions as p', 'c.position_id', '=', 'p.id')
+      ->join('position_groups as pg', 'p.position_group_id', '=', 'pg.id')
+      ->where('c.active', true)
+      ->whereNull('c.deleted_at')
+      ->whereIn('c.contract_type_id', [1, 5])
+      ->where('pg.id', $position_group_id)
+      ->groupBy('employees.id', 'employees.first_name', 'employees.last_name', 'pg.id', 'pg.name')
+      ->orderBy('employees.last_name', 'ASC')
       ->get();
 
     $data = [
