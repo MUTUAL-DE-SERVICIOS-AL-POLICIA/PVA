@@ -37,6 +37,7 @@ export default {
         let res = await axios.delete(this.path);
         this.toastr.success('Eliminado correctamente')
         this.bus.$emit("removed", Number(this.path.split('/').pop()));
+        this.bus.$emit("rechargeList")
         this.close()
       } catch (e) {
         console.log(e);
