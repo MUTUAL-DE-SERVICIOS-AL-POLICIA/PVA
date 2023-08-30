@@ -565,7 +565,7 @@ class DepartureController extends Controller
 
     $file_name = implode('_', ['reporte', 'vacaciones', $data['contract']->first_name, $data['contract']->last_name]) . '.pdf';
     $options = [
-      'orientation' => 'portrait',
+      'orientation' => 'landscape',
       'page-width' => '216',
       'page-height' => '279',
       'margin-top' => '8',
