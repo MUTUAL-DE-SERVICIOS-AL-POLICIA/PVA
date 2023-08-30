@@ -524,9 +524,13 @@ class DepartureController extends Controller
       ->join('position_groups as pg', 'p.position_group_id', '=', 'pg.id')
       ->where('c.active', true)
       ->whereNull('c.deleted_at')
-      ->whereIn('c.contract_type_id', [1, 5])
-      ->where('pg.id', $position_group_id)
-      ->groupBy('employees.id', 'employees.first_name', 'employees.last_name', 'pg.id', 'pg.name')
+      ->whereIn('c.contract_type_id', [1, 5]);
+  
+    if ($position_group_id !== null) {
+      $employees->where('pg.id', $position_group_id);
+    }
+      
+    $employees = $employees->groupBy('employees.id', 'employees.first_name', 'employees.last_name', 'pg.id', 'pg.name')
       ->orderBy('employees.last_name', 'ASC')
       ->get();
 
