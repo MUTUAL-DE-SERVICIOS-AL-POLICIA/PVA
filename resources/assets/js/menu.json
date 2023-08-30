@@ -164,6 +164,13 @@
         "icon": "trending_up",
         "permission": "read-procedure-eventual",
         "params": {}
+      },
+      {
+        "href": "salaryScaleIndex",
+        "title": "Escala salarial",
+        "icon": "north-east",
+        "permission": "read-procedure-eventual",
+        "params": {}
       }
     ]
   },  {

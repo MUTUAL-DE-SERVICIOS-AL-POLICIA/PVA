@@ -24,6 +24,7 @@ import VacationsRange from './components/configuration/VacationConfig'
 import SeniorityRange from './components/configuration/MinimumSalarySeniorityConfig'
 import ReportIndex from './components/report/ReportIndex'
 import VacationList from './components/departure/VacationList'
+import SalaryScaleIndex from './components/configuration/SalaryScaleIndex'
 
 export const routes = [
   {
@@ -213,6 +214,14 @@ export const routes = [
     path: '/vacationList',
     component: VacationList,
     name: 'vacationList',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/salary_scale',
+    component: SalaryScaleIndex,
+    name: 'salaryScaleIndex',
     meta: {
       requiresAuth: true
     }
