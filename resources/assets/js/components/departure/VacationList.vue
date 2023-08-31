@@ -53,7 +53,6 @@
         <v-btn color="info" @click="showDate = !showDate">
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
-        <DepartureEdit class="ml-3" :bus="bus" v-show="$route.query.departureType == 'user'"></DepartureEdit>
         <VacationRequest class="ml-3" v-show="$route.query.departureType == 'user'" :bus="bus"></VacationRequest>
         <RemoveItem :bus="bus"/>
       </v-toolbar>
@@ -159,7 +158,6 @@
 import Vue from 'vue'
 import Loading from '../Loading'
 import RemoveItem from "../RemoveItem"
-import DepartureEdit from './DepartureEdit'
 import ReportPrint from '../ReportPrint'
 import ManteinanceDialog from "../ManteinanceDialog"
 import Transfer from './Transfer'
@@ -170,7 +168,6 @@ export default {
   components: {
     Loading,
     RemoveItem,
-    DepartureEdit,
     ReportPrint,
     Transfer,
     ManteinanceDialog,
