@@ -7,7 +7,7 @@
     >
         <!-- B O T Ó N   I N I C I A   D I Á L O G O -->
         <v-tooltip slot="activator" top>
-            <v-icon large slot="activator" dark color="success">beach_access</v-icon>
+            <v-icon large slot="activator" dark color="success">add_circle</v-icon>
             <span>Nueva solicitud de vacaciones</span>
         </v-tooltip>
         <!-- U T I L I T A R I O S  D E L  D I Á L O G O -->
