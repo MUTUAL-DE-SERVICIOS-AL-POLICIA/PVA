@@ -72,7 +72,13 @@ $employee = $contract->employee;
             </tr>
             <tr>
                 <th class="bg-grey-darker text-xs text-white">N° de días asignados según CAS</th>
-                <td class="data-row py-2">{{ intval($employee->vacation_queues->last()->days) }}</td>
+                <td class="data-row py-2">
+                    @if ($employee->vacation_queues->last())
+                        {{ intval($employee->vacation_queues->last()->days) }}
+                    @else
+                        No se asignó cola de vacaciones
+                    @endif
+                </td>
             </tr>
         @else
             <tr>
@@ -88,7 +94,7 @@ $employee = $contract->employee;
         <thead>
             <tr class="bg-grey-darker text-xs text-white">
                 <th width="4%">N°</th>
-                <th width="30%">Concepto</th>
+                <th width="30%">Cite</th>
                 <th width="16%">Fecha de solicitud</th>
                 <th width="16%">Fecha inicial</th>
                 <th width="16%">Fecha final</th>
@@ -101,7 +107,7 @@ $employee = $contract->employee;
             @foreach ($employee->departures()->where('departure_reason_id', 24)->get() as $departure)
                 <tr>
                     <td>{{ $num }}</td>
-                    <td>{{ $departure->description }}</td>
+                    <td>{{ $departure->cite }}</td>
                     <td>{{ Carbon::parse($departure->created_at)->format('d-m-Y') }}</td>
                     <td>{{ Carbon::parse($departure->departure)->format('d-m-Y') }}</td>
                     <td>{{ Carbon::parse($departure->return)->format('d-m-Y') }}</td>

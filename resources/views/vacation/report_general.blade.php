@@ -69,7 +69,12 @@
                         <td class="data-row py-2">{{ $employee->activeCas->years }}</td>
                         <td class="data-row py-2">{{ $employee->activeCas->months }}</td>
                         <td class="data-row py-2">{{ $employee->activeCas->days }}</td>
-                        <td class="data-row py-2">{{ intval($employee->vacation_queues()->latest()->first()->days) }}
+                        <td class="data-row py-2">
+                            @if ($employee->vacation_queues()->latest()->first())
+                                {{ intval($employee->vacation_queues()->latest()->first()->days) }}
+                            @else
+                                No se asignó cola de vacaciones
+                            @endif
                         </td>
                     @else
                         <td colspan="6">Sin registro.</td>
