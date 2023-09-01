@@ -138,7 +138,7 @@ class VacationQueueController extends Controller
         {
           if(VacationQueue::where('employee_id', $employee_contract->employee_id)->whereYear('end_date', Carbon::now()->year)->count() == 0)
           {
-            if(Carbon::parse($employee_contract->start_date)->addDay()->format('m-d')  == Carbon::now()->format('m-d'))
+            if(Carbon::parse($employee_contract->employee->addmission_date)->addDay()->format('m-d')  == Carbon::now()->format('m-d'))
             {
               $cas = $employee_contract->employee->get_cas->where('active', true)->where('for_vacation', true)->first();
               if($cas)
