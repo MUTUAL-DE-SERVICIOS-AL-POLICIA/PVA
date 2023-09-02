@@ -194,7 +194,7 @@
                       ></v-date-picker>
                     </v-menu>
                   </v-flex>
-                  <v-flex xs6>
+                  <v-flex xs12>
                     <v-menu
                       :close-on-content-click="true"
                       v-model="menuDateV"
@@ -210,7 +210,7 @@
                       <v-text-field
                         slot="activator"
                         v-model="formatDateVacation"
-                        label="Fecha inicial para cálculo de vacaciones"
+                        label="Fecha inicial cálculo vacaciones"
                         prepend-icon="event"
                         readonly
                         clearable
