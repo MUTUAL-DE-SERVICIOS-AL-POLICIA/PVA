@@ -40,6 +40,7 @@
       ></v-divider>
       <ContractForm :contract="{}" :bus="bus"/>
       <RemoveItem :bus="bus"/>
+      <CasForm :bus="bus"/>
     </v-toolbar>
     <div v-if="loading">
       <Loading/>
@@ -81,6 +82,7 @@
                 <v-list-tile @click="printAddendum(props.item)" v-if="$store.getters.role == 'juridica' || $store.getters.role == 'admin'"> Adenda</v-list-tile>
                 <v-list-tile @click="print(props.item, 'printUp')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Alta del seguro</v-list-tile>
                 <v-list-tile @click="print(props.item, 'printLow')" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'"> Baja del seguro</v-list-tile>
+                <v-list-tile @click="printVacationIndividual(props.item.employee_id)" v-if="$store.getters.role == 'rrhh' || $store.getters.role == 'admin'">Vacaciones</v-list-tile>
               </v-list>
             </v-menu>
             <v-tooltip top v-if="['rrhh', 'admin'].includes($store.getters.role) && checkEnd(props.item) != '' && props.item.active == true">
@@ -95,6 +97,14 @@
               </v-btn>
               <span>Editar</span>
             </v-tooltip>
+            <!--registro de cas-->
+            <v-tooltip top>
+              <v-btn :class="withoutBorders" slot="activator" flat icon @click="addItemCas(props.item.employee)" color="info">
+                <v-icon>insert_chart_outlined</v-icon>
+              </v-btn>
+              <span>Registrar CAS</span>
+            </v-tooltip>
+            <!--registro de cas-->
             <v-tooltip top v-if="$store.getters.permissions.includes('delete-eventual') && props.item.payrolls_count == 0">
               <v-btn :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
@@ -136,13 +146,15 @@ import Vue from "vue";
 import ContractForm from "./ContractForm";
 import RemoveItem from "../RemoveItem";
 import Loading from "../Loading";
+import CasForm from "./CasForm";
 
 export default {
   name: "ContractIndex",
   components: {
     ContractForm,
     RemoveItem,
-    Loading
+    Loading,
+    CasForm
   },
   data() {
     return {
@@ -234,6 +246,10 @@ export default {
     editItem(item, mode) {
       this.bus.$emit("openDialog", $.extend({}, item, { mode: mode }));
     },
+    addItemCas(employee) {
+      this.bus.$emit("openDialogCas",$.extend({}, employee));
+
+    },
     async removeItem(item) {
       let payroll = await axios.get(
         "/payroll/getpayrollcontract/" + item.id
@@ -320,6 +336,22 @@ export default {
         console.log(e);
       }
     },
+    async printVacationIndividual(id){
+      try {
+        console.log(id)
+        let res = await axios({
+          method: 'GET',
+          url: `/print_vacation_individual/${id}`,
+          responseType: 'arraybuffer'
+        })
+      let blob = new Blob([res.data],{
+        type: "aplication/pdf"
+      })
+      printJS(window.URL.createObjectURL(blob))
+      } catch (e) {
+        console.log(e)
+      }
+    }
   }
 };
 </script>

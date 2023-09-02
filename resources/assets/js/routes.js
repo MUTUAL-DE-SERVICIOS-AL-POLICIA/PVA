@@ -20,6 +20,11 @@ import CompanyConfig from './components/configuration/CompanyConfig'
 import DepartureIndex from './components/departure/DepartureIndex'
 import AttendanceIndex from './components/attendance/AttendanceIndex'
 import AttendanceDeviceConfig from './components/configuration/AttendanceDeviceConfig'
+import VacationsRange from './components/configuration/VacationConfig'
+import SeniorityRange from './components/configuration/MinimumSalarySeniorityConfig'
+import ReportIndex from './components/report/ReportIndex'
+import VacationList from './components/departure/VacationList'
+import SalaryScaleIndex from './components/configuration/SalaryScaleIndex'
 
 export const routes = [
   {
@@ -178,6 +183,45 @@ export const routes = [
     path: '/attendace_device',
     component: AttendanceDeviceConfig,
     name: 'attendanceDeviceConfig',
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '/vacations_range',
+    component: VacationsRange,
+    name: 'vacationsRange',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/seniority_range',
+    component: SeniorityRange,
+    name: 'seniorityRange',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/report',
+    component: ReportIndex,
+    name: 'reportIndex',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/vacationList',
+    component: VacationList,
+    name: 'vacationList',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/salary_scale',
+    component: SalaryScaleIndex,
+    name: 'salaryScaleIndex',
     meta: {
       requiresAuth: true
     }

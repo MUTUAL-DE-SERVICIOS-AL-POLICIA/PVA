@@ -79,7 +79,7 @@ $copies = 2;
               <tbody>
                 <tr>
                   <td class="text-center bg-grey-darker text-white">Nº </td>
-                  <td class="uppercase">{{ $departure->id }}</td>
+                  <td class="uppercase">{{ $departure->code }}</td>
                 </tr>
                 <tr>
                   <td class="text-center bg-grey-darker text-white">Fecha solicitud</td>

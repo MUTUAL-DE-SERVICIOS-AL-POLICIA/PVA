@@ -99,7 +99,8 @@ export default {
         position_group_id: null,
         name: null,
         phone_number: null
-      };  
+      };
+      this.selectedIndex = -1
     },
     async save() {
       try {

@@ -194,6 +194,41 @@
                       ></v-date-picker>
                     </v-menu>
                   </v-flex>
+                  <v-flex xs6>
+                    <v-menu
+                      :close-on-content-click="true"
+                      v-model="menuDateV"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                      :disabled="$store.getters.role != 'admin' && $store.getters.role != 'rrhh'"
+                    >
+                      <v-text-field
+                        slot="activator"
+                        v-model="formatDateVacation"
+                        label="Fecha inicial para cálculo de vacaciones"
+                        prepend-icon="event"
+                        readonly
+                        clearable
+                        v-validate="deactivateContract ? '' : 'required'"
+                        name="Fecha inicial para cálculo de vacaciones"
+                        :error-messages="errors.collect('Fecha inicial para cálculo de vacaciones')"
+                        @input="dateVacationNull"
+                        :disabled="$store.getters.role != 'admin' && $store.getters.role != 'rrhh'"
+                      ></v-text-field>
+                      <v-date-picker
+                        v-model="datev"
+                        no-title
+                        @input="menuDateV = false"
+                        locale="es-bo"
+                        first-day-of-week="1"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-flex>
                 </v-layout>
                 <v-layout row wrap>
                   <v-flex xs6>
@@ -417,10 +452,12 @@ export default {
       date2: null,
       date3: null,
       date4: null,
+      datev: null,
       menuDate: false,
       menuDate2: false,
       menuDate3: false,
       menuDate4: false,
+      menuDateV: false,
       recontract: false,
       edit: false,
       dialog: false,
@@ -435,8 +472,9 @@ export default {
         start_date: "",
         end_date: "",
         retirement_date: "",
-        rrhh_cite_date: ""
+        rrhh_cite_date: "",
       },
+      vacation_date: "",
       selectedSchedule: {},
       juridica: false,
       minDate: this.$moment().format('YYYY')+'-01-01',
@@ -484,12 +522,22 @@ export default {
       }
     },
     formatDateCite() {
+      console.log(this.selectedItem.rrhh_cite_date)
       if (this.$moment(this.selectedItem.rrhh_cite_date).isValid()) {
         return this.$moment(this.selectedItem.rrhh_cite_date).format(
           "DD/MM/YYYY"
         );
       }
-    }
+    },
+    formatDateVacation() {
+      console.log("computed")
+      if (this.$moment(this.vacation_date).isValid()) {
+        console.log("is_valid")
+        return this.$moment(this.vacation_date).format(
+          "DD/MM/YYYY"
+        );
+      }
+    },
   },
   watch: {
     date(val) {
@@ -510,7 +558,12 @@ export default {
     },
     date4(val) {
       this.selectedItem.rrhh_cite_date = this.date4;
-    }
+    },
+    datev(val) {
+      console.log(val)
+      this.vacation_date = this.datev;
+      console.log("actualizando...", this.vacation_date)
+    },
   },
   methods: {
     async initialize() {
@@ -541,12 +594,14 @@ export default {
         start_date: "",
         end_date: "",
         retirement_date: "",
-        rrhh_cite_date: ""
+        rrhh_cite_date: "",
       };
+      this.vacation_date = "";
       this.date = null;
       this.date2 = null;
       this.date3 = null;
       this.date4 = null;
+      this.datev = null;
       this.selectedSchedule = {};
       this.tableEmployee = "";
       this.tablePosition = "";
@@ -574,6 +629,7 @@ export default {
               "/contract/" + this.selectedItem.id,
               $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
             );
+            this.saveEmployee(this.selectedItem.employee_id,this.vacation_date)
             this.close();
             this.toastr.success("Editado correctamente");
           } else {
@@ -581,6 +637,7 @@ export default {
               "/contract",
               $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
             );
+            this.saveEmployee(this.selectedItem.employee_id,this.vacation_date)
             this.close();
             this.toastr.success("Registrado correctamente");
           }
@@ -616,6 +673,7 @@ export default {
         this.tableEmployeeFree = 0;
         let employee = await axios.get("/employee/" + v);
         this.tableEmployee = employee.data;
+        this.vacation_date = this.tableEmployee.addmission_date
         let employeeFree = await axios.get("/contract/last_contract/" + v);
         if (employeeFree.data.active == true) {
           if (this.selectedIndex == -1) {
@@ -627,6 +685,7 @@ export default {
           }
         }
       }
+      console.log(this.tableEmployee)
     },
     async onSelectPosition(v) {
       if (v) {
@@ -649,6 +708,21 @@ export default {
           "/charge/" + position.data.charge_id
         );
         this.tableSalary = charge.data.base_wage;
+      }
+    },
+    async saveEmployee(employee_id,vacation_date) {
+      try {
+        let valid = await this.$validator.validateAll();
+        let res;
+        if (valid) {
+            res = await axios.patch(`/employee/${employee_id}`,
+            {
+              addmission_date: vacation_date
+            });
+            //this.toastr.success('Actualizado correctamente')
+        }
+      } catch (e) {
+        console.log(e);
       }
     },
     monthSalaryCalc() {
@@ -710,7 +784,10 @@ export default {
     },
     dateCiteNull() {
       this.selectedItem.rrhh_cite_date = null;
-    }
+    },
+    dateVacationNull() {
+      this.vacation_date = null;
+    },
   },
   mounted() {
     this.bus.$on("openDialog", item => {

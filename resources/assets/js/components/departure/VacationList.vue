@@ -9,7 +9,7 @@
             item-text="dislayName"
             item-value="value"
             class="subheading font-weight-medium"
-            label="Solicitudes"
+            label="Solicitudes de Vacación"
           ></v-select>
         </v-toolbar-title>
         <v-tooltip color="white" role="button" bottom>
@@ -21,29 +21,19 @@
           </div>
         </v-tooltip>
         <v-spacer></v-spacer>
-        <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
+        <!-- <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
           <v-chip
-            v-if="!$store.getters.consultant" :color="remainingDepartures.monthly.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
+            v-if="!$store.getters.consultant" :color="remainingDepartures.annually.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
             class="mr-3"
           >
             <v-avatar
               class="body-2 font-weight-black"
-              :color="remainingDepartures.monthly.time_remaining > 0 ? 'primary' : 'error'"
-            >{{ remainingDepartures.monthly.time_remaining / 60 }}</v-avatar>
-            <div class="subheading font-weight-regular">Hrs/Mes</div>
-          </v-chip>
-          <v-chip
-            v-if="!$store.getters.consultant" :color="remainingDepartures.annually.time_remaining > 0 ? 'accent' : 'red'" text-color="white"
-            class="mr-3"
-          >
-            <v-avatar
-              class="body-2 font-weight-black"
-              :color="remainingDepartures.annually.time_remaining > 0 ? 'info' : 'error'"
+              :color="remainingDepartures.annually.time_remaining > 0 ? 'success' : 'error'"
             >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
-            <div class="subheading font-weight-regular">Días/Año</div>
+            <div class="subheading font-weight-regular">Días vigentes</div>
           </v-chip>
-        </div>
-        <ReportPrint v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" url="departure/report/print"/>
+        </div> -->
+        <ReportPrint v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" url="vacation/report/print"/>
         <v-divider
           class="mx-2"
           inset
@@ -63,7 +53,7 @@
         <v-btn color="info" @click="showDate = !showDate">
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
-        <DepartureEdit class="ml-3" :bus="bus" v-show="$route.query.departureType == 'user'"></DepartureEdit>
+        <VacationRequest class="ml-3" v-show="$route.query.departureType == 'user'" :bus="bus"></VacationRequest>
         <RemoveItem :bus="bus"/>
       </v-toolbar>
       <div v-if="loading">
@@ -89,17 +79,23 @@
             <td class="text-xs-center bordered" @click="expand(props)">{{ $moment(props.item.return).format('L [a horas] HH:mm') }}</td>
             <td class="text-xs-center bordered">
               <div v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')">
-                <v-tooltip top v-show="props.item.approved === null || props.item.approved === false">
+                <v-tooltip top v-show="props.item.approved === null">
                   <v-btn slot="activator" small icon color="success" @click.native="switchActive(props.item.id, true)">
                     <v-icon>check</v-icon>
                   </v-btn>
                   <span>Aprobar</span>
                 </v-tooltip>
                 <v-tooltip top v-show="props.item.approved === null || props.item.approved === true">
-                  <v-btn slot="activator" small icon color="error" @click.native="switchActive(props.item.id, false)">
+                  <v-btn slot="activator" small icon color="danger" @click.native="switchActive(props.item.id, false)">
                     <v-icon>clear</v-icon>
                   </v-btn>
                   <span>Rechazar</span>
+                </v-tooltip>
+                <v-tooltip top v-show="props.item.approved === false">
+                  <v-btn slot="activator" small icon color="error" @click.native="removeItem(props.item)">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                  <span>Eliminar</span>
                 </v-tooltip>
               </div>
               <div v-else>
@@ -115,12 +111,12 @@
                   </v-btn>
                   <span>Editar</span>
                 </v-tooltip>
-                <v-tooltip top v-if="props.item.approved == null && $store.getters.role == 'admin'">
+                <!-- <v-tooltip top v-if="props.item.approved == null && $store.getters.role == 'admin'">
                   <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item)">
                     <v-icon>delete</v-icon>
                   </v-btn>
                   <span>Eliminar</span>
-                </v-tooltip>
+                </v-tooltip> -->
                 <Transfer :departure="props.item" :color="props.expanded ? 'warning' : 'success'" v-if="departureType(props.item).group == 'COMISIÓN'"/>
               </div>
             </td>
@@ -152,7 +148,7 @@
         :landscape="true"
         type="month"
         locale="es-BO"
-        :max="($route.query.departureType == 'user' && !$store.getters.consultant) ? $moment($store.getters.dateNow).add(1, 'months').format() : $store.getters.dateNow"
+        :max="$moment($store.getters.dateNow).add(12, 'months').format()"
       ></v-date-picker>
     </v-dialog>
   </v-container>
@@ -162,7 +158,6 @@
 import Vue from 'vue'
 import Loading from '../Loading'
 import RemoveItem from "../RemoveItem"
-import DepartureEdit from './DepartureEdit'
 import ReportPrint from '../ReportPrint'
 import ManteinanceDialog from "../ManteinanceDialog"
 import Transfer from './Transfer'
@@ -173,7 +168,6 @@ export default {
   components: {
     Loading,
     RemoveItem,
-    DepartureEdit,
     ReportPrint,
     Transfer,
     ManteinanceDialog,
@@ -349,11 +343,7 @@ export default {
       }
     },
     removeItem(item) {
-      if(item.departure_reason_id==24){
         this.bus.$emit("openDialogRemove", `cancel_vacation_departure/${item.id}`);
-      }else{
-        this.bus.$emit("openDialogRemove", `departure/${item.id}`);
-      }
       this.getRemainingDepartures()
     },
     async getLastContract(id) {
@@ -445,7 +435,7 @@ export default {
       try {
         this.loading = true
         let range = this.dateRange
-        let res = await axios.get(`departure`, {
+        let res = await axios.get(`departure_vacation`, {
           params: {
             from: range.from,
             to: range.to,

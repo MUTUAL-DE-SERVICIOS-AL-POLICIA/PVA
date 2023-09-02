@@ -17,8 +17,17 @@ Route::group([
   Route::get('employee', 'Api\V1\EmployeeController@index')->name('employees_list');
   Route::get('employee/{id}/attendance', 'Api\V1\EmployeeController@attendance')->name('employees_attendance');
   Route::get('employee/{id}/departure', 'Api\V1\EmployeeController@departure')->name('employees_departure');
+  // Cas Certification
+  Route::resource('cas_certification', 'Api\V1\CasCertificationController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  Route::get('getCasEmployee/{id}','Api\V1\CasCertificationController@getCasEmployee');
+  // Vacaciones
+  Route::resource('vacations', 'Api\V1\VacationController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  // Bono de Antiguedad
+  Route::resource('seniority_bonus', 'Api\V1\SeniorityBonusController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  Route::get('seniority_bonus_calculate', 'Api\V1\SeniorityBonusController@getBonusCalculate');
   // Position Group
   Route::get('position_group', 'Api\V1\PositionGroupController@index')->name('position_group_list');
+  Route::get('position_group_list', 'Api\V1\PositionGroupController@list')->name('list');
   // Location
   Route::get('location/list', 'Api\V1\LocationController@list')->name('location_lists');
   Route::get('location', 'Api\V1\LocationController@index')->name('location_list');
@@ -27,6 +36,7 @@ Route::group([
   Route::resource('departure_group', 'Api\V1\DepartureGroupController')->only(['index', 'show']);
   Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
   Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
+  Route::get('departure_vacation', 'Api\V1\DepartureController@index_vacation');
   Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
   Route::post('departure/{departure_id}/transfer', 'Api\V1\DepartureController@transfer')->name('transfer');
   Route::get('departure/verify/cite', 'Api\V1\DepartureController@verify_cite')->name('departure_verify_cite');
@@ -39,6 +49,17 @@ Route::group([
   Route::get('supply_request/print/{id}', 'Api\V1\SupplyRequestController@print');
   // Employee
   Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
+  //Cola de vacaciones
+  Route::get('count_days', 'Api\V1\VacationQueueController@count_days');
+  //Registro del permiso de vacacion
+  Route::post('vacation_departure', 'Api\V1\DepartureController@vacation_departure');
+  //Anulacion del permiso de vacacion
+  Route::delete('cancel_vacation_departure/{departure_id}', 'Api\V1\DepartureController@cancel_vacation_departure');
+  // Reportes de vacaciones
+  Route::get('vacation/report/print/{type}', 'Api\V1\DepartureController@report_print_vacation')->name('report_print_vacation');
+  Route::get('departure_vacation/print/{departure_id}', 'Api\V1\DepartureController@print_note_vacation');
+  Route::get('print_report_vacation', 'Api\V1\DepartureController@print_report_vacation');
+  Route::get('print_vacation_individual/{employee_id}', 'Api\V1\DepartureController@print_vacation_individual');
   // Position Group
   Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
   // Position current employee
@@ -466,6 +487,9 @@ Route::group([
       Route::patch('contract/{id}', 'Api\V1\ContractController@update')->name('contract_update');
       Route::patch('consultant_contract/{id}', 'Api\V1\ConsultantContractController@update')->name('consultant_contract_update');
     });
+
+    // Minimum Salary
+    Route::resource('minimum_salary', 'Api\V1\MinimumSalaryController')->only(['index', 'store', 'show', 'update', 'destroy']);
 
     // ALMACENES routes
     Route::group([

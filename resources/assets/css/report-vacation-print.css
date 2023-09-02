@@ -1,0 +1,108 @@
+body {
+    font-size: 1em;
+    font-family: sans-serif;
+    font-family: 'Arial', sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    clear: both;
+}
+
+th,
+td {
+    border: 2px solid black;
+    text-align: center;
+}
+
+.total {
+    font-weight: bold;
+}
+
+.header-left {
+    float: left;
+    clear: both;
+    width: 33%;
+}
+
+.header-right {
+    text-align: right;
+    float: right;
+    width: 33%;
+}
+
+.header-center {
+    margin-bottom: 1%;
+    text-align: center;
+    align-content: center;
+    float: left;
+    width: 33%;
+}
+
+#header-image {
+    float: left;
+    width: 15em;
+    height: 5em;
+    margin-bottom: 1em;
+}
+
+th {
+    word-wrap: break-word;
+    background-color: lightgray;
+}
+
+.footer {
+    border: none;
+}
+
+h1,
+h2,
+h3 {
+    text-transform: uppercase;
+}
+
+p,
+h1,
+h2,
+h3 {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+}
+
+.name {
+    text-align: left;
+    padding-left: 1.5%;
+}
+
+/* Fix snappy header */
+thead {
+    display: table-header-group
+}
+
+tfoot {
+    display: table-row-group
+}
+
+tr {
+    page-break-inside: avoid
+}
+
+@media print {
+    body {
+        margin-top: 0 !important;
+    }
+}
+
+.header-text {
+    word-wrap: break-word;
+    background-color: lightgray;
+    font-weight: bold;
+}
+
+.text-left {
+    text-align: left;
+    /* padding-left: 1.5%; */
+    padding-left: 1.5% !important;
+}

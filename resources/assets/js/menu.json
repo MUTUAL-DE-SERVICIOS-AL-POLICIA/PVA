@@ -63,9 +63,25 @@
       "departureType": "all"
     }
   }, {
+    "href": "vacationList",
+    "title": "Aprobar Vacación",
+    "icon": "done",
+    "permission": "read-departure",
+    "params": {
+      "departureType": "all"
+    }
+  }, {
     "href": "departureIndex",
     "title": "Permisos",
     "icon": "directions_run",
+    "permission": "!admin",
+    "params": {
+      "departureType": "user"
+    }
+  }, {
+    "href": "vacationList",
+    "title": "Vacaciones",
+    "icon": "beach_access",
     "permission": "!admin",
     "params": {
       "departureType": "user"
@@ -134,9 +150,36 @@
         "icon": "dock",
         "permission": "admin",
         "params": {}
+      },
+      {
+        "href": "vacationsRange",
+        "title": "Vacaciones",
+        "icon": "flight_takeoff",
+        "permission": "read-procedure-eventual",
+        "params": {}
+      },
+      {
+        "href": "seniorityRange",
+        "title": "Salario Mínimo y Antiguedad",
+        "icon": "trending_up",
+        "permission": "read-procedure-eventual",
+        "params": {}
+      },
+      {
+        "href": "salaryScaleIndex",
+        "title": "Escala salarial",
+        "icon": "north-east",
+        "permission": "read-procedure-eventual",
+        "params": {}
       }
     ]
-  }, {
+  },  {
+    "href": "reportIndex",
+    "title": "Reportes",
+    "icon": "report",
+    "permission": "read-eventual",
+    "params": {}
+  },{
     "href": "userIndex",
     "title": "Usuarios",
     "icon": "security",

@@ -34,7 +34,9 @@ Vue.use(Vuetify, {
     danger: '#FA9347',
     warning: "#FFB339",
     success: "#006157",
-    normal: '#F5F5F5'
+    normal: '#F5F5F5',
+    degrade: '#8DD2F2',
+    degrade_alert: "#FB939F",
   }
 })
 
