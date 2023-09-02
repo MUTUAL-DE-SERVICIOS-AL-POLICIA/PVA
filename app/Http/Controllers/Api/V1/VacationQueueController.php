@@ -170,4 +170,21 @@ class VacationQueueController extends Controller
         return $e;
       }
     }
+    // calcula la cantidad de dias restantes para vacaciones
+    public function sum_rest_days(Request $request)
+    {
+      $request->validate([
+        'employee_id' => 'required|exists:employees,id',
+        'date' => 'required|date'
+      ]);
+      $count = 0;
+      $employee_id = $request->input('employee_id');
+      $date = $request->input('date');
+      $count = Employee::findOrFail($employee_id)
+              ->vacation_queues()
+              ->where('max_date', '>=', Carbon::parse($date)->format('Y-m-d'))
+              ->sum('rest_days');
+      return $count;
+    }
+      
 }

@@ -71,7 +71,7 @@
                         <td class="data-row py-2">{{ $employee->activeCas->days }}</td>
                         <td class="data-row py-2">
                             @if ($employee->vacation_queues()->latest()->first())
-                                {{ intval($employee->vacation_queues()->latest()->first()->days) }}
+                                {{ intval($employee->days_assigned) }}
                             @else
                                 No se asignó cola de vacaciones
                             @endif
@@ -79,8 +79,14 @@
                     @else
                         <td colspan="6">Sin registro.</td>
                     @endif
-                    <td class="data-row py-2">A</td>
-                    <td class="data-row py-2">B</td>
+                    @if ($employee->vacation_queues->isEmpty())
+                        <td colspan="2" class="data-row py-2">Sin datos</td>
+                    @else
+                        <td class="data-row py-2">
+                            {{ intval($employee->days_assigned) - intval($employee->sum_rest_days) }}</td>
+                        <td class="data-row py-2">{{ intval($employee->sum_rest_days) }}</td>
+                    @endif
+
                 </tr>
             @endforeach
         </tbody>
