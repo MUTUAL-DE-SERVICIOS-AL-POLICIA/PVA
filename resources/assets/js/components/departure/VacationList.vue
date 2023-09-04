@@ -54,7 +54,7 @@
           {{ $moment(this.date).format('MMMM') }}
         </v-btn>
         <VacationRequest class="ml-3" v-show="$route.query.departureType == 'user'" :bus="bus"></VacationRequest>
-        <DepartureEdit class="ml-3" :bus="bus" v-show="$route.query.departureType == 'user'"></DepartureEdit>
+        <DepartureEdit class="ml-3" :bus="bus" v-show="$route.query.departureType == 'user'" type="Vacation"></DepartureEdit>
         <RemoveItem :bus="bus"/>
       </v-toolbar>
       <div v-if="loading">
