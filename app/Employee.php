@@ -375,5 +375,22 @@ class Employee extends Model
   {
     return $this->hasMany(VacationQueue::class);
   }
-
+  public function accumulated_days($employee_id)
+  {
+    return VacationQueue::where('employee_id', $employee_id)
+      ->where(Carbon::now()->format('Y-m-d'), '<=', 'max_date')
+      ->sum('days');
+  }
+  public function getSumRestDaysAttribute()
+  {
+    return $this->vacation_queues()
+      ->where('max_date', '>=', Carbon::parse(now())->format('Y-m-d'))
+      ->sum('rest_days');
+  }
+  public function getDaysAssignedAttribute()
+  {
+    return $this->vacation_queues()
+      ->where('max_date', '>=', Carbon::parse(now())->format('Y-m-d'))
+      ->sum('days');
+  }
 }
