@@ -109,9 +109,9 @@ class VacationQueueController extends Controller
           }
           elseif($days_on_vacation->date == Carbon::parse($days_on_vacation->departure->return)->format('Y-m-d') && $days_on_vacation->day == 0.5)
           {
-            if(Carbon::parse($departure->return)->format('H:i') == '08:30')
+            if(Carbon::parse($departure->return)->format('H:i') == '12:30')
               $afternoon = false;
-            elseif(Carbon::parse($departure->return)->format('H:i') == '14:30')
+            elseif(Carbon::parse($departure->return)->format('H:i') == '18:30')
               $morning = false;
           }
           array_push($days, [
@@ -170,4 +170,21 @@ class VacationQueueController extends Controller
         return $e;
       }
     }
+    // calcula la cantidad de dias restantes para vacaciones
+    public function sum_rest_days(Request $request)
+    {
+      $request->validate([
+        'employee_id' => 'required|exists:employees,id',
+        'date' => 'required|date'
+      ]);
+      $count = 0;
+      $employee_id = $request->input('employee_id');
+      $date = $request->input('date');
+      $count = Employee::findOrFail($employee_id)
+              ->vacation_queues()
+              ->where('max_date', '>=', Carbon::parse($date)->format('Y-m-d'))
+              ->sum('rest_days');
+      return $count;
+    }
+
 }
