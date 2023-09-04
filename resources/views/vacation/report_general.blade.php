@@ -59,9 +59,9 @@
             @foreach ($employees as $employee)
                 <tr>
                     <td class="data-row py-2">{{ $num = $num + 1 }}</td>
-                    <td class="data-row py-2">{{ $employee->fullName }}</td>
+                    <td class="data-row py-2 text-left">{{ $employee->fullName }}</td>
                     <td class="data-row py-2">{{ $employee->identity_card }}</td>
-                    <td class="data-row py-2">{{ $employee->last_contract()->start_date }}</td>
+                    <td class="data-row py-2">{{ $employee->addmission_date }}</td>
 
                     @if ($employee->activeCas)
                         <td class="data-row py-2">{{ $employee->activeCas->certification_number }}</td>
@@ -69,16 +69,16 @@
                         <td class="data-row py-2">{{ $employee->activeCas->years }}</td>
                         <td class="data-row py-2">{{ $employee->activeCas->months }}</td>
                         <td class="data-row py-2">{{ $employee->activeCas->days }}</td>
-                        <td class="data-row py-2">
-                            @if ($employee->vacation_queues()->latest()->first())
-                                {{ intval($employee->days_assigned) }}
-                            @else
-                                No se asignó cola de vacaciones
-                            @endif
-                        </td>
                     @else
-                        <td colspan="6">Sin registro.</td>
+                        <td colspan="5">Sin registro de CAS</td>
                     @endif
+                    <td class="data-row py-2">
+                        @if ($employee->vacation_queues()->latest()->first())
+                            {{ intval($employee->days_assigned) }}
+                        @else
+                            0
+                        @endif
+                    </td>
                     @if ($employee->vacation_queues->isEmpty())
                         <td colspan="2" class="data-row py-2">Sin datos</td>
                     @else
@@ -86,7 +86,6 @@
                             {{ intval($employee->days_assigned) - intval($employee->sum_rest_days) }}</td>
                         <td class="data-row py-2">{{ intval($employee->sum_rest_days) }}</td>
                     @endif
-
                 </tr>
             @endforeach
         </tbody>
