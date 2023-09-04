@@ -383,6 +383,26 @@ class DepartureController extends Controller
         $lastCode = Departure::latest()->first()->code;
         $newCode = $lastCode + 1;
         $sw = true;
+        if(Carbon::parse($request->departure)->format('H:i:s') != Carbon::parse($request->return)->format('H:i:s'))
+        {
+          $new_return = '00:00:00';
+          if(Carbon::parse($request->departure)->format('H:i:s') == ('08:30:00'))
+            $new_return = Carbon::parse('18:30:00')->format('H:i:s');
+          elseif(Carbon::parse($request->departure)->format('H:i:s') == ('14:30:00'))
+            $new_return = Carbon::parse('12:30:00')->format('H:i:s');
+          $date = Carbon::parse($request->return)->setTimeFromTimeString($new_return);
+          $request->merge(['return' => $date->toDateTimeString()]);
+        }
+        else
+        {
+          $new_return = '00:00:00';
+          if(Carbon::parse($request->departure)->format('H:i:s') == ('08:30:00'))
+            $new_return = Carbon::parse('12:30:00')->format('H:i:s');
+          elseif(Carbon::parse($request->departure)->format('H:i:s') == ('14:30:00'))
+            $new_return = Carbon::parse('18:30:00')->format('H:i:s');
+          $date = Carbon::parse($request->return)->setTimeFromTimeString($new_return);
+          $request->merge(['return' => $date->toDateTimeString()]);
+        }
         $departure = Departure::create(array_merge($request->all(), [
           'code' => $newCode,
         ]));
@@ -525,11 +545,11 @@ class DepartureController extends Controller
       ->where('c.active', true)
       ->whereNull('c.deleted_at')
       ->whereIn('c.contract_type_id', [1, 5]);
-  
+
     if ($position_group_id !== null) {
       $employees->where('pg.id', $position_group_id);
     }
-      
+
     $employees = $employees->groupBy('employees.id', 'employees.first_name', 'employees.last_name', 'pg.id', 'pg.name')
       ->orderBy('employees.last_name', 'ASC')
       ->get();
