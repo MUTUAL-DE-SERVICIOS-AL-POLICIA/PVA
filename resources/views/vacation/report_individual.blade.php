@@ -1,6 +1,5 @@
 <?php
 use App\Helpers\Util;
-$employee = $contract->employee;
 ?>
 
 <!DOCTYPE html>
@@ -74,16 +73,16 @@ $employee = $contract->employee;
                 <th class="bg-grey-darker text-xs text-white">N° de días asignados según CAS</th>
                 <td class="data-row py-2">
                     @if ($employee->vacation_queues->last())
-                        {{ intval($employee->vacation_queues->last()->days) }}
+                        {{ intval($vacation_queues->last()->days) }}
                     @else
-                        No se asignó cola de vacaciones
+                        0
                     @endif
                 </td>
             </tr>
         @else
             <tr>
                 <th class="bg-grey-darker text-xs text-white">Datos del CAS</th>
-                <td rowspan="2">Sin registro.</td>
+                <td rowspan="2">Sin registro</td>
             </tr>
         @endif
 
@@ -103,19 +102,48 @@ $employee = $contract->employee;
             </tr>
         </thead>
         <tbody>
-            <?php $num = 1; ?>
-            @foreach ($employee->departures()->where('departure_reason_id', 24)->get() as $departure)
-                <tr>
-                    <td>{{ $num }}</td>
-                    <td>{{ $departure->cite }}</td>
-                    <td>{{ Carbon::parse($departure->created_at)->format('d-m-Y') }}</td>
-                    <td>{{ Carbon::parse($departure->departure)->format('d-m-Y') }}</td>
-                    <td>{{ Carbon::parse($departure->return)->format('d-m-Y') }}</td>
-                    <td>{{ $departure->sum_days($departure->id) }}</td>
-                    <td>B</td>
-                </tr>
-                <?php $num++; ?>
+            <?php
+            $shownDepartures = [];
+            ?>
+            @foreach ($vacation_queues as $key => $vacation_queue)
+                @if ($vacation_days >= 0)
+                    <tr class="bg-grey-lightest">
+                        <td colspan="2"> CAS - Días: {{ intval($vacation_queue->days) }} </td>
+                        <td colspan="2"> Fecha de asignación: {{ $vacation_queue->end_date }}</td>
+                        <td colspan="3"> Fecha de vencimiento: {{ $vacation_queue->max_date }}</td>
+                    </tr>
+                @endif
+
+                @foreach ($departures as $departure)
+                    @if (Carbon::parse($departure->created_at) <= Carbon::parse($vacation_queue->max_date) &&
+                            Carbon::parse($vacation_queue->end_date) <=
+                                Carbon::parse($departure->departure) && !in_array($departure->id, $shownDepartures))
+                        <tr>
+                            <td>{{ $num = $num + 1 }}</td>
+                            <td>{{ $departure->cite }}</td>
+                            <td>{{ Carbon::parse($departure->created_at)->format('d-m-Y') }}</td>
+                            <td>{{ Carbon::parse($departure->departure)->format('d-m-Y') }}</td>
+                            <td>{{ Carbon::parse($departure->return)->format('d-m-Y') }}</td>
+                            <td>{{ round($sum = $departure->sum_days($departure->id), 1) }}</td>
+                            <td>{{ $vacation_days = $vacation_days - $sum }}</td>
+                        </tr>
+                        <?php
+                        $shownDepartures[] = $departure->id;
+                        ?>
+                    @endif
+                @endforeach
+
+                @if ($key < count($vacation_queues) - 1)
+                    <?php
+                    if (Carbon::parse($vacation_queues[$key]->max_date)->diffInYears(Carbon::parse($vacation_queues[$key + 1]->max_date)) <= 2) {
+                        $vacation_days = $vacation_days + $vacation_queues[$key + 1]->days;
+                    } else {
+                        $vacation_days = $vacation_queues[$key + 1]->days;
+                    }
+                    ?>
+                @endif
             @endforeach
+
         </tbody>
     </table>
 </body>

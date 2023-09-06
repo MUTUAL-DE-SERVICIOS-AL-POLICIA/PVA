@@ -83,8 +83,11 @@
                         <td colspan="2" class="data-row py-2">Sin datos</td>
                     @else
                         <td class="data-row py-2">
-                            {{ intval($employee->days_assigned) - intval($employee->sum_rest_days) }}</td>
-                        <td class="data-row py-2">{{ intval($employee->sum_rest_days) }}</td>
+                            {{ round($employee->days_assigned - $employee->sum_rest_days, 1) }}
+                        </td>
+                        <td class="data-row py-2">
+                            {{ round($employee->sum_rest_days, 1) }}
+                        </td>
                     @endif
                 </tr>
             @endforeach

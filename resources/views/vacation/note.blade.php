@@ -123,9 +123,9 @@ $contract = $departure->employee->contract_in_date($departure->first()->departur
             <td class="bg-grey-darker text-xs text-white">{{ Carbon::parse($vacation->date)->isoFormat('dddd') }}</td>
             @if ($vacation->day < 1)
                 <td class="noon">M</td>
-                <td class="noon">{{ Carbon::parse($vacation->date)->format('d-m-Y') }}</td>
+                <td class="noon">{{ Carbon::parse($vacation->date)->format('d/m/Y') }}</td>
             @else
-                <td colspan="2">{{ Carbon::parse($vacation->date)->format('d-m-Y') }}</td>
+                <td colspan="2">{{ Carbon::parse($vacation->date)->format('d/m/Y') }}</td>
             @endif
             @endforeach
         </tr>
