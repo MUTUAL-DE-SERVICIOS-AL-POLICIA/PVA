@@ -579,15 +579,31 @@ class DepartureController extends Controller
 
   public function print_vacation_individual($employee_id)
   {
-    $contract_id = Employee::find($employee_id)->last_contract()->id;
+    $num = 0;
+    $employee = Employee::find($employee_id);
+    $departures = $employee
+      ->departures()
+      ->where('departure_reason_id', 24)
+      ->orderBy('created_at', 'asc')
+      ->get();
 
-    $data = array(
-      'contract' => Contract::with(['position' => function ($query) {
-        return $query->with('position_group');
-      }])->findOrFail($contract_id)
-    );
 
-    $file_name = implode('_', ['reporte', 'vacaciones', $data['contract']->first_name, $data['contract']->last_name]) . '.pdf';
+    $vacation_queues = VacationQueue::where('employee_id', $employee_id)
+      ->orderBy('start_date', 'asc')
+      ->get();
+    $vacation_days = $vacation_queues->first()->days;
+
+
+    $data = [
+      'num' => $num,
+      'employee' => $employee,
+      'departures' => $departures,
+      'vacation_queues' => $vacation_queues,
+      'vacation_days' => $vacation_days
+    ];
+
+
+    $file_name = implode('_', ['reporte', 'vacaciones', $employee->first_name, $employee->last_name]) . '.pdf';
     $options = [
       'orientation' => 'landscape',
       'page-width' => '216',
