@@ -848,7 +848,7 @@ export default {
           catch (e) {
           console.log(e)
         } finally {
-          this.bus.$emit('printDeparture', res.data)
+          this.bus.$emit('printDeparture', res.data.id)
           this.closeDialog()
         }
       }

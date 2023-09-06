@@ -104,7 +104,7 @@
               </div>
               <div v-else>
                 <v-tooltip top>
-                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : ''" @click.native="print(props.item).id">
+                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : ''" @click.native="print(props.item.id)">
                     <v-icon>print</v-icon>
                   </v-btn>
                   <span>Imprimir</span>
@@ -166,7 +166,6 @@ import DepartureEdit from './DepartureEdit'
 import ReportPrint from '../ReportPrint'
 import ManteinanceDialog from "../ManteinanceDialog"
 import Transfer from './Transfer'
-import VacationRequest from './VacationRequest.vue'
 
 export default {
   name: 'Departure',
@@ -177,7 +176,6 @@ export default {
     ReportPrint,
     Transfer,
     ManteinanceDialog,
-    VacationRequest
   },
   data() {
     return {
@@ -283,9 +281,9 @@ export default {
     }
   },
   mounted() {
-    this.bus.$on('printDeparture', departure => {
-      this.print(departure)
-      this.getDeparture(departure.id)
+    this.bus.$on('printDeparture', departureId => {
+      this.print(departureId)
+      this.getDeparture(departureId)
       this.getRemainingDepartures()
     })
     this.bus.$on('removed', departureId => {
@@ -377,23 +375,15 @@ export default {
       }
       props.expanded = !props.expanded
     },
-    async print(item) {
+    async print(id) {
       try {
         this.loading = true
         let res
-        if(item.departure_reason_id==24){
           res = await axios({
           method: 'GET',
-          url: `departure_vacation/print/${item.id}`,
+          url: `departure/print/${id}`,
           responseType: "arraybuffer"
           })
-        }else{
-          res = await axios({
-          method: 'GET',
-          url: `departure/print/${item.id}`,
-          responseType: "arraybuffer"
-          })
-        }
         let blob = new Blob([res.data], {
           type: "application/pdf"
         })
