@@ -606,8 +606,10 @@ export default {
               this.selectedItem.consultant_position_id = res.data.id
               this.toastr.success('Cargo creado exitosamente')
             }
+            if (!this.selectedItem.new) {
             let res = await axios.patch(`/consultant_contract/${this.selectedItem.id}`, this.selectedItem)
             this.toastr.success('Contrato actualizado exitosamente')
+            }
           } else {
             let res = await axios.post(`/consultant_position`, {
               name: this.selectedItem.consultant_position,

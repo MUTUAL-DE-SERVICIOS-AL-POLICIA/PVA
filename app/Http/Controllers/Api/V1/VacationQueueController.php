@@ -109,9 +109,9 @@ class VacationQueueController extends Controller
           }
           elseif($days_on_vacation->date == Carbon::parse($days_on_vacation->departure->return)->format('Y-m-d') && $days_on_vacation->day == 0.5)
           {
-            if(Carbon::parse($departure->return)->format('H:i') == '08:30')
+            if(Carbon::parse($departure->return)->format('H:i') == '12:30')
               $afternoon = false;
-            elseif(Carbon::parse($departure->return)->format('H:i') == '14:30')
+            elseif(Carbon::parse($departure->return)->format('H:i') == '18:30')
               $morning = false;
           }
           array_push($days, [
@@ -186,5 +186,5 @@ class VacationQueueController extends Controller
               ->sum('rest_days');
       return $count;
     }
-      
+
 }

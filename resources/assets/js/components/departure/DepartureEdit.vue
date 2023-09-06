@@ -5,7 +5,7 @@
     @keydown.esc="dialog = false"
     persistent
   >
-    <v-tooltip slot="activator" top>
+    <v-tooltip slot="activator" top v-if="type!='Vacation'">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nueva Solicitud</span>
     </v-tooltip>
@@ -340,7 +340,7 @@
 <script>
 export default {
   name: 'Form',
-  props: ['bus'],
+  props: ['bus','type'],
   data() {
     return {
       loading: true,
