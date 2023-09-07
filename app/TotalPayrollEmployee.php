@@ -5,6 +5,7 @@ namespace App;
 class TotalPayrollEmployee {
 	function __construct() {
 		$this->base_wage = 0;
+		$this->seniority_bonus = 0;
 		$this->quotable = 0;
 		$this->discount_old = 0;
 		$this->discount_common_risk = 0;
@@ -21,6 +22,9 @@ class TotalPayrollEmployee {
 
 	public function add_base_wage($value) {
 		$this->base_wage += $value;
+	}
+	public function add_seniority_bonus($value) {
+		$this->seniority_bonus += $value;
 	}
 	public function add_quotable($value) {
 		$this->quotable += $value;

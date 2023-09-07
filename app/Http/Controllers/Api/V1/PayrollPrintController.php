@@ -65,6 +65,7 @@ class PayrollPrintController extends Controller
         }
 
         $total_discounts->add_base_wage($e->base_wage);
+        $total_discounts->add_seniority_bonus($e->seniority_bonus);
         $total_discounts->add_quotable($e->quotable);
         $total_discounts->add_discount_old($e->discount_old);
         $total_discounts->add_discount_common_risk($e->discount_common_risk);

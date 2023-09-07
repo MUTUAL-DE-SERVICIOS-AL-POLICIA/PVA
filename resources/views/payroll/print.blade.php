@@ -74,7 +74,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                     <th width="2%">C.I.</th>
                     <th width="10%">TRABAJADOR</th>
                 @if ($title->report_type == 'T')
-                    <th width="2%">SUENDO NETO</th>
+                    <th width="2%">SUELDO NETO</th>
                     <th width="2%">Minimo No imponible</th>
                     <th width="2%">Diferencia sujeto a impuestos</th>
                     <th width="2%">Impuesto 13% Debito Fiscal</th>
@@ -109,6 +109,9 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         <th width="1%">DIAS TRABAJADOS</th>
                     @if ($title->report_type == 'H')
                         <th width="2%">HABER BÁSICO</th>
+                    @endif
+                    @if ($title->report_type == 'H')
+                        <th width="2%">BONO DE ANTIGÜEDAD</th>
                     @endif
                         <th width="2%">TOTAL GANADO</th>
                         <th width="1%">AFP</th>
@@ -267,6 +270,9 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         <td>{{ $employee->worked_days }}</td>
                     @if ($title->report_type == 'H')
                         <td>{{ Util::format_number($employee->base_wage) }}</td>
+                    @endif
+                    @if ($title->report_type == 'H')
+                        <td>{{ Util::format_number($employee->seniority_bonus) }}</td>
                     @endif
                         <td>{{ Util::format_number($employee->quotable) }}</td>
                         <td>{{ $employee->management_entity }}</td>
