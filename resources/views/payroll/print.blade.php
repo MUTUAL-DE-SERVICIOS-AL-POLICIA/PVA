@@ -347,6 +347,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                 <td class="footer" colspan="{{ $table_footer_space1 }}">TOTAL PLANILLA ({{ count($employees) == 0 ? 0 : $index }} {{ count($employees) == 0 ? 'FUNCIONARIOS' : ($index == 1 ? 'FUNCIONARIO' : 'FUNCIONARIOS')}})</td>
                 @if ($title->report_type == 'H')
                     <td class="footer">{{ Util::format_number($total_discounts->base_wage) }}</td>
+                    <td class="footer">{{ Util::format_number($total_discounts->seniority_bonus) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->quotable) }}</td>
                     <td class="footer"></td>
                     <td class="footer">{{ Util::format_number($total_discounts->discount_old) }}</td>
