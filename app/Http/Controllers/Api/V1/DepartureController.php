@@ -591,8 +591,12 @@ class DepartureController extends Controller
     $vacation_queues = VacationQueue::where('employee_id', $employee_id)
       ->orderBy('start_date', 'asc')
       ->get();
-    $vacation_days = $vacation_queues->first()->days;
 
+    if ($vacation_queues->count() > 0) {
+        $vacation_days = $vacation_queues->first()->days;
+    } else {
+        $vacation_days = 0;
+    }
 
     $data = [
       'num' => $num,
@@ -601,7 +605,6 @@ class DepartureController extends Controller
       'vacation_queues' => $vacation_queues,
       'vacation_days' => $vacation_days
     ];
-
 
     $file_name = implode('_', ['reporte', 'vacaciones', $employee->first_name, $employee->last_name]) . '.pdf';
     $options = [
