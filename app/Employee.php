@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\Util;
+use App\Http\Controllers\Api\V1\SeniorityBonusController;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -369,6 +370,24 @@ class Employee extends Model
   public function GetActiveCasAttribute()
   {
     return $this->get_cas->where('active', true)->first();
+  }
+
+  public function GetSeniorityBonusAttribute()
+  {
+    if($this->active_cas){
+      $years = $this->active_cas->years;
+    }else{
+      $years = 0;
+    }
+    $bonus = 0;
+    $seniorityBonuses = app(SeniorityBonusController::class)->getBonusCalculate();
+ 
+    foreach ($seniorityBonuses as $seniorityBonus) {
+      if ($years >= $seniorityBonus->from && $years <= $seniorityBonus->to) {
+        $bonus = $seniorityBonus->calculated;
+      }
+    }
+     return $bonus;
   }
 
   public function vacation_queues()

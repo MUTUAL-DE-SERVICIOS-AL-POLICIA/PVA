@@ -42,6 +42,8 @@ class EmployeePayroll
     $this->end_date = is_null($contract->end_date) ? 'Indefinido' : Carbon::parse($contract->end_date)->format('d/m/Y');
     $this->retirement_date = is_null($contract->retirement_date) ? null : Carbon::parse($contract->retirement_date)->format('d/m/Y');
     $this->base_wage = floatval($payroll->position->charge->base_wage);
+    // agregar el bono de antiguedad 
+    $this->seniority_bonus = $employee->seniority_bonus;
     $this->management_entity = $employee->management_entity->name;
     $this->management_entity_id = $employee->management_entity->id;
     $this->unworked_days = $payroll->unworked_days;
@@ -86,6 +88,7 @@ class EmployeePayroll
   public function setZeroAccounts()
   {
     $this->base_wage = 0;
+    $this->seniority_bonus = 0;
     $this->quotable = 0;
     $this->code = 0;
     $this->discount_old = 0;
@@ -110,7 +113,7 @@ class EmployeePayroll
   private function employeeDiscounts($payroll)
   {
     $this->id = $payroll->id;
-    $this->quotable = $this->base_wage * $this->worked_days / 30;
+    $this->quotable = $this->base_wage * $this->worked_days / 30 + $this->seniority_bonus;
     $this->code = $payroll->code;
     $this->discount_old = $this->quotable * $payroll->procedure->employee_discount->elderly;
     $this->discount_common_risk = $this->quotable * $payroll->procedure->employee_discount->common_risk;
