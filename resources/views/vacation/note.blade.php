@@ -82,16 +82,16 @@ $contract = $departure->employee->contract_in_date($departure->first()->departur
         </div>
         <div class="text-justify">
             <span>
-                Yo: <b>{{ $departure->employee->fullName() }}</b> con el cargo de <b>{{ $contract->position->name }}</b>
-                perteneciente al área de <b>{{ $contract->position->position_group->name }}</b>, mediante la
-                presente, tengo a bien dirigirme a su Autoridad con el propósito de solicitar me autorice
-                tomar vacaciones, toda vez que he coordinado con mi Jefe Inmediato Superior y Superior Jerárquico, no
-                comprometiendo el desarrollo de las actividades laborales en mi área correspondiente, habiendo
-                considerado las previsiones para el efecto, de acuerdo al siguiente detalle:
+                Por la presente, yo, <b>{{ $departure->employee->fullName() }}</b>, desempeñando el cargo de <b>{{ $contract->position->name }}</b>
+                en el área de <b>{{ $contract->position->position_group->name }}</b>, me dirijo respetuosamente a su Autoridad con el propósito de 
+                solicitar un PERMISO A CUENTA DE VACACIONES. Es importante destacar que esta solicitud cuenta con la autorización de mi Inmediato 
+                Superior y Superior Jerárquico. He tomado las medidas necesarias para garantizar la continuidad de las actividades laborales 
+                correspondientes a mi área.
+            </span>
             </span>
         </div>
     </div>
-    <div class="text-center">VACACIÓN</div>
+    <div class="text-center">PERÍODO SOLICITADO</div>
 
     <table class="table-info w-100 m-b-10 text-center uppercase">
         <tr class="bg-grey-darker text-xs text-white">
