@@ -132,6 +132,58 @@ class DepartureController extends Controller
     return $departures;
   }
 
+  public function index_departures(Request $request)
+  {
+    $date = (object)[
+      'from' => $request['from'],
+      'to' => $request['to']
+    ];
+
+    $query = Departure::join('departure_reasons', 'departures.departure_reason_id', '=', 'departure_reasons.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note');
+
+    if ($request->has('approved')) {
+      if ($request->approved != 'all') {
+        $query = $query->whereApproved(json_decode($request->approved));
+      }
+    }
+
+    $query = $query->where(function ($subQuery) use ($date) {
+      $subQuery->where(function ($q) use ($date) {
+        return $q->whereDate('departure', '>=', $date->from)->whereDate('departure', '<=', $date->to);
+      })->orWhere(function ($q) use ($date) {
+        return $q->whereDate('return', '>=', $date->from)->whereDate('return', '<=', $date->to);
+      });
+    });
+
+    $employee_id = intval($request['employee_id']);
+    if ($employee_id) {
+      $query = $query->where('employee_id', $employee_id);
+    } else {
+      $query = $query->join('employees', 'departures.employee_id', '=', 'employees.id')->select('departures.*', 'departure_reasons.description_needed', 'departure_reasons.note', 'employees.last_name', 'employees.mothers_last_name', 'employees.first_name', 'employees.second_name')->orderBy('employees.last_name', 'ASC');
+    }
+
+    $departures = $query->orderBy('departures.departure', 'ASC')->orderBy('departures.return', 'ASC')->get();
+
+    if ($request->has('type')) {
+      $filtered = [];
+      foreach ($departures as $departure) {
+        $is_consultant = $departure->employee->consultant();
+        unset($departure->employee);
+        if (($request['type'] == 'consultant' && !$is_consultant) || ($request['type'] == 'eventual' && $is_consultant)) {
+          $departures = $departures->except($departure->id);
+        } else {
+          $filtered[] = $departure;
+        }
+      }
+
+      if ($request['type'] == 'consultant') {
+        $departures = $filtered;
+      }
+    }
+
+    return $departures;
+  }
+
   /**
    * Store a newly created resource in storage.
    *
