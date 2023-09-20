@@ -21,18 +21,6 @@
           </div>
         </v-tooltip>
         <v-spacer></v-spacer>
-        <!-- <div v-if="$store.getters.user != 'admin' && $route.query.departureType == 'user'" class="ml-4">
-          <v-chip
-            v-if="!$store.getters.consultant" :color="remainingDepartures.annually.time_remaining > 0 ? 'secondary' : 'red'" text-color="white"
-            class="mr-3"
-          >
-            <v-avatar
-              class="body-2 font-weight-black"
-              :color="remainingDepartures.annually.time_remaining > 0 ? 'success' : 'error'"
-            >{{ remainingDepartures.annually.time_remaining / 8 }}</v-avatar>
-            <div class="subheading font-weight-regular">Días vigentes</div>
-          </v-chip>
-        </div> -->
         <ReportPrint v-if="$route.query.departureType == 'all' && ($store.getters.role == 'rrhh' || $store.getters.role == 'admin')" url="vacation/report/print"/>
         <v-divider
           class="mx-2"
@@ -101,7 +89,7 @@
               </div>
               <div v-else>
                 <v-tooltip top>
-                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : ''" @click.native="print(props.item).id">
+                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : ''" @click.native="print(props.item.id)">
                     <v-icon>print</v-icon>
                   </v-btn>
                   <span>Imprimir</span>
@@ -112,12 +100,6 @@
                   </v-btn>
                   <span>Editar</span>
                 </v-tooltip>
-                <!-- <v-tooltip top v-if="props.item.approved == null && $store.getters.role == 'admin'">
-                  <v-btn slot="activator" flat icon :color="props.expanded ? 'danger' : 'red darken-3'" @click.native="removeItem(props.item)">
-                    <v-icon>delete</v-icon>
-                  </v-btn>
-                  <span>Eliminar</span>
-                </v-tooltip> -->
                 <Transfer :departure="props.item" :color="props.expanded ? 'warning' : 'success'" v-if="departureType(props.item).group == 'COMISIÓN'"/>
               </div>
             </td>
@@ -280,9 +262,9 @@ export default {
     }
   },
   mounted() {
-    this.bus.$on('printDeparture', departure => {
-      this.print(departure)
-      this.getDeparture(departure.id)
+    this.bus.$on('printDeparture', departureId => {
+      this.print(departureId)
+      this.getDeparture(departureId)
       this.getRemainingDepartures()
     })
     this.bus.$on('removed', departureId => {
@@ -370,23 +352,15 @@ export default {
       }
       props.expanded = !props.expanded
     },
-    async print(item) {
+    async print(id) {
       try {
         this.loading = true
         let res
-        if(item.departure_reason_id==24){
           res = await axios({
           method: 'GET',
-          url: `departure_vacation/print/${item.id}`,
+          url: `departure_vacation/print/${id}`,
           responseType: "arraybuffer"
           })
-        }else{
-          res = await axios({
-          method: 'GET',
-          url: `departure/print/${item.id}`,
-          responseType: "arraybuffer"
-          })
-        }
         let blob = new Blob([res.data], {
           type: "application/pdf"
         })

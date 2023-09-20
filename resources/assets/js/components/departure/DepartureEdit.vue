@@ -39,9 +39,10 @@
                       :error-messages="errors.collect('Tipo de permiso')"
                     ></v-select>
                   </v-flex>
+
                   <v-flex xs7>
                     <v-select
-                      :items="reasons"
+                      :items="filteredReasons"
                       item-text="name"
                       item-value="id"
                       v-model="departure.departure_reason_id"
@@ -480,6 +481,13 @@ export default {
     endDateFormatted () {
       if (!this.departure.return) return null
       return this.formatDate(this.departure.return)
+    },
+    filteredReasons() {
+      if (this.departure.group === 1) {
+        return this.reasons.filter(reason => reason.id !== 24);
+      } else {
+        return this.reasons;
+      }
     }
   },
   watch: {
@@ -848,7 +856,7 @@ export default {
           catch (e) {
           console.log(e)
         } finally {
-          this.bus.$emit('printDeparture', res.data)
+          this.bus.$emit('printDeparture', res.data.id)
           this.closeDialog()
         }
       }
@@ -1072,4 +1080,5 @@ export default {
     }
   }
 }
+
 </script>

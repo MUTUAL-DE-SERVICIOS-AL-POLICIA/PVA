@@ -165,7 +165,7 @@ class EmployeeController extends Controller
       'to' => $date_range->to,
       'employee_id' => $employee->id
     ]);
-    $departures = app(\App\Http\Controllers\Api\V1\DepartureController::class)->index($request);
+    $departures = app(\App\Http\Controllers\Api\V1\DepartureController::class)->index_departures($request);
     foreach ($departures as $departure) {
       $departure->reason = $departure->departure_reason->departure_group->name;
       $from = Carbon::parse($departure->departure);

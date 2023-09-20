@@ -37,6 +37,7 @@ Route::group([
   Route::resource('departure_reason', 'Api\V1\DepartureReasonController')->only(['index', 'show']);
   Route::resource('departure', 'Api\V1\DepartureController')->only(['index', 'show', 'store', 'update', 'destroy']);
   Route::get('departure_vacation', 'Api\V1\DepartureController@index_vacation');
+  Route::get('all_departures', 'Api\V1\DepartureController@index_departures');
   Route::get('departure/print/{departure_id}', 'Api\V1\DepartureController@print')->name('print');
   Route::post('departure/{departure_id}/transfer', 'Api\V1\DepartureController@transfer')->name('transfer');
   Route::get('departure/verify/cite', 'Api\V1\DepartureController@verify_cite')->name('departure_verify_cite');
@@ -131,6 +132,7 @@ Route::group([
     Route::get('payroll/print/afp/{management_entity_id}/{year}/{month}', 'Api\V1\PayrollPrintController@print_afp')->name('print_ovt_payroll');
     Route::get('payroll/certificate/{id}', 'Api\V1\PayrollPrintController@certificate')->name('certificate_payroll');
     Route::get('payroll/print/certificate/{id}', 'Api\V1\PayrollPrintController@print_certificate')->name('print_certificate_payroll');
+    Route::get('payroll/print_retroactive/{year}', 'Api\V1\PayrollPrintController@print_retroactive')->name('print_retroactive');
     // Payroll-Contract
     Route::get('payroll/getpayrollcontract/{contract_id}', 'Api\V1\PayrollController@getPayrollContract')->name('payroll_contract');
     // Consultant Payroll
