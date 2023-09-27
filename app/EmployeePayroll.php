@@ -113,7 +113,18 @@ class EmployeePayroll
   private function employeeDiscounts($payroll)
   {
     $this->id = $payroll->id;
-    $this->quotable = $this->base_wage * $this->worked_days / 30 + $this->seniority_bonus;
+
+    $this->payroll_date = $payroll->payroll_date();
+    $this->admission_date_min = $payroll->employee->admission_date_min();  
+    
+    if($this->payroll_date >= $this->admission_date_min)
+    {
+      $this->quotable = $this->base_wage * $this->worked_days / 30 + $this->seniority_bonus;
+    }
+    else
+    {
+      $this->quotable = $this->base_wage * $this->worked_days / 30;
+    }
     $this->code = $payroll->code;
     $this->discount_old = $this->quotable * $payroll->procedure->employee_discount->elderly;
     $this->discount_common_risk = $this->quotable * $payroll->procedure->employee_discount->common_risk;
