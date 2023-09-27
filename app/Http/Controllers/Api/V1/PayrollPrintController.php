@@ -7,6 +7,7 @@ use App\CompanyAccount;
 use App\Contract;
 use App\Employee;
 use App\EmployeePayroll;
+use App\EmployeePayrollRetroactive;
 use App\EmployerNumber;
 use App\Helpers\Util;
 use App\Http\Controllers\Controller;
@@ -22,6 +23,7 @@ use Illuminate\Http\Request;
 use Response;
 use App\Exports\PayrollsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\RetroactivePayrollEmployee;
 
 class PayrollPrintController extends Controller
 {
@@ -533,4 +535,184 @@ class PayrollPrintController extends Controller
       ->setOption('encoding', 'utf-8')
       ->stream('certificado');
   }
+
+  private function getFormattedDataRetroactive($year, $month, $valid_contracts, $with_account, $management_entity, $position_group, $employer_number)
+  {
+    $procedure = Procedure::where('month_id', $month)->where('year', $year)->whereNull('deleted_at')->first();
+
+    if (isset($procedure->id)) {
+      $previous_date = Carbon::create($procedure->year, $procedure->month->order)->subMonths(1);
+      $previous_procedure = Procedure::where('month_id', $previous_date->month)->where('year', $previous_date->year)->whereNull('deleted_at')->first();
+
+      $employees = array();
+      //revisar
+      $total_discounts = new RetroactivePayrollEmployee();
+      $total_contributions = new TotalPayrollEmployer();
+      $company = Company::select()->first();
+
+      //$payrolls = Payroll::where('procedure_id', $procedure->id)->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('c.start_date')->select('payrolls.*')->get();
+      $payrolls = Payroll::where('procedure_id', $procedure->id)->leftjoin('contracts as c', 'c.id', '=', 'payrolls.contract_id')->leftjoin('employees as e', 'e.id', '=', 'c.employee_id')->orderBy('e.last_name')->orderby('c.employee_id')->select('payrolls.*')->get();
+
+      foreach ($payrolls as $key => $payroll) {
+        $contract = $payroll->contract;
+        $employee = $contract->employee;
+
+        $rehired = true;
+        $employee_contracts = $employee->contracts;
+
+        $e = new EmployeePayrollRetroactive($payroll);
+
+        if (count($employee_contracts) > 1) {
+          $rehired = Util::valid_contract($payroll, $employee->last_contract());
+
+          if ($rehired) {
+            $e->setValidContact(true);
+          }
+        }
+
+        if (($valid_contracts && !$e->valid_contract) || (($management_entity != 0) && ($e->management_entity_id != $management_entity)) || (($position_group != 0) && ($e->position_group_id != $position_group)) || ($employer_number && ($e->employer_number_id != $employer_number)) || ($with_account && !$employee->account_number)) {
+          $e->setZeroAccounts();
+        } else {
+          $employees[] = $e;
+        }
+        
+        $total_discounts->add_previous_base_wage($e->previous_base_wage);
+        $total_discounts->add_base_wage($e->base_wage);
+        $total_discounts->add_monthly_reimbursement($e->monthly_reimbursement);
+        $total_discounts->add_previous_seniority_bonus($e->previous_seniority_bonus);
+        $total_discounts->add_seniority_bonus($e->seniority_bonus);
+        $total_discounts->add_seniority_bonus_reimbursement($e->seniority_bonus_reimbursement);
+        $total_discounts->add_quotable($e->quotable);
+        $total_discounts->add_discount_old($e->discount_old);
+        $total_discounts->add_discount_common_risk($e->discount_common_risk);
+        $total_discounts->add_discount_commission($e->discount_commission);
+        $total_discounts->add_discount_solidary($e->discount_solidary);
+        $total_discounts->add_discount_national($e->discount_national);
+        $total_discounts->add_total_amount_discount_law($e->total_amount_discount_law);
+        $total_discounts->add_net_salary($e->net_salary);
+        $total_discounts->add_discount_rc_iva($e->discount_rc_iva);
+        $total_discounts->add_total_faults($e->discount_faults);
+        $total_discounts->add_total_discounts($e->total_discounts);
+        $total_discounts->add_payable_liquid($e->payable_liquid);
+
+        $total_contributions->add_quotable($e->quotable);
+        $total_contributions->add_contribution_insurance_company($e->contribution_insurance_company);
+        $total_contributions->add_contribution_professional_risk($e->contribution_professional_risk);
+        $total_contributions->add_contribution_employer_solidary($e->contribution_employer_solidary);
+        $total_contributions->add_contribution_employer_housing($e->contribution_employer_housing);
+        $total_contributions->add_total_contributions($e->total_contributions);
+      }
+    } else {
+      abort(404);
+    }
+
+    return (object)array(
+      "data" => [
+        'total_discounts' => $total_discounts,
+        'total_contributions' => $total_contributions,
+        'employees' => $employees,
+        'procedure' => $procedure,
+        'previous_procedure' => $previous_procedure ? $previous_procedure : $procedure,
+        'minimum_salary' => $procedure->minimum_salary,
+        'company' => $company,
+        'title' => (object)array(
+          'year' => $year,
+        ),
+      ],
+    );
+  }
+  public function print_retroactive(Request $params, $year)
+  {
+    $month = 1;
+    $month = Month::where('id', $month)->select()->first();
+    if (!$month) {
+      abort(404);
+    }
+
+    $params = $params->all();
+
+    $employer_number = 0;
+    $position_group = 0;
+    $management_entity = 0;
+    $with_account = 0;
+    $valid_contracts = 0;
+    $report_name = 'R-1';
+    $report_type = 'R';
+
+    switch (count($params)) {
+      case 7:
+        $employer_number = request('employer_number');
+      case 6:
+        $position_group = request('position_group');
+      case 5:
+        $management_entity = request('management_entity');
+      case 4:
+        $with_account = request('with_account');
+      case 3:
+        $valid_contracts = request('valid_contracts');
+      case 2:
+        $report_name = request('report_name');
+      case 1:
+        $report_type = mb_strtoupper(request('report_type'));
+        break;
+      default:
+        abort(404);
+    }
+
+    $response = $this->getFormattedDataRetroactive($year, $month->id, $valid_contracts, $with_account, $management_entity, $position_group, $employer_number);
+
+    $response->data['title']->subtitle = '';
+    $response->data['title']->management_entity = '';
+    $response->data['title']->position_group = '';
+    $response->data['title']->employer_number = '';
+    $response->data['title']->report_name = $report_name;
+    $response->data['title']->report_type = $report_type;
+    $response->data['title']->month = $month->name;
+
+    if ($report_type) {
+        $response->data['title']->name = 'PLANILLA DE RETROACTIVO';
+        $response->data['title']->table_header = 'Nivelación del incremento salarial';
+    }
+    else
+    {
+      abort(404);
+    }
+
+    if ($management_entity) {
+      $response->data['title']->management_entity = ManagementEntity::find($management_entity)->name;
+    }
+    if ($position_group) {
+      $position_group = PositionGroup::find($position_group);
+      $response->data['title']->position_group = $position_group->name;
+      $response->data['company']->employer_number = $position_group->employer_number->number;
+    }
+    if ($employer_number) {
+      $employer_number = EmployerNumber::find($employer_number);
+      $response->data['title']->employer_number = $employer_number->number;
+      $response->data['company']->employer_number = $employer_number->number;
+    }
+
+    $file_name = implode(" ", [$response->data['title']->name, $year]) . ".pdf";
+
+    $footerHtml = view()->make('partials.footer')->with(array('paginator' => true, 'print_message' => $response->data['procedure']->active ? 'Borrador' : null, 'print_date' => $response->data['procedure']->active, 'date' => null))->render();
+
+    $options = [
+      'orientation' => 'landscape',
+      'page-width' => '216',
+      'page-height' => '330',
+      'margin-top' => '5',
+      'margin-right' => '10',
+      'margin-left' => '10',
+      'margin-bottom' => '15',
+      'encoding' => 'UTF-8',
+      'footer-html' => $footerHtml,
+      'user-style-sheet' => public_path('css/payroll-print.min.css')
+    ];
+
+    $pdf = \PDF::loadView('payroll.retroactive', $response->data);
+    $pdf->setOptions($options);
+
+    return $pdf->stream($file_name);
+  }
+
 }

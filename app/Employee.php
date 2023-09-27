@@ -389,6 +389,23 @@ class Employee extends Model
     }
      return $bonus;
   }
+  public function GetPreviousSeniorityBonusAttribute()
+  {
+    if($this->active_cas){
+      $years = $this->active_cas->years;
+    }else{
+      $years = 0;
+    }
+    $bonus = 0;
+    $previousSeniorityBonuses = app(SeniorityBonusController::class)->getPreviousBonusCalculate();
+ 
+    foreach ($previousSeniorityBonuses as $seniorityBonus) {
+      if ($years >= $seniorityBonus->from && $years <= $seniorityBonus->to) {
+        $bonus = $seniorityBonus->calculated;
+      }
+    }
+     return $bonus;
+  }
 
   public function vacation_queues()
   {
@@ -411,5 +428,9 @@ class Employee extends Model
     return $this->vacation_queues()
       ->where('max_date', '>=', Carbon::parse(now())->format('Y-m-d'))
       ->sum('days');
+  }
+  public function admission_date_min()
+  {
+    return Carbon::parse(Employee::min('addmission_date'));
   }
 }

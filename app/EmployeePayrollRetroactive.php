@@ -6,7 +6,7 @@ use App\Helpers\Util;
 use Carbon;
 use \Milon\Barcode\DNS2D;
 
-class EmployeePayroll
+class EmployeePayrollRetroactive
 {
   function __construct($payroll)
   {
@@ -42,8 +42,13 @@ class EmployeePayroll
     $this->end_date = is_null($contract->end_date) ? 'Indefinido' : Carbon::parse($contract->end_date)->format('d/m/Y');
     $this->retirement_date = is_null($contract->retirement_date) ? null : Carbon::parse($contract->retirement_date)->format('d/m/Y');
     $this->base_wage = floatval($payroll->position->charge->base_wage);
+    $this->previousBaseWage($payroll);
+    $this->monthly_reimbursement = $this->base_wage - $this->previous_base_wage;
+
     // agregar el bono de antiguedad 
     $this->seniority_bonus = $employee->seniority_bonus;
+    $this->previous_seniority_bonus = $employee->previous_seniority_bonus;
+    $this->seniority_bonus_reimbursement = $this->seniority_bonus - $this->previous_seniority_bonus;
     $this->management_entity = $employee->management_entity->name;
     $this->management_entity_id = $employee->management_entity->id;
     $this->unworked_days = $payroll->unworked_days;
@@ -83,12 +88,33 @@ class EmployeePayroll
     $this->employer_number = $payroll->position_group->company_address->city->employer_number->number;
     $this->employer_number_id = $payroll->position_group->company_address->city->employer_number->id;
     $this->valid_contract = Util::valid_contract($payroll, null);
+
+    $this->admission_date_min = null;
+    $this->payroll_date = null;
   }
 
+  public function previousBaseWage($payroll)
+  {
+    if ($payroll && $payroll->position && $payroll->position->charge) {
+      $previous_charge = $payroll->position->charge->previous_charge($payroll->position->charge->name);
+      if ($previous_charge) {
+        $this->previous_base_wage = floatval($previous_charge->base_wage);
+      } else {
+        $this->previous_base_wage = floatval($payroll->position->charge->base_wage);
+      }
+    } else {
+      $this->previous_base_wage = 0;
+    }
+  } 
+  
   public function setZeroAccounts()
   {
     $this->base_wage = 0;
+    $this->previous_base_wage = 0;
+    $this->monthly_reimbursement = 0;
     $this->seniority_bonus = 0;
+    $this->previous_seniority_bonus = 0;
+    $this->seniority_bonus_reimbursement = 0;
     $this->quotable = 0;
     $this->code = 0;
     $this->discount_old = 0;
@@ -113,18 +139,21 @@ class EmployeePayroll
   private function employeeDiscounts($payroll)
   {
     $this->id = $payroll->id;
-
     $this->payroll_date = $payroll->payroll_date();
     $this->admission_date_min = $payroll->employee->admission_date_min();  
     
     if($this->payroll_date >= $this->admission_date_min)
     {
       $this->quotable = $this->base_wage * $this->worked_days / 30 + $this->seniority_bonus;
+      // revisar 
+      $this->quotable = $this->quotable + $this->monthly_reimbursement * 4;
+      $this->quotable = $this->quotable + $this->seniority_bonus_reimbursement * 4;
     }
     else
     {
       $this->quotable = $this->base_wage * $this->worked_days / 30;
     }
+
     $this->code = $payroll->code;
     $this->discount_old = $this->quotable * $payroll->procedure->employee_discount->elderly;
     $this->discount_common_risk = $this->quotable * $payroll->procedure->employee_discount->common_risk;

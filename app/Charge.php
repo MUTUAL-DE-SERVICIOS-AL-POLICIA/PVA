@@ -18,4 +18,11 @@ class Charge extends Model {
 	public function payrolls() {
 		return $this->hasMany(Payroll::class);
 	}
+	
+	public function previous_charge($charge_name){
+		return Charge::where('name', $charge_name)
+			->orderBy('created_at', 'desc')
+			->skip(1) 
+			->first();
+	}
 }

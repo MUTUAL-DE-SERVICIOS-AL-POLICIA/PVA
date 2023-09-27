@@ -78,4 +78,22 @@ class SeniorityBonusController extends Controller
     }
     return $bonuses;
   }
+
+  // cálculo del bono antiguedad con el salario minimo anterior al actual
+  public function getPreviousBonusCalculate()
+  {
+    $previous_bonuses = SeniorityBonus::orderBy('id','asc')->get();
+    $previous_minimum_salary = MinimumSalary::orderBy('created_at', 'desc')->skip(1)->first();
+    if($previous_minimum_salary)
+      $previous_minimum_salary = $previous_minimum_salary->value;
+    else
+      $previous_minimum_salary = 0;    
+    
+    foreach($previous_bonuses as $bonus)
+    {
+      $bonus->calculated = round((($bonus->percentage)*$previous_minimum_salary),2);
+      $bonus->percentage = $bonus->percentage*100;
+    }
+    return $previous_bonuses;
+  }
 }
