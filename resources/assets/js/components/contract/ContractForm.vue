@@ -30,7 +30,7 @@
                     v-if="edit||selectedIndex==-1"
                     v-model="selectedItem.position_id"
                     :items="positions"
-                    item-text="name"
+                    :item-text="item => `${item.name} - ${item.position_group.shortened}`"
                     item-value="id"
                     label="Puesto"
                     @change="onSelectPosition"
