@@ -29,7 +29,7 @@
                   <v-autocomplete
                     v-if="edit||selectedIndex==-1"
                     v-model="selectedItem.position_id"
-                    :items="positions"
+                    :items="activePositions"
                     :item-text="item => `${item.name} - ${item.position_group.shortened}`"
                     item-value="id"
                     label="Puesto"
@@ -538,6 +538,10 @@ export default {
         );
       }
     },
+    activePositions(){
+      //Realiza el filtrado de solo las posiciones activas
+      return this.positions.filter(position => position.active == true);
+    }
   },
   watch: {
     date(val) {
