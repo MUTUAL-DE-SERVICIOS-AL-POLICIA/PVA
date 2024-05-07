@@ -431,7 +431,15 @@ class DepartureController extends Controller
     DB::beginTransaction();
     try {
       $vacation_queue = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', $request->departure)->where('rest_days', '>', '0')->get();
-      if ($vacation_queue->sum('rest_days') > 0 && count($request->days) <= $vacation_queue->sum('rest_days')) {
+      $count_days = 0;
+      foreach($request->days as $day)
+      {
+        if($day['morning'])
+          $count_days += 0.5;
+        if($day['afternoon'])
+          $count_days += 0.5;
+      }
+      if ($vacation_queue->sum('rest_days') > 0 && $count_days <= $vacation_queue->sum('rest_days')) {
         $lastCode = Departure::latest()->first()->code;
         $newCode = $lastCode + 1;
         $sw = true;
@@ -502,7 +510,7 @@ class DepartureController extends Controller
         ], 405);
       }
     } catch (\Exception $e) {
-      DB::rollback();
+      DB::rollback();return $e;
       return response()->json([
         'message' => 'Cite Duplicado',
       ], 500);

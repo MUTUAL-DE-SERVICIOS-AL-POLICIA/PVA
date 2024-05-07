@@ -84,7 +84,6 @@ class VacationQueueController extends Controller
         'employee_id' => 'required|exists:employees,id',
         'date' => 'required|date'
       ]);
-      $count =
       $employee_id = $request->input('employee_id');
       $date = $request->input('date');
       $count = Employee::findOrFail($employee_id)
