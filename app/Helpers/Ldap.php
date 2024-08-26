@@ -19,7 +19,7 @@ class Ldap
       'admin_id_key' => env("LDAP_ADMIN_PREFIX"),
       'admin_username' => env("LDAP_ADMIN_USERNAME"),
       'admin_password' => env("LDAP_ADMIN_PASSWORD"),
-      'base_dn' => env("LDAP_BASEDN"),
+      'base_dn' => env("LDAP_BASEDN"),  
       'timeout' => env("LDAP_TIMEOUT")
     );
 
@@ -29,6 +29,7 @@ class Ldap
     $this->config['ldap_url'] .= $this->config['ldap_host'];
     $this->config['ldap_url'] = implode(':', [$this->config['ldap_url'], $this->config['ldap_port']]);
 
+    logger($this->config['ldap_url']);
     $this->connection = @ldap_connect($this->config['ldap_url']);
 
     ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, 3);

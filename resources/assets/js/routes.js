@@ -25,6 +25,8 @@ import SeniorityRange from './components/configuration/MinimumSalarySeniorityCon
 import ReportIndex from './components/report/ReportIndex'
 import VacationList from './components/departure/VacationList'
 import SalaryScaleIndex from './components/configuration/SalaryScaleIndex'
+import SupplyReqNew from './components/supply/SupplyReqNew'
+
 
 export const routes = [
   {
@@ -148,6 +150,13 @@ export const routes = [
     path: '/supply_requests',
     component: SupplyRequestIndex,
     name: 'supplyRequestIndex',
+    meta: {
+      requiresAuth: true
+    }
+  },{
+    path: '/supply_requests_new',
+    component: SupplyReqNew,
+    name: 'supplyReqNew',
     meta: {
       requiresAuth: true
     }

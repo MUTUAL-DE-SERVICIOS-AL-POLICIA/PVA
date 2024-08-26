@@ -50,6 +50,7 @@ class AuthController extends Controller
 
     if (!env("LDAP_AUTHENTICATION")) {
       $token = auth('api')->attempt(request(['username', 'password']));
+      //dd(auth('api'));
 
       if ($token) {
         return $this->respondWithToken($token);
@@ -144,6 +145,7 @@ class AuthController extends Controller
       $username = $user->username;
       $role = $user->roles[0]->name;
       $permissions = array_unique(array_merge($user->roles[0]->permissions->pluck('name')->toArray(), $user->permissions->pluck('name')->toArray()));
+      //dd($permissions);
     } else {
       $user = null;
       $id = $employee->id;
