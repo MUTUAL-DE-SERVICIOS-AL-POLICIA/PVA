@@ -131,7 +131,7 @@
   },
   {
     "href": "supplyReqNew",
-    "title": "Solicitud de Material2",
+    "title": "Solicitud de Material - Prueba",
     "icon": "add_shopping_cart",
     "permission": "!admin",
     "params": {

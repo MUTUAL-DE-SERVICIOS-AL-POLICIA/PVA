@@ -24,7 +24,7 @@
             </v-tooltip>
         </div>
         <v-spacer></v-spacer>
-        <v-data-table :headers="headers" :items="filteredItems" class="elevation-1">
+        <v-data-table :headers="headers" :items="filteredItems" class="elevation-1" hide-default-footer>
             <template v-slot:items="props">
                 <tr>
                     <td>{{ props.item.number_note }}</td>
@@ -49,7 +49,8 @@
                 </tr>
                 <tr v-if="props.item.showMaterials">
                     <td colspan="4">
-                        <v-data-table :headers="materialHeaders" :items="props.item.materials" class="elevation-1">
+                        <v-data-table :headers="materialHeaders" :items="props.item.materials" class="elevation-1"
+                            hide-default-footer>
                             <template v-slot:items="materialProps">
                 <tr>
                     <td>{{ materialProps.item.code_material }}</td>
@@ -73,7 +74,8 @@
             <v-autocomplete v-model="selectedMaterial" :items="materials" item-value="id" item-text="description"
                 label="Seleccionar Material" :search-input.sync="search" :loading="loadingMaterials"
                 loading-text="Cargando..." @change="selectMaterial" class="form-field" dense></v-autocomplete>
-            <v-data-table :headers="materialTableHeaders" :items="selectedMaterials" class="elevation-1">
+            <v-data-table :headers="materialTableHeaders" :items="selectedMaterials" class="elevation-1"
+                hide-default-footer>
                 <template v-slot:items="props">
                     <tr>
                         <td>{{ props.item.code_material }}</td>
@@ -81,7 +83,8 @@
                         <td>{{ props.item.unit_material }}</td>
                         <td>
                             <v-text-field v-model.number="props.item.quantity" label="Cantidad Solicitada" type="number"
-                                min="1" class="quantity-field"></v-text-field>
+                                min="1" :max="12" class="quantity-field" :error="props.item.quantity > 12"
+                                :error-messages="props.item.quantity > 12 ? 'No puedes pedir más de 12 unidades' : ''"></v-text-field>
                         </td>
                         <td>
                             <v-btn icon @click="removeMaterial(props.item)">
@@ -91,8 +94,8 @@
                     </tr>
                 </template>
             </v-data-table>
-            <v-btn color="primary" @click="submitRequest" :disabled="!valid || selectedMaterials.length === 0"
-                class="submit-btn">
+            <v-btn color="primary" @click="submitRequest"
+                :disabled="!valid || selectedMaterials.length === 0 || !isValidQuantity" class="submit-btn">
                 Enviar
             </v-btn>
             <v-btn color="grey" @click="cancelDialog" class="cancel-btn">
@@ -159,6 +162,9 @@ export default {
                 return this.items.filter(item => item.request_date === this.selectedDate)
             }
             return this.items
+        },
+        isValidQuantity() {
+            return this.selectedMaterials.every(item => item.quantity <= 12);
         }
     },
     mounted() {
@@ -171,7 +177,6 @@ export default {
             try {
                 const res = await axios2.get(`noteRequest/${this.userId}`)
                 this.items = res.data.map(item => ({ ...item, showMaterials: false }))
-                console.log(res.data)
             } catch (error) {
                 console.error(error)
             }
@@ -210,7 +215,6 @@ export default {
             this.dialog = true
         },
         async print_form(item) {
-            //console.log(item.id);
             let res = await axios2({
                 method: "GET",
                 url: `/printRequest/${item.id}`,
@@ -220,23 +224,19 @@ export default {
                 type: "application/pdf"
             });
             printJS(window.URL.createObjectURL(blob));
-            // await axios2.get(`/printRequest/${item.id}`)
         },
         async submitRequest() {
             if (this.valid && this.selectedMaterials.length > 0) {
                 try {
-                    // Aquí se puede hacer la llamada a la API para enviar la nueva solicitud
                     await axios2.post('createNoteRequest', {
                         id: this.userId,
                         material_request: this.selectedMaterials
                     })
                     console.log('Submitting request:', this.newRequest, this.selectedMaterials)
 
-                    // Cierra el diálogo y limpia los materiales seleccionados
                     this.dialog = false
                     this.selectedMaterials = []
 
-                    // Vuelve a obtener los datos para actualizar la lista
                     await this.fetchData()
                 } catch (error) {
                     console.error(error)
