@@ -27,7 +27,8 @@
         <v-data-table :headers="headers" :items="filteredItems" class="elevation-1" hide-default-footer>
             <template v-slot:items="props">
                 <tr>
-                    <td>{{ props.item.number_note }}</td>
+                    <td v-if="props.item.number_note == 0">N/A</td>
+                    <td v-else>{{ props.item.number_note }}</td>
                     <td>{{ props.item.request_date }}</td>
                     <td>
                         <div :class="['status-button', getStateClass(props.item.state)]">
@@ -40,7 +41,8 @@
                                 menu
                             </v-icon>
                         </v-btn>
-                        <v-btn icon @click.native="print_form(props.item)">
+                        <v-btn v-if="props.item.number_note == 0 && props.item.state === 'En Revision'" icon
+                            @click.native="print_form(props.item)">
                             <v-icon color="info">
                                 print
                             </v-icon>
