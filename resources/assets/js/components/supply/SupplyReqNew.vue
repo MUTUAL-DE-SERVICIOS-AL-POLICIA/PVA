@@ -41,8 +41,7 @@
                                 menu
                             </v-icon>
                         </v-btn>
-                        <v-btn v-if="props.item.number_note == 0 && props.item.state === 'En Revision'" icon
-                            @click.native="print_form(props.item)">
+                        <v-btn icon @click.native="print_form(props.item)">
                             <v-icon color="info">
                                 print
                             </v-icon>
@@ -67,6 +66,51 @@
 </template>
 </v-data-table>
 <v-dialog v-model="dialog" max-width="800px">
+    <v-card>
+        <v-card-title>
+            <span class="headline">Nueva Solicitud</span>
+        </v-card-title>
+
+        <v-form v-model="valid">
+            <v-autocomplete v-model="selectedMaterial" :items="materials" item-value="id" item-text="description"
+                label="Seleccionar Material" :search-input.sync="search" :loading="loadingMaterials"
+                loading-text="Cargando..." @change="selectMaterial" class="form-field" dense></v-autocomplete>
+
+            <v-data-table :headers="materialTableHeaders" :items="selectedMaterials" class="elevation-1"
+                hide-default-footer>
+                <template v-slot:items="props">
+                    <tr>
+                        <td>{{ props.item.code_material }}</td>
+                        <td>{{ props.item.description }}</td>
+                        <td>{{ props.item.unit_material }}</td>
+                        <td>
+                            <v-text-field v-model.number="props.item.quantity" label="Cantidad Solicitada" type="number"
+                                min="1" :max="12" class="quantity-field" :error="props.item.quantity > 12"
+                                :error-messages="props.item.quantity > 12 ? 'No puedes pedir más de 12 unidades' : ''"></v-text-field>
+                        </td>
+                        <td>
+                            <v-btn icon @click="removeMaterial(props.item)">
+                                <v-icon color="error">delete</v-icon>
+                            </v-btn>
+                        </td>
+                    </tr>
+                </template>
+            </v-data-table>
+
+            <v-textarea v-model="comments" label="Comentarios" rows="3" class="form-field"></v-textarea>
+
+            <v-btn color="primary" @click="submitRequest"
+                :disabled="!valid || selectedMaterials.length === 0 || !isValidQuantity" class="submit-btn">
+                Enviar
+            </v-btn>
+            <v-btn color="grey" @click="cancelDialog" class="cancel-btn">
+                Cancelar
+            </v-btn>
+        </v-form>
+    </v-card>
+</v-dialog>
+
+<!-- <v-dialog v-model="dialog" max-width="800px">
     <v-card>
         <v-card-title>
             <span class="headline">Nueva Solicitud</span>
@@ -106,7 +150,7 @@
         </v-form>
 
     </v-card>
-</v-dialog>
+</v-dialog> -->
 </v-container>
 </template>
 
@@ -145,6 +189,7 @@ export default {
             materials: [],
             selectedMaterial: null,
             selectedMaterials: [],
+            comments: '',
             materialTableHeaders: [
                 { text: 'Código Material', value: 'code_material' },
                 { text: 'Descripción', value: 'description' },
@@ -227,21 +272,40 @@ export default {
             });
             printJS(window.URL.createObjectURL(blob));
         },
+        // async submitRequest() {
+        //     if (this.valid && this.selectedMaterials.length > 0) {
+        //         try {
+        //             await axios2.post('createNoteRequest', {
+        //                 id: this.userId,
+        //                 material_request: this.selectedMaterials
+        //             })
+        //             console.log('Submitting request:', this.newRequest, this.selectedMaterials)
+
+        //             this.dialog = false
+        //             this.selectedMaterials = []
+
+        //             await this.fetchData()
+        //         } catch (error) {
+        //             console.error(error)
+        //         }
+        //     }
+        // }
         async submitRequest() {
             if (this.valid && this.selectedMaterials.length > 0) {
                 try {
                     await axios2.post('createNoteRequest', {
                         id: this.userId,
-                        material_request: this.selectedMaterials
-                    })
-                    console.log('Submitting request:', this.newRequest, this.selectedMaterials)
+                        material_request: this.selectedMaterials,
+                        comments: this.comments
+                    });
 
-                    this.dialog = false
-                    this.selectedMaterials = []
+                    this.dialog = false;
+                    this.selectedMaterials = [];
+                    this.comments = ''; 
 
-                    await this.fetchData()
+                    await this.fetchData();
                 } catch (error) {
-                    console.error(error)
+                    console.error(error);
                 }
             }
         }
