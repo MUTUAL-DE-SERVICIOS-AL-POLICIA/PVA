@@ -84,9 +84,11 @@
                         <td>{{ props.item.description }}</td>
                         <td>{{ props.item.unit_material }}</td>
                         <td>
-                            <v-text-field v-model.number="props.item.quantity" label="Cantidad Solicitada" type="number"
-                                min="1" :max="12" class="quantity-field" :error="props.item.quantity > 12"
-                                :error-messages="props.item.quantity > 12 ? 'No puedes pedir más de 12 unidades' : ''"></v-text-field>
+                            <v-text-field v-model.number="props.item.quantity" label="Cantidad Solicitada" type="text"
+                                min="1" :max="12" step="1" class="quantity-field"
+                                :error="hasQuantityError(props.item.quantity)"
+                                :error-messages="quantityErrorMessage(props.item.quantity)"
+                                @input="validateIntegerInput(props.item)" :value="props.item.quantity"></v-text-field>
                         </td>
                         <td>
                             <v-btn icon @click="removeMaterial(props.item)">
@@ -220,6 +222,28 @@ export default {
         this.getMaterial()
     },
     methods: {
+        validateIntegerInput(item) {
+            item.quantity = item.quantity.replace(/[^0-9]/g, '');
+
+            // Si la cantidad es mayor a 12, la ajustamos a 12
+            if (parseInt(item.quantity) > 12) {
+                item.quantity = '12';
+            }
+        },
+        hasQuantityError(quantity) {
+            // Retorna true si la cantidad es mayor a 12, o si está vacía después de eliminar caracteres no numéricos
+            return !/^\d+$/.test(quantity) || parseInt(quantity) > 12 || quantity === '';
+        },
+        quantityErrorMessage(quantity) {
+            if (!/^\d+$/.test(quantity)) {
+                return 'La cantidad debe ser un número entero';
+            } else if (parseInt(quantity) > 12) {
+                return 'No puedes pedir más de 12 unidades';
+            } else if (quantity === '') {
+                return 'Este campo es obligatorio';
+            }
+            return '';
+        },
         async fetchData() {
             try {
                 const res = await axios2.get(`noteRequest/${this.userId}`)
@@ -272,24 +296,6 @@ export default {
             });
             printJS(window.URL.createObjectURL(blob));
         },
-        // async submitRequest() {
-        //     if (this.valid && this.selectedMaterials.length > 0) {
-        //         try {
-        //             await axios2.post('createNoteRequest', {
-        //                 id: this.userId,
-        //                 material_request: this.selectedMaterials
-        //             })
-        //             console.log('Submitting request:', this.newRequest, this.selectedMaterials)
-
-        //             this.dialog = false
-        //             this.selectedMaterials = []
-
-        //             await this.fetchData()
-        //         } catch (error) {
-        //             console.error(error)
-        //         }
-        //     }
-        // }
         async submitRequest() {
             if (this.valid && this.selectedMaterials.length > 0) {
                 try {
@@ -301,7 +307,7 @@ export default {
 
                     this.dialog = false;
                     this.selectedMaterials = [];
-                    this.comments = ''; 
+                    this.comments = '';
 
                     await this.fetchData();
                 } catch (error) {
