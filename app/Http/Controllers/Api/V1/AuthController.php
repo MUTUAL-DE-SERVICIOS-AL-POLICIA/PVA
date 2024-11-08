@@ -50,19 +50,20 @@ class AuthController extends Controller
 
     if (!env("LDAP_AUTHENTICATION")) {
       $token = auth('api')->attempt(request(['username', 'password']));
-      //dd(auth('api'));
+      dd(auth('api'));
 
       if ($token) {
         return $this->respondWithToken($token);
       }
     } else {
       $ldap = new Ldap();
-
+      
       if ($ldap->connection && $ldap->verify_open_port()) {
         if ($ldap->bind($request['username'], $request['password'])) {
           $user = User::where('username', $request['username'])->where('active', true)->first();
           if ($user) {
             if (!Hash::check($request['password'], $user->password)) {
+              logger($request);
               $user->password = Hash::make($request['password']);
               $user->save();
             }

@@ -19,7 +19,7 @@ class Ldap
       'admin_id_key' => env("LDAP_ADMIN_PREFIX"),
       'admin_username' => env("LDAP_ADMIN_USERNAME"),
       'admin_password' => env("LDAP_ADMIN_PASSWORD"),
-      'base_dn' => env("LDAP_BASEDN"),  
+      'base_dn' => env("LDAP_BASEDN"),
       'timeout' => env("LDAP_TIMEOUT")
     );
 
@@ -29,7 +29,6 @@ class Ldap
     $this->config['ldap_url'] .= $this->config['ldap_host'];
     $this->config['ldap_url'] = implode(':', [$this->config['ldap_url'], $this->config['ldap_port']]);
 
-    logger($this->config['ldap_url']);
     $this->connection = @ldap_connect($this->config['ldap_url']);
 
     ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -105,33 +104,43 @@ class Ldap
 
     if ($this->connection && $this->verify_open_port()) {
       if ($this->bind_admin()) {
-        $search = ldap_search($this->connection, $this->config['account_suffix'], "(|(" . $identifier . "=" . $id . "))", array($this->config['user_id_key'], "title", "givenName", "cn", "sn", "mail", "employeeNumber"));
+        $search = ldap_search(
+          $this->connection,
+          $this->config['account_suffix'],
+          "(|(" . $identifier . "=" . $id . "))",
+          array(
+            $this->config['user_id_key'],
+            "title",
+            "givenName",
+            "cn",
+            "sn",
+            "mail",
+            "employeeNumber"
+          )
+        );
         $entries = ldap_get_entries($this->connection, $search);
         $result = [];
 
         foreach ($entries as $key => $value) {
-          //if (is_array($value) && $value[$this->config['user_id_key']]) {
-          if ($value[$this->config['user_id_key']]) {
+          // Check if $value is an array and contains the expected keys
+          if (is_array($value) && isset($value[$this->config['user_id_key']][0])) {
             $result[] = [
               $this->config['user_id_key'] => $value[$this->config['user_id_key']][0],
-              'employeeNumber' => (int)$value['employeenumber'][0],
-              'givenName' => $value['givenname'][0],
-              'sn' => $value['sn'][0],
-              'cn' => $value['cn'][0],
-              'title' => $value['title'][0],
+              'employeeNumber' => isset($value['employeenumber'][0]) ? (int)$value['employeenumber'][0] : null,
+              'givenName' => isset($value['givenname'][0]) ? $value['givenname'][0] : null,
+              'sn' => isset($value['sn'][0]) ? $value['sn'][0] : null,
+              'cn' => isset($value['cn'][0]) ? $value['cn'][0] : null,
+              'title' => isset($value['title'][0]) ? $value['title'][0] : null,
               'dn' => $value['dn'],
-              'mail' => $value['mail'][0],
+              'mail' => isset($value['mail'][0]) ? $value['mail'][0] : null,
             ];
           }
         }
 
-        if (count($result) == 1) {
-          return $result[0];
-        } else {
-          return null;
-        }
+        return count($result) === 1 ? $result[0] : null;
       }
     }
+    return null;
   }
 
   public function delete_entry($id, $type = 'id')
