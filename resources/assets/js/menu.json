@@ -139,6 +139,15 @@
     }
   },
   {
+    "href": "supplyPettyCash",
+    "title": "Solicitud Caja Chica - Prueba",
+    "icon": "add_shopping_cart",
+    "permission": "!admin",
+    "params": {
+      "requestType": "user"
+    }
+  },
+  {
     "title": "Configuración",
     "icon": "settings",
     "permission": "admin",

@@ -1,8 +1,9 @@
 <template>
     <v-container fluid>
-        <h1>Solicitudes</h1>
+        <h1 class="title">Solicitudes</h1>
 
         <div class="header-container">
+            <!-- Selector de Fecha -->
             <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-y
                 min-width="auto">
                 <template v-slot:activator="{ on, attrs }">
@@ -11,23 +12,23 @@
                 </template>
                 <v-date-picker v-model="selectedDate" no-title scrollable>
                     <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="selectedDate = null; fetchData()">Borrar</v-btn>
+                    <v-btn text color="primary" @click="clearDate">Borrar</v-btn>
                     <v-btn text color="primary" @click="$refs.menu.save(selectedDate)">OK</v-btn>
                 </v-date-picker>
             </v-menu>
-            <v-tooltip top v-if="$route.query.requestType == 'user'">
-                <v-icon large slot="activator" dark color="primary" @click.native="openDialogSupply"
-                    style="cursor: pointer; color: #1976D2;">
-                    add_circle
-                </v-icon>
-                <span>Nueva Solicitud</span>
-            </v-tooltip>
+
+            <!-- Botón Nueva Solicitud -->
+            <v-btn color="primary" dark @click="openDialogSupply" class="new-request-btn">
+                <v-icon left>add_circle</v-icon>
+                Nueva Solicitud
+            </v-btn>
         </div>
-        <v-spacer></v-spacer>
+
+        <!-- Tabla Principal -->
         <v-data-table :headers="headers" :items="filteredItems" class="elevation-1" hide-default-footer>
             <template v-slot:items="props">
                 <tr>
-                    <td v-if="props.item.number_note == 0">N/A</td>
+                    <td v-if="props.item.number_note === 0">N/A</td>
                     <td v-else>{{ props.item.number_note }}</td>
                     <td>{{ props.item.request_date }}</td>
                     <td>
@@ -37,14 +38,10 @@
                     </td>
                     <td>
                         <v-btn icon @click.stop="toggleMaterials(props.item)" class="expand-btn">
-                            <v-icon class="expand-icon" color="success">
-                                menu
-                            </v-icon>
+                            <v-icon class="expand-icon" color="success">menu</v-icon>
                         </v-btn>
                         <v-btn icon @click.native="print_form(props.item)">
-                            <v-icon color="info">
-                                print
-                            </v-icon>
+                            <v-icon color="info">print</v-icon>
                         </v-btn>
                     </td>
                 </tr>
@@ -65,94 +62,58 @@
         </tr>
 </template>
 </v-data-table>
+
+<!-- Modal Nueva Solicitud -->
 <v-dialog v-model="dialog" max-width="800px">
     <v-card>
         <v-card-title>
             <span class="headline">Nueva Solicitud</span>
         </v-card-title>
+        <v-card-text>
+            <v-form v-model="valid">
+                <!-- Selección de Material -->
+                <v-autocomplete v-model="selectedMaterial" :items="materials" item-value="id" item-text="description"
+                    label="Seleccionar Material" :search-input.sync="search" :loading="loadingMaterials"
+                    loading-text="Cargando..." @change="selectMaterial" class="form-field" dense></v-autocomplete>
 
-        <v-form v-model="valid">
-            <v-autocomplete v-model="selectedMaterial" :items="materials" item-value="id" item-text="description"
-                label="Seleccionar Material" :search-input.sync="search" :loading="loadingMaterials"
-                loading-text="Cargando..." @change="selectMaterial" class="form-field" dense></v-autocomplete>
+                <!-- Tabla de Materiales Seleccionados -->
+                <v-data-table :headers="materialTableHeaders" :items="selectedMaterials" class="elevation-1"
+                    hide-default-footer>
+                    <template v-slot:items="props">
+                        <tr>
+                            <td>{{ props.item.code_material }}</td>
+                            <td>{{ props.item.description }}</td>
+                            <td>{{ props.item.unit_material }}</td>
+                            <td>
+                                <v-text-field v-model.number="props.item.quantity" label="Cantidad Solicitada"
+                                    type="number" min="1" step="1" class="quantity-field"
+                                    :error="hasQuantityError(props.item.quantity)"
+                                    :error-messages="quantityErrorMessage(props.item.quantity)"></v-text-field>
+                            </td>
+                            <td>
+                                <v-btn icon @click="removeMaterial(props.item)">
+                                    <v-icon color="error">delete</v-icon>
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </template>
+                </v-data-table>
 
-            <v-data-table :headers="materialTableHeaders" :items="selectedMaterials" class="elevation-1"
-                hide-default-footer>
-                <template v-slot:items="props">
-                    <tr>
-                        <td>{{ props.item.code_material }}</td>
-                        <td>{{ props.item.description }}</td>
-                        <td>{{ props.item.unit_material }}</td>
-                        <td>
-                            <v-text-field v-model.number="props.item.quantity" label="Cantidad Solicitada" type="text"
-                                min="1" :max="12" step="1" class="quantity-field"
-                                :error="hasQuantityError(props.item.quantity)"
-                                :error-messages="quantityErrorMessage(props.item.quantity)"
-                                @input="validateIntegerInput(props.item)" :value="props.item.quantity"></v-text-field>
-                        </td>
-                        <td>
-                            <v-btn icon @click="removeMaterial(props.item)">
-                                <v-icon color="error">delete</v-icon>
-                            </v-btn>
-                        </td>
-                    </tr>
-                </template>
-            </v-data-table>
+                <!-- Comentarios -->
+                <v-textarea v-model="comments" label="Comentarios" rows="3" class="form-field"></v-textarea>
 
-            <v-textarea v-model="comments" label="Comentarios" rows="3" class="form-field"></v-textarea>
-
-            <v-btn color="primary" @click="submitRequest"
-                :disabled="!valid || selectedMaterials.length === 0 || !isValidQuantity" class="submit-btn">
-                Enviar
-            </v-btn>
-            <v-btn color="grey" @click="cancelDialog" class="cancel-btn">
-                Cancelar
-            </v-btn>
-        </v-form>
+                <!-- Botones -->
+                <v-btn color="primary" @click="submitRequest"
+                    :disabled="!valid || selectedMaterials.length === 0 || !isValidQuantity" class="submit-btn">
+                    Enviar
+                </v-btn>
+                <v-btn color="grey" @click="cancelDialog" class="cancel-btn">
+                    Cancelar
+                </v-btn>
+            </v-form>
+        </v-card-text>
     </v-card>
 </v-dialog>
-
-<!-- <v-dialog v-model="dialog" max-width="800px">
-    <v-card>
-        <v-card-title>
-            <span class="headline">Nueva Solicitud</span>
-        </v-card-title>
-
-        <v-form v-model="valid">
-            <v-autocomplete v-model="selectedMaterial" :items="materials" item-value="id" item-text="description"
-                label="Seleccionar Material" :search-input.sync="search" :loading="loadingMaterials"
-                loading-text="Cargando..." @change="selectMaterial" class="form-field" dense></v-autocomplete>
-            <v-data-table :headers="materialTableHeaders" :items="selectedMaterials" class="elevation-1"
-                hide-default-footer>
-                <template v-slot:items="props">
-                    <tr>
-                        <td>{{ props.item.code_material }}</td>
-                        <td>{{ props.item.description }}</td>
-                        <td>{{ props.item.unit_material }}</td>
-                        <td>
-                            <v-text-field v-model.number="props.item.quantity" label="Cantidad Solicitada" type="number"
-                                min="1" :max="12" class="quantity-field" :error="props.item.quantity > 12"
-                                :error-messages="props.item.quantity > 12 ? 'No puedes pedir más de 12 unidades' : ''"></v-text-field>
-                        </td>
-                        <td>
-                            <v-btn icon @click="removeMaterial(props.item)">
-                                <v-icon color="error">delete</v-icon>
-                            </v-btn>
-                        </td>
-                    </tr>
-                </template>
-            </v-data-table>
-            <v-btn color="primary" @click="submitRequest"
-                :disabled="!valid || selectedMaterials.length === 0 || !isValidQuantity" class="submit-btn">
-                Enviar
-            </v-btn>
-            <v-btn color="grey" @click="cancelDialog" class="cancel-btn">
-                Cancelar
-            </v-btn>
-        </v-form>
-
-    </v-card>
-</v-dialog> -->
 </v-container>
 </template>
 
@@ -258,7 +219,6 @@ export default {
                 const res = await axios2.get('/pva_list_material')
                 this.materials = res.data
                 this.loadingMaterials = false
-                console.log(res.data)
             } catch (error) {
                 console.error(error)
                 this.loadingMaterials = false
