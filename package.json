@@ -28,7 +28,7 @@
     "vee-validate": "^2.2.13",
     "vue": "^2.6.10",
     "vue-json-to-csv": "^1.1.8",
-    "vue-moment": "^4.0.0",
+    "vue-moment": "^4.1.0",
     "vue-router": "^3.0.7",
     "vue-template-compiler": "^2.6.10",
     "vuetify": "^1.5.16",
