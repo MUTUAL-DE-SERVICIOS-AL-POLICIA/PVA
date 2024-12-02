@@ -74,7 +74,6 @@ export default {
     async authenticate(auth) {
       try {
         if (await this.$validator.validateAll()) {
-          console.log(auth);
           let res = await axios.post(`auth`, auth)
           this.$store.commit('login', res.data)
           this.$router.go({

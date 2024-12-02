@@ -8,30 +8,37 @@
             <v-btn color="success" @click="openForm">Realizar Nueva Solicitud</v-btn>
         </v-toolbar>
 
-        <v-data-table :headers="mainHeaders" :items="requests" item-value="id" class="elevation-1"
-            @click:row="toggleDetails">
-            <template v-slot:body="{ items }">
-                <tr v-for="item in items" :key="item.id">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.date }}</td>
-                    <td>{{ item.status }}</td>
-                    <td>
-                        <v-btn small color="primary" @click.stop="editRequest(item)">Editar</v-btn>
-                        <v-btn small color="secondary" @click.stop="printRequest(item)">Imprimir</v-btn>
+        <v-data-table :headers="mainHeaders" :items="items" item-value="id" class="elevation-1" hide-default-footer>
+            <template v-slot:items="props">
+                <tr>
+                    <td align="center">{{ props.item.number_note }}</td>
+                    <td align="center">{{ props.item.request_date }}</td>
+                    <td align="center">{{ props.item.state }}</td>
+                    <td align="center">
+                        <v-btn icon @click.stop="toggleMaterials(props.item)" class="expand-btn">
+                            <v-icon class="expand-icon" color="success">menu</v-icon>
+                        </v-btn>
+                        <v-btn icon @click.native="print_form(props.item)">
+                            <v-icon color="info">print</v-icon>
+                        </v-btn>
+                        <v-btn color="success" @click.native="navigateNext(props.item)">
+                            Continuar
+                        </v-btn>
+                        <v-btn icon @click.native="print_form_discharge(props.item)">
+                            <v-icon color="success">print</v-icon>
+                        </v-btn>
                     </td>
                 </tr>
-                <tr v-if="detailsVisible === item.id" class="details-row">
+                <tr v-if="props.item.showProducts">
                     <td colspan="4">
-                        <v-data-table dense :headers="detailsHeaders" :items="item.details" class="elevation-1">
-                            <template v-slot:body="{ items: detailItems }">
-                <tr v-for="detail in detailItems" :key="detail.nro">
-                    <td>{{ detail.nro }}</td>
-                    <td>{{ detail.description }}</td>
-                    <td>{{ detail.quantity }}</td>
-                    <td>{{ detail.estimatedPrice }}</td>
-                    <td>{{ detail.total }}</td>
-                    <td>{{ detail.status }}</td>
-                </tr>
+                        <v-data-table :headers="detailsHeaders2" :items="props.item.products" class="elevarion-1"
+                            hide-default-footer>
+                            <template v-slot:items="productProps">
+                    <td align="left">{{ productProps.item.description }}</td>
+                    <td align="center">{{ productProps.item.pivot.amount_request }}</td>
+                    <td align="center">{{ productProps.item.pivot.costDetails }}</td>
+                    <td align="center">{{ (productProps.item.pivot.amount_request *
+                        productProps.item.pivot.costDetails) }}</td>
             </template>
         </v-data-table>
         </td>
@@ -39,7 +46,56 @@
 </template>
 </v-data-table>
 
-<form-petty-cash :dialog="dialog" @close="dialog = false" @save="saveRequest"></form-petty-cash>
+<v-dialog v-model="dialogDetails" max-width="1200px">
+    <v-card>
+        <v-card-title>
+            <span class="headline">Descargo - Caja Chica (Bolivianos)</span>
+        </v-card-title>
+        <v-form v-model="valid">
+            <v-card-text>
+                <p><strong>Número de Solicitud:</strong> {{ selectedItem.number_note }}</p>
+                <p><strong>Fecha de Solicitud:</strong> {{ selectedItem.request_date }}</p>
+                <p><strong>Concepto:</strong> {{ selectedItem.concept }}</p>
+
+                <v-data-table :headers="detailsHeaders" :items="selectedItem.products" hide-default-footer>
+                    <template v-slot:items="productProps">
+                        <td align="left">{{ productProps.item.description }}</td>
+                        <td>
+                            <v-text-field v-model="productProps.item.supplier" label="Proveedor" dense hide-details
+                                class="table-input">
+                            </v-text-field>
+                        </td>
+                        <td>
+                            <v-text-field v-model="productProps.item.numer_invoice" label="N° de Factura" type="number"
+                                dense hide-details class="table-input">
+                            </v-text-field>
+                        </td>
+                        <td align="center">{{ productProps.item.cost_object }}</td>
+                        <td>
+                            <v-select v-model="productProps.item.id_group" :items="budgetGroups" item-text="details"
+                                item-value="id" label="Partida Presupuestaria" dense hide-details class="table-input">
+                            </v-select>
+                        </td>
+                        <td>
+                            <v-text-field v-model="productProps.item.total" label="Total" type="number" dense
+                                hide-details class="table-input">
+                            </v-text-field>
+                        </td>
+                    </template>
+                </v-data-table>
+
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="red" @click="dialogDetails = false">Cerrar</v-btn>
+                <v-btn color="success" @click="submitDetails">Guardar</v-btn>
+            </v-card-actions>
+        </v-form>
+    </v-card>
+</v-dialog>
+
+
+<form-petty-cash :dialog="dialog" @close="dialog = false" @save="updateRequests"></form-petty-cash>
 </v-container>
 </template>
 
@@ -53,46 +109,82 @@ export default {
     data() {
         return {
             dialog: false,
+            dialogDetails: false,
+            selectedItem: {},
             employeeType: "Todas las Solicitudes",
             detailsVisible: null,
+            valid: false,
+            items: [],
+            budgetGroups: [],
             mainHeaders: [
-                { text: "Nro Solicitud", value: "id" },
-                { text: "Fecha de Solicitud", value: "date" },
-                { text: "Estado", value: "status" },
-                { text: "Acciones", value: "actions", sortable: false },
+                { text: "Nro Solicitud", value: "id", align: "center" },
+                { text: "Fecha de Solicitud", value: "date", align: "center" },
+                { text: "Estado", value: "status", align: "center" },
+                { text: "Acciones", value: "actions", sortable: false, align: "center" },
+            ],
+            detailsHeaders2: [
+                { text: "Descripcion", value: "description", align: "center" },
+                { text: "Cantidad", value: "quantity", align: "center" },
+                { text: "Precio Estimado (Bs)", value: "estimatedPrice", align: "center" },
+                { text: "Total (Bs)", value: "total", align: "center" },
             ],
             detailsHeaders: [
-                { text: "NRO", value: "nro" },
-                { text: "Descripcion", value: "description" },
-                { text: "Cantidad", value: "quantity" },
-                { text: "Precio Estimado", value: "estimatedPrice" },
-                { text: "Total", value: "total" },
-                { text: "Estado", value: "status" },
-            ],
-            requests: [
-                {
-                    id: 1,
-                    date: "2024-11-20",
-                    status: "En Revisión",
-                    details: [
-                        { nro: 1, description: "Item A", quantity: 10, estimatedPrice: 50, total: 500, status: "Pendiente" },
-                        { nro: 2, description: "Item B", quantity: 5, estimatedPrice: 30, total: 150, status: "Completado" },
-                    ],
-                },
-                {
-                    id: 2,
-                    date: "2024-11-19",
-                    status: "Aceptadas",
-                    details: [
-                        { nro: 1, description: "Item C", quantity: 2, estimatedPrice: 100, total: 200, status: "Pendiente" },
-                    ],
-                },
+                { text: "Descripcion", value: "description", align: "center" },
+                { text: "Proveedor", value: "supplier", align: "center" },
+                { text: "N° de Factura", value: "numer_invoice", align: "center" },
+                { text: "Objeto de Gasto", value: "cost_object", align: "center" },
+                { text: "Partida Presupuestaria", value: "id_group", align: "center" },
+                { text: "Total", value: "total", align: "center" },
             ],
         };
     },
+    mounted() {
+        this.userId = localStorage.getItem('id')
+        this.getProductsUser()
+        this.getGroup()
+    },
     methods: {
+        async getProductsUser() {
+            try {
+                const res = await axios2.get(`notePettyCash/${this.userId}`)
+                this.items = res.data.map(item => ({ ...item, showProducts: false }))
+            } catch (error) {
+                console.error(error)
+            }
+        },
+        async getGroup() {
+            try {
+                const res = await axios2.get("list_group");
+                this.budgetGroups = res.data;
+            } catch (error) {
+                console.error("Error al cargar grupos presupuestarios:", error);
+            }
+        },
+        async submitDetails() {
+            try {
+                const payload = {
+                    requestId: this.selectedItem.id,
+                    products: this.selectedItem.products.map(product => ({
+                        description: product.description,
+                        supplier: product.supplier,
+                        numer_invoice: product.numer_invoice,
+                        cost_object: product.cost_object,
+                        id_group: product.id_group,
+                        total: product.total,
+                    })),
+                };
+                await axios2.post("/savePettyCashDetails", payload);
+                //this.dialogDetails = false;
+                this.updateRequests();
+            } catch (error) {
+                console.error("Error al guardar detalles:", error);
+            }
+        },
         openForm() {
             this.dialog = true;
+        },
+        updateRequests() {
+            this.getProductsUser();
         },
         toggleDetails(item) {
             this.detailsVisible = this.detailsVisible === item.id ? null : item.id;
@@ -110,6 +202,35 @@ export default {
         viewRequests() {
             console.log("Contenido de requests:", this.requests);
         },
+        toggleMaterials(item) {
+            item.showProducts = !item.showProducts
+        },
+        async print_form(item) {
+            let res = await axios2({
+                method: "GET",
+                url: `/printPettCash/${item.id}`,
+                responseType: "arraybuffer",
+            });
+            let blob = new Blob([res.data], {
+                type: "application/pdf"
+            });
+            printJS(window.URL.createObjectURL(blob));
+        },
+        async print_form_discharge(item) {
+            let res = await axios2({
+                method: "GET",
+                url: `/printPettCashDischarge/${item.id}`,
+                responseType: "arraybuffer",
+            });
+            let blob = new Blob([res.data], {
+                type: "application/pdf"
+            });
+            printJS(window.URL.createObjectURL(blob));
+        },
+        async navigateNext(item) {
+            this.selectedItem = item;
+            this.dialogDetails = true;
+        }
     },
 };
 </script>

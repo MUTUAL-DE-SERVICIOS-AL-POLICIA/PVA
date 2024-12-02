@@ -183,16 +183,16 @@ export default {
         this.getMaterial()
     },
     methods: {
+        clearDate() {
+            this.selectedDate = null; // Restablece la fecha seleccionada
+        },
         validateIntegerInput(item) {
             item.quantity = item.quantity.replace(/[^0-9]/g, '');
-
-            // Si la cantidad es mayor a 12, la ajustamos a 12
             if (parseInt(item.quantity) > 12) {
                 item.quantity = '12';
             }
         },
         hasQuantityError(quantity) {
-            // Retorna true si la cantidad es mayor a 12, o si está vacía después de eliminar caracteres no numéricos
             return !/^\d+$/.test(quantity) || parseInt(quantity) > 12 || quantity === '';
         },
         quantityErrorMessage(quantity) {
