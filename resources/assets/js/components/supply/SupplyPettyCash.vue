@@ -7,13 +7,20 @@
             </v-toolbar-title>
             <v-btn color="success" @click="openForm">Realizar Nueva Solicitud</v-btn>
         </v-toolbar>
+        <v-btn icon @click.native="print_form_discharge_form()">
+            <v-icon color="success">print</v-icon>
+        </v-btn>
 
         <v-data-table :headers="mainHeaders" :items="items" item-value="id" class="elevation-1" hide-default-footer>
             <template v-slot:items="props">
                 <tr>
                     <td align="center">{{ props.item.number_note }}</td>
                     <td align="center">{{ props.item.request_date }}</td>
-                    <td align="center">{{ props.item.state }}</td>
+                    <td>
+                        <div :class="['status-button', getStateClass(props.item.state)]">
+                            {{ props.item.state }}
+                        </div>
+                    </td>
                     <td align="center">
                         <v-btn icon @click.stop="toggleMaterials(props.item)" class="expand-btn">
                             <v-icon class="expand-icon" color="success">menu</v-icon>
@@ -21,10 +28,12 @@
                         <v-btn icon @click.native="print_form(props.item)">
                             <v-icon color="info">print</v-icon>
                         </v-btn>
-                        <v-btn color="success" @click.native="navigateNext(props.item)">
+                        <v-btn v-if="props.item.state !== 'Finalizado'" color="success"
+                            @click.native="navigateNext(props.item)">
                             Continuar
                         </v-btn>
-                        <v-btn icon @click.native="print_form_discharge(props.item)">
+                        <v-btn v-if="props.item.state !== 'En Revision'" icon
+                            @click.native="print_form_discharge(props.item)">
                             <v-icon color="success">print</v-icon>
                         </v-btn>
                     </td>
@@ -162,6 +171,17 @@ export default {
         },
         async submitDetails() {
             try {
+                const invalidProduct = this.selectedItem.products.find(product =>
+                    !product.supplier ||
+                    !product.numer_invoice ||
+                    !product.id_group ||
+                    !product.total
+                );
+
+                if (invalidProduct) {
+                    this.toastr.error("Todos los campos deben ser llenados.");
+                    return;
+                }
                 const payload = {
                     requestId: this.selectedItem.id,
                     products: this.selectedItem.products.map(product => ({
@@ -174,7 +194,7 @@ export default {
                     })),
                 };
                 await axios2.post("/savePettyCashDetails", payload);
-                //this.dialogDetails = false;
+                this.dialogDetails = false;
                 this.updateRequests();
             } catch (error) {
                 console.error("Error al guardar detalles:", error);
@@ -201,6 +221,18 @@ export default {
         },
         viewRequests() {
             console.log("Contenido de requests:", this.requests);
+        },
+        getStateClass(state) {
+            switch (state) {
+                case 'En Revision':
+                    return 'state-en-revision'
+                case 'Cancelado':
+                    return 'state-cancelado'
+                case 'Finalizado':
+                    return 'state-aceptado'
+                default:
+                    return ''
+            }
         },
         toggleMaterials(item) {
             item.showProducts = !item.showProducts
@@ -230,7 +262,50 @@ export default {
         async navigateNext(item) {
             this.selectedItem = item;
             this.dialogDetails = true;
-        }
+        },
+        async print_form_discharge_form() {
+            let res = await axios2({
+                method: "GET",
+                url: `/AccountabilitySheet2/`,
+                responseType: "arraybuffer",
+            });
+            let blob = new Blob([res.data], {
+                type: "application/pdf"
+            });
+            printJS(window.URL.createObjectURL(blob));
+        },
     },
 };
 </script>
+<style scoped>
+.status-button {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-weight: bold;
+    color: white;
+
+    text-align: center;
+}
+
+.state-en-revision {
+    border: 2px solid #fbc02d;
+
+    background-color: #fbc02d;
+
+}
+
+.state-cancelado {
+    border: 2px solid #d32f2f;
+
+    background-color: #d32f2f;
+
+}
+
+.state-aceptado {
+    border: 2px solid #388e3c;
+
+    background-color: #388e3c;
+
+}
+</style>

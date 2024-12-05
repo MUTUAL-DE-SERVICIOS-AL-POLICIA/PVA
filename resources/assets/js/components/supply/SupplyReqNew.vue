@@ -1,9 +1,7 @@
 <template>
     <v-container fluid>
         <h1 class="title">Solicitudes</h1>
-
         <div class="header-container">
-            <!-- Selector de Fecha -->
             <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-y
                 min-width="auto">
                 <template v-slot:activator="{ on, attrs }">
@@ -16,15 +14,11 @@
                     <v-btn text color="primary" @click="$refs.menu.save(selectedDate)">OK</v-btn>
                 </v-date-picker>
             </v-menu>
-
-            <!-- Botón Nueva Solicitud -->
             <v-btn color="primary" dark @click="openDialogSupply" class="new-request-btn">
                 <v-icon left>add_circle</v-icon>
                 Nueva Solicitud
             </v-btn>
         </div>
-
-        <!-- Tabla Principal -->
         <v-data-table :headers="headers" :items="filteredItems" class="elevation-1" hide-default-footer>
             <template v-slot:items="props">
                 <tr>
@@ -63,7 +57,6 @@
 </template>
 </v-data-table>
 
-<!-- Modal Nueva Solicitud -->
 <v-dialog v-model="dialog" max-width="800px">
     <v-card>
         <v-card-title>
@@ -71,12 +64,9 @@
         </v-card-title>
         <v-card-text>
             <v-form v-model="valid">
-                <!-- Selección de Material -->
                 <v-autocomplete v-model="selectedMaterial" :items="materials" item-value="id" item-text="description"
                     label="Seleccionar Material" :search-input.sync="search" :loading="loadingMaterials"
                     loading-text="Cargando..." @change="selectMaterial" class="form-field" dense></v-autocomplete>
-
-                <!-- Tabla de Materiales Seleccionados -->
                 <v-data-table :headers="materialTableHeaders" :items="selectedMaterials" class="elevation-1"
                     hide-default-footer>
                     <template v-slot:items="props">
@@ -99,10 +89,8 @@
                     </template>
                 </v-data-table>
 
-                <!-- Comentarios -->
                 <v-textarea v-model="comments" label="Comentarios" rows="3" class="form-field"></v-textarea>
 
-                <!-- Botones -->
                 <v-btn color="primary" @click="submitRequest"
                     :disabled="!valid || selectedMaterials.length === 0 || !isValidQuantity" class="submit-btn">
                     Enviar
@@ -184,7 +172,7 @@ export default {
     },
     methods: {
         clearDate() {
-            this.selectedDate = null; // Restablece la fecha seleccionada
+            this.selectedDate = null;
         },
         validateIntegerInput(item) {
             item.quantity = item.quantity.replace(/[^0-9]/g, '');
