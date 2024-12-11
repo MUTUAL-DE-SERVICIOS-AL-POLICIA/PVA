@@ -192,10 +192,11 @@ class DepartureController extends Controller
    */
   public function store(DepartureForm $request)
   {
+    logger($request);
     $lastCode = Departure::latest()->first()->code;
     $newCode = $lastCode + 1;
     $departure = Departure::create(array_merge($request->all(), [
-        'code' => $newCode,
+      'code' => $newCode,
     ]));
 
     return $departure;
@@ -221,12 +222,12 @@ class DepartureController extends Controller
    */
   public function update(Request $request, $id)
   {
-    try{
+    try {
       $departure = Departure::findOrFail($id);
       $departure->fill($request->all());
       $departure->save();
       return $departure;
-    }catch(\Exception $e){
+    } catch (\Exception $e) {
       return $e;
     }
   }
@@ -406,10 +407,11 @@ class DepartureController extends Controller
 
   public function verify_cite(Request $request)
   {
+    logger($request);
     $request->validate([
       'cite' => 'required|string|min:2'
     ]);
-    $departure = Departure::where(function($query) {
+    $departure = Departure::where(function ($query) {
       $query->orWhere('approved', true)->orWhere('approved', null);
     })->whereCite($request['cite'])->first();
     if (!$departure) {
@@ -435,22 +437,19 @@ class DepartureController extends Controller
         $lastCode = Departure::latest()->first()->code;
         $newCode = $lastCode + 1;
         $sw = true;
-        if(Carbon::parse($request->departure)->format('H:i:s') != Carbon::parse($request->return)->format('H:i:s'))
-        {
+        if (Carbon::parse($request->departure)->format('H:i:s') != Carbon::parse($request->return)->format('H:i:s')) {
           $new_return = '00:00:00';
-          if(Carbon::parse($request->departure)->format('H:i:s') == ('08:30:00'))
+          if (Carbon::parse($request->departure)->format('H:i:s') == ('08:30:00'))
             $new_return = Carbon::parse('18:30:00')->format('H:i:s');
-          elseif(Carbon::parse($request->departure)->format('H:i:s') == ('14:30:00'))
+          elseif (Carbon::parse($request->departure)->format('H:i:s') == ('14:30:00'))
             $new_return = Carbon::parse('12:30:00')->format('H:i:s');
           $date = Carbon::parse($request->return)->setTimeFromTimeString($new_return);
           $request->merge(['return' => $date->toDateTimeString()]);
-        }
-        else
-        {
+        } else {
           $new_return = '00:00:00';
-          if(Carbon::parse($request->departure)->format('H:i:s') == ('08:30:00'))
+          if (Carbon::parse($request->departure)->format('H:i:s') == ('08:30:00'))
             $new_return = Carbon::parse('12:30:00')->format('H:i:s');
-          elseif(Carbon::parse($request->departure)->format('H:i:s') == ('14:30:00'))
+          elseif (Carbon::parse($request->departure)->format('H:i:s') == ('14:30:00'))
             $new_return = Carbon::parse('18:30:00')->format('H:i:s');
           $date = Carbon::parse($request->return)->setTimeFromTimeString($new_return);
           $request->merge(['return' => $date->toDateTimeString()]);
@@ -464,13 +463,11 @@ class DepartureController extends Controller
           if ($c == 1 || $c == count($request->days)) {
             if ($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
               $journal = 0.5;
-          }
-          else{
-            if($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
-              {
-                $sw = false;
-                break;
-              }
+          } else {
+            if ($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon']) {
+              $sw = false;
+              break;
+            }
           }
           $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
           $remanent->rest_days = $remanent->rest_days - $journal;
@@ -482,15 +479,13 @@ class DepartureController extends Controller
           $departure->days_on_vacation()->save($save_day);
           $c++;
         }
-        if($sw)
-        {
+        if ($sw) {
           DB::commit();
-        return response()->json([
-          'message' => 'Registro exitoso',
-          'departure' => $departure,
-        ], 200);
-        }
-        else{
+          return response()->json([
+            'message' => 'Registro exitoso',
+            'departure' => $departure,
+          ], 200);
+        } else {
           DB::rollback();
           return response()->json([
             'message' => 'los Dias intermedios no pueden ser medias jornadas',
@@ -512,19 +507,16 @@ class DepartureController extends Controller
   public function cancel_vacation_departure($id)
   {
     DB::beginTransaction();
-    try{
+    try {
       $departure = Departure::find($id);
-      if($departure && $departure->departure_reason->name == 'VACACIONES' && $departure->approved != true)
-      {
+      if ($departure && $departure->departure_reason->name == 'VACACIONES' && $departure->approved != true) {
         $departure->days_on_vacation;
-        foreach($departure->days_on_vacation as $day)
-        {
+        foreach ($departure->days_on_vacation as $day) {
           $vacation_queue = VacationQueue::where('employee_id', $departure->employee_id)->where('max_date', '>=', $day->date)->orderBy('max_date', 'asc')->first();
           $vacation_queue->rest_days = $vacation_queue->rest_days + $day->day;
           $vacation_queue->update();
         }
-        if ($departure->approved == null)
-        {
+        if ($departure->approved == null) {
           $departure->days_on_vacation()->delete();
           $departure->delete();
         }
@@ -532,13 +524,13 @@ class DepartureController extends Controller
         return response()->json([
           'message' => 'Permiso de Vacacion eliminado',
         ], 200);
-      }else{
+      } else {
         DB::commit();
         return response()->json([
           'message' => 'Registro inexistente',
         ], 409);
       }
-    }catch(\Exception $e){
+    } catch (\Exception $e) {
       DB::rollback();
       return response()->json([
         'message' => "Cite Duplicado",
@@ -645,9 +637,9 @@ class DepartureController extends Controller
       ->get();
 
     if ($vacation_queues->count() > 0) {
-        $vacation_days = $vacation_queues->first()->days;
+      $vacation_days = $vacation_queues->first()->days;
     } else {
-        $vacation_days = 0;
+      $vacation_days = 0;
     }
 
     $data = [

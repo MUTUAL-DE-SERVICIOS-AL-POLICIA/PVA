@@ -22,20 +22,42 @@
                         </div>
                     </td>
                     <td align="center">
-                        <v-btn icon @click.stop="toggleMaterials(props.item)" class="expand-btn">
-                            <v-icon class="expand-icon" color="success">menu</v-icon>
-                        </v-btn>
-                        <v-btn icon @click.native="print_form(props.item)">
-                            <v-icon color="info">print</v-icon>
-                        </v-btn>
-                        <v-btn v-if="props.item.state !== 'Finalizado'" color="success"
-                            @click.native="navigateNext(props.item)">
-                            Continuar
-                        </v-btn>
-                        <v-btn v-if="props.item.state !== 'En Revision'" icon
-                            @click.native="print_form_discharge(props.item)">
-                            <v-icon color="success">print</v-icon>
-                        </v-btn>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn icon v-bind="attrs" v-on="on" @click.stop="toggleMaterials(props.item)"
+                                    class="expand-btn">
+                                    <v-icon class="expand-icon" color="success">menu</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Tus Productos</span>
+                        </v-tooltip>
+
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn icon v-bind="attrs" v-on="on" @click.native="print_form(props.item)">
+                                    <v-icon color="info">print</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Imprimir Formulario 1</span>
+                        </v-tooltip>
+
+                        <v-tooltip bottom v-if="props.item.state !== 'Finalizado'">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn icon v-bind="attrs" v-on="on" @click.native="navigateNext(props.item)">
+                                    <v-icon color="info">check</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Continuar con el Fomurlario 2</span>
+                        </v-tooltip>
+
+                        <v-tooltip bottom v-if="props.item.state !== 'En Revision'">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn icon v-bind="attrs" v-on="on" @click.native="print_form_discharge(props.item)">
+                                    <v-icon color="success">print</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Imprimir Formulario 2</span>
+                        </v-tooltip>
                     </td>
                 </tr>
                 <tr v-if="props.item.showProducts">
