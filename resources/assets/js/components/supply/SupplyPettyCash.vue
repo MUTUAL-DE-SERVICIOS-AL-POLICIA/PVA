@@ -7,10 +7,6 @@
             </v-toolbar-title>
             <v-btn color="success" @click="openForm">Realizar Nueva Solicitud</v-btn>
         </v-toolbar>
-        <v-btn icon @click.native="print_form_discharge_form()">
-            <v-icon color="success">print</v-icon>
-        </v-btn>
-
         <v-data-table :headers="mainHeaders" :items="items" item-value="id" class="elevation-1" hide-default-footer>
             <template v-slot:items="props">
                 <tr>
