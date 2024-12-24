@@ -175,6 +175,7 @@ export default {
             try {
                 const res = await axios2.get(`notePettyCash/${this.userId}`)
                 this.items = res.data.map(item => ({ ...item, showProducts: false }))
+                console.log(this.items);
             } catch (error) {
                 console.error(error)
             }
