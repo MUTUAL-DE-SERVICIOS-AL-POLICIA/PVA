@@ -121,17 +121,8 @@
     ]
   },
   {
-    "href": "supplyRequestIndex",
-    "title": "Solicitud de Material",
-    "icon": "add_shopping_cart",
-    "permission": "!admin",
-    "params": {
-      "requestType": "user"
-    }
-  },
-  {
     "href": "supplyReqNew",
-    "title": "Solicitud de Material - Prueba",
+    "title": "Solicitud de Material - PGA",
     "icon": "add_shopping_cart",
     "permission": "!admin",
     "params": {
@@ -140,8 +131,8 @@
   },
   {
     "href": "supplyPettyCash",
-    "title": "Solicitud Caja Chica - Prueba",
-    "icon": "add_shopping_cart",
+    "title": "Solicitud Caja Chica",
+    "icon": "add_circle_outline",
     "permission": "!admin",
     "params": {
       "requestType": "user"
