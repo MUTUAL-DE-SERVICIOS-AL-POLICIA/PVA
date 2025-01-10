@@ -1,18 +1,14 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    max-width="700px"
-    @keydown.esc="dialog = false"
-    persistent
-  >
-    <v-tooltip slot="activator" top v-if="type!='Vacation'">
+  <v-dialog v-model="dialog" max-width="700px" @keydown.esc="dialog = false" persistent>
+    <v-tooltip slot="activator" top v-if="type != 'Vacation'">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
       <span>Nueva Solicitud</span>
     </v-tooltip>
 
     <v-card>
       <v-toolbar dark color="secondary">
-        <v-toolbar-title class="white--text">Solicitud de Salida<span v-if="reasonSelected.name"> - {{ reasonSelected.name }}</span></v-toolbar-title>
+        <v-toolbar-title class="white--text">Solicitud de Salida<span v-if="reasonSelected.name"> - {{
+          reasonSelected.name }}</span></v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click.native="closeDialog">
           <v-icon>close</v-icon>
@@ -26,64 +22,27 @@
               <v-card-text>
                 <v-layout v-if="!updateDeparture">
                   <v-flex xs5 pr-5>
-                    <v-select
-                      :items="groups"
-                      item-text="name"
-                      item-value="id"
-                      v-model="departure.group"
-                      label="Tipo de permiso"
-                      :hint="groupDescription"
-                      persistent-hint
-                      v-validate="'required'"
-                      name="Tipo de permiso"
-                      :error-messages="errors.collect('Tipo de permiso')"
-                    ></v-select>
+                    <v-select :items="groups" item-text="name" item-value="id" v-model="departure.group"
+                      label="Tipo de permiso" :hint="groupDescription" persistent-hint v-validate="'required'"
+                      name="Tipo de permiso" :error-messages="errors.collect('Tipo de permiso')"></v-select>
                   </v-flex>
 
                   <v-flex xs7>
-                    <v-select
-                      :items="filteredReasons"
-                      item-text="name"
-                      item-value="id"
-                      v-model="departure.departure_reason_id"
-                      label="Razón"
-                      :hint="reasonDescription"
-                      persistent-hint
-                      v-validate="'required'"
-                      name="Razón"
-                      :error-messages="errors.collect('Razón')"
-                      :disabled="!departure.group"
-                    ></v-select>
+                    <v-select :items="filteredReasons" item-text="name" item-value="id"
+                      v-model="departure.departure_reason_id" label="Razón" :hint="reasonDescription" persistent-hint
+                      v-validate="'required'" name="Razón" :error-messages="errors.collect('Razón')"
+                      :disabled="!departure.group"></v-select>
                   </v-flex>
                 </v-layout>
-                <v-text-field
-                  v-show="reasonSelected.note"
-                  label="Cite"
-                  v-model="departure.cite"
-                  class="mt-4"
-                  rows="1"
-                  v-validate="reasonSelected.note ? 'required' : ''"
-                  name="Cite"
-                  :error-messages="errors.collect('Cite')"
-                  :disabled="!departure.departure_reason_id"
-                ></v-text-field>
-                <v-textarea
-                  v-show="reasonSelected.description_needed"
-                  label="Detalle"
-                  v-model="departure.description"
-                  class="mt-4"
-                  rows="3"
-                  v-validate="reasonSelected.description_needed ? 'required' : ''"
-                  name="Detalle"
-                  :error-messages="errors.collect('Detalle')"
-                  :disabled="!departure.departure_reason_id"
-                ></v-textarea>
+                <v-text-field v-show="reasonSelected.note" label="Cite" v-model="departure.cite" class="mt-4" rows="1"
+                  v-validate="reasonSelected.note ? 'required' : ''" name="Cite"
+                  :error-messages="errors.collect('Cite')" :disabled="!departure.departure_reason_id"></v-text-field>
+                <v-textarea v-show="reasonSelected.description_needed" label="Detalle" v-model="departure.description"
+                  class="mt-4" rows="3" v-validate="reasonSelected.description_needed ? 'required' : ''" name="Detalle"
+                  :error-messages="errors.collect('Detalle')" :disabled="!departure.departure_reason_id"></v-textarea>
               </v-card-text>
 
-              <v-alert
-                :value="error.value"
-                type="error"
-              >
+              <v-alert :value="error.value" type="error">
                 {{ error.text }}
               </v-alert>
             </v-card>
@@ -95,42 +54,25 @@
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Opciones</v-toolbar-title>
                   <v-card-actions>
-                    <v-radio-group
-                      class="justify-center"
-                      column
-                      v-model="departure.timeToAdd"
+                    <v-radio-group class="justify-center" column v-model="departure.timeToAdd"
                       v-validate="(step == 2 && Array.isArray(reasonSelected.options)) ? 'required' : ''"
-                      name="Opciones"
-                      :error-messages="errors.collect('Opciones')"
-                    >
-                      <v-radio
-                        v-for="option in reasonSelected.options"
-                        :key="option.value"
-                        :label="option.text"
-                        :value="option.value"
-                      ></v-radio>
+                      name="Opciones" :error-messages="errors.collect('Opciones')">
+                      <v-radio v-for="option in reasonSelected.options" :key="option.value" :label="option.text"
+                        :value="option.value"></v-radio>
                     </v-radio-group>
                   </v-card-actions>
                 </v-card>
               </v-flex>
-              <v-flex xs-4 v-show="reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8">
+              <v-flex xs-4
+                v-show="reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8">
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Período</v-toolbar-title>
                   <v-card-actions>
-                    <v-radio-group
-                      class="justify-center"
-                      column
-                      v-model="departure.period"
+                    <v-radio-group class="justify-center" column v-model="departure.period"
                       v-validate="(step == 2 && reasonSelected.period && departure.record < 3 && departure.timeToAdd > 0 && departure.timeToAdd < 8) ? 'required' : ''"
-                      name="Período"
-                      :error-messages="errors.collect('Período')"
-                    >
-                      <v-radio
-                        v-for="period in periods"
-                        :key="period.value"
-                        :label="period.text"
-                        :value="period.value"
-                      ></v-radio>
+                      name="Período" :error-messages="errors.collect('Período')">
+                      <v-radio v-for="period in periods" :key="period.value" :label="period.text"
+                        :value="period.value"></v-radio>
                     </v-radio-group>
                   </v-card-actions>
                 </v-card>
@@ -141,69 +83,33 @@
                   <v-card-actions>
                     <v-layout column>
                       <v-flex v-show="reasonSelected.date.start.visible">
-                        <v-menu
-                          v-model="showStartDate"
-                          :close-on-content-click="false"
-                          transition="scale-transition"
-                          offset-y
-                          max-width="290px"
-                          min-width="290px"
-                        >
+                        <v-menu v-model="showStartDate" :close-on-content-click="false" transition="scale-transition"
+                          offset-y max-width="290px" min-width="290px">
                           <template v-slot:activator="{ on }">
-                            <v-text-field
-                              v-model="startDateFormatted"
-                              label="Fecha de Salida"
-                              hint="día/mes/año"
-                              persistent-hint
-                              prepend-icon="event"
-                              v-on="on"
+                            <v-text-field v-model="startDateFormatted" label="Fecha de Salida" hint="día/mes/año"
+                              persistent-hint prepend-icon="event" v-on="on"
                               v-validate="(step == 2 && reasonSelected.date.start.editable) ? 'required' : ''"
-                              name="Fecha de Salida"
-                              :error-messages="errors.collect('Fecha de Salida')"
-                            ></v-text-field>
+                              name="Fecha de Salida" :error-messages="errors.collect('Fecha de Salida')"></v-text-field>
                           </template>
-                          <v-date-picker
-                            v-model="departure.departure"
-                            no-title
-                            @input="showStartDate = false"
-                            locale="es-bo"
-                            first-day-of-week="1"
-                          ></v-date-picker>
+                          <v-date-picker v-model="departure.departure" no-title @input="showStartDate = false"
+                            locale="es-bo" first-day-of-week="1"></v-date-picker>
                         </v-menu>
                       </v-flex>
-                      <v-flex mt-4 v-show="(reasonSelected.date.end.visible && departure.timeToAdd == -1) || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS'">
-                        <v-menu
-                          v-model="showEndDate"
-                          :close-on-content-click="false"
-                          transition="scale-transition"
-                          offset-y
-                          full-width
-                          max-width="290px"
-                          min-width="290px"
-                          :disabled="!reasonSelected.date.end.editable"
-                        >
+                      <v-flex mt-4
+                        v-show="(reasonSelected.date.end.visible && departure.timeToAdd == -1) || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS'">
+                        <v-menu v-model="showEndDate" :close-on-content-click="false" transition="scale-transition"
+                          offset-y full-width max-width="290px" min-width="290px"
+                          :disabled="!reasonSelected.date.end.editable">
                           <template v-slot:activator="{ on }">
-                            <v-text-field
-                              v-model="endDateFormatted"
-                              label="Fecha de Retorno"
-                              hint="día/mes/año"
-                              persistent-hint
-                              prepend-icon="event"
-                              readonly
-                              v-on="on"
+                            <v-text-field v-model="endDateFormatted" label="Fecha de Retorno" hint="día/mes/año"
+                              persistent-hint prepend-icon="event" readonly v-on="on"
                               v-validate="step == 2 ? (departure.timeToAdd == -1 || reasonSelected.name == 'DOCENCIA, BECAS, CURSOS, SEMINARIOS, POSTGRADOS') ? 'required' : '' : ''"
                               name="Fecha de Retorno"
-                              :error-messages="errors.collect('Fecha de Retorno')"
-                            ></v-text-field>
+                              :error-messages="errors.collect('Fecha de Retorno')"></v-text-field>
                           </template>
-                          <v-date-picker
-                            v-model="departure.return"
-                            no-title
-                            @input="showEndDate = false"
+                          <v-date-picker v-model="departure.return" no-title @input="showEndDate = false"
                             :min="$moment(departure.departure).startOf('day').add('days', 1).format('YYYY-MM-DD')"
-                            locale="es-bo"
-                            first-day-of-week="1"
-                          ></v-date-picker>
+                            locale="es-bo" first-day-of-week="1"></v-date-picker>
                         </v-menu>
                       </v-flex>
                     </v-layout>
@@ -216,20 +122,11 @@
                 <v-card flat class="text-xs-center">
                   <v-toolbar-title>Marcado</v-toolbar-title>
                   <v-card-actions>
-                    <v-radio-group
-                      class="justify-center"
-                      column
-                      v-model="departure.record"
-                      v-validate="(step == 2 && reasonSelected.records) ? 'required' : ''"
-                      name="Marcado"
-                      :error-messages="errors.collect('Marcado')"
-                    >
-                      <v-radio
-                        v-for="record in reasonSelected.records"
-                        :key="record.value"
-                        :label="record.text"
-                        :value="record.value"
-                      ></v-radio>
+                    <v-radio-group class="justify-center" column v-model="departure.record"
+                      v-validate="(step == 2 && reasonSelected.records) ? 'required' : ''" name="Marcado"
+                      :error-messages="errors.collect('Marcado')">
+                      <v-radio v-for="record in reasonSelected.records" :key="record.value" :label="record.text"
+                        :value="record.value"></v-radio>
                     </v-radio-group>
                   </v-card-actions>
                 </v-card>
@@ -242,75 +139,42 @@
                       <v-flex xs6>
                         <v-layout wrap>
                           <v-flex xs6>
-                            <v-text-field
-                              v-model="departure.time.start.hours"
-                              step="1"
-                              label="Salida"
-                              hint="(24 hrs.)"
-                              prepend-icon="alarm"
-                              type="number"
-                              name="Salida"
-                              v-validate="limitHour"
-                              :min="departure.period == 1 ? '8' : '14'"
-                              :max="departure.period == 1 ? '12' : '18'"
+                            <v-text-field v-model="departure.time.start.hours" step="1" label="Salida" hint="(24 hrs.)"
+                              prepend-icon="alarm" type="number" name="Salida" v-validate="limitHour"
+                              :min="departure.period == 1 ? '8' : '14'" :max="departure.period == 1 ? '12' : '18'"
                               class="right-input pl-1"
                               :readonly="!reasonSelected.time.start.editable && departure.record != 3"
-                              :error-messages="errors.collect('Salida')"
-                            ></v-text-field>
+                              :error-messages="errors.collect('Salida')"></v-text-field>
                           </v-flex>
                           <v-flex xs1 class="mt-3 pt-1">
                             <span class="title font-weight-black">:</span>
                           </v-flex>
                           <v-flex xs5>
-                            <v-text-field
-                              v-model="departure.time.start.minutes"
-                              step="1"
-                              type="number"
-                              name="Salida"
-                              v-validate="step == 2 ? 'required|min_value:0|max_value:59' : ''"
-                              min="0"
-                              max="59"
-                              class="pr-4"
-                              :disabled="!departure.time.start.hours"
-                              :readonly="!reasonSelected.time.start.editable && departure.record != 3"
-                            ></v-text-field>
+                            <v-text-field v-model="departure.time.start.minutes" step="1" type="number" name="Salida"
+                              v-validate="step == 2 ? 'required|min_value:0|max_value:59' : ''" min="0" max="59"
+                              class="pr-4" :disabled="!departure.time.start.hours"
+                              :readonly="!reasonSelected.time.start.editable && departure.record != 3"></v-text-field>
                           </v-flex>
                         </v-layout>
                       </v-flex>
                       <v-flex xs6>
                         <v-layout wrap>
                           <v-flex xs6>
-                            <v-text-field
-                              v-model="departure.time.end.hours"
-                              step="1"
-                              label="Retorno"
-                              hint="(24 hrs.)"
-                              prepend-icon="alarm"
-                              type="number"
-                              name="Retorno"
-                              v-validate="limitHour"
-                              :min="departure.period == 1 ? '8' : '14'"
-                              :max="departure.period == 1 ? '12' : '18'"
+                            <v-text-field v-model="departure.time.end.hours" step="1" label="Retorno" hint="(24 hrs.)"
+                              prepend-icon="alarm" type="number" name="Retorno" v-validate="limitHour"
+                              :min="departure.period == 1 ? '8' : '14'" :max="departure.period == 1 ? '12' : '18'"
                               class="right-input pl-1"
                               :readonly="(!reasonSelected.time.end.editable && departure.record != 3) || (departure.timeToAdd > 0 && reasonSelected.options != null)"
-                              :error-messages="errors.collect('Retorno')"
-                            ></v-text-field>
+                              :error-messages="errors.collect('Retorno')"></v-text-field>
                           </v-flex>
                           <v-flex xs1 class="mt-3 pt-1">
                             <span class="title font-weight-black">:</span>
                           </v-flex>
                           <v-flex xs5>
-                            <v-text-field
-                              v-model="departure.time.end.minutes"
-                              step="1"
-                              type="number"
-                              name="Retorno"
-                              v-validate="step == 2 ? `required|min_value:0|max_value:59` : ''"
-                              min="0"
-                              max="59"
+                            <v-text-field v-model="departure.time.end.minutes" step="1" type="number" name="Retorno"
+                              v-validate="step == 2 ? `required|min_value:0|max_value:59` : ''" min="0" max="59"
                               :disabled="!departure.time.end.hours"
-                              :readonly="(!reasonSelected.time.end.editable && departure.record != 3) || (departure.timeToAdd > 0 && reasonSelected.options != null)"
-                            ></v-text-field>
+                              :readonly="(!reasonSelected.time.end.editable && departure.record != 3) || (departure.timeToAdd > 0 && reasonSelected.options != null)"></v-text-field>
                           </v-flex>
                         </v-layout>
                       </v-flex>
@@ -327,10 +191,12 @@
         <v-btn color="primary" v-if="step > 1" @click.native="step -= 1; clearForm()" :disabled="loading">
           Volver
         </v-btn>
-        <v-btn color="error" v-if="step < 2 && !error.value && !updateDeparture" @click.native="nextStep" :disabled="loading">
+        <v-btn color="error" v-if="step < 2 && !error.value && !updateDeparture" @click.native="nextStep"
+          :disabled="loading">
           Siguiente
         </v-btn>
-        <v-btn color="error" v-if="(step == 2 && !error.value) || updateDeparture" @click.native="makeRequest" :disabled="loading">
+        <v-btn color="error" v-if="(step == 2 && !error.value) || updateDeparture" @click.native="makeRequest"
+          :disabled="loading">
           Imprimir
         </v-btn>
       </div>
@@ -341,7 +207,7 @@
 <script>
 export default {
   name: 'Form',
-  props: ['bus','type'],
+  props: ['bus', 'type'],
   data() {
     return {
       loading: true,
@@ -468,17 +334,17 @@ export default {
     },
     groupDescription() {
       let group = this.groups.find(o => o.id == this.departure.group)
-      if(group) return group.description
+      if (group) return group.description
     },
     reasonDescription() {
       let reason = this.reasons.find(o => o.id == this.departure.departure_reason_id)
-      if(reason) return reason.description
+      if (reason) return reason.description
     },
-    startDateFormatted () {
+    startDateFormatted() {
       if (!this.departure.departure) return null
       return this.formatDate(this.departure.departure)
     },
-    endDateFormatted () {
+    endDateFormatted() {
       if (!this.departure.return) return null
       return this.formatDate(this.departure.return)
     },
@@ -494,7 +360,7 @@ export default {
     'departure.cite'(val) {
       if (this.departure.cite) this.departure.cite = val.toUpperCase()
     },
-    'departure.timeToAdd' (val) {
+    'departure.timeToAdd'(val) {
       if (this.departure.timeToAdd == -1) {
         this.departure.time.start.hours = 8
         this.departure.time.start.minutes = 30
@@ -505,10 +371,10 @@ export default {
         this.changeTime()
       }
     },
-    'departure.period' (val) {
+    'departure.period'(val) {
       this.changeTime()
     },
-    'departure.record' (val) {
+    'departure.record'(val) {
       this.changeTime()
     },
     async 'departure.time.start.hours'(val) {
@@ -846,6 +712,8 @@ export default {
               departure: departureDate.format(),
               return: returnDate.format()
             })
+
+            console.log(res);
           } else {
             res = await axios.patch(`departure/${this.departure.id}`, {
               cite: this.departure.cite,
@@ -853,7 +721,7 @@ export default {
             })
           }
         }
-          catch (e) {
+        catch (e) {
           console.log(e)
         } finally {
           this.bus.$emit('printDeparture', res.data.id)
@@ -981,8 +849,8 @@ export default {
           let minutes = time.minutes.toString()
           minutes = minutes.padStart(2, '0')
           return resolve({
-            hours: hours.slice(hours.length-2, hours.length),
-            minutes: minutes.slice(minutes.length-2, minutes.length)
+            hours: hours.slice(hours.length - 2, hours.length),
+            minutes: minutes.slice(minutes.length - 2, minutes.length)
           })
         } else {
           return resolve({
@@ -1012,6 +880,7 @@ export default {
         let valid = await this.$validator.validateAll()
         if (valid && !this.loading) {
           if (this.reasonSelected.note) {
+            console.log(this.reasonSelected.note);
             let res = await axios.get(`departure/verify/cite`, {
               params: {
                 cite: this.departure.cite
@@ -1062,16 +931,16 @@ export default {
               visible: false
             }
           },
-          this.reasonSelected.time = {
-            start: {
-              editable: false,
-              visible: false
-            },
-            end: {
-              editable: false,
-              visible: false
+            this.reasonSelected.time = {
+              start: {
+                editable: false,
+                visible: false
+              },
+              end: {
+                editable: false,
+                visible: false
+              }
             }
-          }
         }
         this.loading = false
       } catch (e) {

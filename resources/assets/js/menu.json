@@ -5,13 +5,15 @@
     "icon": "home",
     "permission": null,
     "params": {}
-  }, {
+  },
+  {
     "href": "employeeIndex",
     "title": "Personas",
     "icon": "group",
     "permission": "read-employee",
     "params": {}
-  }, {
+  },
+  {
     "title": "Personal de Planta",
     "icon": "person",
     "permission": "read-eventual",
@@ -22,7 +24,8 @@
         "icon": "gavel",
         "permission": "read-eventual",
         "params": {}
-      }, {
+      },
+      {
         "href": "procedureIndex",
         "title": "Planillas Personal de Planta",
         "icon": "storage",
@@ -30,7 +33,8 @@
         "params": {}
       }
     ]
-  }, {
+  },
+  {
     "title": "Consultores",
     "icon": "work",
     "permission": "read-consultant",
@@ -41,7 +45,8 @@
         "icon": "gavel",
         "permission": "read-consultant",
         "params": {}
-      }, {
+      },
+      {
         "href": "consultantProcedureIndex",
         "title": "Planillas Consultores",
         "icon": "storage",
@@ -49,12 +54,14 @@
         "params": {}
       }
     ]
-  }, {
+  },
+  {
     "href": "attendanceIndex",
     "title": "Asistencia",
     "icon": "fingerprint",
     "params": {}
-  }, {
+  },
+  {
     "href": "departureIndex",
     "title": "Aprobar Permisos",
     "icon": "alarm_on",
@@ -62,7 +69,8 @@
     "params": {
       "departureType": "all"
     }
-  }, {
+  },
+  {
     "href": "vacationList",
     "title": "Aprobar Vacación",
     "icon": "done",
@@ -70,7 +78,8 @@
     "params": {
       "departureType": "all"
     }
-  }, {
+  },
+  {
     "href": "departureIndex",
     "title": "Permisos",
     "icon": "directions_run",
@@ -78,7 +87,8 @@
     "params": {
       "departureType": "user"
     }
-  }, {
+  },
+  {
     "href": "vacationList",
     "title": "Vacaciones",
     "icon": "beach_access",
@@ -86,7 +96,8 @@
     "params": {
       "departureType": "user"
     }
-  }, {
+  },
+  {
     "title": "Almacén",
     "icon": "shopping_cart",
     "permission": "read-supply-requests",
@@ -99,7 +110,8 @@
         "params": {
           "requestType": "all"
         }
-      }, {
+      },
+      {
         "href": "suppliesIndex",
         "title": "Materiales",
         "icon": "receipt",
@@ -107,15 +119,26 @@
         "params": {}
       }
     ]
-  }, {
-    "href": "supplyRequestIndex",
-    "title": "Solicitud de Material",
+  },
+  {
+    "href": "supplyReqNew",
+    "title": "Solicitud de Material - PGA",
     "icon": "add_shopping_cart",
     "permission": "!admin",
     "params": {
       "requestType": "user"
     }
-  }, {
+  },
+  {
+    "href": "supplyPettyCash",
+    "title": "Solicitud Caja Chica",
+    "icon": "add_circle_outline",
+    "permission": "!admin",
+    "params": {
+      "requestType": "user"
+    }
+  },
+  {
     "title": "Configuración",
     "icon": "settings",
     "permission": "admin",
@@ -126,25 +149,29 @@
         "icon": "contact_phone",
         "permission": "admin",
         "params": {}
-      }, {
+      },
+      {
         "href": "departureConfig",
         "title": "Permisos",
         "icon": "directions_walk",
         "permission": "admin",
         "params": {}
-      }, {
+      },
+      {
         "href": "attendanceConfig",
         "title": "Horarios",
         "icon": "watch_later",
         "permission": "admin",
         "params": {}
-      }, {
+      },
+      {
         "href": "companyConfig",
         "title": "Institución",
         "icon": "account_balance",
         "permission": "admin",
         "params": {}
-      }, {
+      },
+      {
         "href": "attendanceDeviceConfig",
         "title": "Biométricos",
         "icon": "dock",
@@ -173,19 +200,22 @@
         "params": {}
       }
     ]
-  },  {
+  },
+  {
     "href": "reportIndex",
     "title": "Reportes",
     "icon": "report",
     "permission": "read-eventual",
     "params": {}
-  },{
+  },
+  {
     "href": "userIndex",
     "title": "Usuarios",
     "icon": "security",
     "permission": "admin",
     "params": {}
-  }, {
+  },
+  {
     "href": "userActionIndex",
     "title": "Actividad",
     "icon": "timeline",
