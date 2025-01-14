@@ -25,6 +25,8 @@ import SeniorityRange from './components/configuration/MinimumSalarySeniorityCon
 import ReportIndex from './components/report/ReportIndex'
 import VacationList from './components/departure/VacationList'
 import SalaryScaleIndex from './components/configuration/SalaryScaleIndex'
+import SupplyReqNew from './components/supply/SupplyReqNew'
+import SupplyPettyCash from './components/supply/SupplyPettyCash'
 
 export const routes = [
   {
@@ -151,6 +153,13 @@ export const routes = [
     meta: {
       requiresAuth: true
     }
+  },{
+    path: '/supply_requests_new',
+    component: SupplyReqNew,
+    name: 'supplyReqNew',
+    meta: {
+      requiresAuth: true
+    }
   }, {
     path: '/departure_config',
     component: DepartureConfig,
@@ -217,11 +226,17 @@ export const routes = [
     meta: {
       requiresAuth: true
     }
-  },
-  {
+  },{
     path: '/salary_scale',
     component: SalaryScaleIndex,
     name: 'salaryScaleIndex',
+    meta: {
+      requiresAuth: true
+    }
+  },{
+    path: '/supply_petty_cash',
+    component: SupplyPettyCash,
+    name: 'supplyPettyCash',
     meta: {
       requiresAuth: true
     }

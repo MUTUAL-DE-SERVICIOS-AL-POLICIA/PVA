@@ -19,6 +19,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import ess from './es.js'
 import Vuetify from 'vuetify'
 
+
 Vue.use(Vuetify, {
   lang: {
     locales: { ess },
