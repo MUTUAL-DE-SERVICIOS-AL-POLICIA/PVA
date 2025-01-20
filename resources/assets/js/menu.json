@@ -130,15 +130,6 @@
     }
   },
   {
-    "href": "supplyPettyCash",
-    "title": "Solicitud Caja Chica",
-    "icon": "add_circle_outline",
-    "permission": "!admin",
-    "params": {
-      "requestType": "user"
-    }
-  },
-  {
     "title": "Configuración",
     "icon": "settings",
     "permission": "admin",
@@ -223,3 +214,4 @@
     "params": {}
   }
 ]
+
