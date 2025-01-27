@@ -92,9 +92,13 @@
                 <v-textarea v-model="comments" label="Comentarios" rows="3" class="form-field"></v-textarea>
 
                 <v-btn color="primary" @click="submitRequest"
-                    :disabled="!valid || selectedMaterials.length === 0 || !isValidQuantity" class="submit-btn">
-                    Enviar
+                    :disabled="!valid || selectedMaterials.length === 0 || !isValidQuantity || loading"
+                    class="submit-btn">
+                    <v-progress-circular v-if="loading" indeterminate size="20" color="white"
+                        class="mr-2"></v-progress-circular>
+                    {{ loading ? 'Enviando...' : 'Enviar' }}
                 </v-btn>
+
                 <v-btn color="grey" @click="cancelDialog" class="cancel-btn">
                     Cancelar
                 </v-btn>
@@ -151,7 +155,8 @@ export default {
             search: '',
             loadingMaterials: false,
             selectedDate: null,
-            menu: false
+            menu: false,
+            loading: false,
         }
     },
     computed: {
@@ -213,15 +218,20 @@ export default {
             }
         },
         selectMaterial() {
+            if (this.selectedMaterials.length >= 14) {
+                this.toastr.error("Seleccione solo 14 materiales.");
+                return;
+            }
+
             if (this.selectedMaterial) {
-                const material = this.materials.find(m => m.id === this.selectedMaterial)
+                const material = this.materials.find(m => m.id === this.selectedMaterial);
                 if (material && !this.selectedMaterials.some(m => m.id === material.id)) {
                     this.selectedMaterials.push({
                         ...material,
-                        quantity: 1
-                    })
+                        quantity: 1,
+                    });
                 }
-                this.selectedMaterial = null
+                this.selectedMaterial = null;
             }
         },
         removeMaterial(material) {
@@ -244,26 +254,34 @@ export default {
             });
             printJS(window.URL.createObjectURL(blob));
         },
+
         async submitRequest() {
             if (this.valid && this.selectedMaterials.length > 0) {
+                this.loading = true;
                 try {
-                    await axios2.post('createNoteRequest', {
+                    await axios2.post("createNoteRequest", {
                         id: this.userId,
                         material_request: this.selectedMaterials,
-                        comments: this.comments
+                        comments: this.comments,
                     });
 
+                    this.toastr.success("Solicitud en proceso.");
                     this.dialog = false;
                     this.selectedMaterials = [];
-                    this.comments = '';
+                    this.comments = "";
 
                     await this.fetchData();
                 } catch (error) {
+                    this.toastr.error("Hubo un problema al enviar la solicitud.");
                     console.error(error);
+                } finally {
+                    this.loading = false;
                 }
+            } else {
+                this.toastr.error("Complete los campos requeridos.");
             }
-        }
-        ,
+        },
+
         cancelDialog() {
             this.dialog = false
             this.selectedMaterials = []
