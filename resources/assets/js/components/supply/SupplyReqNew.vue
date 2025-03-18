@@ -92,8 +92,7 @@
                 <v-textarea v-model="comments" label="Comentarios" rows="3" class="form-field"></v-textarea>
 
                 <v-btn color="primary" @click="submitRequest"
-                    :disabled="!valid || selectedMaterials.length === 0 || !isValidQuantity || loading"
-                    class="submit-btn">
+                    :disabled="!valid || selectedMaterials.length === 0 || loading" class="submit-btn">
                     <v-progress-circular v-if="loading" indeterminate size="20" color="white"
                         class="mr-2"></v-progress-circular>
                     {{ loading ? 'Enviando...' : 'Enviar' }}
@@ -166,9 +165,6 @@ export default {
             }
             return this.items
         },
-        isValidQuantity() {
-            return this.selectedMaterials.every(item => item.quantity <= 12);
-        }
     },
     mounted() {
         this.userId = localStorage.getItem('id')
@@ -181,18 +177,14 @@ export default {
         },
         validateIntegerInput(item) {
             item.quantity = item.quantity.replace(/[^0-9]/g, '');
-            if (parseInt(item.quantity) > 12) {
-                item.quantity = '12';
-            }
+
         },
         hasQuantityError(quantity) {
-            return !/^\d+$/.test(quantity) || parseInt(quantity) > 12 || quantity === '';
+            return !/^\d+$/.test(quantity) || quantity === '';
         },
         quantityErrorMessage(quantity) {
             if (!/^\d+$/.test(quantity)) {
                 return 'La cantidad debe ser un número entero';
-            } else if (parseInt(quantity) > 12) {
-                return 'No puedes pedir más de 12 unidades';
             } else if (quantity === '') {
                 return 'Este campo es obligatorio';
             }
