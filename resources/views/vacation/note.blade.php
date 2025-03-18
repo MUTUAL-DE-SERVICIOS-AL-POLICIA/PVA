@@ -1,7 +1,7 @@
 <?php
 use Carbon\Carbon;
 
-$contract = $departure->employee->contract_in_date($departure->first()->departure);
+$contract = $departure->employee->contract_in_date($departure->departure);
 ?>
 
 <!DOCTYPE html>
