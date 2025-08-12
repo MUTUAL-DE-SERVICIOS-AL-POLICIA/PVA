@@ -13,6 +13,7 @@ use App\DaysOnVacation;
 use App\Http\Requests\DepartureForm;
 use App\Http\Controllers\Controller;
 use Carbon;
+use Carbon\CarbonPeriod;
 use DB;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -639,48 +640,142 @@ class DepartureController extends Controller
 
   public function print_vacation_individual($employee_id)
   {
-    $num = 0;
-    $employee = Employee::find($employee_id);
-    $departures = $employee
-      ->departures()
-      ->where('departure_reason_id', 24)
-      ->orderBy('created_at', 'asc')
-      ->get();
+      $num = 0;
+      $employee = Employee::find($employee_id);
 
+      // Salidas (departures)
+      $departures = DB::table('departures')
+          ->select([
+              'cite',
+              'departure as date_ini',
+              'return as date_end',
+              'created_at as date_request',
+              DB::raw('NULL as days'),
+              DB::raw('NULL as max_date'),
+              DB::raw("'departure' as type"),
+              'departure as date_order', // campo común para ordenar
+          ])
+          ->where('employee_id', $employee_id)
+          ->where('departure_reason_id', 24)
+          ->where('deleted_at', null);
 
-    $vacation_queues = VacationQueue::where('employee_id', $employee_id)
-      ->orderBy('start_date', 'asc')
-      ->get();
+      // Vacaciones (vacation_queues)
+      $vacation_queues = DB::table('vacation_queues')
+          ->select([
+              DB::raw('NULL as cite'),
+              'start_date as date_ini',
+              'end_date as date_end',
+              'created_at as date_request',
+              'days',
+              'max_date',
+              DB::raw("'vacation' as type"),
+              'created_at as date_order', // campo común para ordenar
+          ])
+          ->where('employee_id', $employee_id);
 
-    if ($vacation_queues->count() > 0) {
-        $vacation_days = $vacation_queues->first()->days;
-    } else {
-        $vacation_days = 0;
-    }
+      // Unión
+      $union = $departures->unionAll($vacation_queues);
 
-    $data = [
-      'num' => $num,
-      'employee' => $employee,
-      'departures' => $departures,
-      'vacation_queues' => $vacation_queues,
-      'vacation_days' => $vacation_days
-    ];
+      // Resultado combinado ordenado por date_order
+      $report_vacation = DB::table(DB::raw("({$union->toSql()}) as combined"))
+          ->mergeBindings($union)
+          ->orderBy('date_order', 'asc')
+          ->get();
 
-    $file_name = implode('_', ['reporte', 'vacaciones', $employee->first_name, $employee->last_name]) . '.pdf';
-    $options = [
-      'orientation' => 'landscape',
-      'page-width' => '216',
-      'page-height' => '279',
-      'margin-top' => '8',
-      'margin-bottom' => '16',
-      'margin-left' => '20',
-      'margin-right' => '20',
-      'encoding' => 'UTF-8',
-    ];
+      // Obtener los días disponibles
+      $vacation_days = DB::table('vacation_queues')
+          ->where('employee_id', $employee_id)
+          ->value('days') ?? 0;
 
-    $pdf = \PDF::loadView('vacation.report_individual', $data);
-    $pdf->setOptions($options);
+      // Calcular días para salidas (departures)
+      foreach ($report_vacation as $report) {
+          if ($report->type === 'departure') {
+              $start = Carbon::parse($report->date_ini);
+              $end = Carbon::parse($report->date_end);
 
-    return $pdf->stream($file_name);
+              if ($end->lessThan($start)) {
+                  $temp = $start;
+                  $start = $end;
+                  $end = $temp;
+              }
+
+              $period = CarbonPeriod::create($start->copy()->startOfDay(), $end->copy()->startOfDay());
+
+              $departure_days = 0;
+
+              foreach ($period as $date) {
+                  // Ignorar sábados y domingos
+                  if (in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
+                      continue;
+                  }
+
+                  if ($date->isSameDay($start)) {
+                      $startHour = $start->hour + ($start->minute / 60);
+                      $endHour = $end->hour + ($end->minute / 60);
+
+                      if ($start->toDateString() === $end->toDateString()) {
+                          // Mismo día
+                          if ($startHour <= 8.5 && $endHour <= 12.5) {
+                              $departure_days += 0.5;
+                          } elseif ($startHour >= 14.5 && $endHour >= 18.0) {
+                              $departure_days += 0.5;
+                          } elseif ($startHour <= 8.5 && $endHour >= 18.0) {
+                              $departure_days += 1.0;
+                          } else {
+                              $departure_days += round($start->diffInMinutes($end) / 1440, 2);
+                          }
+                      } else {
+                          // Solo primer día
+                          if ($startHour >= 14.5) {
+                              $departure_days += 0.5;
+                          } else {
+                              $departure_days += 1.0;
+                          }
+                      }
+                  } elseif ($date->isSameDay($end)) {
+                      $endHour = $end->hour + ($end->minute / 60);
+                      if ($endHour <= 12.5) {
+                          $departure_days += 0.5;
+                      } else {
+                          $departure_days += 1.0;
+                      }
+                  } else {
+                      // Día hábil intermedio
+                      $departure_days += 1.0;
+                  }
+              }
+
+              $report->departure_days = $departure_days;
+              $vacation_days -= $departure_days;
+          } else {
+              $report->departure_days = null;
+          }
+      }
+
+      // Enviar datos a la vista
+      $data = [
+          'num' => $num,
+          'employee' => $employee,
+          'data_report' => $report_vacation,
+          'vacation_days' => $vacation_days,
+      ];
+
+      $file_name = implode('_', ['reporte', 'vacaciones', $employee->first_name, $employee->last_name]) . '.pdf';
+
+      $options = [
+          'orientation' => 'landscape',
+          'page-width' => '216',
+          'page-height' => '279',
+          'margin-top' => '8',
+          'margin-bottom' => '16',
+          'margin-left' => '20',
+          'margin-right' => '20',
+          'encoding' => 'UTF-8',
+      ];
+
+      $pdf = \PDF::loadView('vacation.report_individual', $data);
+      $pdf->setOptions($options);
+
+      return $pdf->stream($file_name);
   }
 }
