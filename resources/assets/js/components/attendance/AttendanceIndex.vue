@@ -70,7 +70,7 @@
           >
             <template v-slot:day="{ date }">
               <template v-for="event in departures.filter((o) => { return $moment(date).isBetween($moment(o.from.date).startOf('day'), $moment(o.to.date).endOf('day'), null, '[]') })">
-                <div class="text-xs text-xs-center white--text grey darken-3 mb-2" :key="event.id">
+                <div v-if="$moment(date, 'YYYY-MM-DD').isBusinessDay()" class="text-xs text-xs-center white--text grey darken-3 mb-2" :key="event.id">
                   <div>{{ event.reason }} [ {{ event.code }} ]</div>
                   <div>{{ event.from.time }} - {{ event.to.time }}</div>
                   <div>{{ verifyDepartureState(event.approved) }}</div>

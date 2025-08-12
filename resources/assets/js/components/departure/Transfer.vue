@@ -1,11 +1,5 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    persistent
-    width="1000px"
-    @keydown.esc="close"
-    scrollable
-  >
+  <v-dialog v-model="dialog" persistent width="1000px" @keydown.esc="close" scrollable>
     <template v-slot:activator="{ on }">
       <v-tooltip top>
         <v-btn slot="activator" v-on="on" flat icon :color="color">
@@ -27,70 +21,37 @@
           <v-container fluid>
             <v-layout row wrap>
               <v-flex xs6>
-                <v-text-field
-                  v-model="departure.destiny"
-                  label="Destino"
-                  v-validate="'required'"
-                  :error-messages="errors.collect('Destino')"
-                  data-vv-name='Destino'
-                  class="pr-2"
-                  autofocus
-                  outline
-                ></v-text-field>
+                <v-text-field v-model="departure.destiny" label="Destino" v-validate="'required'"
+                  :error-messages="errors.collect('Destino')" data-vv-name='Destino' class="pr-2" autofocus
+                  outline></v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field
-                  :value="departure.description"
-                  label="Motivo"
-                  class="pl-2"
-                  readonly
-                ></v-text-field>
+                <v-text-field :value="departure.description" label="Motivo" class="pl-2" readonly></v-text-field>
               </v-flex>
             </v-layout>
             <v-layout row wrap v-show="departure.destiny">
               <v-flex xs12>
-                <v-data-table
-                  :headers="headers"
-                  :items="orderedTransfers"
-                  class="elevation-1"
-                  hide-actions
-                  :rows-per-page-items="[{text:'', value:-1}]"
-                  :pagination.sync="pagination"
-                >
+                <v-data-table :headers="headers" :items="orderedTransfers" class="elevation-1" hide-actions
+                  :rows-per-page-items="[{ text: '', value: -1 }]" :pagination.sync="pagination">
                   <template v-slot:items="props">
                     <td class="text-xs-center">{{ props.item.index + 1 }}</td>
+                    <td><v-text-field v-validate="'required|min:3|max:255'"
+                        :error-messages="errors.collect(`from${props.index}`)" :data-vv-name="`from${props.index}`"
+                        data-vv-as="desde" v-model="props.item.from" clearable autofocus></v-text-field></td>
+                    <td><v-text-field v-validate="'required|min:3|max:255'"
+                        :error-messages="errors.collect(`to${props.index}`)" :data-vv-name="`to${props.index}`"
+                        data-vv-as="hasta" v-model="props.item.to" clearable></v-text-field></td>
                     <td><v-text-field
-                      v-validate="'required|min:3|max:255'"
-                      :error-messages="errors.collect(`from${props.index}`)"
-                      :data-vv-name="`from${props.index}`"
-                      data-vv-as="desde"
-                      v-model="props.item.from"
-                      clearable
-                      autofocus
-                    ></v-text-field></td>
-                    <td><v-text-field
-                      v-validate="'required|min:3|max:255'"
-                      :error-messages="errors.collect(`to${props.index}`)"
-                      :data-vv-name="`to${props.index}`"
-                      data-vv-as="hasta"
-                      v-model="props.item.to"
-                      clearable
-                    ></v-text-field></td>
-                    <td><v-text-field
-                      v-validate="{required: true, decimal: [1, '.'], min_value: [1, '.'], max_value: [200, '.']}"
-                      :error-messages="errors.collect(`cost${props.index}`)"
-                      :data-vv-name="`cost${props.index}`"
-                      data-vv-as="importe"
-                      v-model="props.item.cost"
-                      type="number"
-                      step="0.5"
-                      min="1"
-                      clearable
-                    ></v-text-field></td>
+                        v-validate="{ required: true, decimal: [1, '.'], min_value: [1, '.'], max_value: [200, '.'] }"
+                        :error-messages="errors.collect(`cost${props.index}`)" :data-vv-name="`cost${props.index}`"
+                        data-vv-as="importe" v-model="props.item.cost" type="number" step="0.5" min="1"
+                        clearable></v-text-field></td>
                     <td class="text-xs-center">
                       <v-tooltip top>
                         <template v-slot:activator="{ on }">
-                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon :disabled="!props.item.from || !props.item.to || !props.item.cost || maxTransfers == transfers.length" color="success" @click="addReturn(props.item.index)">
+                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon
+                            :disabled="!props.item.from || !props.item.to || !props.item.cost || maxTransfers == transfers.length"
+                            color="success" @click="addReturn(props.item.index)">
                             <v-icon>sync</v-icon>
                           </v-btn>
                         </template>
@@ -98,7 +59,9 @@
                       </v-tooltip>
                       <v-tooltip top>
                         <template v-slot:activator="{ on }">
-                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon :disabled="transfers.length <= 1 || props.index == 0" color="info" @click="move('prev', props.item.index)">
+                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon
+                            :disabled="transfers.length <= 1 || props.index == 0" color="info"
+                            @click="move('prev', props.item.index)">
                             <v-icon>arrow_drop_up</v-icon>
                           </v-btn>
                         </template>
@@ -106,7 +69,9 @@
                       </v-tooltip>
                       <v-tooltip top>
                         <template v-slot:activator="{ on }">
-                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon :disabled="transfers.length <= 1 || props.index == (transfers.length - 1)" color="info" @click="move('next', props.item.index)">
+                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon
+                            :disabled="transfers.length <= 1 || props.index == (transfers.length - 1)" color="info"
+                            @click="move('next', props.item.index)">
                             <v-icon>arrow_drop_down</v-icon>
                           </v-btn>
                         </template>
@@ -114,7 +79,8 @@
                       </v-tooltip>
                       <v-tooltip top>
                         <template v-slot:activator="{ on }">
-                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon color="error"  @click.native="dropTransfer(props.item.index)">
+                          <v-btn class="pa-0 ma-0" slot="activator" v-on="on" flat icon color="error"
+                            @click.native="dropTransfer(props.item.index)">
                             <v-icon>cancel</v-icon>
                           </v-btn>
                         </template>
@@ -124,11 +90,16 @@
                   </template>
                   <template v-slot:footer v-if="transfers.length">
                     <td class="text-xs-center font-weight-bold" colspan="3">Total</td>
-                    <td class="font-weight-bold subheading">{{ transfers.reduce((total, current) => { if (current.cost) return Number(Number(total) + Number(current.cost)).toFixed(1) }, 0) }} Bs.</td>
+                    <td class="font-weight-bold subheading">{{ transfers.reduce((total, current) => {
+                      if (current.cost)
+                        return Number(Number(total) + Number(current.cost)).toFixed(1)
+                    }, 0) }} Bs.</td>
                     <td></td>
                   </template>
                 </v-data-table>
-                <v-btn :disabled="maxTransfers == transfers.length" color="info" @click="addTransfer"><v-icon class="mr-2">add</v-icon> Agregar recorrido</v-btn>
+                <v-btn :disabled="maxTransfers == transfers.length" color="info" @click="addTransfer"><v-icon
+                    class="mr-2">add</v-icon>
+                  Agregar recorrido</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
@@ -136,7 +107,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="error" @click.native="close"><v-icon class="mr-2">close</v-icon> Cancelar</v-btn>
-          <v-btn color="success" :disabled="this.errors.any()" @click.native="print"><v-icon class="mr-2">print</v-icon> Imprimir</v-btn>
+          <v-btn color="success" :disabled="this.errors.any()" @click.native="print"><v-icon class="mr-2">print</v-icon>
+            Imprimir</v-btn>
         </v-card-actions>
       </v-card>
     </template>
@@ -207,7 +179,7 @@ export default {
   },
   watch: {
     'departure.destiny': {
-      handler: function(val, oldVal) {
+      handler: function (val, oldVal) {
         if (val !== oldVal) {
           this.departure.destiny = val.toUpperCase()
         }
@@ -226,6 +198,10 @@ export default {
   methods: {
     async print() {
       try {
+        const payload = {
+          requestId: this.departure.id,
+          transfers: this.orderedTransfers,
+        };
         this.loading = true
         let valid = await this.$validator.validateAll()
         if (valid) {
@@ -242,7 +218,8 @@ export default {
             type: "application/pdf"
           })
           printJS(window.URL.createObjectURL(blob))
-          this.$store.commit('setDeparture', {...this.departure, transfers: this.transfers})
+          await axios2.post("/personal_transpor_tickets", payload);
+          this.$store.commit('setDeparture', { ...this.departure, transfers: this.transfers })
           this.dialog = false
         }
       } catch (e) {
