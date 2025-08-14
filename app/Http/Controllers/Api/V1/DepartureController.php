@@ -442,7 +442,7 @@ class DepartureController extends Controller
       }
       if ($vacation_queue->sum('rest_days') > 0 && $count_days <= $vacation_queue->sum('rest_days')) {
         $lastCode = Departure::latest()->first()->code;
-        $newCode = $lastCode + 1;
+        $newCode = $lastCode ? $lastCode + 1 : 1;
         $sw = true;
         if(Carbon::parse($request->departure)->format('H:i:s') != Carbon::parse($request->return)->format('H:i:s'))
         {
@@ -482,6 +482,12 @@ class DepartureController extends Controller
               }
           }
           $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
+          if ($journal > $remanent->rest_days) {
+            $remanent->rest_days = 0;
+            $remanent->save();
+            $journal = 0.5;
+            $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
+          }
           $remanent->rest_days = $remanent->rest_days - $journal;
           $remanent->save();
           $save_day = new DaysOnVacation([
