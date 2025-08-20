@@ -52,6 +52,8 @@ Route::group([
   Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
   //Cola de vacaciones
   Route::get('count_days', 'Api\V1\VacationQueueController@count_days');
+  Route::resource('vacation_queue', 'Api\V1\VacationQueueController'::class);
+  Route::get('get_vacation_queue_employee/{employee_id}', 'Api\V1\VacationQueueController@get_vacation_queue_employee');
   //Registro del permiso de vacacion
   Route::post('vacation_departure', 'Api\V1\DepartureController@vacation_departure');
   //Anulacion del permiso de vacacion
