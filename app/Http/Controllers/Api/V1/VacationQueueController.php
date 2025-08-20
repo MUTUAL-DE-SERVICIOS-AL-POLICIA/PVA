@@ -218,4 +218,9 @@ class VacationQueueController extends Controller
       return $count;
     }
 
+    public function get_vacation_queue_employee($employee_id)
+    {
+      return VacationQueue::where('employee_id',$employee_id)->whereNull('deleted_at')->orderBy('start_date','asc')->get();
+    }
+
 }
