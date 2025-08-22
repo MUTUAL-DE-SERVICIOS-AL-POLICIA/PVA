@@ -8,10 +8,10 @@ class CasCertification extends Model
 {
     public $timestamps = true;
     public $guarded = ['id'];
-    protected $fillable = ['years', 'months', 'days', 'certification_number', 'issue_date', 'active', 'employee_id', 'for_vacation'];
+    protected $fillable = ['years', 'months', 'days', 'certification_number', 'issue_date', 'active', 'employee_id'];
 
     public function employee()
     {
-        return $this->HasOne(Employee::class);
+        return $this->belongsTo(Employee::class);
     }
 }

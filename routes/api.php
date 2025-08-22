@@ -63,6 +63,7 @@ Route::group([
   Route::get('departure_vacation/print/{departure_id}', 'Api\V1\DepartureController@print_note_vacation');
   Route::get('print_report_vacation', 'Api\V1\DepartureController@print_report_vacation');
   Route::get('print_vacation_individual/{employee_id}', 'Api\V1\DepartureController@print_vacation_individual');
+  Route::get('print_cancelled_report', 'Api\V1\VacationQueueController@print_cancelled_report');
   // Position Group
   Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
   // Position current employee
