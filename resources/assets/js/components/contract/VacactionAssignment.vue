@@ -8,12 +8,12 @@
       <!-- Toolbar -->
       <v-toolbar dark color="secondary">
         <v-btn
-              icon
-              color="secondary"
-              @click="cancelForm()"
-              class="ma-0 pa-0"
-            >
-              <v-icon>close</v-icon>
+          icon
+          color="secondary"
+          @click="cancelForm()"
+          class="ma-0 pa-0"
+        >
+          <v-icon>close</v-icon>
         </v-btn>
         <v-toolbar-title class="white--text">
           {{ formTitle }} - {{ fullName(employee) }}
@@ -52,7 +52,8 @@
           </tr>
         </template>
       </v-data-table>
-      <!--Modal para eliminacion-->
+
+      <!-- Modal de eliminación -->
       <v-dialog
         v-model="dialogDelete"
         width="600"
@@ -60,7 +61,7 @@
       >
         <v-card>
           <v-card-text class="title">
-            ¿Esta seguro que desea eliminar el registro? Si es asi registre el motivo.
+            ¿Está seguro que desea eliminar el registro? Si es así registre el motivo.
           </v-card-text>
           <v-text-field
             v-model="selectedItem.comment"
@@ -73,12 +74,16 @@
               v => !!v || 'El motivo es obligatorio',
               v => (v && v.length >= 5) || 'Debe tener al menos 5 caracteres'
             ]"
-            />
+          />
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" small @click="dialogDelete = false; clearForm()"><v-icon small>check</v-icon> Cancelar</v-btn>
-            <v-btn color="error" small @click="deleteItem(delete_item)"><v-icon small>close</v-icon> Eliminar</v-btn>
+            <v-btn color="success" small @click="dialogDelete = false; clearForm()">
+              <v-icon small>check</v-icon> Cancelar
+            </v-btn>
+            <v-btn color="error" small @click="deleteItem(delete_item)">
+              <v-icon small>close</v-icon> Eliminar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -106,13 +111,14 @@
                     dense
                     clearable
                     class="ml-3"
+                    placeholder="dd/mm/aaaa"
                     @blur="updateSelectedDate('start_date')"
                   />
                   <v-date-picker
                     v-model="selectedItem.start_date"
                     no-title
-                    @input="datePicker.start_date.display = false; selectedItem.start_date_input = selectedItem.start_date"
                     first-day-of-week="1"
+                    @input="onDatePicked('start_date')"
                   />
                 </v-menu>
               </v-flex>
@@ -135,13 +141,14 @@
                     dense
                     clearable
                     class="ml-3"
+                    placeholder="dd/mm/aaaa"
                     @blur="updateSelectedDate('end_date')"
                   />
                   <v-date-picker
                     v-model="selectedItem.end_date"
                     no-title
-                    @input="datePicker.end_date.display = false; selectedItem.end_date_input = selectedItem.end_date"
                     first-day-of-week="1"
+                    @input="onDatePicked('end_date')"
                   />
                 </v-menu>
               </v-flex>
@@ -153,7 +160,7 @@
                   type="number"
                   v-model.number="selectedItem.days"
                   dense
-                  label="Dias otorgados"
+                  label="Días otorgados"
                   clearable
                   min="0"
                   class="ml-3"
@@ -164,7 +171,7 @@
                   type="number"
                   v-model.number="selectedItem.rest_days"
                   dense
-                  label="Dias restantes"
+                  label="Días restantes"
                   clearable
                   min="0"
                   class="ml-3"
@@ -189,13 +196,14 @@
                     dense
                     clearable
                     class="ml-3"
+                    placeholder="dd/mm/aaaa"
                     @blur="updateSelectedDate('max_date')"
                   />
                   <v-date-picker
                     v-model="selectedItem.max_date"
                     no-title
-                    @input="datePicker.max_date.display = false; selectedItem.max_date_input = selectedItem.max_date"
                     first-day-of-week="1"
+                    @input="onDatePicked('max_date')"
                   />
                 </v-menu>
               </v-flex>
@@ -282,6 +290,10 @@ export default {
       const [y, m, d] = date.split("-");
       return `${d}/${m}/${y}`;
     },
+    onDatePicked(field) {
+      this.datePicker[field].display = false;
+      this.selectedItem[`${field}_input`] = this.formatDateDisplay(this.selectedItem[field]);
+    },
     updateSelectedDate(field) {
       const input = this.selectedItem[`${field}_input`];
       if (!input) {
@@ -346,7 +358,7 @@ export default {
     },
     async deleteItem(item) {
       try {
-        const res = await axios.post(`vacation_queue/${item}/delete`, { 
+        await axios.post(`vacation_queue/${item}/delete`, { 
           comment: this.selectedItem.comment
         });
         this.toastr.error("Registro eliminado correctamente");
