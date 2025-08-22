@@ -8,11 +8,10 @@
       <v-layout>
         <v-flex xs12 sm6 md6>
           <v-card class="mt-4 pa-4">
-            <!-- Sub título  -->
-            <!-- <v-toolbar-title>
+
+            <v-toolbar-title class="pb-4">
               <b>Seleccione un reporte</b>
-            </v-toolbar-title> -->
-            <!-- Fin subtitulo -->
+            </v-toolbar-title>
 
             <!-- Sección del select -->
             <v-select
@@ -23,30 +22,38 @@
               label="Seleccione un reporte"
               outlined
               dense
-            >
-            </v-select>
+            />
 
-            <template v-if="report_selected && visible == true">
-              <template
-                v-if="report_selected.criterios.includes('position_group_id')"
-              >
-                <v-toolbar-title>
-                  <b>Criterios de búsqueda</b>
-                </v-toolbar-title>
-                <v-progress-linear class="mb-5"></v-progress-linear>
-              </template>
+            <!-- Sección de criterios dinámicos -->
+            <template v-if="report_selected && visible">
+              <template v-if="report_selected.criterios.length > 0">
+                <div class="pt-4">
+                  <b>Seleccione criterio</b>
+                </div>
 
-              <template>
-                <v-select
-                  v-model="report_inputs.position_group_id"
-                  :items="position_group"
-                  item-text="name"
-                  item-value="id"
-                  label="Seleccione el Área"
-                  outlined
-                  dense
-                >
-                </v-select>
+                <div v-for="criterio in report_selected.criterios" :key="criterio">
+                  <!-- Si el criterio es position_group_id -->
+                  <v-select
+                    v-if="criterio === 'position_group_id'"
+                    v-model="report_inputs[criterio]"
+                    :items="position_group"
+                    item-text="name"
+                    item-value="id"
+                    label="Seleccione el Área"
+                    outlined
+                    dense
+                  />
+
+                  <!-- Si el criterio es fecha -->
+                  <!-- <v-text-field
+                    v-else-if="criterio === 'fecha'"
+                    v-model="report_inputs[criterio]"
+                    type="date"
+                    label="Seleccione la fecha"
+                    outlined
+                    dense
+                  /> -->
+                </div>
               </template>
 
               <!-- Botón de descarga -->
@@ -54,9 +61,9 @@
                 color="primary"
                 @click="downloadReport()"
                 :loading="loading"
-                >Descargar reporte
+              >
+                Descargar reporte
               </v-btn>
-              <!-- Fin de botón de descarga -->
             </template>
           </v-card>
         </v-flex>
@@ -85,8 +92,17 @@ export default {
         id: 0,
         name: "REPORTE DE VACACIONES GENERAL",
         tab: 0,
-        criterios: ["position_group_id'"],
+        criterios: ["position_group_id"],
         service: "print_report_vacation",
+        type: "pdf",
+        permissions: "",
+      },
+      {
+        id: 1,
+        name: "REPORTE DE ASIGNACIONES DE VACACIONES ANULADAS",
+        tab: 0,
+        criterios: [],
+        service: "print_cancelled_report",
         type: "pdf",
         permissions: "",
       },
@@ -100,6 +116,7 @@ export default {
       deep: true,
       handler(val) {
         this.visible = true;
+        this.report_inputs = {};
       },
     },
   },
@@ -109,41 +126,57 @@ export default {
         let response = await axios.get("position_group");
         this.position_group = response.data;
         this.position_group.unshift({ id: -1, name: "TODAS" });
-        console.log(response.data);
       } catch (e) {
         console.log(e);
       }
     },
+
     async downloadReport() {
+      if (!this.report_selected) return;
+
       try {
-        let new_url;
-        if (this.report_inputs.position_group_id == -1) {
-          new_url = `print_report_vacation`;
-        } else {
-          new_url = `print_report_vacation?position_group_id=${this.report_inputs.position_group_id}`;
-        }
         this.loading = true;
+
+        // servicio según el reporte seleccionado
+        let new_url = this.report_selected.service;
+
+        // construcción de parámetros
+        let params = [];
+        this.report_selected.criterios.forEach((criterio) => {
+          if (this.report_inputs[criterio] != null && this.report_inputs[criterio] !== "") {
+            params.push(`${criterio}=${this.report_inputs[criterio]}`);
+          }
+        });
+        //une los parámetros en formato de query string
+        if (params.length > 0) {
+          new_url += `?${params.join("&")}`;//ejm print_report_vacation?position_group_id=5&user_id=10
+        }
+
         let res = await axios({
           method: "GET",
           url: new_url,
           responseType: "arraybuffer",
         });
-        let blob = new Blob([res.data], {
-          type: "application/pdf",
+
+        let blob = new Blob([res.data], { 
+          type: "application/pdf" 
         });
         printJS(window.URL.createObjectURL(blob));
-        this.loading = false;
+
       } catch (e) {
         console.log(e);
+      } finally {
         this.loading = false;
       }
     },
+
     clearInputs() {
       this.report_selected = null;
-      this.report_inputs.position_group_id = null;
+      this.report_inputs = {};
     },
   },
 };
 </script>
+
 
 
