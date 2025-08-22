@@ -7,6 +7,14 @@
   >
     <v-card>
       <v-toolbar dark color="secondary">
+        <v-btn
+              icon
+              color="secondary"
+              @click="cancelForm()"
+              class="ma-0 pa-0"
+            >
+              <v-icon>close</v-icon>
+        </v-btn>
         <v-toolbar-title class="white--text">
           {{ formTitle }} - {{ fullName(employee) }}
         </v-toolbar-title>

@@ -54,6 +54,8 @@ Route::group([
   Route::get('count_days', 'Api\V1\VacationQueueController@count_days');
   Route::resource('vacation_queue', 'Api\V1\VacationQueueController'::class);
   Route::get('get_vacation_queue_employee/{employee_id}', 'Api\V1\VacationQueueController@get_vacation_queue_employee');
+  Route::post('vacation_queue/{id}/delete', 'Api\V1\VacationQueueController@destroy_with_comment');
+
   //Registro del permiso de vacacion
   Route::post('vacation_departure', 'Api\V1\DepartureController@vacation_departure');
   //Anulacion del permiso de vacacion

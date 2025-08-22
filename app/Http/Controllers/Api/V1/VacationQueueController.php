@@ -70,13 +70,22 @@ class VacationQueueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $vacation_queue = VacationQueue::findOrFail($id);
+    
+        // Guardar el comentario antes de eliminar
+        $vacation_queue->comment = $request->input('comment');
+        $vacation_queue->save();
+    
+        // Eliminar lógicamente
         $vacation_queue->delete();
-        return $vacation_queue;
+    
+        return response()->json([
+            'message' => 'Registro eliminado lógicamente con comentario',
+            'data' => $vacation_queue
+        ]);
     }
-
 
     public function count_days(Request $request)
     {
@@ -221,6 +230,22 @@ class VacationQueueController extends Controller
     public function get_vacation_queue_employee($employee_id)
     {
       return VacationQueue::where('employee_id',$employee_id)->whereNull('deleted_at')->orderBy('start_date','asc')->get();
+    }
+    public function destroy_with_comment(Request $request, $id)
+    {
+        $vacation_queue = VacationQueue::findOrFail($id);
+
+        // Guardar comentario antes de eliminar
+        $vacation_queue->comment = $request->input('comment');
+        $vacation_queue->save();
+
+        // Soft delete
+        $vacation_queue->delete();
+
+        return response()->json([
+            'message' => 'Registro eliminado lógicamente con comentario',
+            'data' => $vacation_queue
+        ]);
     }
 
 }
