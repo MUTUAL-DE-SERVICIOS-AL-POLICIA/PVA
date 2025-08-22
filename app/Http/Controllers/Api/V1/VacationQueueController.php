@@ -248,4 +248,36 @@ class VacationQueueController extends Controller
         ]);
     }
 
+    public function print_cancelled_report(Request $request)
+    {
+      $num = 0; 
+      $formatted_date = Carbon::now()->format('d-m-Y');
+
+      $vacation_queues = VacationQueue::whereNotNull('vacation_queues.deleted_at')
+                  ->orderBy('vacation_queues.employee_id', 'asc')
+                  ->get();
+
+      $data = [
+        'num' => $num,
+        'vacation_queues' => $vacation_queues
+      ];
+      $file_name = implode('_', ['reporte', 'anulados', 'cola','vacaciones', $formatted_date]) . '.pdf';
+
+      $options = [
+        'orientation' => 'landscape',
+        'page-width' => '216',
+        'page-height' => '279',
+        'margin-top' => '10',
+        'margin-bottom' => '10',
+        'margin-left' => '10',
+        'margin-right' => '10',
+        'encoding' => 'UTF-8',
+      ];
+
+      $pdf = \PDF::loadView('vacation.report_cancelled_vacation_queue', $data);
+      $pdf->setOptions($options);
+
+      return $pdf->stream($file_name);
+    }
+
 }

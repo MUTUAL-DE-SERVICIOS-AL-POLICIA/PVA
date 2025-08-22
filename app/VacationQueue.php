@@ -17,4 +17,7 @@ class VacationQueue extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 }
