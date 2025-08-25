@@ -2,7 +2,7 @@
   <v-dialog
     persistent
     v-model="dialog"
-    max-width="75%"
+    max-width="90%"
   >
     <v-card>
       <!-- Toolbar -->
@@ -321,9 +321,10 @@ export default {
       this.showForm = true;
     },
     cancelForm() {
+      this.clearForm()
+      this.showForm = false;
       this.dialog = false;
       this.delete_item = null;
-      this.clearForm()
     },
     clearForm() {
       this.selectedItem = {

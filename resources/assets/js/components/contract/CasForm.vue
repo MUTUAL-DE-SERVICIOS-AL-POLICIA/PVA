@@ -41,8 +41,13 @@
             <td>{{ item.days }}</td>
             <td>{{ activeText(item.active) }}</td>
             <td>
-              <v-icon small @click="editItem(item)" color="blue">
-                edit
+              <v-icon 
+                small 
+                @click="editItem(item)" 
+                color="blue"
+                v-if="$store.getters.permissions.includes('edit-cas')"
+                >
+                  edit
               </v-icon>
             </td>
           </tr>
@@ -225,8 +230,8 @@ export default {
       this.showForm = true;
     },
     cancelForm() {
-      // this.clearForm();
-      // this.showForm = false;
+      this.clearForm();
+      this.showForm = false;
       this.dialog = false;
     },
     clearForm() {
