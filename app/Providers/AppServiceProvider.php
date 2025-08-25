@@ -13,6 +13,7 @@ use App\ConsultantPosition;
 use App\ConsultantProcedure;
 use App\ConsultantPayroll;
 use App\VacationQueue;
+use App\CasCertification;
 use App\Observers\EmployeeObserver;
 use App\Observers\ContractObserver;
 use App\Observers\ProcedureObserver;
@@ -22,6 +23,7 @@ use App\Observers\ConsultantPositionObserver;
 use App\Observers\ConsultantProcedureObserver;
 use App\Observers\ConsultantPayrollObserver;
 use App\Observers\VacationQueueObserver;
+use App\Observers\CasCertificationObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
     ConsultantProcedure::observe(ConsultantProcedureObserver::class);
     ConsultantPayroll::observe(ConsultantPayrollObserver::class);
     VacationQueue::observe(VacationQueueObserver::class);
+    CasCertification::observe(CasCertificationObserver::class);
   }
 
   /**
