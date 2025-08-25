@@ -253,8 +253,8 @@ class VacationQueueController extends Controller
       $num = 0; 
       $formatted_date = Carbon::now()->format('d-m-Y');
 
-      $vacation_queues = VacationQueue::whereNotNull('vacation_queues.deleted_at')
-                  ->orderBy('vacation_queues.employee_id', 'asc')
+      $vacation_queues = VacationQueue::onlyTrashed()
+                  ->orderBy('employee_id', 'asc')
                   ->get();
 
       $data = [
