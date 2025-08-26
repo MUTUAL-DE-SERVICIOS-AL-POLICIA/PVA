@@ -171,7 +171,7 @@ class AuthController extends Controller
       'role' => $role,
       'permissions' => $permissions,
       'consultant' => $consultant,
-      'message' => 'Indentidad verificada',
+      'message' => 'Identidad verificada',
     ], 200);
   }
 
