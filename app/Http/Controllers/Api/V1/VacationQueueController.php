@@ -169,7 +169,6 @@ class VacationQueueController extends Controller
               }
               $cas = $employee->get_cas
                   ->where('active', true)
-                  ->where('for_vacation', true)
                   ->first();
 
               if ($cas) {
