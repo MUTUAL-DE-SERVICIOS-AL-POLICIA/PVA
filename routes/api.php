@@ -171,6 +171,10 @@ Route::group([
     Route::get('consultant_contract', 'Api\V1\ConsultantContractController@index')->name('consultant_contracts_list');
     Route::get('consultant_contract/{id}', 'Api\V1\ConsultantContractController@show')->name('consultant_contract_details');
     Route::get('consultant_contract/position_free/{position_id}', 'Api\V1\ConsultantContractController@positionFree')->name('consultant_contract_position_free');
+    // assistant contract
+    Route::get('assistant_contract', 'Api\V1\AssistantContractController@index')->name('assistant_contracts_list');
+    Route::post('assistant_contract', 'Api\V1\AssistantContractController@store')->name('assistant_contract_store');
+    Route::patch('assistant_contract/{id}', 'Api\V1\AssistantContractController@update')->name('assistant_contract_update');
     // Job Schedule
     Route::get('job_schedule', 'Api\V1\JobScheduleController@index')->name('job_schedule_list');
     Route::get('job_schedule/{id}', 'Api\V1\JobScheduleController@show')->name('job_schedule_details');

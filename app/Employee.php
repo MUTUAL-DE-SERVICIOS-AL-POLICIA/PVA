@@ -433,4 +433,9 @@ class Employee extends Model
   {
     return Carbon::parse(Employee::min('addmission_date'));
   }
+
+  public function assistant_contracts()
+  {
+    return $this->hasMany(AssistantContract::class);
+  }
 }
