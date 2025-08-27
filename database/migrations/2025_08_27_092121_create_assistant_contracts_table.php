@@ -29,6 +29,8 @@ class CreateAssistantContractsTable extends Migration
       $table->string('register_number')->nullable();;
       $table->text('description')->nullable();
       $table->boolean('active')->default(true);
+      $table->integer('job_schedule_id')->unsigned()->nullable();
+      $table->foreign('job_schedule_id')->references('id')->on('job_schedules');
       $table->timestamps();
       $table->softDeletes();
     });
