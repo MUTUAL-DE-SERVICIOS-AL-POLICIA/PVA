@@ -15,12 +15,17 @@ class JobSchedule extends Model
 
   public function contracts()
   {
-    return $this->belongsToMany(Contract::class);
+      return $this->hasMany(Contract::class, 'job_schedule_id');
   }
 
   public function consultant_contracts()
   {
-    return $this->belongsToMany(ConsultantContract::class);
+      return $this->hasMany(ConsultantContract::class, 'job_schedule_id');
+  }
+
+  public function assistant_contracts()
+  {
+      return $this->hasMany(AssistantContract::class, 'job_schedule_id');
   }
 
   public function iso_format()
