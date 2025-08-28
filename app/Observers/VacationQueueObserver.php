@@ -15,7 +15,7 @@ class VacationQueueObserver
      */
     public function created(vacationQueue $vacationQueue)
     {
-        Util::save_action('Registró cola de vacacion Nro [' . $vacationQueue->id . '] de '. $this->get_title($vacationQueue));
+        Util::save_action('Registró asignación individual de vacacion Nro [' . $vacationQueue->id . '] de '. $this->get_title($vacationQueue));
     }
 
     /**
@@ -37,7 +37,7 @@ class VacationQueueObserver
      */
     public function deleted(vacationQueue $vacationQueue)
     {
-        Util::save_action('Eliminó cola de vacacion Nro [' . $vacationQueue->id . '] de '. $this->get_title($vacationQueue));
+        Util::save_action('Eliminó asignación individual de vacacion Nro [' . $vacationQueue->id . '] de '. $this->get_title($vacationQueue));
     }
 
     /**
