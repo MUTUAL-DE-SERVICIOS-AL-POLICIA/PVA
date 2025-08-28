@@ -40,6 +40,7 @@
             <td>{{ item.months }}</td>
             <td>{{ item.days }}</td>
             <td>{{ activeText(item.active) }}</td>
+            <td>{{ item.created_at }}</td>
             <td>
               <v-icon 
                 small 
@@ -182,6 +183,7 @@ export default {
         { text: "Meses", value: "months" },
         { text: "Días", value: "days" },
         { text: "Estado", value: "active" },
+        { text: "Fecha de registro", value: "created_at", sortable: false },
         { text: "Acciones", value: "actions" },
       ],
     };
