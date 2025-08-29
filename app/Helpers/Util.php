@@ -434,16 +434,16 @@ class Util
       'shift' => null
     ];
     $checktime = CarbonImmutable::parse($check);
-    foreach ($job_schedules as $schedule) {
+    //foreach ($job_schedules as $schedule) {
       $periods = (object)[
         'in' => (object)[
-          'start_limit' => $checktime->hours($schedule->start_hour_min_limit)->minutes($schedule->start_minutes_min_limit)->seconds(0),
-          'end_limit' => $checktime->hours($schedule->end_hour)->minutes($schedule->end_minutes)->seconds(0),
-          'start' => $checktime->hours($schedule->start_hour)->minutes($schedule->start_minutes)->seconds(0)
+          'start_limit' => $checktime->hours($job_schedules->start_hour_min_limit)->minutes($job_schedules->start_minutes_min_limit)->seconds(0),
+          'end_limit' => $checktime->hours($job_schedules->end_hour)->minutes($job_schedules->end_minutes)->seconds(0),
+          'start' => $checktime->hours($job_schedules->start_hour)->minutes($job_schedules->start_minutes)->seconds(0)
         ],
         'out' => (object)[
-          'start_limit' => $checktime->hours($schedule->end_hour)->minutes($schedule->end_minutes)->seconds(0),
-          'end_limit' => $checktime->hours($schedule->end_hour_max_limit)->minutes($schedule->end_minutes_max_limit)->seconds(59)
+          'start_limit' => $checktime->hours($job_schedules->end_hour)->minutes($job_schedules->end_minutes)->seconds(0),
+          'end_limit' => $checktime->hours($job_schedules->end_hour_max_limit)->minutes($job_schedules->end_minutes_max_limit)->seconds(59)
         ]
       ];
 
@@ -467,15 +467,15 @@ class Util
           } else {
             $attendance->type = 'O';
           }
-          $attendance->shift = $schedule->id;
+          $attendance->shift = $job_schedules->id;
           break;
         }
       }
       if ($find) {
-        $attendance->shift = $schedule->id;
+        $attendance->shift = $job_schedules->id;
         break;
       }
-    }
+    //}
     return $attendance;
   }
 
