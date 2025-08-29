@@ -108,7 +108,9 @@ use App\Helpers\Util;
             @foreach ($data_report as $key => $report)
                 @if ($report->type == 'vacation')
                     <tr class="bg-grey-lightest">
-                        <td colspan="2"> CAS - Días: {{ intval($report->days) }} </td>
+                        <td colspan="2"> CAS - Días: {{ intval($report->days) }} 
+                            (<span class="text-xs">Periódo: {{ Carbon::parse($report->date_ini)->format('d-m-Y') }} al {{ Carbon::parse($report->date_end)->format('d-m-Y') }}</span>)
+                        </td>
                         <td colspan="2"> Fecha de asignación: {{ $report->date_request }}</td>
                         <td colspan="3"> Fecha de vencimiento: {{ $report->max_date }}</td>
                         <?php
