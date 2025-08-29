@@ -473,7 +473,6 @@ class Util
       }
       if ($find) {
         $attendance->shift = $job_schedules->id;
-        break;
       }
     //}
     return $attendance;

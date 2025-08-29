@@ -15,6 +15,37 @@ class MigrateJobSchedulesToContracts extends Migration
   {
     DB::transaction(function () {
       DB::statement(<<<'SQL'
+        LOCK TABLE public.job_schedules IN ACCESS EXCLUSIVE MODE;
+
+        ALTER TABLE public.job_schedules ALTER COLUMN id DROP DEFAULT;
+        ALTER TABLE public.job_schedules ALTER COLUMN id TYPE BIGINT;
+
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1
+            FROM pg_class c
+            JOIN pg_namespace n ON n.oid = c.relnamespace
+            WHERE c.relkind = 'S'
+              AND n.nspname = 'public'
+              AND c.relname = 'job_schedules_id_seq'
+          ) THEN
+            CREATE SEQUENCE public.job_schedules_id_seq;
+          END IF;
+        END $$;
+
+        ALTER SEQUENCE public.job_schedules_id_seq OWNED BY public.job_schedules.id;
+
+        ALTER TABLE public.job_schedules
+          ALTER COLUMN id SET DEFAULT nextval('public.job_schedules_id_seq'::regclass);
+
+        SELECT setval(
+          'public.job_schedules_id_seq'::regclass,
+          COALESCE((SELECT MAX(id) FROM public.job_schedules), 0) + 1,
+          false
+        );
+      SQL);
+      DB::statement(<<<'SQL'
         INSERT INTO public.job_schedules
         (start_hour, start_minutes, end_hour, end_minutes, workdays, created_at, updated_at, start_hour_min_limit, start_minutes_min_limit, end_hour_max_limit, end_minutes_max_limit)
         VALUES (8, 30, 18, 30, '[1,2,3,4,5]'::json, now(), now(), 4, 0, 23, 55);
