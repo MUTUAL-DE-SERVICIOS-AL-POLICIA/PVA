@@ -675,9 +675,10 @@ class DepartureController extends Controller
               'days',
               'max_date',
               DB::raw("'vacation' as type"),
-              'created_at as date_order', // campo común para ordenar
+              'end_date as date_order', // campo común para ordenar
           ])
-          ->where('employee_id', $employee_id);
+          ->where('employee_id', $employee_id)
+          ->where('deleted_at', null);
 
       // Unión
       $union = $departures->unionAll($vacation_queues);

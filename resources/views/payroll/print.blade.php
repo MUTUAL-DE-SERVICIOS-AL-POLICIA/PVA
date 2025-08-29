@@ -44,7 +44,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                         @php ($table_header_space2 = 3)
                         @break
                     @case ('H')
-                        @php ($table_header_space1 = 15)
+                        @php ($table_header_space1 = 16)
                         @php ($table_header_space2 = 6)
                         @break
                     @case ('P')
@@ -110,7 +110,14 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                     @if ($title->report_type == 'H')
                         <th width="2%">HABER BÁSICO</th>
                     @endif
-                    @if ($title->report_type == 'H')
+                    <?php
+                        $year = $title->year;
+                        $id_month = \App\Month::where('name', $title->month)->first()->id;
+                        $month = str_pad($id_month, 2, '0', STR_PAD_LEFT);
+                        $date = Carbon::createFromFormat('Y-m-d', "{$year}-{$month}-02");
+                        $one_employee = reset($employees);
+                    ?>
+                    @if ($title->report_type == 'H' && $date >= $one_employee->admission_date_min)
                         <th width="2%">BONO DE ANTIGÜEDAD</th>
                     @endif
                         <th width="2%">TOTAL GANADO</th>
@@ -271,7 +278,7 @@ use \App\Http\Controllers\Api\V1\PayrollController as Payroll;
                     @if ($title->report_type == 'H')
                         <td>{{ Util::format_number($employee->base_wage) }}</td>
                     @endif
-                    @if ($title->report_type == 'H')
+                    @if ($title->report_type == 'H' && $date >= $one_employee->admission_date_min)
                         <td>{{ Util::format_number($employee->seniority_bonus) }}</td>
                     @endif
                         <td>{{ Util::format_number($employee->quotable) }}</td>

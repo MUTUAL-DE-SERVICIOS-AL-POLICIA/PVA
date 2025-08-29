@@ -52,6 +52,10 @@ Route::group([
   Route::get('employee/{id}', 'Api\V1\EmployeeController@show')->name('employee_details');
   //Cola de vacaciones
   Route::get('count_days', 'Api\V1\VacationQueueController@count_days');
+  Route::resource('vacation_queue', 'Api\V1\VacationQueueController'::class);
+  Route::get('get_vacation_queue_employee/{employee_id}', 'Api\V1\VacationQueueController@get_vacation_queue_employee');
+  Route::post('vacation_queue/{id}/delete', 'Api\V1\VacationQueueController@destroy_with_comment');
+
   //Registro del permiso de vacacion
   Route::post('vacation_departure', 'Api\V1\DepartureController@vacation_departure');
   //Anulacion del permiso de vacacion
@@ -61,6 +65,7 @@ Route::group([
   Route::get('departure_vacation/print/{departure_id}', 'Api\V1\DepartureController@print_note_vacation');
   Route::get('print_report_vacation', 'Api\V1\DepartureController@print_report_vacation');
   Route::get('print_vacation_individual/{employee_id}', 'Api\V1\DepartureController@print_vacation_individual');
+  Route::get('print_cancelled_report', 'Api\V1\VacationQueueController@print_cancelled_report');
   // Position Group
   Route::get('position_group/{id}', 'Api\V1\PositionGroupController@show')->name('position_group_details');
   // Position current employee

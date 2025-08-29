@@ -70,13 +70,22 @@ class VacationQueueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $vacation_queue = VacationQueue::findOrFail($id);
+    
+        // Guardar el comentario antes de eliminar
+        $vacation_queue->comment = $request->input('comment');
+        $vacation_queue->save();
+    
+        // Eliminar lógicamente
         $vacation_queue->delete();
-        return $vacation_queue;
+    
+        return response()->json([
+            'message' => 'Registro eliminado lógicamente con comentario',
+            'data' => $vacation_queue
+        ]);
     }
-
 
     public function count_days(Request $request)
     {
@@ -160,7 +169,6 @@ class VacationQueueController extends Controller
               }
               $cas = $employee->get_cas
                   ->where('active', true)
-                  ->where('for_vacation', true)
                   ->first();
 
               if ($cas) {
@@ -216,6 +224,59 @@ class VacationQueueController extends Controller
               ->where('max_date', '>=', Carbon::parse($date)->format('Y-m-d'))
               ->sum('rest_days');
       return $count;
+    }
+
+    public function get_vacation_queue_employee($employee_id)
+    {
+      return VacationQueue::where('employee_id',$employee_id)->whereNull('deleted_at')->orderBy('start_date','asc')->get();
+    }
+    public function destroy_with_comment(Request $request, $id)
+    {
+        $vacation_queue = VacationQueue::findOrFail($id);
+
+        // Guardar comentario antes de eliminar
+        $vacation_queue->comment = $request->input('comment');
+        $vacation_queue->save();
+
+        // Soft delete
+        $vacation_queue->delete();
+
+        return response()->json([
+            'message' => 'Registro eliminado lógicamente con comentario',
+            'data' => $vacation_queue
+        ]);
+    }
+
+    public function print_cancelled_report(Request $request)
+    {
+      $num = 0; 
+      $formatted_date = Carbon::now()->format('d-m-Y');
+
+      $vacation_queues = VacationQueue::onlyTrashed()
+                  ->orderBy('employee_id', 'asc')
+                  ->get();
+
+      $data = [
+        'num' => $num,
+        'vacation_queues' => $vacation_queues
+      ];
+      $file_name = implode('_', ['reporte', 'anulados', 'cola','vacaciones', $formatted_date]) . '.pdf';
+
+      $options = [
+        'orientation' => 'landscape',
+        'page-width' => '216',
+        'page-height' => '279',
+        'margin-top' => '10',
+        'margin-bottom' => '10',
+        'margin-left' => '10',
+        'margin-right' => '10',
+        'encoding' => 'UTF-8',
+      ];
+
+      $pdf = \PDF::loadView('vacation.report_cancelled_vacation_queue', $data);
+      $pdf->setOptions($options);
+
+      return $pdf->stream($file_name);
     }
 
 }

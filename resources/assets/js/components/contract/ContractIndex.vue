@@ -41,6 +41,7 @@
       <ContractForm :contract="{}" :bus="bus"/>
       <RemoveItem :bus="bus"/>
       <CasForm :bus="bus"/>
+      <VacactionAssignment :bus="bus"/>
     </v-toolbar>
     <div v-if="loading">
       <Loading/>
@@ -74,7 +75,7 @@
           </td>
           <td :class="(checkEnd(props.item) != '' ? 'bordered' : '') + withoutBorders" class="justify-center layout" v-if="$store.getters.role != 'financiera'">
             <v-menu offset-y>
-              <v-btn :class="withoutBorders" slot="activator" flat icon color="info">
+              <v-btn :class="withoutBorders" slot="activator" flat icon color="black">
                 <v-icon>print</v-icon><v-icon small>arrow_drop_down</v-icon>
               </v-btn>
               <v-list>
@@ -92,7 +93,7 @@
               <span>Recontratar</span>
             </v-tooltip>
             <v-tooltip top v-if="(active && $store.getters.permissions.includes('update-eventual')) || (!active && $store.getters.permissions.includes('update-eventual-inactive'))">
-              <v-btn :class="withoutBorders" slot="activator" flat icon @click="editItem(props.item, 'edit')" color="info">
+              <v-btn :class="withoutBorders" slot="activator" flat icon @click="editItem(props.item, 'edit')" color="secondary">
                 <v-icon>edit</v-icon>
               </v-btn>
               <span>Editar</span>
@@ -104,7 +105,14 @@
               </v-btn>
               <span>Registrar CAS</span>
             </v-tooltip>
-            <!--registro de cas-->
+            <!--asignacion de vacaciones -->
+            <v-tooltip top>
+              <v-btn :class="withoutBorders" slot="activator" flat icon @click="assignVacation(props.item.employee)" color="danger">
+                <v-icon>beach_access</v-icon>
+              </v-btn>
+              <span>Asignar vacación individual</span>
+            </v-tooltip>
+
             <v-tooltip top v-if="$store.getters.permissions.includes('delete-eventual') && props.item.payrolls_count == 0">
               <v-btn :class="withoutBorders" slot="activator" flat icon color="red darken-3" @click="removeItem(props.item)">
                 <v-icon>delete</v-icon>
@@ -147,6 +155,7 @@ import ContractForm from "./ContractForm";
 import RemoveItem from "../RemoveItem";
 import Loading from "../Loading";
 import CasForm from "./CasForm";
+import VacactionAssignment from "./VacactionAssignment.vue";
 
 export default {
   name: "ContractIndex",
@@ -154,7 +163,8 @@ export default {
     ContractForm,
     RemoveItem,
     Loading,
-    CasForm
+    CasForm,
+    VacactionAssignment
   },
   data() {
     return {
@@ -248,7 +258,9 @@ export default {
     },
     addItemCas(employee) {
       this.bus.$emit("openDialogCas",$.extend({}, employee));
-
+    },
+    assignVacation(employee){
+      this.bus.$emit("openDialogVacationAssignment", $.extend({}, employee));
     },
     async removeItem(item) {
       let payroll = await axios.get(
