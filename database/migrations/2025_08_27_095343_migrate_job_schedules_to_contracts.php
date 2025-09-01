@@ -14,37 +14,41 @@ class MigrateJobSchedulesToContracts extends Migration
   public function up(): void
   {
     DB::transaction(function () {
-      DB::statement(<<<'SQL'
-        LOCK TABLE public.job_schedules IN ACCESS EXCLUSIVE MODE;
+     DB::statement("LOCK TABLE public.job_schedules IN ACCESS EXCLUSIVE MODE");
 
-        ALTER TABLE public.job_schedules ALTER COLUMN id DROP DEFAULT;
-        ALTER TABLE public.job_schedules ALTER COLUMN id TYPE BIGINT;
+    DB::statement("ALTER TABLE public.job_schedules ALTER COLUMN id DROP DEFAULT");
+    DB::statement("ALTER TABLE public.job_schedules ALTER COLUMN id TYPE BIGINT");
 
-        DO $$
-        BEGIN
-          IF NOT EXISTS (
-            SELECT 1
-            FROM pg_class c
-            JOIN pg_namespace n ON n.oid = c.relnamespace
-            WHERE c.relkind = 'S'
-              AND n.nspname = 'public'
-              AND c.relname = 'job_schedules_id_seq'
-          ) THEN
-            CREATE SEQUENCE public.job_schedules_id_seq;
-          END IF;
-        END $$;
+    DB::statement(<<<'SQL'
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1
+        FROM pg_class c
+        JOIN pg_namespace n ON n.oid = c.relnamespace
+        WHERE c.relkind = 'S'
+          AND n.nspname = 'public'
+          AND c.relname = 'job_schedules_id_seq'
+      ) THEN
+        CREATE SEQUENCE public.job_schedules_id_seq;
+      END IF;
+    END $$;
+    SQL);
 
-        ALTER SEQUENCE public.job_schedules_id_seq OWNED BY public.job_schedules.id;
+    DB::statement("ALTER SEQUENCE public.job_schedules_id_seq OWNED BY public.job_schedules.id");
 
-        ALTER TABLE public.job_schedules
-          ALTER COLUMN id SET DEFAULT nextval('public.job_schedules_id_seq'::regclass);
+    DB::statement(<<<'SQL'
+    ALTER TABLE public.job_schedules
+      ALTER COLUMN id SET DEFAULT nextval('public.job_schedules_id_seq'::regclass)
+    SQL);
 
-        SELECT setval(
-          'public.job_schedules_id_seq'::regclass,
-          COALESCE((SELECT MAX(id) FROM public.job_schedules), 0) + 1,
-          false
-        );
-      SQL);
+    DB::statement(<<<'SQL'
+    SELECT setval(
+      'public.job_schedules_id_seq'::regclass,
+      COALESCE((SELECT MAX(id) FROM public.job_schedules), 0) + 1,
+      false
+    )
+    SQL);
       DB::statement(<<<'SQL'
         INSERT INTO public.job_schedules
         (start_hour, start_minutes, end_hour, end_minutes, workdays, created_at, updated_at, start_hour_min_limit, start_minutes_min_limit, end_hour_max_limit, end_minutes_max_limit)
