@@ -176,6 +176,7 @@ Route::group([
     Route::get('assistant_contract/{id}', 'Api\V1\AssistantContractController@show')->name('assistant_contracts_details');
     Route::post('assistant_contract', 'Api\V1\AssistantContractController@store')->name('assistant_contract_store');
     Route::patch('assistant_contract/{id}', 'Api\V1\AssistantContractController@update')->name('assistant_contract_update');
+    Route::delete('assistant_contract/{id}', 'Api\V1\AssistantContractController@delete')->name('assistant_contract_delete');
     // Job Schedule
     Route::get('job_schedule', 'Api\V1\JobScheduleController@index')->name('job_schedule_list');
     Route::get('job_schedule/{id}', 'Api\V1\JobScheduleController@show')->name('job_schedule_details');
