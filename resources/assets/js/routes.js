@@ -4,6 +4,7 @@ import Employee from './components/employee/EmployeeIndex'
 import Company from './components/company/CompanyIndex'
 import Contract from './components/contract/ContractIndex'
 import Consultant from './components/contract/ConsultantIndex'
+import Assistant from './components/contract/AssistantIndex.vue'
 import Procedure from './components/procedure/ProcedureIndex'
 import ConsultantProcedure from './components/procedure/ConsultantProcedureIndex'
 import ProcedureEdit from './components/procedure/ProcedureEdit'
@@ -76,7 +77,14 @@ export const routes = [
     meta: {
       requiresAuth: true
     }
-  }, {
+  },{
+    path: '/assistant',
+    component: Assistant,
+    name: 'assistantIndex',
+    meta: {
+      requiresAuth: true
+    }
+  },{
     path: '/procedure',
     component: Procedure,
     name: 'procedureIndex',

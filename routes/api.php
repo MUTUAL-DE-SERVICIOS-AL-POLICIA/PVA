@@ -173,6 +173,7 @@ Route::group([
     Route::get('consultant_contract/position_free/{position_id}', 'Api\V1\ConsultantContractController@positionFree')->name('consultant_contract_position_free');
     // assistant contract
     Route::get('assistant_contract', 'Api\V1\AssistantContractController@index')->name('assistant_contracts_list');
+    Route::get('assistant_contract/{id}', 'Api\V1\AssistantContractController@show')->name('assistant_contracts_details');
     Route::post('assistant_contract', 'Api\V1\AssistantContractController@store')->name('assistant_contract_store');
     Route::patch('assistant_contract/{id}', 'Api\V1\AssistantContractController@update')->name('assistant_contract_update');
     // Job Schedule

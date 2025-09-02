@@ -56,6 +56,12 @@
     ]
   },
   {
+    "href": "assistantIndex",
+    "title": "Pasantias/Trab.dir.",
+    "icon": "school",
+    "params": {}
+  },
+  {
     "href": "attendanceIndex",
     "title": "Asistencia",
     "icon": "fingerprint",

@@ -12,7 +12,7 @@ class AssistantContractController extends Controller
 {
     public function index()
     {
-        return AssistantContract::with('job_schedules', 'employee', 'employee.city_identity_card', 'retirement_reason')
+        return AssistantContract::with('job_schedules', 'employee', 'employee.city_identity_card', 'retirement_reason', 'position_group')
             ->orderBy('end_date', 'ASC')
             ->get();
     }
@@ -45,7 +45,7 @@ class AssistantContractController extends Controller
 
     public function show($id)
     {
-        return AssistantContract::with('job_schedules', 'employee', 'employee.city_identity_card', 'consultant_position', 'consultant_position.charge', 'consultant_position.position_group', 'retirement_reason')
+        return AssistantContract::with('job_schedules', 'employee', 'employee.city_identity_card', 'retirement_reason', 'position_group')
             ->findOrFail($id);
     }
 
