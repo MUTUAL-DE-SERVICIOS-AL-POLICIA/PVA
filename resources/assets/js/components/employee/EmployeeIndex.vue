@@ -3,7 +3,7 @@
     <v-toolbar>
       <v-toolbar-title>
         <v-select
-          :items="['Todos los Empleados', 'Personal de Planta', 'Consultores', 'Sin contratos']"
+          :items="['Todas las Personas', 'Personal de Planta', 'Consultores', 'Sin contratos']"
           v-model="employeeType"
           class="title font-weight-medium"
         ></v-select>
@@ -201,12 +201,12 @@ export default {
           sortable: false
         }
       ],
-      employeeType: 'Todos los Empleados'
+      employeeType: 'Todas las Personas'
     };
   },
   computed: {
     filteredEmployees() {
-      if (this.employeeType == 'Todos los Empleados') {
+      if (this.employeeType == 'Todas las Personas') {
         return this.employees
       } else if (this.employeeType == 'Personal de Planta') {
         return this.employees.filter(o => {
