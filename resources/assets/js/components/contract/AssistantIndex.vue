@@ -220,8 +220,8 @@
         // if (payrolls.data.count > 0) {
         //   this.toastr.warning('No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS')
         // } else {
-        //   this.bus.$emit("openDialogRemove", `/consultant_contract/${item.id}`)
-        // }
+          this.bus.$emit("openDialogRemove", `/assistant_contract/${item.id}`)
+        //}
       },
       fullName(employee) {
         let names = `${employee.last_name || ""} ${employee.mothers_last_name ||

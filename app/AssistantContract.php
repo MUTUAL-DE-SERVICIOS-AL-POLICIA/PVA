@@ -12,7 +12,7 @@ class AssistantContract extends Model
   protected $dates = ['deleted_at'];
   public $timestamps = true;
   public $guarded = ['id'];
-  protected $fillable = ['employee_id', 'university', 'start_date', 'end_date', 'assistant_position', 'position_group_id', 'retirement_date', 'retirement_reason_id', 'register_number', 'description', 'active'];
+  protected $fillable = ['employee_id', 'university', 'start_date', 'end_date', 'assistant_position', 'position_group_id', 'retirement_date', 'retirement_reason_id', 'register_number', 'description', 'active', 'job_schedule_id'];
 
   public function employee()
   {

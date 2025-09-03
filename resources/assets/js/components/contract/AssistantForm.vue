@@ -11,7 +11,7 @@
       <v-card-text>
         <v-container grid-list-md layout>
           <v-layout wrap>
-            <v-flex xs12 sm6 md6>
+            <v-flex xs12 sm12 md12>
               <v-form ref="form">
                 <v-autocomplete
                   clearable
@@ -19,13 +19,14 @@
                   :items="employees"
                   item-text="identity_card"
                   item-value="id"
-                  label="Empleado"
+                  label="Persona"
                   v-validate="'required'"
                   v-on:change="onSelectEmployee"
-                  name="Empleado"
-                  :error-messages="errors.collect('Empleado')"
-                  :disabled="!selectedItem.edit"
+                  name="Persona"
+                  :error-messages="errors.collect('Persona')"
+                  :readonly="selectedItem.edit === true && !selectedItem.new"
                 ></v-autocomplete>
+                <p>Nombre: {{ table.employee.last_name }} {{ table.employee.mothers_last_name }} {{ table.employee.first_name }} {{ table.employee.second_name }}</p>
                 <!-- <v-combobox
                   clearable
                   v-model="selectedItem.consultant_position"
@@ -58,11 +59,11 @@
                   :items="positionGroups"
                   item-text="name"
                   item-value="id"
-                  label="Unidad"
+                  label="Unidad que pertenece"
                   v-validate="'required'"
                   name="Unidad"
                   :error-messages="errors.collect('Unidad')"
-                  :disabled="!selectedItem.edit"
+                  :readonly="selectedItem.edit === true && !selectedItem.new"
                 ></v-autocomplete>
                 <v-layout wrap>
                   <v-flex xs12 sm6 md6>
@@ -73,7 +74,7 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="!selectedItem.edit"
+                      :disabled="selectedItem.edit === true && !selectedItem.new"
                     >
                       <v-text-field
                         :clearable="selectedItem.edit"
@@ -138,21 +139,19 @@
                   autocomplete='cc-number'
                   clearable
                 ></v-text-field>
+                <p>Modalidad que pertenece</p>
                 <v-radio-group
-      v-model="selectedItem.assistant_position"
-      row
-      label="Seleccione modalidad"
-    >
-      <v-radio
-        label="Pasantía"
-        value="Pasantía"
-      ></v-radio>
-
-      <v-radio
-        label="Trabajo Dirigido"
-        value="Trabajo Dirigido"
-      ></v-radio>
-    </v-radio-group>
+                  v-model="selectedItem.assistant_position"                  
+                >
+                  <v-radio
+                    label="Pasantía"
+                    value="Pasantía"
+                  ></v-radio>
+                  <v-radio
+                    label="Trabajo Dirigido"
+                    value="Trabajo Dirigido"
+                  ></v-radio>
+                </v-radio-group>
                 <!-- <v-layout wrap>
                   <v-flex xs12 sm6 md6>
                     <v-text-field
@@ -202,7 +201,7 @@
                 >
                   <template v-for="schedule in jobSchedules">
                     <v-radio
-                      :label="`Horario (${schedule.start_hour}:${schedule.start_minutes}0 - ${schedule.end_hour}:${schedule.end_minutes}0)`"
+                      :label="`Horario (${schedule.start_hour}:${formatMinutes(schedule.start_minutes)} - ${schedule.end_hour}:${formatMinutes(schedule.end_minutes)})`"
                       :key="schedule.id"
                       :value="schedule.id"
                       color="primary"
@@ -254,11 +253,11 @@
                 </v-form>
               </v-card>
             </v-flex>
-            <v-flex xs12 sm6 md6>
+           <!--  <v-flex xs12 sm6 md6>
               <v-card>
                 <v-card-text>
-                  <p><strong>Empleado: </strong> {{ table.employee.last_name }} {{ table.employee.mothers_last_name }} {{ table.employee.first_name }} {{ table.employee.second_name }}</p>
-                  <!-- <p>
+                  <p><strong>Persona: </strong> {{ table.employee.last_name }} {{ table.employee.mothers_last_name }} {{ table.employee.first_name }} {{ table.employee.second_name }}</p>
+                  <p>
                     <strong>Puesto: </strong> {{ table.position.name }}
                     <v-chip v-if="!table.position.free" small color="red" text-color="white">Ocupado</v-chip>
                   </p>
@@ -287,10 +286,10 @@
                           <td class="text-xs-right font-weight-bold">{{ table.months.reduce((total, o) => parseFloat(o.salary) + total,0).toFixed(2) }} Bs.</td>
                         </tr>
                     </tfoot>
-                  </table> -->
+                  </table>
                 </v-card-text>
               </v-card>
-            </v-flex>
+            </v-flex> -->
           </v-layout>
         </v-container>
       </v-card-text>
@@ -325,10 +324,10 @@ export default {
           formattedDate: null,
           display: false
         },
-        rrhh: {
-          formattedDate: null,
-          display: false
-        }
+        // rrhh: {
+        //   formattedDate: null,
+        //   display: false
+        // }
       },
       selectedItem: {
         edit: true,
@@ -347,7 +346,7 @@ export default {
           second_name: ''
         },
       },
-      formTitle: 'Nuevo contrato de consultoría',
+      formTitle: 'Nueva modalidad académica',
       employees: [],
       //positions: [],
       positionGroups: [],
@@ -391,7 +390,7 @@ export default {
       console.log(item)
       if (item) {
         this.selectedItem = item
-        this.formTitle = item.edit ? 'Editar registro pasante' : 'Recontratar pasante'
+        this.formTitle = item.edit ? 'Editar modalidad académica' : 'Prorrogar modalidad academica'
         this.dialog = true
         this.onSelectEmployee(this.selectedItem.employee.id)
         //this.onSelectPosition(this.selectedItem.consultant_position)
@@ -433,9 +432,9 @@ export default {
     'selectedItem.retirement_date': function(value) {
       if (value) this.datePicker.retirement.formattedDate = this.$moment(value).format('L')
     },
-    'selectedItem.rrhh_cite_date': function(value) {
-      if (value) this.datePicker.rrhh.formattedDate = this.$moment(value).format('L')
-    },
+    // 'selectedItem.rrhh_cite_date': function(value) {
+    //   if (value) this.datePicker.rrhh.formattedDate = this.$moment(value).format('L')
+    // },
     'selectedItem.retirement_reason_id': function(value) {
       if (!value) {
         this.selectedItem.retirement_reason_id = null
@@ -669,6 +668,9 @@ export default {
         console.log(e)
       }
     },
+    formatMinutes(minutes) {
+      return minutes === 0 ? '00' : minutes;
+    }
     // monthSalaryCalc() {
     //   if (this.selectedItem.start_date && this.selectedItem.end_date && this.table.charge.base_wage) {
     //     this.table.months = []
