@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
       <v-toolbar>
-        <v-toolbar-title>Psantia/Trabajo dirigido</v-toolbar-title>
+        <v-toolbar-title>Practicantes</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn  @click="getContracts(true)" :class="active ? 'primary white--text' : 'normal'" class="mr-0">
           <div class="font-weight-regular subheading pa-2">ACTIVOS</div>
@@ -90,13 +90,10 @@
           <v-card flat>
             <v-card-text>
               <v-list>
-                <v-list-tile-content><p><strong>Cargo: </strong>{{ props.item.assistant_position }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Lugar: </strong>{{ props.item.position_group.name }}</p></v-list-tile-content>
+                <v-list-tile-content><p><strong>Area organizacional que pertenece: </strong>{{ props.item.position_group.name }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Número de registro: </strong>{{ props.item.register_number }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Universidad: </strong>{{ props.item.university }}</p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Modalidad: </strong>{{ props.item.assistant_position }}</p></v-list-tile-content>
-                <!-- <v-list-tile-content><p><strong>Certificado de equivalencia RRHH: </strong>{{ props.item.rrhh_cite }}</p></v-list-tile-content>
-                <v-list-tile-content><p><strong>Fecha de cite de recursos Humanos: </strong>{{ props.item.rrhh_cite_date }}</p></v-list-tile-content> -->
                 <v-list-tile-content v-if="props.item.retirement_reason"><p><strong>Motivo de retiro: </strong> {{ props.item.retirement_reason.name }} </p></v-list-tile-content>
                 <v-list-tile-content v-if="props.item.retirement_reason"><p><strong>Fecha de retiro: </strong> {{ props.item.retirement_date }} </p></v-list-tile-content>
                 <v-list-tile-content><p><strong>Descripción: </strong> {{ props.item.description }} </p></v-list-tile-content>
@@ -216,12 +213,7 @@
         console.log(item)
       },
       async removeItem(item) {
-        // let payrolls = await axios.get(`/consultant_payroll/contract/${item.id}`)
-        // if (payrolls.data.count > 0) {
-        //   this.toastr.warning('No se puede eliminar. Porque este contrato ya se encuentra en PLANILLAS')
-        // } else {
-        //   this.bus.$emit("openDialogRemove", `/consultant_contract/${item.id}`)
-        // }
+        this.bus.$emit("openDialogRemove", `/assistant_contract/${item.id}`)
       },
       fullName(employee) {
         let names = `${employee.last_name || ""} ${employee.mothers_last_name ||

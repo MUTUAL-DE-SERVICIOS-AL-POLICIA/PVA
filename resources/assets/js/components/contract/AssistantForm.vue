@@ -11,7 +11,7 @@
       <v-card-text>
         <v-container grid-list-md layout>
           <v-layout wrap>
-            <v-flex xs12 sm6 md6>
+            <v-flex xs12 sm12 md12>
               <v-form ref="form">
                 <v-autocomplete
                   clearable
@@ -19,50 +19,26 @@
                   :items="employees"
                   item-text="identity_card"
                   item-value="id"
-                  label="Empleado"
+                  label="Persona"
                   v-validate="'required'"
                   v-on:change="onSelectEmployee"
-                  name="Empleado"
-                  :error-messages="errors.collect('Empleado')"
-                  :disabled="!selectedItem.edit"
+                  name="Persona"
+                  :error-messages="errors.collect('Persona')"
+                  :readonly="selectedItem.edit === true && !selectedItem.new"
                 ></v-autocomplete>
-                <!-- <v-combobox
-                  clearable
-                  v-model="selectedItem.consultant_position"
-                  :items="positions"
-                  item-text="name"
-                  item-value="id"
-                  label="Puesto"
-                  v-on:change="onSelectPosition"
-                  v-validate="'required'"
-                  name="Puesto"
-                  :error-messages="errors.collect('Puesto')"
-                  :disabled="!selectedItem.edit"
-                ></v-combobox> -->
-                <!-- <v-autocomplete
-                  clearable
-                  v-model="selectedItem.charge_id"
-                  :items="charges"
-                  :item-text="chargeSelected"
-                  item-value="id"
-                  label="Haber básico"
-                  v-validate="'required'"
-                  v-on:change="onSelectCharge"
-                  name="Haber básico"
-                  :error-messages="errors.collect('Haber básico')"
-                  :disabled="!selectedItem.edit"
-                ></v-autocomplete> -->
+                <p>Nombre: {{ table.employee.last_name }} {{ table.employee.mothers_last_name }} {{ table.employee.first_name }} {{ table.employee.second_name }}</p>
+
                 <v-autocomplete
                   clearable
                   v-model="selectedItem.position_group_id"
                   :items="positionGroups"
                   item-text="name"
                   item-value="id"
-                  label="Unidad"
+                  label="Area organizacional que pertenece"
                   v-validate="'required'"
-                  name="Unidad"
-                  :error-messages="errors.collect('Unidad')"
-                  :disabled="!selectedItem.edit"
+                  name="Area organizacional"
+                  :error-messages="errors.collect('Area organizacional')"
+                  :readonly="selectedItem.edit === true && !selectedItem.new"
                 ></v-autocomplete>
                 <v-layout wrap>
                   <v-flex xs12 sm6 md6>
@@ -73,7 +49,7 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="!selectedItem.edit"
+                      :disabled="selectedItem.edit === true && !selectedItem.new"
                     >
                       <v-text-field
                         :clearable="selectedItem.edit"
@@ -138,57 +114,20 @@
                   autocomplete='cc-number'
                   clearable
                 ></v-text-field>
+                <p>Modalidad que pertenece</p>
                 <v-radio-group
-      v-model="selectedItem.assistant_position"
-      row
-      label="Seleccione modalidad"
-    >
-      <v-radio
-        label="Pasantía"
-        value="Pasantía"
-      ></v-radio>
-
-      <v-radio
-        label="Trabajo Dirigido"
-        value="Trabajo Dirigido"
-      ></v-radio>
-    </v-radio-group>
-                <!-- <v-layout wrap>
-                  <v-flex xs12 sm6 md6>
-                    <v-text-field
-                      v-model="selectedItem.rrhh_cite"
-                      label="Cert. de Equivalencia RRHH"
-                      clearable
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md6>
-                    <v-menu
-                      :close-on-content-click="false"
-                      v-model="datePicker.rrhh.display"
-                      offset-y
-                      full-width
-                      max-width="290px"
-                      min-width="290px"
-                      v-show="selectedItem.rrhh_cite"
-                    >
-                      <v-text-field
-                        clearable
-                        slot="activator"
-                        v-model="datePicker.rrhh.formattedDate"
-                        label="Fecha de cite"
-                        prepend-icon="event"
-                        readonly
-                      ></v-text-field>
-                      <v-date-picker
-                        locale="es-bo"
-                        v-model="selectedItem.rrhh_cite_date"
-                        no-title
-                        @input="datePicker.rrhh.display = false"
-                        first-day-of-week="1"
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-flex>
-                </v-layout> -->
+                  v-model="selectedItem.assistant_position"                  
+                >
+                  <v-radio
+                    label="Pasantía"
+                    value="Pasantía"
+                  ></v-radio>
+                  <v-radio
+                    label="Trabajo Dirigido"
+                    value="Trabajo Dirigido"
+                  ></v-radio>
+                </v-radio-group>
+                
                 <v-textarea
                   v-model="selectedItem.description"
                   label="Descripción/Observaciones"
@@ -202,7 +141,7 @@
                 >
                   <template v-for="schedule in jobSchedules">
                     <v-radio
-                      :label="`Horario (${schedule.start_hour}:${schedule.start_minutes}0 - ${schedule.end_hour}:${schedule.end_minutes}0)`"
+                      :label="`Horario (${schedule.start_hour}:${formatMinutes(schedule.start_minutes)} - ${schedule.end_hour}:${formatMinutes(schedule.end_minutes)})`"
                       :key="schedule.id"
                       :value="schedule.id"
                       color="primary"
@@ -254,43 +193,7 @@
                 </v-form>
               </v-card>
             </v-flex>
-            <v-flex xs12 sm6 md6>
-              <v-card>
-                <v-card-text>
-                  <p><strong>Empleado: </strong> {{ table.employee.last_name }} {{ table.employee.mothers_last_name }} {{ table.employee.first_name }} {{ table.employee.second_name }}</p>
-                  <!-- <p>
-                    <strong>Puesto: </strong> {{ table.position.name }}
-                    <v-chip v-if="!table.position.free" small color="red" text-color="white">Ocupado</v-chip>
-                  </p>
-                  <p><strong>Haber Basico: </strong> {{ table.charge.base_wage }} Bs. </p>
-                  <table class="v-datatable v-table">
-                    <thead>
-                      <tr>
-                        <th>Mes</th>
-                        <th>Dias</th>
-                        <th>Salario</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="item in table.months"
-                        :key="item.name"
-                      >
-                        <td> {{ (item.name).toUpperCase() }} </td>
-                        <td class="text-xs-center">{{ item.count }}</td>
-                        <td class="text-xs-right">{{ item.salary }} Bs.</td>
-                      </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                          <td colspan="2"><span>Total </span></td>
-                          <td class="text-xs-right font-weight-bold">{{ table.months.reduce((total, o) => parseFloat(o.salary) + total,0).toFixed(2) }} Bs.</td>
-                        </tr>
-                    </tfoot>
-                  </table> -->
-                </v-card-text>
-              </v-card>
-            </v-flex>
+          
           </v-layout>
         </v-container>
       </v-card-text>
@@ -325,10 +228,6 @@ export default {
           formattedDate: null,
           display: false
         },
-        rrhh: {
-          formattedDate: null,
-          display: false
-        }
       },
       selectedItem: {
         edit: true,
@@ -338,7 +237,6 @@ export default {
         retirement_reason_id: null,
         consultant_position: null,
         register_number: null,
-        //consultant_position_id: null,
         new: true,
         employee: {
           last_name: '',
@@ -347,11 +245,9 @@ export default {
           second_name: ''
         },
       },
-      formTitle: 'Nuevo contrato de consultoría',
+      formTitle: 'Nueva modalidad académica',
       employees: [],
-      //positions: [],
       positionGroups: [],
-      // charges: [],
       jobSchedules: [],
       retirementReasons: [],
       table: {
@@ -361,15 +257,6 @@ export default {
           first_name: '',
           second_name: ''
         },
-        // position: {
-        //   name: '',
-        //   free: true
-        // },
-        // charge: {
-        //   name: '',
-        //   base_wage: ''
-        // },
-        // months: []
       },
       position_id: null,
       oldDate: {
@@ -380,8 +267,6 @@ export default {
   },
   created() {
     this.getEmployees()
-    //this.getPositions()
-    //this.getCharges()
     this.getJobSchedules()
     this.getPositionGroups()
     this.getRetirementReasons()
@@ -391,13 +276,11 @@ export default {
       console.log(item)
       if (item) {
         this.selectedItem = item
-        this.formTitle = item.edit ? 'Editar registro pasante' : 'Recontratar pasante'
+        this.formTitle = item.edit ? 'Editar modalidad académica' : 'Prorrogar modalidad academica'
         this.dialog = true
         this.onSelectEmployee(this.selectedItem.employee.id)
-        //this.onSelectPosition(this.selectedItem.consultant_position)
         this.getPositionGroups()
         this.selectedItem.job_schedule_id = item.job_schedule_id
-        //this.position_id = item.consultant_position_id
 
         if (!item.edit) {
           this.oldDate = {
@@ -406,8 +289,6 @@ export default {
           }
           this.selectedItem.start_date = this.onlyWeekdays(this.$moment(item.retirement_date ? item.retirement_date : item.end_date)).startOf('day').toISOString().split('T')[0]
           this.selectedItem.end_date = null
-          // this.selectedItem.rrhh_cite = null
-          // this.selectedItem.rrhh_cite_date = null
           this.selectedItem.register_number = null
           this.position_id = null
         }
@@ -421,20 +302,15 @@ export default {
         this.datePicker.start.formattedDate = date.format('L')
         this.datePicker.end.min = date.add(1, 'days').toISOString().split('T')[0]
         this.selectedItem.end_date = date.endOf('month').startOf('day').toISOString().split('T')[0]
-        //this.monthSalaryCalc()
       }
     },
     'selectedItem.end_date': function(value) {
       if (value) {
         this.datePicker.end.formattedDate = this.$moment(value).format('L')
-        //this.monthSalaryCalc()
       }
     },
     'selectedItem.retirement_date': function(value) {
       if (value) this.datePicker.retirement.formattedDate = this.$moment(value).format('L')
-    },
-    'selectedItem.rrhh_cite_date': function(value) {
-      if (value) this.datePicker.rrhh.formattedDate = this.$moment(value).format('L')
     },
     'selectedItem.retirement_reason_id': function(value) {
       if (!value) {
@@ -485,11 +361,8 @@ export default {
         position_group_id: null,
         retirement_date: null,
         retirement_reason_id: null,
-        //position: null,
-        //consultant_position_id: null,
         register_number: null,
         description: null,
-        //job_schedule_ids: [],
         new: true
       }
       this.table = {
@@ -499,15 +372,6 @@ export default {
           first_name: '',
           second_name: ''
         },
-        // position: {
-        //   name: '',
-        //   free: true
-        // },
-        // charge: {
-        //   name: '',
-        //   base_wage: ''
-        // },
-        // months: []
       }
     },
     formatDate (date) {
@@ -515,7 +379,6 @@ export default {
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
-    //chargeSelected: charge => `${charge.base_wage} Bs. - ${charge.name}`,
     closeDialog() {
       this.dialog = false
       this.$validator.reset()
@@ -542,14 +405,6 @@ export default {
         }
       }
     },
-    // async getPositions() {
-    //   try {
-    //     let res = await axios.get("/consultant_position")
-    //     this.positions = res.data
-    //   } catch (e) {
-    //     console.log(e)
-    //   }
-    // },
     async getJobSchedules() {
       try {
         let res = await axios.get("/job_schedule")
@@ -558,39 +413,7 @@ export default {
         console.log(e)
       }
     },
-    // async onSelectPosition(position) {
-    //   try {
-    //     if (position) {
-    //       //let search = this.positions.find(o => o.id == position.id)
-    //       if (search) {
-    //         this.selectedItem.consultant_position_id = search.id
-    //         this.table.position = search
-    //         this.selectedItem.charge_id = search.charge_id
-    //         this.selectedItem.position_group_id = search.position_group_id
-    //         this.onSelectCharge(search.charge.id)
-    //         let res = await axios.get(`/assistant_contract/position_free/${position.id}`)
-    //         if (this.position_id == position.id) {
-    //           this.table.position.free = true
-    //         } else {
-    //           this.table.position.free = res.data.free
-    //         }
-    //       } else {
-    //         this.table.position.free = true
-    //       }
-    //       this.getPositions()
-    //     }
-    //   } catch (e) {
-    //     console.log(e)
-    //   }
-    // },
-    // async getCharges() {
-    //   try {
-    //     let res = await axios.get("/charge")
-    //     this.charges = res.data
-    //   } catch (e) {
-    //     console.log(e)
-    //   }
-    // },
+    
     async getPositionGroups() {
       try {
         let res = await axios.get("/position_group")
@@ -607,44 +430,12 @@ export default {
         console.log(e)
       }
     },
-    // onSelectCharge(id) {
-    //   if (id) {
-    //     this.table.charge = this.charges.find(o => o.id == id)
-    //     this.monthSalaryCalc()
-    //   } else {
-    //     this.table.charge = {
-    //       name: '',
-    //       base_wage: ''
-    //     }
-    //   }
-    // },
+
     async saveContract() {
       try {
         let valid = await this.$validator.validateAll();
         if (valid) {
-          // if (Number.isInteger(this.selectedItem.consultant_position.id)) {
-          //   let position = this.positions.find(o => o.id == this.selectedItem.consultant_position_id)
-          //   if (position.charge.id != this.selectedItem.charge_id || position.position_group.id != this.selectedItem.position_group_id) {
-          //     this.selectedItem.name = position.name
-          //     let res = await axios.post(`/consultant_position`, this.selectedItem)
-          //     this.selectedItem.charge_id = res.data.charge_id
-          //     this.selectedItem.position_group_id = res.data.position_group_id
-          //     this.selectedItem.consultant_position_id = res.data.id
-          //     this.toastr.success('Cargo creado exitosamente')
-          //   }
-          //   if (!this.selectedItem.new) {
-          //   let res = await axios.patch(`/assistant_contract/${this.selectedItem.id}`, this.selectedItem)
-          //   this.toastr.success('Contrato actualizado exitosamente')
-          //   }
-          // } else {
-          //   let res = await axios.post(`/consultant_position`, {
-          //     name: this.selectedItem.consultant_position,
-          //     charge_id: this.selectedItem.charge_id,
-          //     position_group_id: this.selectedItem.position_group_id
-          //   })
-          //   this.selectedItem.consultant_position_id = res.data.id
-          //   this.toastr.success('Cargo creado exitosamente')
-          // }
+         
           if (this.selectedItem.new) {
             await axios.post(`/assistant_contract`, this.selectedItem)
           } else if (!this.selectedItem.edit && !this.selectedItem.new) {
@@ -669,45 +460,10 @@ export default {
         console.log(e)
       }
     },
-    // monthSalaryCalc() {
-    //   if (this.selectedItem.start_date && this.selectedItem.end_date && this.table.charge.base_wage) {
-    //     this.table.months = []
-
-    //     let startDate = this.$moment(this.selectedItem.start_date)
-    //     let endDate = this.$moment(this.selectedItem.end_date)
-    //     let diary = this.table.charge.base_wage / 30
-
-    //     let count = 30 - startDate.format('D') + 1
-    //     this.table.months.push({
-    //       name: startDate.format('MMMM'),
-    //       count: count,
-    //       salary: (diary * count).toFixed(2)
-    //     })
-
-    //     while (!endDate.isSame(startDate, 'month', 'year')) {
-    //       if (!endDate.isSame(startDate.add(1, 'month'), 'month', 'year')) {
-    //         this.table.months.push({
-    //           name: startDate.format('MMMM'),
-    //           count: 30,
-    //           salary: Number(this.table.charge.base_wage).toFixed(2)
-    //         })
-    //       } else {
-    //         count = Number(endDate.format('D'))
-
-    //         let lastDayOfMonth = Number(endDate.endOf('month').format('D'))
-    //         if (lastDayOfMonth != 30 && count == lastDayOfMonth) {
-    //           count = 30
-    //         }
-
-    //         this.table.months.push({
-    //           name: endDate.format('MMMM'),
-    //           count: count,
-    //           salary: (diary * count).toFixed(2)
-    //         })
-    //       }
-    //     }
-    //   }
-    // }
+    formatMinutes(minutes) {
+      return minutes === 0 ? '00' : minutes;
+    }
+    
   }
 }
 </script>
