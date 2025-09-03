@@ -192,6 +192,7 @@ class VacationQueueController extends Controller
                       ->orderBy('id', 'asc')
                       ->first()->days ?? 15;
               }
+            VacationQueue::withoutEvents(function () use ($today, $period_end, $days, $employee) {
               VacationQueue::create([
                   'start_date'  => $today->copy()->subYear()->subDay(),
                   'end_date'    => $period_end,
@@ -200,8 +201,7 @@ class VacationQueueController extends Controller
                   'max_date'    => $today->copy()->addYears(2)->toDateString(),
                   'employee_id' => $employee->id,
               ]);
-          }
-
+          });
           DB::commit();
       } catch (\Exception $e) {
           DB::rollBack();
