@@ -49,16 +49,10 @@
             <!--<span class="title-text">CLÁUSULA TERCERA (PLAZO).</span> El plazo del presente contrato será a partir del {{ Carbon::parse($contract->start_date)->day }} de {{ Carbon::parse($contract->start_date)->formatLocalized('%B') }} del {{ Carbon::parse($contract->start_date)->year }} hasta el {{ Carbon::parse($contract->end_date)->day }} de {{ Carbon::parse($contract->end_date)->formatLocalized('%B') }} del {{ Carbon::parse($contract->end_date)->year }}, por tratarse de un contrato eventual, queda sobreentendido que el mismo quedará fenecido en la fecha señalada en la presente cláusula, salvando la previsión contenida en la Cláusula Décima del presente contrato.-->
             <span class="title-text">CLÁUSULA TERCERA (PLAZO).</span> El plazo del presente contrato será a partir del {{ Carbon::parse($contract->start_date)->isoFormat('LL') }} hasta el La Paz, {{ Carbon::parse($contract->end_date)->isoFormat('LL') }}, por tratarse de un contrato eventual, queda sobreentendido que el mismo quedará fenecido en la fecha señalada en la presente cláusula, salvando la previsión contenida en la Cláusula Décima del presente contrato.
         </p>
-        @php($schedule = $contract->job_schedules[0])
+        @php($schedule = $contract->job_schedules)
         @php($turno1 = str_pad($schedule->start_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->start_minutes,2,0,STR_PAD_LEFT).' a '.str_pad($schedule->end_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->end_minutes,2,0,STR_PAD_LEFT))
-        @if(isset($contract->job_schedules[1]))
-        @php($schedule2 = $contract->job_schedules[1])
-        @php($turno2 = ' y de '.str_pad($schedule2->start_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule2->start_minutes,2,0,STR_PAD_LEFT).' a '.str_pad($schedule2->end_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule2->end_minutes,2,0,STR_PAD_LEFT))
-        @else
-        @php($turno2 = '')
-        @endif
         <p>
-            <span class="title-text">CLÁUSULA CUARTA (JORNADA LABORAL). -</span> El horario de cumplimiento de funciones por parte del <span class="title-text">CONTRATADO</span> es de {{ $turno1 }}{{ $turno2 }}; asimismo la Entidad en caso de necesidad, establecerá horarios específicos diferentes para fines institucionales.
+            <span class="title-text">CLÁUSULA CUARTA (JORNADA LABORAL). -</span> El horario de cumplimiento de funciones por parte del <span class="title-text">CONTRATADO</span> es de {{ $turno1 }}; asimismo la Entidad en caso de necesidad, establecerá horarios específicos diferentes para fines institucionales.
         </p>
         <p>
             <span class="title-text">CLÁUSULA QUINTA (VACACIÓN). -</span> Por tratarse de un contrato eventual, el <span class="title-text">CONTRATADO</span> no tiene derecho a vacación.

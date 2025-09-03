@@ -56,6 +56,12 @@
     ]
   },
   {
+    "href": "assistantIndex",
+    "title": "Practicantes",
+    "icon": "school",
+    "params": {}
+  },
+  {
     "href": "attendanceIndex",
     "title": "Asistencia",
     "icon": "fingerprint",

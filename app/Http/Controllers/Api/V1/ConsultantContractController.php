@@ -30,9 +30,6 @@ class ConsultantContractController extends Controller
   public function store(Request $request)
   {
     $contract = ConsultantContract::create($request->all());
-    foreach ($request->schedules as $schedule) {
-      $contract->job_schedules()->attach($schedule);
-    }
     return $contract;
   }
 
@@ -59,12 +56,6 @@ class ConsultantContractController extends Controller
     $contract = ConsultantContract::findOrFail($id);
     $contract->fill($request->all());
     $contract->save();
-    if ($request->schedules) {
-      $contract->job_schedules()->detach();
-      foreach ($request->schedules as $schedule) {
-        $contract->job_schedules()->attach($schedule);
-      }
-    }
     return $contract;
   }
 

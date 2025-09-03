@@ -31,7 +31,7 @@ class ConsultantContract extends Model
 
   public function job_schedules()
   {
-    return $this->belongsToMany(JobSchedule::class, 'contract_job_schedule');
+    return $this->belongsTo(JobSchedule::class, 'job_schedule_id');
   }
 
   public function payrolls()

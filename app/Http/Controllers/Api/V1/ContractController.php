@@ -35,10 +35,6 @@ class ContractController extends Controller
   {
     if ($this->contract_between_dates($request['employee_id'], $request['start_date'], $request['end_date']) == 0) {
       $contract = Contract::create($request->all());
-      $contract->job_schedules()->attach($request->schedule['id']);
-      if ($request->schedule['id'] == 1) {
-        $contract->job_schedules()->attach(2);
-      }
       return $contract;
     }
     abort(403);
@@ -65,19 +61,9 @@ class ContractController extends Controller
   public function update(Request $request, $id)
   {
     $contract = Contract::findOrFail($id);
-    // if ($this->contract_between_dates($contract->employee_id, $request['start_date'], $request['end_date'], $id) == 0) {
     $contract->fill($request->all());
     $contract->save();
-    if ($request->schedule['id']) {
-      $contract->job_schedules()->detach();
-      $contract->job_schedules()->attach($request->schedule['id']);
-      if ($request->schedule['id'] == 1) {
-        $contract->job_schedules()->attach(2);
-      }
-    }
     return $contract;
-    // }
-    // abort(403);
   }
 
   /**

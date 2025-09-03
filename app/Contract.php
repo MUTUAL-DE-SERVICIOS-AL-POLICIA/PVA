@@ -12,7 +12,7 @@ class Contract extends Model
 	protected $dates = ['deleted_at'];
 	public $timestamps = true;
 	public $guarded = ['id'];
-	protected $fillable = ['insurance_company_id', 'employee_id', 'position_id', 'contract_type_id', 'contract_mode_id', 'start_date', 'end_date', 'retirement_date', 'retirement_reason_id', 'active', 'rrhh_cite', 'rrhh_cite_date', 'performance_cite', 'insurance_number', 'contract_number', 'hiring_reference_number', 'description'];
+	protected $fillable = ['insurance_company_id', 'employee_id', 'position_id', 'contract_type_id', 'contract_mode_id', 'start_date', 'end_date', 'retirement_date', 'retirement_reason_id', 'active', 'rrhh_cite', 'rrhh_cite_date', 'performance_cite', 'insurance_number', 'contract_number', 'hiring_reference_number', 'description', 'job_schedule_id'];
 
 	public function employee()
 	{
@@ -41,7 +41,7 @@ class Contract extends Model
 
 	public function job_schedules()
 	{
-		return $this->belongsToMany(JobSchedule::class, 'contract_job_schedule');
+		return $this->belongsTo(JobSchedule::class, 'job_schedule_id');
     }
 
     public function bonuses()
