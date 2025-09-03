@@ -141,6 +141,7 @@ class VacationQueueController extends Controller
       DB::beginTransaction();
       try {
           $today = Carbon::today();
+
           $contracts = Contract::with(['employee.get_cas'])
               ->where('active', true)
               ->get();
@@ -150,16 +151,20 @@ class VacationQueueController extends Controller
               if (!$employee || empty($employee->addmission_date)) {
                   continue;
               }
+
               $admission = Carbon::parse($employee->addmission_date);
               $years_of_service = $admission->diffInYears($today);
               if ($years_of_service < 1) {
                   continue;
               }
+
               $latest_anniversary = $admission->copy()->addYears($years_of_service);
               if (!$today->isSameDay($latest_anniversary->copy()->addDay())) {
                   continue;
               }
+
               $period_end = $today->copy()->subDay();
+
               $already_queued = VacationQueue::where('employee_id', $employee->id)
                   ->whereDate('end_date', $period_end)
                   ->exists();
@@ -167,6 +172,7 @@ class VacationQueueController extends Controller
               if ($already_queued) {
                   continue;
               }
+
               $cas = $employee->get_cas
                   ->where('active', true)
                   ->first();
@@ -192,16 +198,20 @@ class VacationQueueController extends Controller
                       ->orderBy('id', 'asc')
                       ->first()->days ?? 15;
               }
-            VacationQueue::withoutEvents(function () use ($today, $period_end, $days, $employee) {
-              VacationQueue::create([
-                  'start_date'  => $today->copy()->subYear()->subDay(),
-                  'end_date'    => $period_end,
-                  'days'        => $days,
-                  'rest_days'   => $days,
-                  'max_date'    => $today->copy()->addYears(2)->toDateString(),
-                  'employee_id' => $employee->id,
-              ]);
-          });
+
+              // Solo silencia eventos para esta creación (Laravel 7)
+              VacationQueue::withoutEvents(function () use ($today, $period_end, $days, $employee) {
+                  VacationQueue::create([
+                      'start_date'  => $today->copy()->subYear()->subDay(),
+                      'end_date'    => $period_end,
+                      'days'        => $days,
+                      'rest_days'   => $days,
+                      'max_date'    => $today->copy()->addYears(2)->toDateString(),
+                      'employee_id' => $employee->id,
+                  ]);
+              });
+          } // <- cierre del foreach
+
           DB::commit();
       } catch (\Exception $e) {
           DB::rollBack();
