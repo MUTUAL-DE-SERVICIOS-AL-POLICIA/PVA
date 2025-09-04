@@ -174,27 +174,17 @@
                   rows="2"
                 ></v-textarea>
                 <v-radio-group
-                  v-model="selectedItem.schedules"
+                  v-model="selectedItem.job_schedule_id"
                   v-validate="'required'"
                   name="Horario"
                   :error-messages="errors.collect('Horario')"
                 >
                   <template v-for="schedule in jobSchedules">
                     <v-radio
-                      label="Horario  (08:00-12:00 | 14:30-18:30)"
-                      :key="schedule.id"
-                      :value="[1,2]"
-                      color="primary"
-                      v-if="schedule.id==1"
-                    ></v-radio>
-                  </template>
-                  <template v-for="schedule in jobSchedules">
-                    <v-radio
                       :label="`Horario (${schedule.start_hour}:${schedule.start_minutes}0 - ${schedule.end_hour}:${schedule.end_minutes}0)`"
                       :key="schedule.id"
-                      :value="[schedule.id]"
+                      :value="schedule.id"
                       color="primary"
-                      v-if="schedule.id!=1 && schedule.id!=2"
                     ></v-radio>
                   </template>
                 </v-radio-group>
@@ -376,7 +366,6 @@ export default {
         this.dialog = true
         this.onSelectEmployee(this.selectedItem.employee.id)
         this.onSelectPosition(this.selectedItem.consultant_position)
-        this.selectedItem.schedules = item.job_schedules.map(o => o.id)
         this.position_id = item.consultant_position_id
 
         if (!item.edit) {
