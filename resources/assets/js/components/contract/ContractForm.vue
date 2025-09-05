@@ -289,28 +289,18 @@
                     rows="2"
                   ></v-textarea>
                   <v-radio-group
-                    v-model="selectedSchedule.id"
+                    v-model="selectedItem.job_schedule_id"
                     v-validate="'required'"
                     name="Horario"
                     :error-messages="errors.collect('Horario')"
                     v-if="$store.getters.role != 'financiera'"
                   >
-                    <template v-for="n in jobSchedules">
+                    <template v-for="schedule in jobSchedules">
                       <v-radio
-                        label="Horario  (08:00-12:00 | 14:30-18:30)"
-                        :key="n.id"
-                        :value="n.id"
+                        :label="`Horario (${schedule.start_hour}:${schedule.start_minutes}0 - ${schedule.end_hour}:${schedule.end_minutes}0)`"
+                        :key="schedule.id"
+                        :value="schedule.id"
                         color="primary"
-                        v-if="n.id==1"
-                      ></v-radio>
-                    </template>
-                    <template v-for="n in jobSchedules">
-                      <v-radio
-                        :label="`Horario (${n.start_hour}:${n.start_minutes}0 - ${n.end_hour}:${n.end_minutes}0)`"
-                        :key="n.id"
-                        :value="n.id"
-                        color="primary"
-                        v-if="n.id!=1 && n.id!=2"
                       ></v-radio>
                     </template>
                   </v-radio-group>
@@ -475,7 +465,7 @@ export default {
         rrhh_cite_date: "",
       },
       vacation_date: "",
-      selectedSchedule: {},
+      //selectedSchedule: {},
       juridica: false,
       minDate: this.$moment().format('YYYY')+'-01-01',
       showMore: true,
@@ -606,7 +596,7 @@ export default {
       this.date3 = null;
       this.date4 = null;
       this.datev = null;
-      this.selectedSchedule = {};
+      //this.selectedSchedule = {};
       this.tableEmployee = "";
       this.tablePosition = "";
       this.tablePositionFree = 0;
@@ -631,7 +621,7 @@ export default {
             }
             let res = await axios.patch(
               "/contract/" + this.selectedItem.id,
-              $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+              $.extend({}, this.selectedItem)
             );
             this.saveEmployee(this.selectedItem.employee_id,this.vacation_date)
             this.close();
@@ -639,7 +629,7 @@ export default {
           } else {
             let res = await axios.post(
               "/contract",
-              $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+              $.extend({}, this.selectedItem)
             );
             this.saveEmployee(this.selectedItem.employee_id,this.vacation_date)
             this.close();
@@ -656,7 +646,7 @@ export default {
         if (valid) {
           let newres = await axios.post(
             "/contract",
-            $.extend({}, this.selectedItem, { schedule: this.selectedSchedule })
+            $.extend({}, this.selectedItem)
           );
           let editres = await axios.patch(
             "/contract/" + this.selectedItem.id,
@@ -824,9 +814,6 @@ export default {
       if (this.selectedItem.retirement_date) this.deactivateContract = true
       this.onSelectEmployee(item.employee_id);
       this.onSelectPosition(item.position_id);
-      if (item.job_schedules[0]) {
-        this.selectedSchedule = item.job_schedules[0];
-      }
     });
     this.initialize();
   }

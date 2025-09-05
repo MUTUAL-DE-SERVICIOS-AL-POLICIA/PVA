@@ -280,7 +280,6 @@ export default {
         this.dialog = true
         this.onSelectEmployee(this.selectedItem.employee.id)
         this.getPositionGroups()
-        this.selectedItem.job_schedule_id = item.job_schedule_id
 
         if (!item.edit) {
           this.oldDate = {

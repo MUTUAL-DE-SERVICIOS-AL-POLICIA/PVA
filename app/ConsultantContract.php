@@ -12,7 +12,7 @@ class ConsultantContract extends Model
   protected $dates = ['deleted_at'];
   public $timestamps = true;
   public $guarded = ['id'];
-  protected $fillable = ['employee_id', 'consultant_position_id', 'start_date', 'end_date', 'retirement_date', 'retirement_reason_id', 'active', 'rrhh_cite', 'rrhh_cite_date', 'contract_number', 'description'];
+  protected $fillable = ['employee_id', 'consultant_position_id', 'start_date', 'end_date', 'retirement_date', 'retirement_reason_id', 'active', 'rrhh_cite', 'rrhh_cite_date', 'contract_number', 'description', 'job_schedule_id'];
 
   public function employee()
   {
