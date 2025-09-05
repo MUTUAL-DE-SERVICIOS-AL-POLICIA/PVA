@@ -41,6 +41,7 @@
             <td>{{ item.rest_days }}</td>
             <td>{{ formatDateDisplay(item.max_date) }}</td>
             <td>{{ item.created_at }}</td>
+            <td>{{ item.is_valid ? 'Disponible' : 'Vencido' }}</td>
             <td>
               <v-icon 
                 small 
@@ -208,6 +209,15 @@
                 </v-menu>
               </v-flex>
             </v-layout>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-checkbox
+                  v-model="selectedItem.is_valid"
+                  label="¿Vigente?"
+                  class="ml-3"
+                ></v-checkbox>
+              </v-flex>
+            </v-layout>
           </v-form>
         </v-container>
       </v-card-text>
@@ -266,6 +276,7 @@ export default {
         { text: "Días restantes", value: "rest_days" },
         { text: "Fecha de vencimiento", value: "max_date" },
         { text: "Fecha de registro", value: "created_at" },
+        { text: "Estado", value: "is_valid" },
         { text: "Acciones", value: "actions" }
       ],
       dialogDelete: false,
@@ -347,7 +358,8 @@ export default {
           days: this.selectedItem.days,
           rest_days: this.selectedItem.rest_days,
           max_date: this.selectedItem.max_date,
-          employee_id: this.employee.id
+          employee_id: this.employee.id,
+          is_valid: this.selectedItem.is_valid || false
         });
         this.toastr.success("Registro creado correctamente");
         this.getVacationQueueEmployee();

@@ -11,7 +11,7 @@ class VacationQueue extends Model
     protected $dates = ['deleted_at'];
     public $timestamps = true;
     public $guarded = ['id'];
-    protected $fillable = ['start_date', 'end_date', 'days', 'rest_days', 'max_date', 'employee_id', 'comment'];
+    protected $fillable = ['start_date', 'end_date', 'days', 'rest_days', 'max_date', 'employee_id', 'comment', 'is_valid'];
 
     public function employee()
     {
