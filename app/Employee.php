@@ -68,7 +68,7 @@ class Employee extends Model
 
   public function total_contracts()
   {
-    return $this->contracts->count() + $this->consultant_contracts->count();
+    return $this->contracts->count() + $this->consultant_contracts->count() + $this->assistant_contracts->count();
   }
 
   public function consultant()
