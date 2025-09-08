@@ -68,7 +68,7 @@ class Employee extends Model
 
   public function total_contracts()
   {
-    return $this->contracts->count() + $this->consultant_contracts->count();
+    return $this->contracts->count() + $this->consultant_contracts->count() + $this->assistant_contracts->count();
   }
 
   public function consultant()
@@ -432,5 +432,10 @@ class Employee extends Model
   public function admission_date_min()
   {
     return Carbon::parse(Employee::min('addmission_date'));
+  }
+
+  public function assistant_contracts()
+  {
+    return $this->hasMany(AssistantContract::class);
   }
 }

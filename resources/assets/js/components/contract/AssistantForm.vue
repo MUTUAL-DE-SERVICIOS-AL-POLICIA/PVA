@@ -2,7 +2,7 @@
   <v-dialog persistent v-model="dialog" max-width="900px" @keydown.esc="closeDialog">
     <v-tooltip slot="activator" top v-if="$store.getters.permissions.includes('create-consultant')">
       <v-icon large slot="activator" dark color="primary">add_circle</v-icon>
-      <span>Nuevo Contrato</span>
+      <span>Nuevo Registro</span>
     </v-tooltip>
     <v-card>
       <v-toolbar dark color="secondary">
@@ -11,7 +11,7 @@
       <v-card-text>
         <v-container grid-list-md layout>
           <v-layout wrap>
-            <v-flex xs12 sm6 md6>
+            <v-flex xs12 sm12 md12>
               <v-form ref="form">
                 <v-autocomplete
                   clearable
@@ -19,50 +19,26 @@
                   :items="employees"
                   item-text="identity_card"
                   item-value="id"
-                  label="Empleado"
+                  label="Persona"
                   v-validate="'required'"
                   v-on:change="onSelectEmployee"
-                  name="Empleado"
-                  :error-messages="errors.collect('Empleado')"
-                  :disabled="!selectedItem.edit"
+                  name="Persona"
+                  :error-messages="errors.collect('Persona')"
+                  :readonly="selectedItem.edit === true && !selectedItem.new"
                 ></v-autocomplete>
-                <v-combobox
-                  clearable
-                  v-model="selectedItem.consultant_position"
-                  :items="positions"
-                  item-text="name"
-                  item-value="id"
-                  label="Puesto"
-                  v-on:change="onSelectPosition"
-                  v-validate="'required'"
-                  name="Puesto"
-                  :error-messages="errors.collect('Puesto')"
-                  :disabled="!selectedItem.edit"
-                ></v-combobox>
-                <v-autocomplete
-                  clearable
-                  v-model="selectedItem.charge_id"
-                  :items="charges"
-                  :item-text="chargeSelected"
-                  item-value="id"
-                  label="Haber básico"
-                  v-validate="'required'"
-                  v-on:change="onSelectCharge"
-                  name="Haber básico"
-                  :error-messages="errors.collect('Haber básico')"
-                  :disabled="!selectedItem.edit"
-                ></v-autocomplete>
+                <p>Nombre: {{ table.employee.last_name }} {{ table.employee.mothers_last_name }} {{ table.employee.first_name }} {{ table.employee.second_name }}</p>
+
                 <v-autocomplete
                   clearable
                   v-model="selectedItem.position_group_id"
                   :items="positionGroups"
                   item-text="name"
                   item-value="id"
-                  label="Unidad"
+                  label="Area organizacional que pertenece"
                   v-validate="'required'"
-                  name="Unidad"
-                  :error-messages="errors.collect('Unidad')"
-                  :disabled="!selectedItem.edit"
+                  name="Area organizacional"
+                  :error-messages="errors.collect('Area organizacional')"
+                  :readonly="selectedItem.edit === true && !selectedItem.new"
                 ></v-autocomplete>
                 <v-layout wrap>
                   <v-flex xs12 sm6 md6>
@@ -73,7 +49,7 @@
                       full-width
                       max-width="290px"
                       min-width="290px"
-                      :disabled="!selectedItem.edit"
+                      :disabled="selectedItem.edit === true && !selectedItem.new"
                     >
                       <v-text-field
                         :clearable="selectedItem.edit"
@@ -127,47 +103,31 @@
                   </v-flex>
                 </v-layout>
                 <v-text-field
-                  v-model="selectedItem.contract_number"
-                  label="Número de contrato"
+                  v-model="selectedItem.register_number"
+                  label="Número de registro"
                   autocomplete='cc-number'
                   clearable
                 ></v-text-field>
-                <v-layout wrap>
-                  <v-flex xs12 sm6 md6>
-                    <v-text-field
-                      v-model="selectedItem.rrhh_cite"
-                      label="Cert. de Equivalencia RRHH"
-                      clearable
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md6>
-                    <v-menu
-                      :close-on-content-click="false"
-                      v-model="datePicker.rrhh.display"
-                      offset-y
-                      full-width
-                      max-width="290px"
-                      min-width="290px"
-                      v-show="selectedItem.rrhh_cite"
-                    >
-                      <v-text-field
-                        clearable
-                        slot="activator"
-                        v-model="datePicker.rrhh.formattedDate"
-                        label="Fecha de cite"
-                        prepend-icon="event"
-                        readonly
-                      ></v-text-field>
-                      <v-date-picker
-                        locale="es-bo"
-                        v-model="selectedItem.rrhh_cite_date"
-                        no-title
-                        @input="datePicker.rrhh.display = false"
-                        first-day-of-week="1"
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-flex>
-                </v-layout>
+                <v-text-field
+                  v-model="selectedItem.university"
+                  label="Universidad"
+                  autocomplete='cc-number'
+                  clearable
+                ></v-text-field>
+                <p>Modalidad que pertenece</p>
+                <v-radio-group
+                  v-model="selectedItem.assistant_position"                  
+                >
+                  <v-radio
+                    label="Pasantía"
+                    value="Pasantía"
+                  ></v-radio>
+                  <v-radio
+                    label="Trabajo Dirigido"
+                    value="Trabajo Dirigido"
+                  ></v-radio>
+                </v-radio-group>
+                
                 <v-textarea
                   v-model="selectedItem.description"
                   label="Descripción/Observaciones"
@@ -181,7 +141,7 @@
                 >
                   <template v-for="schedule in jobSchedules">
                     <v-radio
-                      :label="`Horario (${schedule.start_hour}:${schedule.start_minutes}0 - ${schedule.end_hour}:${schedule.end_minutes}0)`"
+                      :label="`Horario (${schedule.start_hour}:${formatMinutes(schedule.start_minutes)} - ${schedule.end_hour}:${formatMinutes(schedule.end_minutes)})`"
                       :key="schedule.id"
                       :value="schedule.id"
                       color="primary"
@@ -233,43 +193,7 @@
                 </v-form>
               </v-card>
             </v-flex>
-            <v-flex xs12 sm6 md6>
-              <v-card>
-                <v-card-text>
-                  <p><strong>Empleado: </strong> {{ table.employee.last_name }} {{ table.employee.mothers_last_name }} {{ table.employee.first_name }} {{ table.employee.second_name }}</p>
-                  <p>
-                    <strong>Puesto: </strong> {{ table.position.name }}
-                    <v-chip v-if="!table.position.free" small color="red" text-color="white">Ocupado</v-chip>
-                  </p>
-                  <p><strong>Haber Basico: </strong> {{ table.charge.base_wage }} Bs. </p>
-                  <table class="v-datatable v-table">
-                    <thead>
-                      <tr>
-                        <th>Mes</th>
-                        <th>Dias</th>
-                        <th>Salario</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="item in table.months"
-                        :key="item.name"
-                      >
-                        <td> {{ (item.name).toUpperCase() }} </td>
-                        <td class="text-xs-center">{{ item.count }}</td>
-                        <td class="text-xs-right">{{ item.salary }} Bs.</td>
-                      </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                          <td colspan="2"><span>Total </span></td>
-                          <td class="text-xs-right font-weight-bold">{{ table.months.reduce((total, o) => parseFloat(o.salary) + total,0).toFixed(2) }} Bs.</td>
-                        </tr>
-                    </tfoot>
-                  </table>
-                </v-card-text>
-              </v-card>
-            </v-flex>
+          
           </v-layout>
         </v-container>
       </v-card-text>
@@ -285,7 +209,7 @@
 <script>
 import { log } from 'util';
 export default {
-  name: "ConsultantForm",
+  name: "AssistantForm",
   props: ["item", "bus"],
   data() {
     return {
@@ -304,10 +228,6 @@ export default {
           formattedDate: null,
           display: false
         },
-        rrhh: {
-          formattedDate: null,
-          display: false
-        }
       },
       selectedItem: {
         edit: true,
@@ -316,14 +236,18 @@ export default {
         retirement_date: null,
         retirement_reason_id: null,
         consultant_position: null,
-        consultant_position_id: null,
-        new: true
+        register_number: null,
+        new: true,
+        employee: {
+          last_name: '',
+          mothers_last_name: '',
+          first_name: '',
+          second_name: ''
+        },
       },
-      formTitle: 'Nuevo contrato de consultoría',
+      formTitle: 'Nueva modalidad académica',
       employees: [],
-      positions: [],
       positionGroups: [],
-      charges: [],
       jobSchedules: [],
       retirementReasons: [],
       table: {
@@ -333,15 +257,6 @@ export default {
           first_name: '',
           second_name: ''
         },
-        position: {
-          name: '',
-          free: true
-        },
-        charge: {
-          name: '',
-          base_wage: ''
-        },
-        months: []
       },
       position_id: null,
       oldDate: {
@@ -352,21 +267,19 @@ export default {
   },
   created() {
     this.getEmployees()
-    this.getPositions()
-    this.getCharges()
     this.getJobSchedules()
     this.getPositionGroups()
     this.getRetirementReasons()
   },
   mounted() {
     this.bus.$on("openDialog", item => {
+      console.log(item)
       if (item) {
         this.selectedItem = item
-        this.formTitle = item.edit ? 'Editar contrato de consultoría' : 'Recontratar consultor'
+        this.formTitle = item.edit ? 'Editar modalidad académica' : 'Prorrogar modalidad academica'
         this.dialog = true
         this.onSelectEmployee(this.selectedItem.employee.id)
-        this.onSelectPosition(this.selectedItem.consultant_position)
-        this.position_id = item.consultant_position_id
+        this.getPositionGroups()
 
         if (!item.edit) {
           this.oldDate = {
@@ -375,9 +288,7 @@ export default {
           }
           this.selectedItem.start_date = this.onlyWeekdays(this.$moment(item.retirement_date ? item.retirement_date : item.end_date)).startOf('day').toISOString().split('T')[0]
           this.selectedItem.end_date = null
-          this.selectedItem.rrhh_cite = null
-          this.selectedItem.rrhh_cite_date = null
-          this.selectedItem.contract_number = null
+          this.selectedItem.register_number = null
           this.position_id = null
         }
       }
@@ -390,20 +301,15 @@ export default {
         this.datePicker.start.formattedDate = date.format('L')
         this.datePicker.end.min = date.add(1, 'days').toISOString().split('T')[0]
         this.selectedItem.end_date = date.endOf('month').startOf('day').toISOString().split('T')[0]
-        this.monthSalaryCalc()
       }
     },
     'selectedItem.end_date': function(value) {
       if (value) {
         this.datePicker.end.formattedDate = this.$moment(value).format('L')
-        this.monthSalaryCalc()
       }
     },
     'selectedItem.retirement_date': function(value) {
       if (value) this.datePicker.retirement.formattedDate = this.$moment(value).format('L')
-    },
-    'selectedItem.rrhh_cite_date': function(value) {
-      if (value) this.datePicker.rrhh.formattedDate = this.$moment(value).format('L')
     },
     'selectedItem.retirement_reason_id': function(value) {
       if (!value) {
@@ -447,14 +353,17 @@ export default {
       this.selectedItem = {
         employee_id: null,
         edit: true,
+        university: null,
         start_date: null,
         end_date: null,
+        assistant_position: null,
+        position_group_id: null,
         retirement_date: null,
         retirement_reason_id: null,
-        position: null,
-        consultant_position_id: null,
+        register_number: null,
+        description: null,
         new: true
-      },
+      }
       this.table = {
         employee: {
           last_name: '',
@@ -462,15 +371,6 @@ export default {
           first_name: '',
           second_name: ''
         },
-        position: {
-          name: '',
-          free: true
-        },
-        charge: {
-          name: '',
-          base_wage: ''
-        },
-        months: []
       }
     },
     formatDate (date) {
@@ -478,7 +378,6 @@ export default {
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
-    chargeSelected: charge => `${charge.base_wage} Bs. - ${charge.name}`,
     closeDialog() {
       this.dialog = false
       this.$validator.reset()
@@ -505,14 +404,6 @@ export default {
         }
       }
     },
-    async getPositions() {
-      try {
-        let res = await axios.get("/consultant_position")
-        this.positions = res.data
-      } catch (e) {
-        console.log(e)
-      }
-    },
     async getJobSchedules() {
       try {
         let res = await axios.get("/job_schedule")
@@ -521,39 +412,7 @@ export default {
         console.log(e)
       }
     },
-    async onSelectPosition(position) {
-      try {
-        if (position) {
-          let search = this.positions.find(o => o.id == position.id)
-          if (search) {
-            this.selectedItem.consultant_position_id = search.id
-            this.table.position = search
-            this.selectedItem.charge_id = search.charge_id
-            this.selectedItem.position_group_id = search.position_group_id
-            this.onSelectCharge(search.charge.id)
-            let res = await axios.get(`/consultant_contract/position_free/${position.id}`)
-            if (this.position_id == position.id) {
-              this.table.position.free = true
-            } else {
-              this.table.position.free = res.data.free
-            }
-          } else {
-            this.table.position.free = true
-          }
-          this.getPositions()
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    },
-    async getCharges() {
-      try {
-        let res = await axios.get("/charge")
-        this.charges = res.data
-      } catch (e) {
-        console.log(e)
-      }
-    },
+    
     async getPositionGroups() {
       try {
         let res = await axios.get("/position_group")
@@ -570,61 +429,29 @@ export default {
         console.log(e)
       }
     },
-    onSelectCharge(id) {
-      if (id) {
-        this.table.charge = this.charges.find(o => o.id == id)
-        this.monthSalaryCalc()
-      } else {
-        this.table.charge = {
-          name: '',
-          base_wage: ''
-        }
-      }
-    },
+
     async saveContract() {
       try {
         let valid = await this.$validator.validateAll();
         if (valid) {
-          if (Number.isInteger(this.selectedItem.consultant_position.id)) {
-            let position = this.positions.find(o => o.id == this.selectedItem.consultant_position_id)
-            if (position.charge.id != this.selectedItem.charge_id || position.position_group.id != this.selectedItem.position_group_id) {
-              this.selectedItem.name = position.name
-              let res = await axios.post(`/consultant_position`, this.selectedItem)
-              this.selectedItem.charge_id = res.data.charge_id
-              this.selectedItem.position_group_id = res.data.position_group_id
-              this.selectedItem.consultant_position_id = res.data.id
-              this.toastr.success('Cargo creado exitosamente')
-            }
-            if (!this.selectedItem.new) {
-            let res = await axios.patch(`/consultant_contract/${this.selectedItem.id}`, this.selectedItem)
-            this.toastr.success('Contrato actualizado exitosamente')
-            }
-          } else {
-            let res = await axios.post(`/consultant_position`, {
-              name: this.selectedItem.consultant_position,
-              charge_id: this.selectedItem.charge_id,
-              position_group_id: this.selectedItem.position_group_id
-            })
-            this.selectedItem.consultant_position_id = res.data.id
-            this.toastr.success('Cargo creado exitosamente')
-          }
+         
           if (this.selectedItem.new) {
-            await axios.post(`/consultant_contract`, this.selectedItem)
+            await axios.post(`/assistant_contract`, this.selectedItem)
           } else if (!this.selectedItem.edit && !this.selectedItem.new) {
-            await axios.patch(`/consultant_contract/${this.selectedItem.id}`, {
+            await axios.patch(`/assistant_contract/${this.selectedItem.id}`, {
               start_date: this.oldDate.start,
               end_date: this.oldDate.end,
               active: false
             })
             delete this.selectedItem['id']
-            await axios.post(`/consultant_contract`, this.selectedItem)
+            await axios.post(`/assistant_contract`, this.selectedItem)
           } else {
             if ((this.selectedItem.retirement_date && this.selectedItem.retirement_reason_id)) {
               this.selectedItem.active = false
             } else {
               this.selectedItem.active = true
             }
-            await axios.patch(`/consultant_contract/${this.selectedItem.id}`, this.selectedItem)
+            await axios.patch(`/assistant_contract/${this.selectedItem.id}`, this.selectedItem)
           }
           this.closeDialog()
         }
@@ -632,45 +459,10 @@ export default {
         console.log(e)
       }
     },
-    monthSalaryCalc() {
-      if (this.selectedItem.start_date && this.selectedItem.end_date && this.table.charge.base_wage) {
-        this.table.months = []
-
-        let startDate = this.$moment(this.selectedItem.start_date)
-        let endDate = this.$moment(this.selectedItem.end_date)
-        let diary = this.table.charge.base_wage / 30
-
-        let count = 30 - startDate.format('D') + 1
-        this.table.months.push({
-          name: startDate.format('MMMM'),
-          count: count,
-          salary: (diary * count).toFixed(2)
-        })
-
-        while (!endDate.isSame(startDate, 'month', 'year')) {
-          if (!endDate.isSame(startDate.add(1, 'month'), 'month', 'year')) {
-            this.table.months.push({
-              name: startDate.format('MMMM'),
-              count: 30,
-              salary: Number(this.table.charge.base_wage).toFixed(2)
-            })
-          } else {
-            count = Number(endDate.format('D'))
-
-            let lastDayOfMonth = Number(endDate.endOf('month').format('D'))
-            if (lastDayOfMonth != 30 && count == lastDayOfMonth) {
-              count = 30
-            }
-
-            this.table.months.push({
-              name: endDate.format('MMMM'),
-              count: count,
-              salary: (diary * count).toFixed(2)
-            })
-          }
-        }
-      }
+    formatMinutes(minutes) {
+      return minutes === 0 ? '00' : minutes;
     }
+    
   }
 }
 </script>
