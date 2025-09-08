@@ -432,10 +432,20 @@ class DepartureController extends Controller
     DB::beginTransaction();
     try {
       $employee = Employee::find($request->employee_id);
-      $vacation_queue = VacationQueue::where('employee_id', $request->employee_id)
+      /*$vacation_queue = VacationQueue::where('employee_id', $request->employee_id)
                                       ->where('max_date', '>=', $request->departure)
                                       ->where('end_date', '>', $employee->addmisión_date)
-                                      ->where('rest_days', '>', '0')->get();
+                                      ->where('rest_days', '>', 0)->get();*/
+    $vacation_queue = VacationQueue::query()
+    ->where('employee_id', $request->employee_id)
+    ->when($request->filled('departure'), function ($q) use ($request) {
+        $q->whereDate('max_date', '>=', $request->departure);
+    })
+    ->when(!empty($employee->admision_date), function ($q) use ($employee) {
+        $q->whereDate('end_date', '>', $employee->admision_date);
+    })
+    ->where('rest_days', '>', 0)
+    ->get();
       $count_days = 0;
       foreach($request->days as $day)
       {
@@ -520,7 +530,7 @@ class DepartureController extends Controller
           'message' => 'Dias de Vacación no disponibles',
         ], 405);
       }
-    } catch (\Exception $e) {
+    } catch (\Exception $e) {return $e;
       DB::rollback();
       return response()->json([
         'message' => 'Cite Duplicado',
