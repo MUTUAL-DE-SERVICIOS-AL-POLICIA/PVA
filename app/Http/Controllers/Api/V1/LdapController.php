@@ -46,7 +46,8 @@ class LdapController extends Controller
       $new_entry = Employee::findOrFail($e);
       $last_contract = $new_entry->last_contract();
       $last_consultant_contract = $new_entry->last_consultant_contract();
-      if ($last_contract || $last_consultant_contract) {
+      $last_assistant_contract = $employee->assistant_contracts;
+      if ($last_contract || $last_consultant_contract || $last_assistant_contract) {
         $givenName = $new_entry->first_name;
         if ($new_entry->second_name) $givenName .= ' ' . $new_entry->second_name;
         $sn = $new_entry->last_name;
@@ -67,6 +68,17 @@ class LdapController extends Controller
             'sn' => $sn,
             'givenName' => $givenName,
             'title' => $new_entry->last_consultant_contract()->consultant_position->name,
+            'employeeNumber' => $new_entry->id
+          ])) {
+            $success_added++;
+          } else {
+            $added[$key] = $new_entry;
+          }
+        } elseif($last_assistant_contract){
+          if ($ldap->create_entry([
+            'sn' => $sn,
+            'givenName' => $givenName,
+            'title' => $new_entry->assistant_contracts->where('active', true)->first()->assistant_position,
             'employeeNumber' => $new_entry->id
           ])) {
             $success_added++;
