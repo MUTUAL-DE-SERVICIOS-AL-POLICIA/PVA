@@ -46,7 +46,7 @@ class LdapController extends Controller
       $new_entry = Employee::findOrFail($e);
       $last_contract = $new_entry->last_contract();
       $last_consultant_contract = $new_entry->last_consultant_contract();
-      $last_assistant_contract = $employee->assistant_contracts;
+      $last_assistant_contract = $new_entry->last_assistant_contract();
       if ($last_contract || $last_consultant_contract || $last_assistant_contract) {
         $givenName = $new_entry->first_name;
         if ($new_entry->second_name) $givenName .= ' ' . $new_entry->second_name;
@@ -110,10 +110,13 @@ class LdapController extends Controller
       $employee = Employee::find($ldap_employee->employeeNumber);
       $last_contract = $employee->last_contract();
       $last_consultant_contract = $employee->last_consultant_contract();
+      $last_assistant_contract = $employee->last_assistant_contract();
       if ($last_contract && $last_contract->active) {
         $position = $last_contract->position->name;
       } elseif ($last_consultant_contract && $last_consultant_contract->active) {
         $position = $last_consultant_contract->consultant_position->name;
+      } elseif($last_assistant_contract && $last_assistant_contract->active){
+        $position = $last_assistant_contract->assistant_position;
       }
       if ($ldap_employee->title != $position) {
         $ldap->modify_entry($employee->id, [

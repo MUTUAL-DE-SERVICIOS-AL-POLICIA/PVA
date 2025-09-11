@@ -98,6 +98,7 @@ class VacationQueueController extends Controller
       $count = Employee::findOrFail($employee_id)
             ->vacation_queues()
             ->where('max_date', '>=', Carbon::parse($date)->format('Y-m-d'))
+            ->where('is_valid', true)
             ->sum('rest_days');
       $daysV = DaysOnVacation::where('date','>=', $date)->pluck('departure_id');
       $departures = Departure::where('employee_id',$employee_id)->where('departure_reason_id', 24)->whereIn('id',$daysV)->get();
@@ -199,7 +200,7 @@ class VacationQueueController extends Controller
                       ->first()->days ?? 15;
               }
 
-              // Solo silencia eventos para esta creación (Laravel 7)
+              // Solo silencia eventos para esta creación 
               VacationQueue::withoutEvents(function () use ($today, $period_end, $days, $employee) {
                   VacationQueue::create([
                       'start_date'  => $today->copy()->subYear()->subDay(),
@@ -210,7 +211,10 @@ class VacationQueueController extends Controller
                       'employee_id' => $employee->id,
                   ]);
               });
-          } // <- cierre del foreach
+          }
+          VacationQueue::where('max_date', '<', $today->toDateString())
+              ->where('is_valid', true)
+              ->update(['is_valid' => false]);
 
           DB::commit();
       } catch (\Exception $e) {
@@ -232,13 +236,14 @@ class VacationQueueController extends Controller
       $count = Employee::findOrFail($employee_id)
               ->vacation_queues()
               ->where('max_date', '>=', Carbon::parse($date)->format('Y-m-d'))
+              ->where('is_valid', true)
               ->sum('rest_days');
       return $count;
     }
 
     public function get_vacation_queue_employee($employee_id)
     {
-      return VacationQueue::where('employee_id',$employee_id)->whereNull('deleted_at')->orderBy('start_date','asc')->get();
+      return VacationQueue::where('employee_id',$employee_id)->orderBy('start_date','asc')->get();
     }
     public function destroy_with_comment(Request $request, $id)
     {

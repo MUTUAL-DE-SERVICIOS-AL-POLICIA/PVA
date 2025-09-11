@@ -59,6 +59,7 @@
     "href": "assistantIndex",
     "title": "Practicantes",
     "icon": "school",
+    "permission": "read-employee",
     "params": {}
   },
   {
