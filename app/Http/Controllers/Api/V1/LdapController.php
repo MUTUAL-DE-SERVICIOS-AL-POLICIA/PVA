@@ -110,7 +110,7 @@ class LdapController extends Controller
       $employee = Employee::find($ldap_employee->employeeNumber);
       $last_contract = $employee->last_contract();
       $last_consultant_contract = $employee->last_consultant_contract();
-      $last_assistant_contract = $new_entry->last_assistant_contract();
+      $last_assistant_contract = $employee->last_assistant_contract();
       if ($last_contract && $last_contract->active) {
         $position = $last_contract->position->name;
       } elseif ($last_consultant_contract && $last_consultant_contract->active) {
