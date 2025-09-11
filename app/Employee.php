@@ -438,4 +438,9 @@ class Employee extends Model
   {
     return $this->hasMany(AssistantContract::class);
   }
+
+  public function last_assistant_contract()
+  {
+    return $this->assistant_contracts->where('active', true)->first();
+  }
 }
