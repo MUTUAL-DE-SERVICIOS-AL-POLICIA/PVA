@@ -467,12 +467,12 @@ class Util
           } else {
             $attendance->type = 'O';
           }
-          $attendance->shift = $job_schedules->id;
+          $attendance->shift = $schedule->id;
           break;
         }
       }
       if ($find) {
-        $attendance->shift = $job_schedules->id;
+        $attendance->shift = $schedule->id;
       }
     }
     return $attendance;
