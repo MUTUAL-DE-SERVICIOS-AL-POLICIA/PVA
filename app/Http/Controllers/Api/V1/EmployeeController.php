@@ -216,11 +216,11 @@ class EmployeeController extends Controller
       if ($employee->consultant === true) {
         $employee->contract = $employee->last_consultant_contract();
         $employee->position_name = $employee->contract->consultant_position->name;
-        $job_schedules = $employee->contract->job_schedules;
+        $job_schedules = $employee->contract->job_schedules_attendance();
       } elseif ($employee->consultant === false) {
         $employee->contract = $employee->last_contract();
         $employee->position_name = $employee->contract->position->name;
-        $job_schedules = $employee->contract->job_schedules;
+        $job_schedules = $employee->contract->job_schedules_attendance();
       } else {
         $job_schedules = null;
       }
