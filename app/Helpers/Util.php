@@ -434,7 +434,7 @@ class Util
       'shift' => null
     ];
     $checktime = CarbonImmutable::parse($check);
-    //foreach ($job_schedules as $schedule) {
+    foreach ($job_schedules as $schedule) {
       $periods = (object)[
         'in' => (object)[
           'start_limit' => $checktime->hours($job_schedules->start_hour_min_limit)->minutes($job_schedules->start_minutes_min_limit)->seconds(0),
@@ -474,7 +474,7 @@ class Util
       if ($find) {
         $attendance->shift = $job_schedules->id;
       }
-    //}
+    }
     return $attendance;
   }
 
