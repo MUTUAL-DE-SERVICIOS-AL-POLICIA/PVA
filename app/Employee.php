@@ -48,13 +48,28 @@ class Employee extends Model
   }
 
   public function contract_in_date($date)
-  {
-    if ($this->consultant()) {
-      return ConsultantContract::whereEmployeeId($this->id)->where('start_date', '<=', $date)->orderBy('start_date', 'DESC')->first();
-    } else {
-      return Contract::whereEmployeeId($this->id)->where('start_date', '<=', $date)->orderBy('start_date', 'DESC')->first();
+{
+    $status = $this->consultant();
+    $date = \Carbon\Carbon::parse($date);
+
+    if ($status === true) {
+        return ConsultantContract::whereEmployeeId($this->id)
+            ->where('start_date', '<=', $date)
+            ->orderBy('start_date', 'DESC')
+            ->first();
+    } elseif ($status === 2) {
+        return AssistantContract::whereEmployeeId($this->id)
+            ->where('start_date', '<=', $date)
+            ->orderBy('start_date', 'DESC')
+            ->first();
+    } elseif ($status === false) {
+        return Contract::whereEmployeeId($this->id)
+            ->where('start_date', '<=', $date)
+            ->orderBy('start_date', 'DESC')
+            ->first();
     }
-  }
+    return null;
+}
 
   public function consultant_contracts()
   {
