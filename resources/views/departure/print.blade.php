@@ -138,7 +138,7 @@ $copies = 2;
             <td>CARGO</td>
           </tr>
           <tr>
-            @if ($consultant)
+            @if ($consultant == true)
               <td class="{{ Util::string_class_length($contract->consultant_position->name, false) }} data-row py-5">{{ $contract->consultant_position->name }}</td>
             @elseif($consultant == 2)
                 <td class="{{ Util::string_class_length($contract->assistant_position, false) }} data-row py-5">{{ $contract->assistant_position }}</td>
@@ -150,7 +150,7 @@ $copies = 2;
             <td>ÁREA</td>
           </tr>
           <tr>
-            @if ($consultant)
+            @if ($consultant == true)
               <td class="{{ Util::string_class_length($contract->consultant_position->position_group->name, false) }} data-row py-5">{{ $contract->consultant_position->position_group->name }}</td>
             @elseif($consultant == 2)
                 <td class="{{ Util::string_class_length($contract->position_group->name, false) }} data-row py-5">{{ $contract->position_group->name }}</td>
