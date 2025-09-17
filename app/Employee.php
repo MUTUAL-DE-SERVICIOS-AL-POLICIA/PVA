@@ -75,8 +75,9 @@ class Employee extends Model
   {
     $contract = $this->last_contract();
     $consultant_contract = $this->last_consultant_contract();
+    $assistant_contract = $this->last_assistant_contract();
     $status = null;
-    if($contract && $consultant_contract)
+    if($contract && $consultant_contract && $assistant_contract)
     {
       if(Carbon::now()->between($consultant_contract->start_date, $consultant_contract->end_date) && $consultant_contract->retirement_date != null && $consultant_contract->active)
         $contract = null;
@@ -88,10 +89,15 @@ class Employee extends Model
       if($consultant_contract->retirement_date == null && $consultant_contract->end_date != null && Carbon::now()->between($consultant_contract->start_date, $consultant_contract->end_date) && $consultant_contract->active)
         $status = true;
     }
-    if($contract)
+    elseif($contract)
     {
       if($contract->retirement_date == null && Carbon::now()->greaterThan($contract->start_date) && $contract->active)
         $status = false;
+    }
+    elseif($assistant_contract)
+    {
+      if($assistant_contract->retirement_date == null && Carbon::now()->greaterThan($assistant_contract->start_date) && $assistant_contract->active)
+        $status = null;
     }
     return $status;
   }
