@@ -138,34 +138,21 @@ $copies = 2;
             <td>CARGO</td>
           </tr>
           <tr>
-            @php
-                $text = match (true) {
-                    $consultant === true => $contract->consultant_position?->name,   // null-safe
-                    $consultant === 2    => $contract->assistant_position,
-                    default              => $contract->position?->name,
-                } ?? '—';
-
-                $className = Util::string_class_length($text, false) . ' data-row py-5';
-            @endphp
-
-            <td class="{{ $className }}">{{ $text }}</td>
+            @if ($consultant)
+              <td class="{{ Util::string_class_length($contract->consultant_position->name, false) }} data-row py-5">{{ $contract->consultant_position->name }}</td>
+            @else
+                <td class="{{ Util::string_class_length($contract->position->name, false) }} data-row py-5">{{ $contract->position->name }}</td>
+            @endif
           </tr>
           <tr class="bg-grey-darker text-xs text-white">
             <td>ÁREA</td>
           </tr>
           <tr>
-            @php
-                $text = match (true) {
-                    $consultant === true => $contract->consultant_position?->position_group?->name,
-                    $consultant === 2    => $contract->position_group?->name,
-                    default              => $contract->position?->position_group?->name,
-                };
-                $text ??= '—';
-                $className = trim((Util::string_class_length($text, false) ?: '') . ' data-row py-5');
-            @endphp
-
-            <td class="{{ $className }}">{{ $text }}</td>
-
+            @if($consultant)
+              <td class="{{ Util::string_class_length($contract->consultant_position->position_group->name, false) }} data-row py-5">{{ $contract->consultant_position->position_group->name }}</td>
+            @else
+                <td class="{{ Util::string_class_length($contract->position->position_group->name, false) }} data-row py-5">{{ $contract->position->position_group->name }}</td>
+            @endif
           </tr>
         </table>
         <table class="table-info w-100 m-b-10 uppercase">
