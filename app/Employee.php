@@ -97,7 +97,7 @@ class Employee extends Model
     elseif($assistant_contract)
     {
       if($assistant_contract->retirement_date == null && Carbon::now()->greaterThan($assistant_contract->start_date) && $assistant_contract->active)
-        $status = null;
+        $status = 2;
     }
     return $status;
   }

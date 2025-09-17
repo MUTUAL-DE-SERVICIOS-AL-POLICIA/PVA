@@ -140,9 +140,10 @@ $copies = 2;
           <tr>
             @if ($consultant)
               <td class="{{ Util::string_class_length($contract->consultant_position->name, false) }} data-row py-5">{{ $contract->consultant_position->name }}</td>
-            @elseif($consultant == false)
-              <td class="{{ Util::string_class_length($contract->position->name, false) }} data-row py-5">{{ $contract->position->name }}</td>
-            @else<td></td>
+            @elseif($consultant == 2)
+                <td class="{{ Util::string_class_length($contract->assistant_position, false) }} data-row py-5">{{ $contract->assistant_position }}</td>
+            @else
+                <td class="{{ Util::string_class_length($contract->position->name, false) }} data-row py-5">{{ $contract->position->name }}</td>
             @endif
           </tr>
           <tr class="bg-grey-darker text-xs text-white">
@@ -151,9 +152,10 @@ $copies = 2;
           <tr>
             @if ($consultant)
               <td class="{{ Util::string_class_length($contract->consultant_position->position_group->name, false) }} data-row py-5">{{ $contract->consultant_position->position_group->name }}</td>
-            @elseif($consultant == false)
-              <td class="{{ Util::string_class_length($contract->position->position_group->name, false) }} data-row py-5">{{ $contract->position->position_group->name }}</td>
-            @else<td></td>
+            @elseif($consultant == 2)
+                <td class="{{ Util::string_class_length($contract->position_group->name, false) }} data-row py-5">{{ $contract->position_group->name }}</td>
+            @else
+                <td class="{{ Util::string_class_length($contract->position->position_group->name, false) }} data-row py-5">{{ $contract->position->position_group->name }}</td>
             @endif
           </tr>
         </table>
