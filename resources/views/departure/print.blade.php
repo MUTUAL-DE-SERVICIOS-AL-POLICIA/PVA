@@ -138,22 +138,44 @@ $copies = 2;
             <td>CARGO</td>
           </tr>
           <tr>
-            @if ($consultant)
-              <td class="{{ Util::string_class_length($contract->consultant_position->name, false) }} data-row py-5">{{ $contract->consultant_position->name }}</td>
+            @if ($consultant === true)
+              <td class="{{ Util::string_class_length(optional($contract->consultant_position)->name ?: '—', false) }} data-row py-5">
+                {{ optional($contract->consultant_position)->name ?? '—' }}
+              </td>
+            @elseif ($consultant === 2)
+              <td class="{{ Util::string_class_length($contract->assistant_position ?? '—', false) }} data-row py-5">
+                {{ $contract->assistant_position ?? '—' }}
+              </td>
+            @elseif ($consultant === false)
+              <td class="{{ Util::string_class_length(optional($contract->position)->name ?: '—', false) }} data-row py-5">
+                {{ optional($contract->position)->name ?? '—' }}
+              </td>
             @else
-                <td class="{{ Util::string_class_length($contract->position->name, false) }} data-row py-5">{{ $contract->position->name }}</td>
+              <td class="data-row py-5">—</td>
             @endif
           </tr>
+
           <tr class="bg-grey-darker text-xs text-white">
             <td>ÁREA</td>
           </tr>
           <tr>
-            @if($consultant)
-              <td class="{{ Util::string_class_length($contract->consultant_position->position_group->name, false) }} data-row py-5">{{ $contract->consultant_position->position_group->name }}</td>
+            @if ($consultant === true)
+              <td class="{{ Util::string_class_length(optional(optional($contract->consultant_position)->position_group)->name ?: '—', false) }} data-row py-5">
+                {{ optional(optional($contract->consultant_position)->position_group)->name ?? '—' }}
+              </td>
+            @elseif ($consultant === 2)
+              <td class="{{ Util::string_class_length(optional($contract->position_group)->name ?: '—', false) }} data-row py-5">
+                {{ optional($contract->position_group)->name ?? '—' }}
+              </td>
+            @elseif ($consultant === false)
+              <td class="{{ Util::string_class_length(optional(optional($contract->position)->position_group)->name ?: '—', false) }} data-row py-5">
+                {{ optional(optional($contract->position)->position_group)->name ?? '—' }}
+              </td>
             @else
-                <td class="{{ Util::string_class_length($contract->position->position_group->name, false) }} data-row py-5">{{ $contract->position->position_group->name }}</td>
+              <td class="data-row py-5">—</td>
             @endif
           </tr>
+
         </table>
         <table class="table-info w-100 m-b-10 uppercase">
           <thead>
