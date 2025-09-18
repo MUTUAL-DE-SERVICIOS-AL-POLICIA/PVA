@@ -376,7 +376,7 @@ class AttendanceController extends Controller
 
     foreach ($employees as $key => $employee) {
       $consultant = $employee->consultant();
-      if ($consultant === true && $type == 'eventual' || $consultant === false && $type == 'consultant' || $consultant === null) {
+      if ($consultant === true && $type == 'eventual' || $consultant === false && $type == 'consultant' || $consultant === null || $consultant === 2) {
         unset($employees[$key]);
         continue;
       }
