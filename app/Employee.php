@@ -134,12 +134,12 @@ class Employee extends Model
 
   public function last_contract()
   {
-    return $this->contracts()->orderBy('start_date', 'DESC')->first();
+    return $this->contracts()->orderBy('start_date', 'DESC')->where('active', true)->first();
   }
 
   public function last_consultant_contract()
   {
-    return $this->consultant_contracts()->orderBy('start_date', 'DESC')->first();
+    return $this->consultant_contracts()->orderBy('start_date', 'DESC')->where('active', true)->first();
   }
 
   public function before_last_contract()
