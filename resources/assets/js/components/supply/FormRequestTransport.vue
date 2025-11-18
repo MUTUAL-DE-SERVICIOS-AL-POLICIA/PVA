@@ -34,7 +34,9 @@
                         derecho de la boleta.
                       </li>
                       <li>Completa los campos del tramo <b>Desde</b> y <b>Hasta</b>.</li>
-                      <li>Coloca el <b>importe</b> no sea mayor a <b>5 Bs.</b> por tramo</li>
+                      <li>
+                        Coloca el <b>importe</b> no sea mayor a <b>5 Bs.</b> por tramo
+                      </li>
                     </ol>
                   </v-flex>
                 </v-layout>
@@ -398,6 +400,17 @@ export default {
           transfers: cleanTransfers,
           total: total.toFixed(1),
         };
+
+        try {
+          const { data } = await axios2.get("disableFunds");
+          if (data) {
+            this.toastr.warning("No se puede Crear una solicitud por Cierre de Gestión");
+            return;
+          }
+        } catch (e) {
+          console.error("Error al verificar:", e);
+          return;
+        }
 
         const res = await axios2.post("/personal_transport_tickets", payload);
         if (res.status == 201) {

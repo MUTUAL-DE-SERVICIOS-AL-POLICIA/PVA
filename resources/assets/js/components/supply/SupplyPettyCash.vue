@@ -24,9 +24,7 @@
 
       <v-menu offset-y>
         <v-btn slot="activator" color="primary" dark>
-          <template>
-            <div>Solicitud de Recursos</div>
-          </template>
+            Solicitud de Recursos
         </v-btn>
         <v-list>
           <v-list-tile @click="openFormPettyCash">Solicitud de recursos</v-list-tile>
@@ -142,7 +140,7 @@
         <v-card-title>
           <span class="headline">DESCARGO - CAJA CHICA (Bolivianos)</span>
         </v-card-title>
-        <v-form v-model="valid">
+        <v-form >
           <v-card-text>
             <v-data-table
               :headers="detailsHeaders"
@@ -329,11 +327,7 @@ export default {
       isChanging: false,
       selectedItem: {},
       employeeType: "Todas las Solicitudes",
-      detailsVisible: null,
-      valid: false,
       items: [],
-      budgetGroups: [],
-      deadlineTimerId: null,
       mainHeaders: [
         { text: "Nro Solicitud", value: "id", align: "center" },
         { text: "Fecha de entrega de recurso", value: "date", align: "center" },
@@ -429,10 +423,6 @@ export default {
     toggleDetails(item) {
       this.detailsVisible = this.detailsVisible === item.id ? null : item.id;
     },
-    saveRequest(newRequest) {
-      this.requests.push(newRequest);
-      this.dialog = false;
-    },
     getStateClass(state, item) {
       switch (state) {
         case "En Revision":
@@ -446,9 +436,6 @@ export default {
         default:
           return "";
       }
-    },
-    toggleMaterials(item) {
-      item.showProducts = !item.showProducts;
     },
     async print_form(item) {
       const res = await axios2({

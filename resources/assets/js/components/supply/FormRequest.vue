@@ -120,8 +120,8 @@
         </v-data-table>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="red" @click="close">Cancelar</v-btn>
-          <v-btn color="green" @click="save">Guardar</v-btn>
+          <v-btn color="error" @click="close">Cancelar</v-btn>
+          <v-btn color="success" @click="save">Guardar</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
@@ -137,8 +137,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="red" @click="closeCreateProductDialog">Cancelar</v-btn>
-          <v-btn color="green" @click="addNewProduct">Guardar</v-btn>
+          <v-btn color="error" @click="closeCreateProductDialog">Cancelar</v-btn>
+          <v-btn color="success" @click="addNewProduct">Guardar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -398,6 +398,19 @@ export default {
       }
 
       try {
+        const { data } = await axios2.get("disableFunds");
+        if (data) {
+          this.toastr.warning(
+            "No se puede Crear una solicitud por Cierre de Gestión"
+          );
+          return;
+        }
+      } catch (e) {
+        console.error("Error al verificar:", e);
+        return;
+      }
+
+      try {
         await axios2.post("createNotePettyCash", {
           id: this.userId,
           product: this.selectedProducts,
@@ -414,7 +427,6 @@ export default {
     },
     async getProductsUser() {
       try {
-        console.log("entro ");
         const res = await axios2.get(`notePettyCash/${this.userId}`);
         this.items = res.data.map((item) => ({ ...item, showProducts: false }));
         this.items.forEach((i) => {

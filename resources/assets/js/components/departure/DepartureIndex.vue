@@ -121,7 +121,7 @@
                   </v-btn>
                   <span>Eliminar</span>
                 </v-tooltip>
-                <Transfer :departure="props.item" :color="props.expanded ? 'warning' : 'success'" v-if="departureType(props.item).group == 'COMISIÓN'"/>
+                
               </div>
             </td>
           </tr>
