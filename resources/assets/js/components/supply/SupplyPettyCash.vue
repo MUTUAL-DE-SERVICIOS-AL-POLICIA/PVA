@@ -23,9 +23,7 @@
       <v-spacer></v-spacer>
 
       <v-menu offset-y>
-        <v-btn slot="activator" color="primary" dark>
-            Solicitud de Recursos
-        </v-btn>
+        <v-btn slot="activator" color="primary" dark> Solicitud de Recursos </v-btn>
         <v-list>
           <v-list-tile @click="openFormPettyCash">Solicitud de recursos</v-list-tile>
           <v-list-tile @click="openFormRepCash">Reembolsos de gastos</v-list-tile>
@@ -137,10 +135,17 @@
 
     <v-dialog v-model="dialogDetails" max-width="1400px">
       <v-card>
-        <v-card-title>
-          <span class="headline">DESCARGO - CAJA CHICA (Bolivianos)</span>
-        </v-card-title>
-        <v-form >
+        <v-toolbar dark color="secondary">
+          <v-toolbar-title class="white--text">
+            Descargo - Caja Chica
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon dark @click="dialogDetails">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-form>
           <v-card-text>
             <v-data-table
               :headers="detailsHeaders"
@@ -209,7 +214,7 @@
                 </td>
               </template>
             </v-data-table>
-            <v-layout class="mt-4" dense>
+            <v-layout class="mt-6" dense>
               <v-flex cols="12" md="6">
                 <v-card outlined>
                   <v-card-title class="subtitle-2 font-weight-bold">
@@ -220,7 +225,7 @@
                     <v-layout row wrap align-center justify-space-between>
                       <v-flex xs12 sm4 class="text-center">
                         <div class="kv-label">Precio referencial solicitado</div>
-                        <v-chip small label class="ma-0 mt-2" color="grey lighten-3">
+                        <v-chip small label class="ma-0 mt-2 amount-chip" color="grey lighten-3">
                           {{ formatMoney(approxCostNum) }}
                         </v-chip>
                       </v-flex>
@@ -229,7 +234,7 @@
                         <v-chip
                           small
                           label
-                          class="ma-0 mt-2"
+                          class="ma-0 mt-2 amount-chip"
                           :color="exceedsApprox ? 'orange lighten-4' : 'green lighten-4'"
                         >
                           {{ formatMoney(productsTotal) }}
@@ -240,7 +245,7 @@
                         <v-chip
                           small
                           label
-                          class="ma-0 mt-2"
+                          class="ma-0 mt-2 amount-chip"
                           :color="
                             exceedsApprox
                               ? 'red lighten-4'
@@ -260,7 +265,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red" @click="dialogDetails = false">Cerrar</v-btn>
+            <v-btn color="error" @click="dialogDetails = false">Cerrar</v-btn>
             <v-btn color="success" @click="submitDetails" :disabled="exceedsApprox"
               >Guardar</v-btn
             >
@@ -524,4 +529,11 @@ ol {
 ol li {
   margin: 6px 0;
 }
+
+.amount-chip {
+  font-size: 1.2rem;      
+  padding: 8px 18px;      
+  font-weight: 700;     
+}
+
 </style>
