@@ -225,6 +225,45 @@ class LdapController extends Controller
     ], 400);
   }
 
+  /**
+   * delete user from ldpa.
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function delete($id)
+  {
+      Employee::findOrFail($id);
+
+      $ldap = new Ldap();
+
+      try {
+          $user = $ldap->get_entry($id);
+
+          if (!$user) {
+              return response()->json([
+                  'updated' => false,
+                  'message' => 'Usuario inexistente en el servidor LDAP',
+              ], 400);
+          }
+
+          if ($ldap->delete_entry($id)) {
+              return response()->json([
+                  'updated' => true,
+                  'message' => 'Eliminado con éxito',
+                  'user'    => $user,
+              ], 200);
+          }
+
+          return response()->json([
+              'updated' => false,
+              'message' => 'No se pudo eliminar el usuario en LDAP',
+          ], 400);
+
+      } finally {
+          $ldap->unbind();
+      }
+  }
+
   private function zammad_sync()
   {
     $route = 'api/v1/integration/ldap/job_start';
