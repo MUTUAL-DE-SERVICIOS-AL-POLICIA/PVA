@@ -58,7 +58,7 @@ class LdapController extends Controller
             'givenName' => $givenName,
             'title' => $new_entry->last_contract()->position->name,
             'employeeNumber' => $new_entry->id
-          ])) {
+          ], $new_entry->phone_number)) {
             $success_added++;
           } else {
             $added[$key] = $new_entry;
@@ -69,7 +69,7 @@ class LdapController extends Controller
             'givenName' => $givenName,
             'title' => $new_entry->last_consultant_contract()->consultant_position->name,
             'employeeNumber' => $new_entry->id
-          ])) {
+          ], $new_entry->phone_number)) {
             $success_added++;
           } else {
             $added[$key] = $new_entry;
@@ -80,7 +80,7 @@ class LdapController extends Controller
             'givenName' => $givenName,
             'title' => $new_entry->assistant_contracts->where('active', true)->first()->assistant_position,
             'employeeNumber' => $new_entry->id
-          ])) {
+          ], $new_entry->phone_number)) {
             $success_added++;
           } else {
             $added[$key] = $new_entry;

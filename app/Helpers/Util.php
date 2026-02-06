@@ -7,6 +7,7 @@ use Auth;
 use App\UserAction;
 use App\JobScheduleDiscount;
 use Carbon\CarbonImmutable;
+use GuzzleHttp\Client;
 
 class Util
 {
@@ -492,4 +493,53 @@ class Util
       return $data;
     }
   }
+
+  public static function delegate_shipping($sms_num, $message, $employee_id, $notification_type) {
+        $sms_server_url = env('SMS_SERVER_URL', 'localhost');
+        $root = env('SMS_SERVER_ROOT', 'root');
+        $password = env('SMS_SERVER_PASSWORD', 'root');
+        $sms_provider = env('SMS_PROVIDER', 1);
+
+        $code_num = '591' . $sms_num;
+        $transmitter_id = 1;
+        $client = new Client([
+            'timeout' => 30,
+            'verify'  => false,
+        ]);
+
+        $response = $client->get($sms_server_url . 'dosend.php', [
+            'query' => [
+                'USERNAME'    => $root,
+                'PASSWORD'    => $password,
+                'smsprovider' => $sms_provider,
+                'smsnum'      => $code_num,
+                'method'      => 2,
+                'Memo'        => $message,
+            ],
+        ]);
+
+        $body = $response->getBody()->getContents();
+
+        if ($response->getStatusCode() === 200) {
+
+            // 2. Extraer ID del mensaje
+            if (strpos($body, 'id=') !== false) {
+                $clipped_chain = substr($body, strrpos($body, 'id=') + 3);
+                $end_of_chain  = substr($clipped_chain, strrpos($clipped_chain, '&U'));
+                $id            = substr($clipped_chain, 0, -strlen($end_of_chain));
+
+                // 3. Consultar estado del mensaje
+                $result = $client->get($sms_server_url . 'resend.php', [
+                    'query' => [
+                        'messageid' => $id,
+                        'USERNAME'  => $root,
+                        'PASSWORD'  => $password,
+                    ],
+                    'timeout' => 60,
+                ]);
+
+                $resultBody = $result->getBody()->getContents();
+            }
+        }
+    }
 }
