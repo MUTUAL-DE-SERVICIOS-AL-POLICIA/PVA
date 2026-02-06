@@ -67,7 +67,7 @@
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center">
             <v-switch
               v-if="$store.getters.permissions.includes('update-employee')"
-              v-show="props.item.consultant == null"
+              v-show="props.item.consultant == null || props.item.consultant == 2"
               v-model="props.item.active"
               @change="switchActive(props.item)"
             ></v-switch>
@@ -150,7 +150,6 @@
     </v-data-table>
   </v-container>
 </template>
-
 <script>
 import Vue from "vue";
 import EmployeeEdit from "./EmployeeEdit";

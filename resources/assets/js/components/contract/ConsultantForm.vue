@@ -633,6 +633,7 @@ export default {
         }
       } catch (e) {
         console.log(e)
+        this.toastr.error(e.response.data.message || 'Ocurrió un error al guardar el contrato')
       }
     },
     monthSalaryCalc() {
