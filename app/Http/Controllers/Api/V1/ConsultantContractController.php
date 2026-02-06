@@ -6,6 +6,7 @@ use App\ConsultantContract;
 use App\ConsultantProcedure;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Employee;
 
 class ConsultantContractController extends Controller
 {
@@ -29,8 +30,15 @@ class ConsultantContractController extends Controller
    */
   public function store(Request $request)
   {
-    $contract = ConsultantContract::create($request->all());
-    return $contract;
+    $employee = Employee::findOrFail($request->employee_id);
+    if ($employee->active) {
+      $contract = ConsultantContract::create($request->all());
+      return $contract;
+    }else {
+      return response()->json([
+        'message' => 'La persona no se encuentra con estado activo'
+      ], 422);
+    }
   }
 
   /**

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\AssistantContract;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use App\Employee;
 
 class AssistantContractController extends Controller
 {
@@ -19,8 +20,16 @@ class AssistantContractController extends Controller
 
     public function store(Request $request)
     {
-        $contract = AssistantContract::create($request->all());
-        return $contract;
+        $employee = Employee::findOrFail($request->employee_id);
+        if ($employee->active) {
+            $contract = AssistantContract::create($request->all());
+            return $contract;
+        }
+        else {
+            return response()->json([
+                'message' => 'La persona no se encuentra con estado activo'
+            ], 422);
+        }
     }
 
 
