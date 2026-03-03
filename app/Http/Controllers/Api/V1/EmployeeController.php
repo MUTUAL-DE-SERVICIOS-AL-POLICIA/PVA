@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Carbon;
 use Carbon\CarbonImmutable;
 use Util;
+use Illuminate\Support\Facades\DB;
 
 /** @resource Employee
  *
@@ -97,6 +98,15 @@ class EmployeeController extends Controller
     $employee = Employee::findOrFail($id);
     $employee->fill($request->all());
     $employee->save();
+    if(!$request->active)
+    {
+      #condicional de ejecución, solo si existe en la base de datos de sigec, para evitar errores
+      $employee_sigec = DB::connection('sigec')->select("SELECT * FROM users WHERE id = ".$id.";");
+      if(count($employee_sigec) > 0){
+        $query = "UPDATE users SET habilitado = 0 WHERE id = ".$id.";";
+        DB::connection('sigec')->select($query);
+      }
+    }
     return $employee;
   }
 
@@ -216,11 +226,11 @@ class EmployeeController extends Controller
       if ($employee->consultant === true) {
         $employee->contract = $employee->last_consultant_contract();
         $employee->position_name = $employee->contract->consultant_position->name;
-        $job_schedules = $employee->contract->job_schedules;
+        $job_schedules = $employee->contract->job_schedules_attendance();
       } elseif ($employee->consultant === false) {
         $employee->contract = $employee->last_contract();
         $employee->position_name = $employee->contract->position->name;
-        $job_schedules = $employee->contract->job_schedules;
+        $job_schedules = $employee->contract->job_schedules_attendance();
       } else {
         $job_schedules = null;
       }

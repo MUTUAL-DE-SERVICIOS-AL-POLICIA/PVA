@@ -5,6 +5,7 @@ namespace App;
 use Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\JobSchedule;
 
 class ConsultantContract extends Model
 {
@@ -77,4 +78,9 @@ class ConsultantContract extends Model
         });
     })->leftjoin('employees as e', 'e.id', '=', 'consultant_contracts.employee_id')->select('consultant_contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('consultant_contracts.start_date')->get();
   }
+
+  public function job_schedules_attendance()
+	{
+		return JobSchedule::whereIn('id', [1,2])->get();
+	}
 }

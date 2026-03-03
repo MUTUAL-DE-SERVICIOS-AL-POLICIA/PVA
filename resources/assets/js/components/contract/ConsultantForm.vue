@@ -388,8 +388,11 @@ export default {
       if (value) {
         let date = this.$moment(value)
         this.datePicker.start.formattedDate = date.format('L')
-        this.datePicker.end.min = date.add(1, 'days').toISOString().split('T')[0]
-        this.selectedItem.end_date = date.endOf('month').startOf('day').toISOString().split('T')[0]
+         //define fecha minima para la conclusión para evitar seleccionar fecha anteriores al inicio
+        this.datePicker.end.min = date.clone().add(1, 'days').format('YYYY-MM-DD')
+        if (this.selectedItem.new) {
+          this.selectedItem.end_date = date.clone().endOf('month').format('YYYY-MM-DD')
+        }
         this.monthSalaryCalc()
       }
     },
@@ -630,6 +633,7 @@ export default {
         }
       } catch (e) {
         console.log(e)
+        this.toastr.error(e.response.data.message || 'Ocurrió un error al guardar el contrato')
       }
     },
     monthSalaryCalc() {
