@@ -48,13 +48,28 @@ class Employee extends Model
   }
 
   public function contract_in_date($date)
-  {
-    if ($this->consultant()) {
-      return ConsultantContract::whereEmployeeId($this->id)->where('start_date', '<=', $date)->orderBy('start_date', 'DESC')->first();
-    } else {
-      return Contract::whereEmployeeId($this->id)->where('start_date', '<=', $date)->orderBy('start_date', 'DESC')->first();
+{
+    $status = $this->consultant();
+    $date = \Carbon\Carbon::parse($date);
+
+    if ($status === true) {
+        return ConsultantContract::whereEmployeeId($this->id)
+            ->where('start_date', '<=', $date)
+            ->orderBy('start_date', 'DESC')
+            ->first();
+    } elseif ($status === 2) {
+        return AssistantContract::whereEmployeeId($this->id)
+            ->where('start_date', '<=', $date)
+            ->orderBy('start_date', 'DESC')
+            ->first();
+    } elseif ($status === false) {
+        return Contract::whereEmployeeId($this->id)
+            ->where('start_date', '<=', $date)
+            ->orderBy('start_date', 'DESC')
+            ->first();
     }
-  }
+    return null;
+}
 
   public function consultant_contracts()
   {
@@ -75,8 +90,9 @@ class Employee extends Model
   {
     $contract = $this->last_contract();
     $consultant_contract = $this->last_consultant_contract();
+    $assistant_contract = $this->last_assistant_contract();
     $status = null;
-    if($contract && $consultant_contract)
+    if($contract && $consultant_contract && $assistant_contract)
     {
       if(Carbon::now()->between($consultant_contract->start_date, $consultant_contract->end_date) && $consultant_contract->retirement_date != null && $consultant_contract->active)
         $contract = null;
@@ -88,10 +104,15 @@ class Employee extends Model
       if($consultant_contract->retirement_date == null && $consultant_contract->end_date != null && Carbon::now()->between($consultant_contract->start_date, $consultant_contract->end_date) && $consultant_contract->active)
         $status = true;
     }
-    if($contract)
+    elseif($contract)
     {
       if($contract->retirement_date == null && Carbon::now()->greaterThan($contract->start_date) && $contract->active)
         $status = false;
+    }
+    elseif($assistant_contract)
+    {
+      if($assistant_contract->retirement_date == null && Carbon::now()->greaterThan($assistant_contract->start_date) && $assistant_contract->active)
+        $status = 2;
     }
     return $status;
   }
@@ -113,12 +134,12 @@ class Employee extends Model
 
   public function last_contract()
   {
-    return $this->contracts()->orderBy('start_date', 'DESC')->first();
+    return $this->contracts()->orderBy('start_date', 'DESC')->where('active', true)->first();
   }
 
   public function last_consultant_contract()
   {
-    return $this->consultant_contracts()->orderBy('start_date', 'DESC')->first();
+    return $this->consultant_contracts()->orderBy('start_date', 'DESC')->where('active', true)->first();
   }
 
   public function before_last_contract()

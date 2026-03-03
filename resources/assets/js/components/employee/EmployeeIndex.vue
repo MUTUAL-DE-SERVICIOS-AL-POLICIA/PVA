@@ -59,7 +59,7 @@
         <tr :class="rowColor(props.item)">
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ `${props.item.identity_card} ${props.item.city_identity_card.shortened}` }}</td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ `${props.item.last_name} ${props.item.mothers_last_name} ${props.item.first_name} ${(props.item.second_name) ? props.item.second_name : ''} ` }}</td>
-          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : 'PERSONAL DE PLANTA') }} </td>
+          <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center">{{ (props.item.consultant && props.item.consultant != 2) ? 'CONSULTOR' : ((props.item.consultant == null) ? 'SIN CONTRATOS' : (props.item.consultant == 2) ? 'PASANTE' : 'PERSONAL DE PLANTA') }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded" class="text-md-center pl-2">{{ (props.item.birth_date == null) ? '' : $moment(props.item.birth_date).format('DD/MM/YYYY') }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ props.item.account_number || '' }} </td>
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" @click="props.expanded = !props.expanded">{{ (props.item.management_entity_id) ? props.item.management_entity.name : '' }} </td>
@@ -67,7 +67,7 @@
           <td :class="(rowColor(props.item) != '' ? 'bordered' : '') + withoutBorders" class="text-md-center">
             <v-switch
               v-if="$store.getters.permissions.includes('update-employee')"
-              v-show="props.item.consultant == null"
+              v-show="props.item.consultant == null || props.item.consultant == 2"
               v-model="props.item.active"
               @change="switchActive(props.item)"
             ></v-switch>
@@ -150,7 +150,6 @@
     </v-data-table>
   </v-container>
 </template>
-
 <script>
 import Vue from "vue";
 import EmployeeEdit from "./EmployeeEdit";

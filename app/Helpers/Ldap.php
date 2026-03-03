@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Jobs\ProcessNotificationSMS;
 use Util;
 
 class Ldap
@@ -184,7 +185,7 @@ class Ldap
     }
   }
 
-  public function create_entry($data)
+  public function create_entry($data, $phone_number)
   {
     if ($this->connection && $this->verify_open_port()) {
       if ($this->bind_admin()) {
@@ -203,10 +204,22 @@ class Ldap
           $data["objectClass"] = ["inetOrgPerson", "top"];
           $group = explode('=', env("LDAP_ACCOUNT_SUFFIX"));
           $data[strtolower($group[0])] = strtolower($group[1]);
-          $data["userPassword"] = $this->hash_password($uid);
+          $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#%&*+<=>@';
+          $pass = substr(str_shuffle($chars), 0, 8);
+          $data["userPassword"] = $this->hash_password($pass);
 
           $added = @ldap_add($this->connection, $this->config['user_id_key'] . '=' . $uid . ',' . $this->config['account_suffix'], $data);
 
+          $message = "MUSERPOL - UNIDAD DE SISTEMAS Y SOPORTE TECNICO\r\n".
+           "Usuario: $uid\r\n".
+           "Contraseña: $pass\r\n".
+           "CENTRAL DE NOTIFICACIONES AUTOMATIZADA";
+          ProcessNotificationSMS::dispatch(
+            $phone_number,
+            $message,
+            $data['employeeNumber'],
+            'CREATION_LDAP_USER'
+          );
           return $added;
         }
         return null;

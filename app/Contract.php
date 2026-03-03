@@ -5,6 +5,7 @@ namespace App;
 use Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\JobSchedule;
 
 class Contract extends Model
 {
@@ -81,5 +82,10 @@ class Contract extends Model
                 $q->whereNull('retirement_date')->whereDate('end_date', '>=', $first_day_of_month)->whereDate('start_date', '<=', $last_day_of_month);
             });
 		})->leftjoin('employees as e', 'e.id', '=', 'contracts.employee_id')->select('contracts.*')->orderBy('e.last_name')->orderBy('e.mothers_last_name')->orderBy('contracts.start_date')->get();
+	}
+
+	public function job_schedules_attendance()
+	{
+		return JobSchedule::whereIn('id', [1,2])->get();
 	}
 }

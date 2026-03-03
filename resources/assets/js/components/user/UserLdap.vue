@@ -31,6 +31,12 @@
               </v-btn>
               <span>Reiniciar Contraseña</span>
             </v-tooltip>
+            <v-tooltip top>
+              <v-btn slot="activator" flat icon color="error" @click.native="deleteUser(props.item.employeeNumber)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+              <span>Eliminar usuario</span>
+            </v-tooltip>
           </td>
         </tr>
       </template>
@@ -154,6 +160,46 @@ export default {
         }
       } catch (e) {
         console.log(e);
+      }
+    },
+    async deleteUser(id) {
+      if (!id) {
+        this.toastr.error("Identificador inválido");
+        return;
+      }
+
+      if (!confirm("¿Está seguro de eliminar este usuario?")) {
+        return;
+      }
+
+      try {
+        var res = await axios.delete('/delete_ldap/' + id);
+
+        if (res && res.data && res.data.updated === true) {
+          this.toastr.success("Usuario eliminado con éxito");
+          this.loadUsers && this.loadUsers();
+        } else {
+          var msg = "No se pudo eliminar el usuario";
+          if (res && res.data && res.data.message) {
+            msg = res.data.message;
+          }
+          this.toastr.error(msg);
+        }
+
+      } catch (error) {
+        console.error(error);
+
+        var msg = "No se pudo conectar con el servidor";
+        if (
+          error &&
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          msg = error.response.data.message;
+        }
+
+        this.toastr.error(msg);
       }
     }
   }

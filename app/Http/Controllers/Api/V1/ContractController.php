@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Procedure;
 use App\Company;
 use Illuminate\Http\Request;
+use App\Employee;
 
 /** @resource Contract
  *
@@ -33,11 +34,19 @@ class ContractController extends Controller
    */
   public function store(Request $request)
   {
-    if ($this->contract_between_dates($request['employee_id'], $request['start_date'], $request['end_date']) == 0) {
-      $contract = Contract::create($request->all());
-      return $contract;
+    $employee = Employee::findOrFail($request->employee_id);
+    if($employee->active)
+    {
+      if ($this->contract_between_dates($request['employee_id'], $request['start_date'], $request['end_date']) == 0) {
+        $contract = Contract::create($request->all());
+        return $contract;
+      }
+      abort(403);
+    }else {
+      return response()->json([
+        'message' => 'La persona no se encuentra con estado activo'
+      ], 422);
     }
-    abort(403);
   }
 
   /**

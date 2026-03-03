@@ -269,6 +269,7 @@ Route::group([
       Route::resource('attendance_device', 'Api\V1\AttendanceDeviceController')->only(['index', 'show', 'update']);
       // User
       Route::resource('ldap', 'Api\V1\LdapController')->only(['index', 'store', 'show', 'update', 'destroy']);
+      Route::delete('delete_ldap/{id}', 'Api\V1\LdapController@delete')->name('delete_ldap_entry');
       Route::resource('user', 'Api\V1\UserController')->only(['index', 'store', 'show', 'update', 'destroy']);
       Route::get('user/switch_active/{id}', 'Api\V1\UserController@switch_active')->name('user_switch_active');
       // Attendance
