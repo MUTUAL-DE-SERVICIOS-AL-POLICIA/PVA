@@ -11,7 +11,7 @@ class PositionGroup extends Model
   protected $dates = ['deleted_at'];
   public $timestamps = true;
   public $guarded = ['id'];
-  protected $fillable = ['name', 'shortened', 'active', 'company_address_id'];
+  protected $fillable = ['name', 'shortened', 'active', 'company_address_id','pva_petty_cash'];
 
   public function depends_from()
   {
