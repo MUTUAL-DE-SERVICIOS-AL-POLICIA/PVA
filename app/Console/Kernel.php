@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
    * @var array
    */
   protected $commands = [
-    //
+    \App\Console\Commands\VacationQueueCommand::class,
   ];
   /**
    * Define the application's command schedule.
@@ -24,11 +24,7 @@ class Kernel extends ConsoleKernel
    */
   protected function schedule(Schedule $schedule)
   {
-    $request = Request::create(null, null, []);
-    $queue_controller = new VacationQueueController();
-    $schedule->call(function () use ($queue_controller, $request) {
-      $queue_controller->queue_vacation($request);
-    })->dailyAt('00:00');
+      $schedule->command('vacation:queue')->daily();
   }
 
   /**
