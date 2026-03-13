@@ -24,23 +24,28 @@ class DepartureForm extends FormRequest
    */
   public function rules()
   {
-    switch ($this->method()) {
-      case 'POST':
-        {
-          return [
-            'now'=>Carbon::now(),
-            'departure_reason_id' => 'required|exists:departure_reasons,id',
-            'employee_id' => 'required|exists:employees,id',
-            'departure' => ['required','date',$this->departure_reason_id==1||$this->departure_reason_id==4?'after:now':''],
-            'return' => 'required|date'
-          ];
-        }
-      case 'PUT':
-      case 'PATCH':
-        {
-          return [];
-        }
-    }
+      switch ($this->method()) {
+          case 'POST':
+              $departureRules = ['required', 'date'];
+
+              if (in_array($this->departure_reason_id, [1, 4, 6, 7, 8])) {
+                  $departureRules[] = 'after:' . now()->format('Y-m-d H:i:s');
+              }
+
+              return [
+                  'departure_reason_id' => 'required|exists:departure_reasons,id',
+                  'employee_id' => 'required|exists:employees,id',
+                  'departure' => $departureRules,
+                  'return' => 'required|date|after:departure',
+              ];
+
+          case 'PUT':
+          case 'PATCH':
+              return [];
+
+          default:
+              return [];
+      }
   }
 
   public function messages()
