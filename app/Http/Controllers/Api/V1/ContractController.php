@@ -26,6 +26,11 @@ class ContractController extends Controller
     return Contract::with('job_schedules', 'employee', 'insurance_company', 'employee.city_identity_card', 'employee.get_cas', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')->withCount('payrolls')->orderBy('end_date', 'ASC')->get();
   }
 
+  public function active_contracts()
+  {
+    return Contract::with('job_schedules', 'employee', 'insurance_company', 'employee.city_identity_card', 'employee.get_cas', 'position', 'position.charge', 'position.position_group', 'contract_type', 'contract_mode', 'retirement_reason')->withCount('payrolls')->where('active', true)->orderBy('end_date', 'ASC')->get();
+  }
+
   /**
    * Store a newly created resource in storage.
    *

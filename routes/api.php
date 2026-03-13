@@ -163,6 +163,7 @@ Route::group([
     });
     // Contract
     Route::get('contract', 'Api\V1\ContractController@index')->name('contracts_list');
+    Route::get('active_contracts', 'Api\V1\ContractController@active_contracts');
     Route::get('contract/{id}', 'Api\V1\ContractController@show')->name('contract_details');
     Route::get('contract/position_free/{position_id}', 'Api\V1\ContractController@positionFree')->name('contract_position_free');
     Route::get('contract/print/{id}/{type}', 'Api\V1\ContractController@print')->name('contract_print');
