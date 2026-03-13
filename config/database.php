@@ -67,6 +67,8 @@ return [
       'database' => env('DB_ATTENDANCE_DATABASE', 'db'),
       'username' => env('DB_ATTENDANCE_USERNAME', 'admin'),
       'password' => env('DB_ATTENDANCE_PASSWORD', 'admin'),
+      'encrypt' => env('DB_ENCRYPT', 'yes'),
+      'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'true'),
       'charset' => 'latin1',
       'prefix' => '',
     ],
