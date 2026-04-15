@@ -712,8 +712,6 @@ export default {
               departure: departureDate.format(),
               return: returnDate.format()
             })
-
-            console.log(res);
           } else {
             res = await axios.patch(`departure/${this.departure.id}`, {
               cite: this.departure.cite,
@@ -722,7 +720,22 @@ export default {
           }
         }
         catch (e) {
-          console.log(e)
+          if (
+            e.response &&
+            e.response.data &&
+            e.response.data.errors
+          ) {
+            const firstError = Object.values(e.response.data.errors)[0][0]
+            this.toastr.error(firstError)
+          } else if (
+            e.response &&
+            e.response.data &&
+            e.response.data.message
+          ) {
+            this.toastr.error(e.response.data.message)
+          } else {
+            this.toastr.error('Error inesperado')
+          }
         } finally {
           this.bus.$emit('printDeparture', res.data.id)
           this.closeDialog()

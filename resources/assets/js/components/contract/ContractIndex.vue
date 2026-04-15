@@ -241,8 +241,13 @@ export default {
     async getContracts(active = this.active) {
       try {
         this.active = active;
-        let res = await axios.get(`/active_contracts`);
-        this.contracts = res.data
+        if (active){
+          let res = await axios.get(`/active_contracts`);  
+          this.contracts = res.data
+        }else {
+          let res = await axios.get(`/contract`);
+          this.contracts = res.data
+        }
         this.loading = false
       } catch (e) {
         console.log(e);
