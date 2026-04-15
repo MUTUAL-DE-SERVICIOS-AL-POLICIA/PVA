@@ -193,13 +193,29 @@ class DepartureController extends Controller
    */
   public function store(DepartureForm $request)
   {
-    $lastCode = Departure::latest()->first()->code;
-    $newCode = $lastCode + 1;
-    $departure = Departure::create(array_merge($request->all(), [
-        'code' => $newCode,
-    ]));
-
-    return $departure;
+    $existing_departure = false;
+    if($request->departure_reason_id == 1){
+      $date = $request->departure;
+      $employee_id = $request->employee_id;
+      $existing_departure = Departure::where('employee_id', $employee_id)
+          ->where('departure_reason_id', 1)
+          ->whereDate('departure', $date)
+          ->count();
+      if ($existing_departure > 0)
+        $existing_departure = true;
+    }
+    if(!$existing_departure){
+      $lastCode = Departure::latest()->first()->code;
+      $newCode = $lastCode + 1;
+      $departure = Departure::create(array_merge($request->all(), [
+          'code' => $newCode,
+      ]));
+      return $departure;
+    }else{
+      return response()->json([
+        'message' => 'Ya existe una salida registrada para esta fecha',
+      ], 409);
+    }
   }
 
   /**
@@ -432,68 +448,57 @@ class DepartureController extends Controller
     DB::beginTransaction();
     try {
       $employee = Employee::find($request->employee_id);
-      /*$vacation_queue = VacationQueue::where('employee_id', $request->employee_id)
-                                      ->where('max_date', '>=', $request->departure)
-                                      ->where('end_date', '>', $employee->addmisión_date)
-                                      ->where('rest_days', '>', 0)->get();*/
-    $vacation_queue = VacationQueue::query()
-    ->where('employee_id', $request->employee_id)
-    ->when($request->filled('departure'), function ($q) use ($request) {
-        $q->whereDate('max_date', '>=', $request->departure);
-    })
-    ->when(!empty($employee->admision_date), function ($q) use ($employee) {
-        $q->whereDate('end_date', '>', $employee->admision_date);
-    })
-    ->where('rest_days', '>', 0)
-    ->get();
-      $count_days = 0;
-      foreach($request->days as $day)
-      {
-        if($day['morning'])
-          $count_days += 0.5;
-        if($day['afternoon'])
-          $count_days += 0.5;
-      }
+      $count_days = collect($request->days)->sum(function ($day) {
+          if ($day['morning'] && $day['afternoon']) {
+              return 1;
+          }
+
+          if ($day['morning'] || $day['afternoon']) {
+              return 0.5;
+          }
+
+          return 0;
+      });
+      $vacation_queue = VacationQueue::query()
+      ->where('employee_id', $request->employee_id)
+      ->when($request->filled('departure'), function ($q) use ($request) {
+          $q->whereDate('max_date', '>=', $request->departure);
+      })
+      ->when(!empty($employee->admision_date), function ($q) use ($employee) {
+          $q->whereDate('end_date', '>', $employee->admision_date);
+      })
+      ->where('rest_days', '>', 0)
+      ->get();
       if ($vacation_queue->sum('rest_days') > 0 && $count_days <= $vacation_queue->sum('rest_days')) {
         $lastCode = Departure::latest()->first()->code;
         $newCode = $lastCode ? $lastCode + 1 : 1;
-        $sw = true;
-        if(Carbon::parse($request->departure)->format('H:i:s') != Carbon::parse($request->return)->format('H:i:s'))
-        {
-          $new_return = '00:00:00';
-          if(Carbon::parse($request->departure)->format('H:i:s') == ('08:30:00'))
-            $new_return = Carbon::parse('18:30:00')->format('H:i:s');
-          elseif(Carbon::parse($request->departure)->format('H:i:s') == ('14:30:00'))
-            $new_return = Carbon::parse('12:30:00')->format('H:i:s');
-          $date = Carbon::parse($request->return)->setTimeFromTimeString($new_return);
-          $request->merge(['return' => $date->toDateTimeString()]);
-        }
+        $days_on_vacation = collect($request->days);
+        if($days_on_vacation->first()['morning'])
+          $departure_hour = '08:30:00';
         else
-        {
-          $new_return = '00:00:00';
-          if(Carbon::parse($request->departure)->format('H:i:s') == ('08:30:00'))
-            $new_return = Carbon::parse('12:30:00')->format('H:i:s');
-          elseif(Carbon::parse($request->departure)->format('H:i:s') == ('14:30:00'))
-            $new_return = Carbon::parse('18:30:00')->format('H:i:s');
-          $date = Carbon::parse($request->return)->setTimeFromTimeString($new_return);
-          $request->merge(['return' => $date->toDateTimeString()]);
-        }
+          $departure_hour = '14:30:00';
+        if($days_on_vacation->last()['afternoon'])
+          $return_hour = '18:30:00';
+        else
+          $return_hour = '12:30:00';
+        $request->merge(['departure' => Carbon::parse($request->departure)->setTimeFromTimeString($departure_hour)->toDateTimeString()]);
+        $request->merge(['return' => Carbon::parse($request->return)->setTimeFromTimeString($return_hour)->toDateTimeString()]);
         $departure = Departure::create(array_merge($request->all(), [
           'code' => $newCode,
         ]));
-        $c = 1;
+        $period = '';
         foreach ($request->days as $day) {
           $journal = 1;
-          if ($c == 1 || $c == count($request->days)) {
-            if ($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
-              $journal = 0.5;
+          if ($day['morning'] && $day['afternoon']){
+            $journal = 1;
+            $period = 'todo el día';
           }
-          else{
-            if($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
-              {
-                $sw = false;
-                break;
-              }
+          elseif (!$day['morning'] && $day['afternoon']){
+            $journal = 0.5;
+            $period = 'tarde';
+          }elseif ($day['morning'] && !$day['afternoon']){
+            $journal = 0.5;
+            $period = 'mañana';
           }
           $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
           if ($journal > $remanent->rest_days) {
@@ -507,30 +512,21 @@ class DepartureController extends Controller
           $save_day = new DaysOnVacation([
             'date' => $day['date'],
             'day' => $journal,
+            'period' => $period
           ]);
           $departure->days_on_vacation()->save($save_day);
-          $c++;
         }
-        if($sw)
-        {
           DB::commit();
-        return response()->json([
-          'message' => 'Registro exitoso',
-          'departure' => $departure,
-        ], 200);
-        }
-        else{
-          DB::rollback();
           return response()->json([
-            'message' => 'los Dias intermedios no pueden ser medias jornadas',
-          ], 405);
-        }
+            'message' => 'Registro exitoso',
+            'departure' => $departure,
+          ], 200);
       } else {
         return response()->json([
           'message' => 'Dias de Vacación no disponibles',
         ], 405);
       }
-    } catch (\Exception $e) {return $e;
+    } catch (\Exception $e) {
       DB::rollback();
       return response()->json([
         'message' => 'Cite Duplicado',

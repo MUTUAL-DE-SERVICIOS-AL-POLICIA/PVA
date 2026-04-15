@@ -41,7 +41,9 @@ class EmployeeController extends Controller
 
       if ($employee->consultant === null) {
         $employee->position = null;
-      } elseif ($employee->consultant === true) {
+      } elseif($employee->consultant === 2){
+        $employee->position = $employee->last_assistant_contract()->assistant_position;
+      }elseif ($employee->consultant === true) {
         $employee->position = $employee->last_consultant_contract()->consultant_position->name;
       } elseif ($employee->consultant === false) {
         $employee->position = $employee->last_contract()->position->name;
@@ -140,7 +142,8 @@ class EmployeeController extends Controller
       } else {
         $to = CarbonImmutable::parse($request->input('month'));
       }
-      if ($employee->consultant()) {
+      $sw = $employee->consultant();
+      if ($sw === true || $sw === 2 || !$employee->active) {
         $from = $to->day(1);
         $to = $from->endOfMonth();
       } else {
@@ -166,31 +169,109 @@ class EmployeeController extends Controller
 
   public function departure(Request $request, $id)
   {
-    $employee = Employee::findOrFail($id);
-    $date_range = $this->date_range($request, $employee);
-    $from = $date_range->from;
-    $to = $date_range->to;
-    $request = new Request([
-      'from' => $date_range->from,
-      'to' => $date_range->to,
-      'employee_id' => $employee->id
-    ]);
-    $departures = app(\App\Http\Controllers\Api\V1\DepartureController::class)->index_departures($request);
-    foreach ($departures as $departure) {
-      $departure->reason = $departure->departure_reason->departure_group->name;
-      $from = Carbon::parse($departure->departure);
-      $to = Carbon::parse($departure->return);
-      $departure->from = (object)[
-        'date' => $from->toDateString(),
-        'time' => $from->format('H:i')
-      ];
-      $departure->to = (object)[
-        'date' => $to->toDateString(),
-        'time' => $to->format('H:i')
-      ];
-      unset($departure->departure_reason, $departure->departure, $departure->return);
-    }
-    return response()->json($departures);
+      $employee = Employee::findOrFail($id);
+
+      $dateRange = $this->date_range($request, $employee);
+      $rangeFrom = Carbon::parse($dateRange->from)->startOfDay();
+      $rangeTo = Carbon::parse($dateRange->to)->endOfDay();
+
+      $requestDepartures = new Request([
+          'from' => $dateRange->from,
+          'to' => $dateRange->to,
+          'employee_id' => $employee->id
+      ]);
+
+      $departures = app(\App\Http\Controllers\Api\V1\DepartureController::class)
+          ->index_departures($requestDepartures);
+
+      $filtered = collect();
+
+      foreach ($departures as $departure) {
+          $departure->reason = $departure->departure_reason->departure_group->name;
+          $departure->reason_name = $departure->departure_reason->name;
+
+          // Vacaciones
+          if ((int) $departure->departure_reason_id === 24 || (int) $departure->departure_reason_id === 17) {
+              $days = collect($departure->days_on_vacation ?? [])
+                  ->filter(function ($day) use ($rangeFrom, $rangeTo) {
+                      $date = Carbon::parse($day->date)->startOfDay();
+                      return $date->between($rangeFrom, $rangeTo);
+                  })
+                  ->map(function ($day) {
+                      return (object) [
+                          'date' => Carbon::parse($day->date)->toDateString(),
+                          'period' => $day->period,
+                          'label' => $this->vacationPeriodLabel($day->period),
+                      ];
+                  })
+                  ->values();
+
+              if ($days->isEmpty()) {
+                  continue;
+              }
+
+              $filtered->push((object) [
+                  'id' => $departure->id,
+                  'departure_reason_id' => $departure->departure_reason_id,
+                  'reason' => $departure->reason,
+                  'reason_name' => $departure->reason_name,
+                  'code' => $departure->code,
+                  'approved' => $departure->approved,
+                  'days' => $days,
+              ]);
+
+              continue;
+          }
+
+          // Otros permisos
+          $from = Carbon::parse($departure->departure);
+          $to = Carbon::parse($departure->return);
+
+          if ($to->lt($rangeFrom) || $from->gt($rangeTo)) {
+              continue;
+          }
+
+          $visibleFrom = $from->lt($rangeFrom)
+              ? $rangeFrom->copy()->setTimeFrom($from)
+              : $from->copy();
+
+          $visibleTo = $to->gt($rangeTo)
+              ? $rangeTo->copy()->setTimeFrom($to)
+              : $to->copy();
+
+          $filtered->push((object) [
+              'id' => $departure->id,
+              'departure_reason_id' => $departure->departure_reason_id,
+              'reason' => $departure->reason,
+              'reason_name' => $departure->reason_name,
+              'code' => $departure->code,
+              'approved' => $departure->approved,
+              'from' => (object) [
+                  'date' => $visibleFrom->toDateString(),
+                  'time' => $visibleFrom->format('H:i'),
+              ],
+              'to' => (object) [
+                  'date' => $visibleTo->toDateString(),
+                  'time' => $visibleTo->format('H:i'),
+              ],
+          ]);
+      }
+
+      return response()->json($filtered->values());
+  }
+
+  private function vacationPeriodLabel($period)
+  {
+      switch ($period) {
+          case 'mañana':
+              return 'MAÑANA';
+          case 'tarde':
+              return 'TARDE';
+          case 'todo el día':
+              return 'TODO EL DÍA';
+          default:
+              return '';
+      }
   }
 
   public function attendance(Request $request, $id)
@@ -210,7 +291,8 @@ class EmployeeController extends Controller
 
       $checks = $attendance_user->checks()->where('checktime', '>=', $from->startOfDay()->format('Ymd H:i:s'))->where('checktime', '<=', $to->endOfDay()->format('Ymd H:i:s'))->get();
 
-      if ($checks->count() == 0) {
+      ///POR REVISAR SU USO
+      /*if ($checks->count() == 0 && $employee->active) {
         return response()->json([
           'from' => $from->toDateString(),
           'to' => $to->toDateString(),
@@ -219,7 +301,7 @@ class EmployeeController extends Controller
             'type' => ['Sin registros de asistencia para el rango de fechas'],
           ],
         ], 404);
-      }
+      }*/
 
       $employee->full_name = $employee->fullName('uppercase', 'last_name_first');
       $employee->consultant = $employee->consultant();
