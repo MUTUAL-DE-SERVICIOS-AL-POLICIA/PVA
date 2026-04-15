@@ -44,7 +44,7 @@
           <td> {{ props.item.name }} </td>
           <td> {{ props.item.base_wage }} </td>
           <td v-if="props.item.active"> ACTIVO </td>
-          <td class="justify-center layout" v-if="$store.getters.role == 'admin'">
+          <td class="justify-center layout" v-if="($store.getters.role == 'admin' || $store.getters.role == 'rrhh')">
             <v-tooltip top>
               <v-btn :class="withoutBorders" slot="activator" flat icon @click="editItem(props.item)" color="info">
                 <v-icon>edit</v-icon>
