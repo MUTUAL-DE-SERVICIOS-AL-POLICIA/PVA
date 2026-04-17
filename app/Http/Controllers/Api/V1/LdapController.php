@@ -166,14 +166,14 @@ class LdapController extends Controller
       $ldap = new Ldap();
       $entry = $ldap->get_entry($employee->id);
       $charge = $entry['title'];
+      $password = hash_hmac('sha256', $employee->identity_card, '2, 4, 6, 7, 9, 15, 20, 23, 25, 30');
       if($query)
       {
-        $update = "UPDATE users set id_oficina = '$position_group_id', habilitado = 1, cargo = '$charge' where id = $employee->id";
+        $update = "UPDATE users set password = '$password', id_oficina = '$position_group_id', habilitado = 1, cargo = '$charge' where id = $employee->id";
         return DB::connection('sigec')->select($update);
       }else{
         $username = $entry['uid'];
         $mail = $entry['mail'];
-        $password = hash_hmac('sha256', $employee->identity_card, '2, 4, 6, 7, 9, 15, 20, 23, 25, 30');
         $full_name = $employee->second_name ? $employee->first_name." ".$employee->second_name : $employee->first_name;
         $full_last_name = $employee->mothers_last_name ? $employee->last_name." ".$employee->mothers_last_name : $employee->last_name;
         $full_name = $full_name." ".$full_last_name;
@@ -279,9 +279,9 @@ class LdapController extends Controller
 
       try {
           $user = $ldap->get_entry($id);
-          $employee_sigec = DB::connection('sigec')->select("SELECT * FROM users WHERE id = ".$id.";");
+          $employee_sigec = DB::connection('sigec')->select("SELECT * FROM users WHERE id = $id;");
           if(count($employee_sigec) > 0){
-            $query = "UPDATE users SET habilitado = 0 WHERE id = ".$id.";";
+            $query = "UPDATE users SET habilitado = 0 WHERE id = $id;";
             DB::connection('sigec')->select($query);
           }
           if (!$user) {
