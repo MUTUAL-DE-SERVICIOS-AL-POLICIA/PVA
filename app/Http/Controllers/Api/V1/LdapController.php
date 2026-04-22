@@ -279,10 +279,13 @@ class LdapController extends Controller
 
       try {
           $user = $ldap->get_entry($id);
-          $employee_sigec = DB::connection('sigec')->select("SELECT * FROM users WHERE id = $id;");
-          if(count($employee_sigec) > 0){
-            $query = "UPDATE users SET habilitado = 0 WHERE id = $id;";
-            DB::connection('sigec')->select($query);
+          
+          if (env('DB_SIGEC_SYNC')){
+              $employee_sigec = DB::connection('sigec')->select("SELECT * FROM users WHERE id = $id;");
+            if(count($employee_sigec) > 0){
+              $query = "UPDATE users SET habilitado = 0 WHERE id = $id;";
+              DB::connection('sigec')->select($query);
+            }
           }
           if (!$user) {
               return response()->json([
