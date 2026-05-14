@@ -121,7 +121,9 @@
                   </v-btn>
                   <span>Eliminar</span>
                 </v-tooltip>
-                <Transfer :departure="props.item" :color="props.expanded ? 'warning' : 'success'" v-if="departureType(props.item).group == 'COMISIÓN'"/>
+                  <div v-if=pva_petty_cash>
+                    <Transfer :departure="props.item" :color="props.expanded ? 'warning' : 'success'" v-if="departureType(props.item).group == 'COMISIÓN'"/>
+                  </div>
               </div>
             </td>
           </tr>
@@ -201,6 +203,7 @@ export default {
         }
       ],
       departures: [],
+      pva_petty_cash: null,
       departureReasons: [],
       departureGroups: [],
       remainingDepartures: {
@@ -279,6 +282,7 @@ export default {
     } else {
       this.departureTypeSelected = 'null'
     }
+    this.getPvaPettyCash()
   },
   mounted() {
     this.bus.$on('printDeparture', departureId => {
@@ -361,6 +365,16 @@ export default {
       } catch (e) {
         console.log(e)
       }
+    },
+    async getPvaPettyCash() {
+      let contract = await this.getLastContract(this.$store.getters.id)
+        if (contract.hasOwnProperty('consultant_position_id')) {
+          this.pva_petty_cash = contract.consultant_position.position_group.pva_petty_cash
+        } else if (contract.hasOwnProperty('assistant_position')) {
+          this.pva_petty_cash = contract.position_group.pva_petty_cash
+        } else {
+          this.pva_petty_cash = contract.position.position_group.pva_petty_cash
+        }
     },
     async expand(props) {
       if (!props.expanded) {
