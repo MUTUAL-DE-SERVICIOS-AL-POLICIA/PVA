@@ -87,7 +87,7 @@ export default {
           value: false
         }
       ],
-      active: false,
+      active: true,
       selected_name: ""
     }
   },

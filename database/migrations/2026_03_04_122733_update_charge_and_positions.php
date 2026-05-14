@@ -45,8 +45,11 @@ class UpdateChargeAndPositions extends Migration
             }*/
 
             //actualizacion de nombres de puestos
-            DB::table('positions')->where('item', 15)->where('active',true)->update(['name' => 'Asistente de archivo']);
+            DB::table('positions')->where('item', 15)->where('active',true)->update(['name' => 'Asistente de Archivo']);
+            DB::table('positions')->where('item', 19)->where('active',true)->update(['name' => 'Profesional Legal Préstamo']);
             DB::table('positions')->where('item', 27)->where('active',true)->update(['name' => 'Responsable de Procesos Técnicos de Patrimonio y Bienes']);
+            DB::table('positions')->where('item', 28)->where('active',true)->update(['name' => 'Técnico de Conservación Patrimonio y Bienes']);
+            DB::table('positions')->where('item', 29)->where('active',true)->update(['name' => 'Asistente de Conservación Patrimonio y Bienes']);
             DB::table('positions')->where('item', 30)->where('active',true)->update(['name' => 'Profesional Administrativo de Hotelería']);
             DB::table('positions')->where('item', 31)->where('active',true)->update(['name' => 'Asistente de recepción I']);
             DB::table('positions')->where('item', 32)->where('active',true)->update(['name' => 'Asistente de recepción II']);
@@ -55,7 +58,7 @@ class UpdateChargeAndPositions extends Migration
             DB::table('positions')->where('item', 35)->where('active',true)->update(['name' => 'Asistente Camarero I']);
             DB::table('positions')->where('item', 36)->where('active',true)->update(['name' => 'Asistente Camarero y Mantenimiento']);
             DB::table('positions')->where('item', 39)->where('active',true)->update(['name' => 'Técnico de Archivo y Gestión Documental de Beneficios Económicos']);
-            DB::table('positions')->where('item', 41)->where('active',true)->update(['name' => 'Jefe de Unidad de Fondo de Retiro Policial Solidario Cuota y Auxilio Mortuorio']);
+            DB::table('positions')->where('item', 41)->where('active',true)->update(['name' => 'Jefe de Unidad de Fondo de Retiro Policial Solidario Cuota y Auxilio Mortuoria']);
             DB::table('positions')->where('item', 43)->where('active',true)->update(['name' => 'Profesional en Calificación Fondo de Retiro, Cuota y Auxilio Mortuorio']);
             DB::table('positions')->where('item', 44)->where('active',true)->update(['name' => 'Técnico de Atención al Afiliado de Fondo de Retiro']);
             DB::table('positions')->where('item', 48)->where('active',true)->update(['name' => 'Jefe de Unidad del Complemento Económico']);
@@ -66,6 +69,7 @@ class UpdateChargeAndPositions extends Migration
             DB::table('positions')->where('item', 68)->where('active',true)->update(['name' => 'Técnico de Presupuesto']);
             DB::table('positions')->where('item', 69)->where('active',true)->update(['name' => 'Jefe de la Unidad Administrativa']);
             DB::table('positions')->where('item', 71)->where('active',true)->update(['name' => 'Profesional en Servicios Generales']);
+            DB::table('positions')->where('item', 79)->where('active',true)->update(['name' => 'Director de Asesoramiento Jurídico Administrativo y Defensa Institucional']);
             DB::table('positions')->where('item', 87)->where('active',true)->update(['name' => 'Representante Departamental de Santa Cruz']);
             DB::table('positions')->where('item', 89)->where('active',true)->update(['name' => 'Representante Departamental de Cochabamba']);
             DB::table('positions')->where('item', 91)->where('active',true)->update(['name' => 'Representante Departamental de Oruro']);
