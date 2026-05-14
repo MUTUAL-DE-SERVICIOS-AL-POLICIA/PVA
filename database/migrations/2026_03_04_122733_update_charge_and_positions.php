@@ -22,7 +22,28 @@ class UpdateChargeAndPositions extends Migration
                     'name' => DB::raw('TRIM(name)')
                 ]);
             DB::table('positions')->where('item', 0)->update(['active' => false]);
-            
+            /*$salarioPorCargo = [
+                'DIRECTOR GENERAL EJECUTIVO' => 14878,
+                'DIRECTOR DE ÁREA' => 12032,
+                'JEFE DE UNIDAD I' => 8626,
+                'JEFE DE UNIDAD II' => 7905,
+                'RESPONSABLE' => 6972,
+                'PROFESIONAL I' => 5622,
+                'TÉCNICO I' => 5060,
+                'TÉCNICO II' => 4947,
+                'SECRETARÍA DE DIRECCIÓN EJECUTIVA' => 4468,
+                'TÉCNICO III' => 4426,
+                'TÉCNICO IV' => 4385,
+                'AUXILIAR I' => 3916,
+                'AUXILIAR II' => 3437,
+                'AUXILIAR III' => 3300,
+            ];
+            foreach ($salarioPorCargo as $cargo => $salario) {
+                DB::table('charges')
+                ->where('name', $cargo)
+                ->update(['base_wage' => $salario]);
+            }*/
+
             //actualizacion de nombres de puestos
             DB::table('positions')->where('item', 15)->where('active',true)->update(['name' => 'Asistente de Archivo']);
             DB::table('positions')->where('item', 19)->where('active',true)->update(['name' => 'Profesional Legal Préstamo']);
