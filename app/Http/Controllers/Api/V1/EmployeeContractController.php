@@ -50,15 +50,22 @@ class EmployeeContractController extends Controller
   public function get_last_contract($employee_id)
   {
     $employee = Employee::findOrFail($employee_id);
-    if ($employee->consultant()) {
-      $contract = $employee->last_consultant_contract();
-      $contract->consultant_position->position_group;
-      $contract->consultant_position->charge;
+    if ($employee->consultant() === 2) {
+      $contract = $employee->last_assistant_contract();
+      $contract->assistant_position;
+      $contract->position_group;
       return $contract;
-    } else {
+    }elseif ($employee->consultant() === false) {
       $contract = $employee->last_contract();
       $contract->position->position_group;
       $contract->position->charge;
+      return $contract;
+    }
+    elseif ($employee->consultant() === true)
+    {
+      $contract = $employee->last_consultant_contract();
+      $contract->consultant_position->position_group;
+      $contract->consultant_position->charge;
       return $contract;
     }
   }
