@@ -205,12 +205,5 @@
     "icon": "timeline",
     "permission": "read-user-action",
     "params": {}
-  },
-  {
-    "href": "salaryScaleIndex",
-    "title": "Escala salarial",
-    "icon": "gavel",
-    "permission": "read-eventual",
-    "params": {}
   }
 ]
