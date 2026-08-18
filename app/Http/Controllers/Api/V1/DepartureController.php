@@ -482,11 +482,13 @@ class DepartureController extends Controller
           'code' => $newCode,
         ]));
         $c = 1;
+        $sw_journal = false;
         foreach ($request->days as $day) {
           $journal = 1;
           if ($c == 1 || $c == count($request->days)) {
-            if ($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
+            if ($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon']){
               $journal = 0.5;
+            }
           }
           else{
             if($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
@@ -501,12 +503,13 @@ class DepartureController extends Controller
             $remanent->save();
             $journal = 0.5;
             $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
+            $sw_journal = true;
           }
           $remanent->rest_days = $remanent->rest_days - $journal;
           $remanent->save();
           $save_day = new DaysOnVacation([
             'date' => $day['date'],
-            'day' => $journal,
+            'day' => $sw_journal ? 1 : $journal,
           ]);
           $departure->days_on_vacation()->save($save_day);
           $c++;
