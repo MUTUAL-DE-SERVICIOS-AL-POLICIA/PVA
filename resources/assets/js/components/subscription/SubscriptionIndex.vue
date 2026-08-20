@@ -10,7 +10,7 @@
           usan para mostrar el resultado en pantalla.
         </v-alert>
 
-        <!-- Campos de entrada -->
+       
         <v-layout row wrap class="mt-3">
           <v-flex xs12 sm3 class="px-2">
             <v-menu
@@ -88,7 +88,7 @@
           </v-flex>
         </v-layout>
 
-        <!-- Resultados: siempre debajo de los campos, en su propio bloque -->
+    
         <template v-if="startDate && endDate && selectedCharge.base_wage">
           <v-divider class="my-4"></v-divider>
 
@@ -142,13 +142,11 @@ export default {
     isValidRange() {
       return this.startDate && this.endDate && !this.$moment(this.endDate).isBefore(this.$moment(this.startDate));
     },
-    // Cantidad de meses calendario completos (no se convierten días sobrantes en meses)
+    
     completeMonthsCount() {
       return this.months.filter(o => o.type === "complete").length;
     },
-    // Suma de los días de los tramos parciales (primer y/o último mes). Esta suma
-    // NO se divide entre 30 para inventar meses adicionales — la división entre
-    // 30 es solo para calcular el monto a pagar (this.total), no el plazo.
+  
     partialDaysTotal() {
       return this.months.filter(o => o.type === "partial").reduce((sum, o) => sum + o.count, 0);
     },
@@ -173,7 +171,7 @@ export default {
     }
   },
   watch: {
-    // La Fecha de Inicio ingresada se usa tal cual, sin ningún ajuste automático.
+   
     startDate(value) {
       if (value) {
         this.datePicker.start.formattedDate = this.$moment(value).format("L");
@@ -204,8 +202,7 @@ export default {
     async getCharges() {
       try {
         let res = await axios.get("/charge");
-        // Igual que el módulo "Escala Salarial": solo se muestran los cargos
-        // activos, para no ofrecer sueldos antiguos/desactualizados.
+       
         this.charges = res.data.filter(e => e.active);
       } catch (e) {
         console.log(e);
@@ -220,15 +217,7 @@ export default {
       }
       this.calculate();
     },
-    // Calcula el detalle mes a mes entre Fecha de Inicio y Fecha Final.
-    // - Los meses calendario completos se pagan íntegros (el Haber Básico completo)
-    //   y cuentan como "mes completo" en el plazo.
-    // - Los meses parciales (el primero y/o el último) se pagan por día —
-    //   dividiendo el Haber Básico entre 30 — y se muestran por separado en el
-    //   plazo (NO se suman entre sí ni se convierten en meses adicionales).
-    // El número de días de un mes parcial usa los días reales de ESE mes
-    // calendario (28, 29, 30 o 31). Ejemplo: si el contrato empieza el 24 de
-    // agosto, quedan 8 días para terminar agosto (24 al 31), no 7.
+   
     calculate() {
       this.months = [];
 
@@ -260,8 +249,7 @@ export default {
         return;
       }
 
-      // Primer mes (parcial): días reales desde el día de inicio hasta el
-      // último día real de ese mes calendario.
+    
       let firstMonthLastDay = Number(startDate.clone().endOf("month").format("D"));
       let count = firstMonthLastDay - Number(startDate.format("D")) + 1;
       this.months.push({
@@ -275,7 +263,7 @@ export default {
 
       while (!endDate.isSame(cursor, "month", "year")) {
         if (!endDate.isSame(cursor.add(1, "month"), "month", "year")) {
-          // Mes intermedio: completo
+         
           this.months.push({
             name: cursor.format("MMMM YYYY"),
             count: 30,
@@ -283,8 +271,7 @@ export default {
             type: "complete"
           });
         } else {
-          // Último mes (parcial): días reales desde el día 1 hasta la fecha
-          // de fin (el número de día ya representa la cantidad de días reales).
+         
           let lastCount = Number(endDate.format("D"));
           let lastDayOfMonth = Number(endDate.clone().endOf("month").format("D"));
           let isFullMonth = lastCount == lastDayOfMonth;
