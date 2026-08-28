@@ -195,7 +195,7 @@
   {
     "href": "salaryScaleIndex",
     "title": "Escala salarial",
-    "icon": "north-east",
+    "icon": "gavel",
     "permission": "read-procedure-eventual",
     "params": {}
   },
@@ -221,4 +221,3 @@
     "params": {}
   }
 ]
-
