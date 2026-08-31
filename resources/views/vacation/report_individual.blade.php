@@ -54,21 +54,23 @@ use App\Helpers\Util;
         </tr>
         <tr>
             <th class="bg-grey-darker text-xs text-white">Cargo</th>
-            <td
-                class="{{ Util::string_class_length($employee->last_contract()->position->name, false) }} data-row py-5">
-                {{ $employee->last_contract()->position->name }}</td>
+            <td class="data-row py-5">
+                {{ optional(optional($employee->last_contract())->position)->name ?? 'Sin registro' }}
+            </td>
         </tr>
+
         <tr>
             <th class="bg-grey-darker text-xs text-white">Unidad Organizacional</th>
-            <td
-                class="{{ Util::string_class_length($employee->last_contract()->position->position_group->name, false) }} data-row py-5">
-                {{ $employee->last_contract()->position->position_group->name }}</td>
+            <td class="data-row py-5">
+                {{ optional(optional(optional($employee->last_contract())->position)->position_group)->name ?? 'Sin registro' }}
+            </td>
         </tr>
         @if ($employee->activeCas)
             <tr>
-                <th class="bg-grey-darker text-xs text-white">Fecha de emisión CAS</th>
+                <th class="bg-grey-darker text-xs text-white" width="35%">Fecha de emisión CAS</th>
                 <td class="data-row py-2">{{ $employee->activeCas->issue_date }}</td>
             </tr>
+
             <tr>
                 <th class="bg-grey-darker text-xs text-white">N° de días asignados según CAS</th>
                 <td class="data-row py-2">
@@ -82,7 +84,7 @@ use App\Helpers\Util;
         @else
             <tr>
                 <th class="bg-grey-darker text-xs text-white">Datos del CAS</th>
-                <td rowspan="2">Sin registro</td>
+                <td class="data-row py-2">Sin registro</td>
             </tr>
         @endif
 
