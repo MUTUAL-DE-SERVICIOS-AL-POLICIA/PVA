@@ -62,7 +62,7 @@ class UpdateChargeAndPositions extends Migration
             DB::table('positions')->where('item', 43)->where('active',true)->update(['name' => 'Profesional en Calificación Fondo de Retiro, Cuota y Auxilio Mortuorio']);
             DB::table('positions')->where('item', 44)->where('active',true)->update(['name' => 'Técnico de Atención al Afiliado de Fondo de Retiro']);
             DB::table('positions')->where('item', 48)->where('active',true)->update(['name' => 'Jefe de Unidad de Otorgación del Complemento Económico']);
-            DB::table('positions')->where('item', 54)->where('active',true)->update(['name' => 'Técnico de Organización y Logística']);
+            DB::table('positions')->where('item', 54)->where('active',true)->update(['name' => 'Técnico de Organización Logística']);
             DB::table('positions')->where('item', 57)->where('active',true)->update(['name' => 'Jefe de Unidad Financiera']);
             DB::table('positions')->where('item', 61)->where('active',true)->update(['name' => 'Técnico de Archivo Contable']);
             DB::table('positions')->where('item', 67)->where('active',true)->update(['name' => 'Responsable de Presupuesto']);
