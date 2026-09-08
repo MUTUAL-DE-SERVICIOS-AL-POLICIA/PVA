@@ -101,6 +101,9 @@ Route::group([
   Route::get('consultant_position/find/with_name', 'Api\V1\ConsultantPositionController@find')->name('consultant_positions_find');
   // City
   Route::resource('city', 'Api\V1\CityController')->only(['index', 'show']);
+  
+  // Charge
+  Route::get('charge', 'Api\V1\ChargeController@index')->name('charges_list');
   // With credentials
   Route::group([
     'middleware' => 'jwt.auth'
@@ -125,7 +128,6 @@ Route::group([
     // Insurance Company
     Route::resource('insurance_company', 'Api\V1\InsuranceCompanyController')->only(['index', 'show']);
     // Charge
-    Route::get('charge', 'Api\V1\ChargeController@index')->name('charges_list');
     Route::get('charge/{id}', 'Api\V1\ChargeController@show')->name('charge_details');
     // Payroll
     Route::get('payroll', 'Api\V1\PayrollController@index')->name('payroll_list');

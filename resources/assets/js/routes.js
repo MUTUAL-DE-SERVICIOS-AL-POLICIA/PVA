@@ -28,6 +28,7 @@ import VacationList from './components/departure/VacationList'
 import SalaryScaleIndex from './components/configuration/SalaryScaleIndex'
 import SupplyReqNew from './components/supply/SupplyReqNew'
 import SupplyPettyCash from './components/supply/SupplyPettyCash'
+import SubscriptionIndex from './components/subscription/SubscriptionIndex'
 
 export const routes = [
   {
@@ -74,6 +75,13 @@ export const routes = [
     path: '/consultant',
     component: Consultant,
     name: 'consultantIndex',
+    meta: {
+      requiresAuth: true
+    }
+  },{
+    path: '/subscription',
+    component: SubscriptionIndex,
+    name: 'subscriptionIndex',
     meta: {
       requiresAuth: true
     }

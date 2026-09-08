@@ -63,6 +63,13 @@
     "params": {}
   },
   {
+    "href": "subscriptionIndex",
+    "title": "Calculadora de Sueldos",
+    "icon": "monetization_on",
+    "permission": null,
+    "params": {}
+  },
+  {
     "href": "attendanceIndex",
     "title": "Asistencia",
     "icon": "fingerprint",
@@ -184,6 +191,13 @@
         "params": {}
       }
     ]
+  },
+  {
+    "href": "salaryScaleIndex",
+    "title": "Escala salarial",
+    "icon": "gavel",
+    "permission": "read-procedure-eventual",
+    "params": {}
   },
   {
     "href": "reportIndex",
