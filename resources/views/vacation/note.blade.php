@@ -59,7 +59,7 @@ $contract = $departure->employee->contract_in_date($departure->departure);
             Señor:
         </div>
         <div>
-            CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS
+            CNL. DESP. CAD. ENZO EDUARDO GARECA LA FUENTE
         </div>
         <div class="font-bold">
             DIRECTOR GENERAL EJECUTIVO<br>
