@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  pva:
+    build: .
+    image: muserpol/pva:2.0
+    container_name: pva
+    ports:
+      - "8080:80"
+    volumes:
+      # Ajusta esta ruta a donde está tu proyecto en el HOST
+      - .:/var/www/html/public
+    restart: always

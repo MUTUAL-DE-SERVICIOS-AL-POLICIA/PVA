@@ -13,19 +13,13 @@ copy .env
 * Modify `.env` file with desired data
 
 ```sh
-docker run -p 80:80 --name pva -v /PVA:/var/www/html/public -d muserpol/pva:1.1
-chmod +x docs/docker/init.sh
-docker exec pva /bin/sh -c /var/www/html/public/docs/docker/init.sh
-```
-* Enter the container
-```sh
-docker exec -it < id_docker > /bin/sh
-```
-* Edit the cron service with the secon line
-```sh
-crontab -e
-
-* * * * * php /var/www/html/public/artisan schedule:run >> /dev/null 2>&1
+docker compose up -d --build
+docker compose ps
+docker run -p 80:80 --name pva -v /PVA:/var/www/html/public -d muserpol/pva:2.0
+docker compose exec pva bash docs/docker/init.sh
+docker compose exec -u root pva chown -R www-data:www-data \
+  /var/www/html/public/storage /var/www/html/public/bootstrap/cache
+docker ps
 ```
 * Verify crontab status
 ```sh

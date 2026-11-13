@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+.gitmodules
+
+# IDE / editor
+.idea
+.vscode
+
+# Dependencias (se montan en runtime, no forman parte de la imagen)
+node_modules
+vendor
+
+# Logs y artefactos de ejecución
+*.log
+build.log
+supervisord.log
+supervisord.pid
+nginx-old
+
+# Documentación y tareas internas
+tareas
+
+# Entorno (secretos)
+.env
+.env.*
+!.env.example
+
+# Generados por Laravel / tests
+storage/logs
+bootstrap/cache/*.php
+tests
+phpunit.xml
