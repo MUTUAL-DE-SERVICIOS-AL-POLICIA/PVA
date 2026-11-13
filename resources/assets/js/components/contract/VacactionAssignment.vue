@@ -43,11 +43,17 @@
             <td>{{ item.created_at }}</td>
             <td>{{ item.is_valid ? 'Disponible' : 'Vencido' }}</td>
             <td>
+              <v-icon
+              small
+              class="mr-2"
+              :color="item.has_departures ? 'grey' : 'primary'"
+              @click="editItem(item)">edit
+            </v-icon>
               <v-icon 
                 small 
-                color="red"
-                @click="dialogDelete = true; delete_item = item.id">
-                  delete
+                class="mr-2"
+                :color="item.has_departures ? 'grey': 'red'"
+                @click="askDelete(item)"> delete
               </v-icon>
             </td>
           </tr>
@@ -326,6 +332,29 @@ export default {
       const res = await axios.get(`/get_vacation_queue_employee/${this.employee.id}`);
       this.vacation_queue_employee = res.data;
     },
+    editItem(item) {
+      if (item.has_departures) {
+        this.toastr.warning('Esta asignacion cuenta con permisos de vacaciones registradas, primero debe eliminar los permisos de vacaciones para poder editar este registro.');
+        return;
+      }
+      this.selectedItem = {
+        id: item.id,start_date: item.start_date,start_date_input: this.formatDateDisplay(item.start_date),end_date: item.end_date,
+        end_date_input: this.formatDateDisplay(item.end_date),max_date: item.max_date,
+        max_date_input: this.formatDateDisplay(item.max_date),days: Number(item.days),
+        rest_days: Number(item.rest_days),is_valid: !!item.is_valid,
+        comment: null
+      };
+      this.isEdit = true;
+      this.showForm = true;
+    },
+    askDelete(item) {
+      if (item.has_departures) {
+        this.toastr.warning('Esta asignacion cuenta con permisos de vacaciones registradas, primero debe eliminar los permisos de vacaciones para poder eliminar este registro.');
+        return;
+      }
+      this.delete_item = item.id;
+      this.dialogDelete = true;
+    },
     casCreate() {
       this.clearForm();
       this.isEdit = false;
@@ -351,17 +380,23 @@ export default {
       };
     },
     async saveForm() {
+      const payload = {
+        start_date: this.selectedItem.start_date,
+        end_date: this.selectedItem.end_date,
+        days: this.selectedItem.days,
+        rest_days: this.selectedItem.rest_days,
+        max_date: this.selectedItem.max_date,
+        employee_id: this.employee.id,
+        is_valid: this.selectedItem.is_valid || false
+      }
       try {
-        await axios.post(`/vacation_queue`, {
-          start_date: this.selectedItem.start_date,
-          end_date: this.selectedItem.end_date,
-          days: this.selectedItem.days,
-          rest_days: this.selectedItem.rest_days,
-          max_date: this.selectedItem.max_date,
-          employee_id: this.employee.id,
-          is_valid: this.selectedItem.is_valid || false
-        });
+        if (this.isEdit) {
+          await axios.put(`/vacation_queue/${this.selectedItem.id}`, payload);
+          this.toastr.success("Registro actualizado correctamente");
+        } else {
+        await axios.post(`/vacation_queue`, payload);
         this.toastr.success("Registro creado correctamente");
+        }
         this.getVacationQueueEmployee();
         this.cancelForm();
       } catch (e) {
@@ -374,12 +409,14 @@ export default {
         await axios.post(`vacation_queue/${item}/delete`, { 
           comment: this.selectedItem.comment
         });
-        this.toastr.error("Registro eliminado correctamente");
+        this.toastr.success("Registro eliminado correctamente");
         this.getVacationQueueEmployee();
         this.cancelForm();
         this.delete_item = null
       } catch (err) {
         console.error(err);
+        this.dialogDelete = false;
+        this.toastr.error("Ocurrió un error al eliminar el registro");
       }
     }
   }

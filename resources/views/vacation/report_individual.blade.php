@@ -104,9 +104,7 @@ use App\Helpers\Util;
             </tr>
         </thead>
         <tbody>
-            <?php
-            $vacation_days = 0;
-            ?>
+            
             @foreach ($data_report as $key => $report)
                 @if ($report->type == 'vacation')
                     <tr class="bg-grey-lightest">
@@ -115,16 +113,13 @@ use App\Helpers\Util;
                         </td>
                         <td colspan="2"> Fecha de asignación: {{ Carbon::parse($report->date_end)->addDay()->format('d-m-Y') }}</td>
                         <td colspan="3"> Fecha de vencimiento: {{ $report->max_date }}</td>
-                        <?php
-                        $vacation_days = $vacation_days + $report->days;
-                        ?>
+
                     </tr>
                 @else
                     <?php
                         $num = $num+1;
                         $start = Carbon::parse($report->date_ini);
-                        $end = Carbon::parse($report->date_end);
-                        $vacation_days -= $report->departure_days;
+                        $end = Carbon::parse($report->date_end);                      
                     ?>
                     <tr>
                         <td>{{ $num }}</td>
@@ -137,11 +132,9 @@ use App\Helpers\Util;
                                 ? intval($report->departure_days)
                                 : number_format($report->departure_days, 1) }}
                         </td>
-                        @if ($loop->last)
-                            <td>{{ $vacation_days - $vacation_expires }}</td>
-                        @else
-                            <td>{{ $vacation_days }}</td>
-                        @endif
+                        <td> 
+                            {{ fmod($report->saldo, 1) == 0 ? intval($report->saldo) : number_format($report->saldo, 1) }}
+                        </td>
                     </tr>
                 @endif
             @endforeach

@@ -115,18 +115,31 @@ $contract = $departure->employee->contract_in_date($departure->departure);
     {{-- listado de dias --}}
     <table class="table-info w-100 m-b-10 text-center uppercase">
         <tr>
-            @foreach ($departure->days_on_vacation->sortBy('date') as $index => $vacation)
-                @if ($index > 0 && $index % 4 == 0)
+            @php
+                $vacationDays = ($departure->vacation_time ?? collect())
+                    ->groupBy(function ($item) {
+                        return Carbon::parse($item->date)->format('Y-m-d');
+                    })
+                    ->sortKeys();
+            @endphp
+            @foreach ($vacationDays as $date => $rows)
+                @if ($loop->index > 0 && $loop->index % 4 == 0)
         </tr>
         <tr>
-            @endif
-            <td class="bg-grey-darker text-xs text-white">{{ Carbon::parse($vacation->date)->isoFormat('dddd') }}</td>
-            @if ($vacation->day < 1)
-                <td class="noon">M</td>
-                <td class="noon">{{ Carbon::parse($vacation->date)->format('d/m/Y') }}</td>
-            @else
-                <td colspan="2">{{ Carbon::parse($vacation->date)->format('d/m/Y') }}</td>
-            @endif
+                @endif
+                @php
+                    $total = $rows->sum('day');
+                    $isAfternoon = $rows->pluck('period')->filter()->contains('TARDE');
+                @endphp
+                <td class="bg-grey-darker text-xs text-white">{{ Carbon::parse($date)->isoFormat('dddd') }}</td>
+                @if ($total < 1)
+                    <td class="noon">
+                        {{ $isAfternoon ? 'T' : 'M' }}
+                    </td>
+                    <td class="noon">{{ Carbon::parse($date)->format('d/m/Y') }}</td>
+                @else
+                    <td colspan="2">{{ Carbon::parse($date)->format('d/m/Y') }}</td>
+                @endif
             @endforeach
         </tr>
     </table>
