@@ -26,6 +26,8 @@ storage/*.key
 .env.*.php
 .env.php
 .env
+tareas/
+
 Homestead.yaml
 Homestead.json
 
@@ -42,3 +44,9 @@ public/mix-manifest.json
 
 # Test files
 *.test
+
+# Docker artifacts
+/build.log
+/supervisord.log
+/supervisord.pid
+/nginx-old/

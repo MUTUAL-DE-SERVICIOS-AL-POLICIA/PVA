@@ -70,11 +70,13 @@
           >
             <template v-slot:day="{ date }">
               <template v-for="event in departures.filter((o) => { return $moment(date).isBetween($moment(o.from.date).startOf('day'), $moment(o.to.date).endOf('day'), null, '[]') })">
-                <div v-if="$moment(date, 'YYYY-MM-DD').isBusinessDay()" class="text-xs text-xs-center white--text grey darken-3 mb-2" :key="event.id">
-                  <div>{{ event.reason }} [ {{ event.code }} ]</div>
-                  <div>{{ event.from.time }} - {{ event.to.time }}</div>
-                  <div>{{ verifyDepartureState(event.approved) }}</div>
-                </div>
+                <template v-if="$moment(date, 'YYYY-MM-DD').isBusinessDay()">
+                  <div v-for="(turn, i) in departureTurns(event)" class="text-xs text-xs-center white--text grey darken-3 mb-2" :key="`${event.id}-${i}`" >
+                    <div>{{ event.reason }} [ {{ event.code }} ]</div>
+                    <div>{{ turn.from }} - {{ turn.to }}</div>
+                    <div>{{ verifyDepartureState(event.approved) }}</div>
+                  </div>
+                </template>
               </template>
               <template v-for="(event, index) in checks.filter(o => o.date == date)">
                 <div class="text-xs-center event subheading grey darken-1 mt-3 mb-3" :key="index+event" v-if="index > 0 && event.shift != checks.filter(o => o.date == date)[index - 1].shift"></div>
@@ -209,6 +211,16 @@ export default {
     })
   },
   methods: {
+    departureTurns(event) {
+      const isVacation = Number(event.departure_reason_id) === 24
+      if (isVacation && event.from.time === '08:30' && event.to.time === '18:30') {
+        return [
+          { from: '08:30', to: '12:30' },
+          { from: '14:30', to: '18:30' }
+          ]
+          }
+          return [{ from: event.from.time, to: event.to.time }]
+          },
     verifyDepartureState(state) {
       if (state === null) {
         return 'PENDIENTE'

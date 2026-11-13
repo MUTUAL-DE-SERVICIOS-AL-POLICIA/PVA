@@ -25,14 +25,16 @@ class Departure extends Model
     return $this->belongsTo(DepartureReason::class);
   }
 
-  public function days_on_vacation()
-  {
-    return $this->HasMany(DaysOnVacation::class);
-  }
-  // realiza la suma de días según el permiso solicitado
+  
   public function sum_days($departure_id)
   {
-    return DaysOnVacation::where('departure_id', $departure_id)
+    return VacationTime::where('departure_id', $departure_id)
+      ->whereNull('deleted_at')
       ->sum('day');
+  }
+
+  public function vacation_time()
+  {
+    return $this->HasMany(VacationTime::class);
   }
 }

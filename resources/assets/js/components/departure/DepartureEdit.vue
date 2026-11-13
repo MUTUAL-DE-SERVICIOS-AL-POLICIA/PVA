@@ -787,7 +787,7 @@ export default {
     addMinutes() {
       if (this.departure.record == 3 && this.departure.time.start.hours != null && this.departure.time.start.minutes != null) {
         let departureDate = this.$moment(this.departure.departure).hours(this.departure.time.start.hours).minutes(this.departure.time.start.minutes)
-        let returnDate = departureDate.clone().add('minutes', this.departure.timeToAdd * 60)
+        let returnDate = departureDate.clone().add(this.departure.timeToAdd * 60, 'minutes')
         this.departure.time.end.hours = returnDate.hours()
         this.departure.time.end.minutes = returnDate.minutes()
       }

@@ -9,7 +9,7 @@ use App\Employee;
 use App\VacationQueue;
 use App\DepartureReason;
 use App\EmployeeDeparture;
-use App\DaysOnVacation;
+use App\VacationTime;
 use App\Http\Requests\DepartureForm;
 use App\Http\Controllers\Controller;
 use Carbon;
@@ -368,7 +368,7 @@ class DepartureController extends Controller
       'footer-html' => $footerHtml,
       'user-style-sheet' => public_path('css/report-print.min.css')
     ];
-
+    
     $pdf = \PDF::loadView('vacation.report', $data);
     $pdf->setOptions($options);
 
@@ -436,7 +436,7 @@ class DepartureController extends Controller
                                       ->where('max_date', '>=', $request->departure)
                                       ->where('end_date', '>', $employee->addmisión_date)
                                       ->where('rest_days', '>', 0)->get();*/
-    $vacation_queue = VacationQueue::query()
+      $vacation_queue = VacationQueue::query()
     ->where('employee_id', $request->employee_id)
     ->when($request->filled('departure'), function ($q) use ($request) {
         $q->whereDate('max_date', '>=', $request->departure);
@@ -445,19 +445,61 @@ class DepartureController extends Controller
         $q->whereDate('end_date', '>', $employee->admision_date);
     })
     ->where('rest_days', '>', 0)
+    ->where('is_valid', true)
     ->get();
       $count_days = 0;
       foreach($request->days as $day)
       {
-        if($day['morning'])
+        if(!empty($day['morning']))
           $count_days += 0.5;
-        if($day['afternoon'])
+        if(!empty($day['afternoon']))
           $count_days += 0.5;
       }
       if ($vacation_queue->sum('rest_days') > 0 && $count_days <= $vacation_queue->sum('rest_days')) {
         $lastCode = Departure::latest()->first()->code;
         $newCode = $lastCode ? $lastCode + 1 : 1;
-        $sw = true;
+        $days = collect($request->days)->sortBy('date')->values();
+        if ($days->isEmpty()) {
+          throw new \Exception('Debe seleccionar al menos un día de vacación.');
+          }
+        $firstDay = $days->first();
+        $firstHasMorning = !empty($firstDay['morning'])
+          && $firstDay['morning'];
+        $firstHasAfternoon = !empty($firstDay['afternoon'])
+          && $firstDay['afternoon'];
+        if (!$firstHasMorning && !$firstHasAfternoon) {
+          throw new \Exception('El primer día no tiene un turno seleccionado.');
+        }
+        $departureTime = $firstHasMorning
+          ? '08:30:00'
+          : '14:30:00';
+
+        $departureDate = Carbon::parse($firstDay['date'])
+          ->setTimeFromTimeString($departureTime);
+        $lastDay = $days->last();
+
+        $lastHasMorning = !empty($lastDay['morning'])
+          && $lastDay['morning'];
+
+        $lastHasAfternoon = !empty($lastDay['afternoon'])
+          && $lastDay['afternoon'];
+        if (!$lastHasMorning && !$lastHasAfternoon) {
+          throw new \Exception('El último día no tiene un turno seleccionado.');
+        }
+        $returnTime = $lastHasAfternoon
+          ? '18:30:00'
+          : '12:30:00';
+        $returnDate = Carbon::parse($lastDay['date'])
+          ->setTimeFromTimeString($returnTime);
+        $request->merge([
+          'departure' => $departureDate->toDateTimeString(),
+          'return' => $returnDate->toDateTimeString(),
+        ]);
+
+        $departure = Departure::create(array_merge($request->all(), [
+          'code' => $newCode,
+        ]));
+       /* $sw = true;
         if(Carbon::parse($request->departure)->format('H:i:s') != Carbon::parse($request->return)->format('H:i:s'))
         {
           $new_return = '00:00:00';
@@ -480,65 +522,92 @@ class DepartureController extends Controller
         }
         $departure = Departure::create(array_merge($request->all(), [
           'code' => $newCode,
-        ]));
-        $c = 1;
-        $sw_journal = false;
+        ]));*/
+
         foreach ($request->days as $day) {
-          $journal = 1;
-          if ($c == 1 || $c == count($request->days)) {
-            if ($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon']){
-              $journal = 0.5;
+
+          $periods = [];
+          if (!empty($day['morning'])&& $day ['morning']){ 
+            $periods[]= 'MAÑANA';
             }
-          }
-          else{
-            if($day['morning'] && !$day['afternoon'] || !$day['morning'] && $day['afternoon'])
-              {
-                $sw = false;
-                break;
-              }
-          }
-          $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
-          if ($journal > $remanent->rest_days) {
-            $remanent->rest_days = 0;
+          if (!empty($day['afternoon'])&& $day ['afternoon']){
+            $periods[]= 'TARDE';
+            }
+          foreach ($periods as $period) {
+            //
+            $alreadyExists = VacationTime::whereDate('date',$day['date'])
+            ->where('period',$period)
+            ->whereNull('deleted_at')
+            ->whereHas('departure', function ($query) 
+            use ($request) {
+              $query->where('employee_id',$request->employee_id)
+                    ->where('departure_reason_id', 24)
+                    ->whereNull('deleted_at');
+            })
+            ->exists();
+
+            if ($alreadyExists) {
+              throw new \Exception('Ya existe un registro de vacación para la fecha '
+              .Carbon::parse($day['date'])->format('Y-m-d').' y periodo '.$period);
+            }
+
+            $remanent = VacationQueue::where('employee_id', $request->employee_id)
+            ->where('max_date', '>=',Carbon::parse($day['date'])
+            ->format('Y-m-d'))
+            ->where('rest_days', '>=',  0.5)
+            ->where('is_valid', true)
+            ->orderby('max_date', 'asc')
+            ->first();
+
+            if (!$remanent){
+              throw new \Exception('No hay saldo de vacación disponibles para la fecha'
+              .Carbon::parse($day['date'])
+              ->format('Y-m-d')
+              );
+            }
+            // resta los 0.5 dias
+            $remanent->rest_days = $remanent->rest_days - 0.5;
             $remanent->save();
-            $journal = 0.5;
-            $remanent = VacationQueue::where('employee_id', $request->employee_id)->where('max_date', '>=', Carbon::parse($day['date'])->format('Y-m-d'))->where('rest_days', '>',  0)->orderby('max_date', 'asc')->first();
-            $sw_journal = true;
-          }
-          $remanent->rest_days = $remanent->rest_days - $journal;
-          $remanent->save();
-          $save_day = new DaysOnVacation([
-            'date' => $day['date'],
-            'day' => $sw_journal ? 1 : $journal,
-          ]);
-          $departure->days_on_vacation()->save($save_day);
-          $c++;
+            // guarda la en la tabla vacation_time 
+            $save_day = new VacationTime([
+              'date' => $day['date'],
+              'day' => 0.5,
+              'period' => $period,
+              'vacation_queue_id' => $remanent->id,
+            ]);
+            $departure->vacation_time()->save($save_day);
+
+          } 
         }
-        if($sw)
-        {
-          DB::commit();
+
+        DB::commit();
         return response()->json([
           'message' => 'Registro exitoso',
           'departure' => $departure,
         ], 200);
-        }
-        else{
+      }
+       /* else{
           DB::rollback();
           return response()->json([
             'message' => 'los Dias intermedios no pueden ser medias jornadas',
           ], 405);
-        }
-      } else {
+        }*/
+        else 
+          {
+            DB::rollback();
+            return response()->json([
+              'message' => 'Dias de Vacación no disponibles',
+              ], 405);
+          } 
+        } catch (\Throwable $e) {
+        DB::rollback();
+        \Log::error('Error al registrar vacacion: ' . $e->getMessage());
         return response()->json([
-          'message' => 'Dias de Vacación no disponibles',
-        ], 405);
-      }
-    } catch (\Exception $e) {return $e;
-      DB::rollback();
-      return response()->json([
-        'message' => 'Cite Duplicado',
+        //'message' => 'Cite Duplicado',// esto es para el caso de que el cite ya exista en la base de datos
+        'message' => $e->getMessage(),
+        'error' => $e->getTraceAsString(),
       ], 500);
-    }
+   }
   }
 
   public function cancel_vacation_departure($id)
@@ -548,16 +617,23 @@ class DepartureController extends Controller
       $departure = Departure::find($id);
       if($departure && $departure->departure_reason->name == 'VACACIONES' && $departure->approved != true)
       {
-        $departure->days_on_vacation;
-        foreach($departure->days_on_vacation as $day)
+        $vacation_times = $departure->vacation_time;
+        foreach($vacation_times as $vacation_time)
         {
-          $vacation_queue = VacationQueue::where('employee_id', $departure->employee_id)->where('max_date', '>=', $day->date)->orderBy('max_date', 'asc')->first();
-          $vacation_queue->rest_days = $vacation_queue->rest_days + $day->day;
-          $vacation_queue->update();
+          //devolver los dias a la cola de vacation_queue q corresponde
+          $vacation_queue = VacationQueue::find($vacation_time->vacation_queue_id);
+          if(!$vacation_queue)
+          {
+            throw new \Exception(
+              'No se encontró la cola de vacaciones para el día: ' 
+              . $vacation_time->vacation_queue_id);
+          }
+          $vacation_queue->rest_days = $vacation_queue->rest_days + $vacation_time->day;
+          $vacation_queue->save();
         }
         if ($departure->approved == null)
         {
-          $departure->days_on_vacation()->delete();
+          $departure->vacation_time()->delete();
           $departure->delete();
         }
         DB::commit();
@@ -573,7 +649,9 @@ class DepartureController extends Controller
     }catch(\Exception $e){
       DB::rollback();
       return response()->json([
-        'message' => "Cite Duplicado",
+        //'message' => "Cite Duplicado',// esto es para el caso de que el cite ya exista en la base de datos
+        'message' => $e->getMessage(),
+        'error' => $e->getTraceAsString(),
       ], 500);
     }
   }
@@ -671,13 +749,14 @@ class DepartureController extends Controller
           ? Carbon::parse($employee->addmission_date)->toDateString()
           : null;
 
-      $daysByDeparture = DB::table('days_on_vacations')
+      $daysByDeparture = DB::table('vacation_time')
+          ->WhereNull('deleted_at') //para que no considere las salidas eliminadas
           ->select('departure_id', DB::raw('SUM(day) AS total_days'))
           ->groupBy('departure_id');
       $departures = DB::table('departures')
 
-          ->leftJoinSub($daysByDeparture, 'dov', function ($join) {
-              $join->on('dov.departure_id', '=', 'departures.id');
+          ->leftJoinSub($daysByDeparture, 'vt', function ($join) {
+              $join->on('vt.departure_id', '=', 'departures.id');
           })
           ->select([
               'cite',
@@ -688,10 +767,12 @@ class DepartureController extends Controller
               DB::raw('NULL::date as max_date'),
               DB::raw("'departure' as type"),
               DB::raw('"departure" as date_order'),
-              DB::raw('COALESCE(dov.total_days, 0) AS departure_days'),
+              DB::raw('COALESCE(vt.total_days, 0) AS departure_days'),
+              'departures.id as departure_id',
           ])
           ->where('employee_id', $employee_id)
           ->where('departure_reason_id', 24)
+          ->whereRaw('departures.approved IS DISTINCT FROM FALSE')
           ->when($admissionDate, function ($q) use ($admissionDate) {
               $q->whereDate('departure', '>', $admissionDate);
           })
@@ -708,6 +789,7 @@ class DepartureController extends Controller
               DB::raw("'vacation' as type"),
               'end_date as date_order',
               DB::raw('NULL::numeric as departure_days'),
+              DB::raw('NULL::integer as departure_id')
           ])
           ->where('employee_id', $employee_id)
           ->when($admissionDate, function ($q) use ($admissionDate) {
@@ -722,34 +804,65 @@ class DepartureController extends Controller
           ->orderBy('date_order', 'asc')
           ->get();
 
-      $vacation_days = DB::table('vacation_queues')
+    //  $vacation_days = DB::table('vacation_queues')
+    $queues = DB::table('vacation_queues')
           ->where('employee_id', $employee_id)
           ->whereNull('deleted_at')
+          ->orderBy('end_date')
           ->orderByDesc('id')
-          ->value('rest_days'); // o 'days' según tu lógica
-      $vacation_days = $vacation_days ?? 0;
-
-      $vacation_expires = DB::table('vacation_queues')
+          ->get(['id', 'days', 'end_date', 'max_date']);
+    $timeByDeparture = DB::table('vacation_time as vt')
+          ->join('departures as d', 'd.id', '=', 'vt.departure_id')
           ->where('employee_id', $employee_id)
-          ->where('is_valid', false)
-          ->when($admissionDate, function ($q) use ($admissionDate) {
-              $q->whereDate('end_date', '>', $admissionDate);
-          })
-          ->whereNull('deleted_at')
-          ->sum('rest_days') ?? 0;
+          ->where('departure_reason_id', 24)
+          ->whereNull('d.deleted_at')
+          ->whereNull('vt.deleted_at')
+          ->whereRaw('d.approved IS DISTINCT FROM FALSE')
+          ->get(['vt.departure_id', 'vt.vacation_queue_id', 'vt.day'])
+          ->groupBy('departure_id');
+    
+    $consumed = [];
+    $report_vacation = $report_vacation->map(function ($row) use ($queues, $timeByDeparture, &$consumed) {
+    $row->saldo = null;
+    if ($row->type !== 'departure') {
+        return $row;
+    }
+    $fecha = substr($row->date_ini, 0, 10);
 
-      $total_departure_days = $report_vacation
-          ->where('type', 'departure')
-          ->sum('departure_days');
+    foreach ($timeByDeparture->get($row->departure_id, collect()) as $t) {
+        $qid = $t->vacation_queue_id;
+        if (!$qid) { // respaldo si hubiera algún NULL
+            foreach ($queues as $q) {
+                $asig = Carbon::parse($q->end_date)->addDay()->toDateString();
+                if ($asig <= $fecha && substr($q->max_date, 0, 10) >= $fecha
+                    && ((float) $q->days - ($consumed[$q->id] ?? 0)) >= (float) $t->day) {
+                    $qid = $q->id;
+                    break;
+                }
+            }
+        }
+        if ($qid) {
+            $consumed[$qid] = ($consumed[$qid] ?? 0) + (float) $t->day;
+        }
+    }
 
-      $vacation_days = max(0, $vacation_days - $total_departure_days);
+    $saldo = 0;
+    foreach ($queues as $q) {
+        $asig = Carbon::parse($q->end_date)->addDay()->toDateString();
+        if ($asig <= $fecha && substr($q->max_date, 0, 10) >= $fecha) {
+            $saldo += (float) $q->days - ($consumed[$q->id] ?? 0);
+        }
+    }
+    $row->saldo = round($saldo, 2);
+    return $row;
+});
 
       $data = [
           'num'               => $num,
           'employee'          => $employee,
           'data_report'       => $report_vacation,
-          'vacation_days'     => $vacation_days,
-          'vacation_expires'  => $vacation_expires,
+         // 'vacation_days'     => $vacation_days,
+         // 'vacation_expires'  => $vacation_expires,
       ];
 
       $file_name = implode('_', ['reporte', 'vacaciones', $employee->first_name, $employee->last_name]) . '.pdf';

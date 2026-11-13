@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\VacationQueue;
 use App\Vacation;
 use App\Contract;
-use App\DaysOnVacation;
+use App\VacationTime;
 use App\Departure;
 use App\DepartureReason;
 use Carbon\Carbon;
@@ -59,6 +59,9 @@ class VacationQueueController extends Controller
     public function update(Request $request, $id)
     {
         $vacation_queue = VacationQueue::findOrFail($id);
+        if ($this->queueHasDepartures($id)) {
+            return response()->json(['message' => self::MSG_QUEUE_LINKED], 422);
+        }
         $vacation_queue->fill($request->all());
         $vacation_queue->save();
         return $vacation_queue;
@@ -70,9 +73,23 @@ class VacationQueueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    const MSG_QUEUE_LINKED = 'No se puede eliminar, ni editar porque tiene permisos de vacaciones registrado a esta cola';
+    private function queueHasDepartures($queue_id)
+    {
+        return DB::table('vacation_time as vt')
+        ->join('departures as d', 'd.id', '=', 'vt.departure_id')
+        ->where('vt.vacation_queue_id', $queue_id)
+        ->whereNull('vt.deleted_at')
+        ->whereNull('d.deleted_at')
+        ->whereRaw('d.approved IS DISTINCT FROM FALSE')
+        ->exists();
+        }
     public function destroy(Request $request, $id)
     {
         $vacation_queue = VacationQueue::findOrFail($id);
+        if ($this->queueHasDepartures($id)) {
+            return response()->json(['message' => self::MSG_QUEUE_LINKED], 422);
+        }
     
         // Guardar el comentario antes de eliminar
         $vacation_queue->comment = $request->input('comment');
@@ -100,7 +117,72 @@ class VacationQueueController extends Controller
             ->where('max_date', '>=', Carbon::parse($date)->format('Y-m-d'))
             ->where('is_valid', true)
             ->sum('rest_days');
-      $daysV = DaysOnVacation::where('date','>=', $date)->pluck('departure_id');
+      $occupied = DB::table('vacation_time as vt')
+            ->join('departures as d', 'd.id', '=', 'vt.departure_id')
+            ->where('d.employee_id', $employee_id)
+            ->where('d.departure_reason_id', 24)
+            ->whereNull('d.deleted_at')
+            ->whereNull('vt.deleted_at')
+            ->whereDate('vt.date', '>=', $date)
+            ->select('vt.date','vt.day','vt.period','d.departure', 'd.return')
+            ->orderBy('vt.date')
+            ->get();
+        $days = [];
+     foreach ($occupied as $item) {$key = Carbon::parse($item->date)->format('Y-m-d');
+     if (!isset($days[$key])) {
+        $days[$key] = [
+            'date' => $key,
+            'day' => 0,
+            'morning' => false,
+            'afternoon' => false,
+        ];
+    }
+    $days[$key]['day'] += (float) $item->day;
+
+    // Los registros nuevos identifican directamente el turno.
+    if ($item->period === 'MAÑANA')
+    {
+        $days[$key]['morning'] = true;
+    } elseif ($item->period === 'TARDE') 
+    {
+        $days[$key]['afternoon'] = true;
+    } elseif ((float) $item->day >= 1) 
+    {
+        $days[$key]['morning'] = true;
+        $days[$key]['afternoon'] = true;
+    } else 
+    {
+        $departureDate = Carbon::parse($item->departure)->format('Y-m-d');
+        $returnDate = Carbon::parse($item->return)->format('Y-m-d');
+        $currentDate = $key;
+        if ($currentDate === $departureDate) 
+            {
+                $hour = Carbon::parse($item->departure)->format('H:i');
+                if ($hour === '08:30') 
+                    {
+                        $days[$key]['morning'] = true;
+                    } elseif ($hour === '14:30') 
+                    {
+                        $days[$key]['afternoon'] = true;
+                    }
+            } elseif ($currentDate === $returnDate) 
+            {
+                $hour = Carbon::parse($item->return)->format('H:i');
+                if ($hour === '12:30') {
+                        $days[$key]['morning'] = true;
+                    } elseif ($hour === '18:30') {
+                        $days[$key]['afternoon'] = true;
+                    }
+            } else 
+        {
+            $days[$key]['morning'] = true;
+            $days[$key]['afternoon'] = true;
+        }
+    }
+}
+
+$days = array_values($days);   
+      /*$daysV = DaysOnVacation::where('date','>=', $date)->pluck('departure_id');
       $departures = Departure::where('employee_id',$employee_id)->where('departure_reason_id', 24)->whereIn('id',$daysV)->get();
       $days = array();
       foreach($departures as $departure)
@@ -130,7 +212,7 @@ class VacationQueueController extends Controller
             'afternoon' => $afternoon
           ]);
         }
-      }
+      }*/
       return response()->json([
         'count' => max($count, 0),
         'days' => $days,
@@ -243,11 +325,20 @@ class VacationQueueController extends Controller
 
     public function get_vacation_queue_employee($employee_id)
     {
-      return VacationQueue::where('employee_id',$employee_id)->orderBy('start_date','asc')->get();
+        $queues = VacationQueue::where('employee_id', $employee_id)
+            ->orderBy('start_date', 'asc')
+            ->get();
+        $queues->each(function ($queue) {
+            $queue->has_departures = $this->queueHasDepartures($queue->id);
+        });
+      return $queues;
     }
     public function destroy_with_comment(Request $request, $id)
     {
         $vacation_queue = VacationQueue::findOrFail($id);
+        if ($this->queueHasDepartures($id)) {
+            return response()->json(['message' => self::MSG_QUEUE_LINKED], 422);
+        }
 
         // Guardar comentario antes de eliminar
         $vacation_queue->comment = $request->input('comment');

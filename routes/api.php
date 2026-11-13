@@ -58,6 +58,7 @@ Route::group([
 
   //Registro del permiso de vacacion
   Route::post('vacation_departure', 'Api\V1\DepartureController@vacation_departure');
+  Route::resource('vacation_time', 'Api\V1\VacationTimeController')->only(['index', 'show']);
   //Anulacion del permiso de vacacion
   Route::delete('cancel_vacation_departure/{departure_id}', 'Api\V1\DepartureController@cancel_vacation_departure');
   // Reportes de vacaciones
