@@ -52,7 +52,7 @@ $consultant = $departure->employee->consultant();
         Señor:
       </div>
       <div>
-        CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS
+        CNL. MSc. CAD. ENZO EDUARDO GARECA LA FUENTE
         <!--Cnl. Desp. {{ App\Position::with(['contracts' => function ($query) { $query->orderBy('created_at', 'ASC')->with('employee')->first(); }])->orderBy('created_at', 'ASC')->first()->contracts[0]->employee->fullName() }}-->
       </div>
       <div class="font-bold">
