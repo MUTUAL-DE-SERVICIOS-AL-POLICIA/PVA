@@ -1,8 +1,10 @@
+
 <template>
   <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>Calculo de Costo</v-toolbar-title>
     </v-toolbar>
+
     <v-card>
       <v-card-text>
         <v-alert :value="true" type="error" outline>
@@ -10,7 +12,6 @@
           usan para mostrar el resultado en pantalla.
         </v-alert>
 
-       
         <v-layout row wrap class="mt-3">
           <v-flex xs12 sm3 class="px-2">
             <v-menu
@@ -31,6 +32,7 @@
                 prepend-icon="event"
                 readonly
               ></v-text-field>
+
               <v-date-picker
                 locale="es-bo"
                 v-model="startDate"
@@ -62,6 +64,7 @@
                 prepend-icon="event"
                 readonly
               ></v-text-field>
+
               <v-date-picker
                 locale="es-bo"
                 :min="datePicker.end.min"
@@ -88,29 +91,49 @@
           </v-flex>
         </v-layout>
 
-    
         <template v-if="startDate && endDate && selectedCharge.base_wage">
           <v-divider class="my-4"></v-divider>
 
           <div v-if="isValidRange">
-            <div class="subheading grey--text text--darken-1 mb-2">RESULTADOS</div>
+            <div class="subheading grey--text text--darken-1 mb-2">
+              RESULTADOS
+            </div>
+
             <v-layout row wrap align-start>
-              <v-flex xs12 sm4 class="text-xs-center py-3 result-col">
+              <v-flex
+                xs12
+                sm4
+                class="text-xs-center py-3 result-col"
+              >
                 <div class="grey--text">Fecha de Inicio</div>
-                <div class="display-1">{{ formattedStartDate }}</div>
+                <div class="display-1">
+                  {{ formattedStartDate }}
+                </div>
               </v-flex>
-              <v-flex xs12 sm4 class="text-xs-center py-3 result-col">
+
+              <v-flex
+                xs12
+                sm4
+                class="text-xs-center py-3 result-col"
+              >
                 <div class="grey--text">Plazo del Contrato</div>
-                <div class="display-1">{{ plazoText }}</div>
+                <div class="display-1">
+                  {{ plazoText }}
+                </div>
               </v-flex>
+
               <v-flex xs12 sm4 class="text-xs-center py-3">
                 <div class="grey--text">Total Contrato</div>
-                <div class="display-1">{{ totalFormatted }} Bs.</div>
+                <div class="display-1">
+                  {{ totalFormatted }} Bs.
+                </div>
               </v-flex>
             </v-layout>
           </div>
+
           <v-alert v-else :value="true" type="error" outline>
-            La Fecha Final del Contrato debe ser posterior a la Fecha de Inicio ({{ formattedStartDate }}).
+            La Fecha Final del Contrato debe ser posterior a la Fecha de Inicio
+            ({{ formattedStartDate }}).
           </v-alert>
         </template>
       </v-card-text>
@@ -121,48 +144,106 @@
 <script>
 export default {
   name: "SubscriptionIndex",
+
   data() {
     return {
       charges: [],
       charge_id: null,
-      selectedCharge: { name: "", base_wage: "" },
+
+      selectedCharge: {
+        name: "",
+        base_wage: ""
+      },
+
       startDate: null,
       endDate: null,
+
       months: [],
+
       datePicker: {
-        start: { formattedDate: null, display: false },
-        end: { formattedDate: null, display: false, min: null }
+        start: {
+          formattedDate: null,
+          display: false
+        },
+        end: {
+          formattedDate: null,
+          display: false,
+          min: null
+        }
       }
     };
   },
+
   computed: {
+    // Fecha de inicio formateada
     formattedStartDate() {
-      return this.startDate ? this.$moment(this.startDate).format("L") : "";
+      return this.startDate
+        ? this.$moment(this.startDate).format("L")
+        : "";
     },
+
+    // Validar que la fecha final no sea anterior a la inicial
     isValidRange() {
-      return this.startDate && this.endDate && !this.$moment(this.endDate).isBefore(this.$moment(this.startDate));
+      return (
+        this.startDate &&
+        this.endDate &&
+        !this.$moment(this.endDate).isBefore(
+          this.$moment(this.startDate),
+          "day"
+        )
+      );
     },
-    
+
+    // Sumar todos los días comerciales
+    totalCommercialDays() {
+      return this.months.reduce(
+        (sum, month) => sum + month.count,
+        0
+      );
+    },
+
+    // Cada 30 días equivalen a un mes
     completeMonthsCount() {
-      return this.months.filter(o => o.type === "complete").length;
+      return Math.floor(this.totalCommercialDays / 30);
     },
-  
+
+    // Días restantes después de completar los meses
     partialDaysTotal() {
-      return this.months.filter(o => o.type === "partial").reduce((sum, o) => sum + o.count, 0);
+      return this.totalCommercialDays % 30;
     },
+
+    // Mostrar el plazo del contrato
     plazoText() {
-      let parts = [];
+      const parts = [];
+
       if (this.completeMonthsCount > 0) {
-        parts.push(`${this.completeMonthsCount} mes${this.completeMonthsCount > 1 ? "es" : ""}`);
+        parts.push(
+          `${this.completeMonthsCount} mes${
+            this.completeMonthsCount > 1 ? "es" : ""
+          }`
+        );
       }
+
       if (this.partialDaysTotal > 0) {
-        parts.push(`${this.partialDaysTotal} días`);
+        parts.push(
+          `${this.partialDaysTotal} día${
+            this.partialDaysTotal !== 1 ? "s" : ""
+          }`
+        );
       }
+
       return parts.join(" y ") || "0 días";
     },
+
+    // Calcular el costo total
     total() {
-      return this.months.reduce((total, o) => parseFloat(o.salary) + total, 0);
+      return this.months.reduce(
+        (sum, month) => sum + Number(month.salary),
+        0
+      );
     },
+
+    // Formatear el total en bolivianos
     totalFormatted() {
       return this.total.toLocaleString("es-BO", {
         minimumFractionDigits: 2,
@@ -170,119 +251,204 @@ export default {
       });
     }
   },
+
   watch: {
-   
+    // Observar cambios en la fecha inicial
     startDate(value) {
       if (value) {
-        this.datePicker.start.formattedDate = this.$moment(value).format("L");
+        this.datePicker.start.formattedDate =
+          this.$moment(value).format("L");
+
         this.datePicker.end.min = value;
-        if (this.endDate && this.$moment(this.endDate).isBefore(this.$moment(value))) {
+
+        if (
+          this.endDate &&
+          this.$moment(this.endDate).isBefore(
+            this.$moment(value),
+            "day"
+          )
+        ) {
           this.endDate = null;
-          this.datePicker.end.formattedDate = null;
         }
       } else {
         this.datePicker.start.formattedDate = null;
         this.datePicker.end.min = null;
+        this.endDate = null;
       }
+
       this.calculate();
     },
+
+    // Observar cambios en la fecha final
     endDate(value) {
-      if (value) {
-        this.datePicker.end.formattedDate = this.$moment(value).format("L");
-      } else {
-        this.datePicker.end.formattedDate = null;
-      }
+      this.datePicker.end.formattedDate = value
+        ? this.$moment(value).format("L")
+        : null;
+
       this.calculate();
     }
   },
+
   created() {
     this.getCharges();
   },
+
   methods: {
+    // Obtener los niveles salariales
     async getCharges() {
       try {
-        let res = await axios.get("/charge");
-       
+        const res = await axios.get("/charge");
+
         this.charges = res.data.filter(e => e.active);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     },
-    chargeSelected: charge => `${charge.base_wage} Bs. - ${charge.name}`,
+
+    // Texto mostrado en el selector salarial
+    chargeSelected: charge =>
+      `${charge.base_wage} Bs. - ${charge.name}`,
+
+    // Seleccionar nivel salarial
     onSelectCharge(id) {
-      if (id) {
-        this.selectedCharge = this.charges.find(o => o.id == id);
-      } else {
-        this.selectedCharge = { name: "", base_wage: "" };
-      }
+      this.selectedCharge = id
+        ? this.charges.find(o => o.id == id) ||
+          { name: "", base_wage: "" }
+        : { name: "", base_wage: "" };
+
       this.calculate();
     },
-   
+
+    // ============================================
+    // CALCULO DEL CONTRATO CON MESES DE 30 DIAS
+    // ============================================
     calculate() {
       this.months = [];
 
-      if (!(this.startDate && this.endDate && this.selectedCharge.base_wage)) {
+      const baseWage = Number(
+        this.selectedCharge.base_wage
+      );
+
+      // Validar los datos necesarios
+      if (
+        !this.startDate ||
+        !this.endDate ||
+        !Number.isFinite(baseWage) ||
+        baseWage <= 0
+      ) {
         return;
       }
 
-      let startDate = this.$moment(this.startDate);
-      let endDate = this.$moment(this.endDate);
+      // Convertir las fechas utilizando Moment
+      const startDate = this.$moment(
+        this.startDate,
+        "YYYY-MM-DD",
+        true
+      );
 
-      if (endDate.isBefore(startDate)) {
+      const endDate = this.$moment(
+        this.endDate,
+        "YYYY-MM-DD",
+        true
+      );
+
+      // Validar fechas
+      if (
+        !startDate.isValid() ||
+        !endDate.isValid() ||
+        endDate.isBefore(startDate, "day")
+      ) {
         return;
       }
 
-      let dailyRate = this.selectedCharge.base_wage / 30;
+      // El haber básico siempre se divide entre 30
+      const dailyRate = baseWage / 30;
 
-      if (endDate.isSame(startDate, "month", "year")) {
-        // Todo el rango cae dentro de un mismo mes.
-        let count = Number(endDate.format("D")) - Number(startDate.format("D")) + 1;
-        let lastDayOfMonth = Number(endDate.clone().endOf("month").format("D"));
-        let isFullMonth = lastDayOfMonth == count && Number(startDate.format("D")) == 1;
+      // Comenzar desde el primer día del mes inicial
+      const cursor = startDate.clone().startOf("month");
 
-        this.months.push({
-          name: startDate.format("MMMM YYYY"),
-          count: isFullMonth ? 30 : count,
-          salary: (dailyRate * (isFullMonth ? 30 : count)).toFixed(2),
-          type: isFullMonth ? "complete" : "partial"
-        });
-        return;
-      }
+      // Recorrer todos los meses del contrato
+      while (cursor.isSameOrBefore(endDate, "month")) {
 
-    
-      let firstMonthLastDay = Number(startDate.clone().endOf("month").format("D"));
-      let count = firstMonthLastDay - Number(startDate.format("D")) + 1;
-      this.months.push({
-        name: startDate.format("MMMM YYYY"),
-        count: count,
-        salary: (dailyRate * count).toFixed(2),
-        type: "partial"
-      });
+        const isFirstMonth = cursor.isSame(
+          startDate,
+          "month"
+        );
 
-      let cursor = startDate.clone();
+        const isLastMonth = cursor.isSame(
+          endDate,
+          "month"
+        );
 
-      while (!endDate.isSame(cursor, "month", "year")) {
-        if (!endDate.isSame(cursor.add(1, "month"), "month", "year")) {
-         
+        // Último día real del mes
+        const calendarLastDay = cursor.daysInMonth();
+
+        // Día inicial del período de este mes
+        const startDay = isFirstMonth
+          ? startDate.date()
+          : 1;
+
+        // Día final del período de este mes
+        const endDay = isLastMonth
+          ? endDate.date()
+          : calendarLastDay;
+
+        /*
+         * NORMALIZACION COMERCIAL:
+         *
+         * Todos los meses tienen 30 días.
+         *
+         * Si el día seleccionado coincide con el
+         * último día real del mes, equivale al día 30.
+         *
+         * Si el mes tiene 31 días, el día 31 equivale
+         * también al día comercial 30.
+         */
+
+        const commercialStartDay =
+          startDay === calendarLastDay
+            ? 30
+            : Math.min(startDay, 30);
+
+        const commercialEndDay =
+          endDay === calendarLastDay
+            ? 30
+            : Math.min(endDay, 30);
+
+        /*
+         * CONTABILIZACION INCLUSIVA:
+         *
+         * Se cuenta el día de inicio y el día final.
+         *
+         * Por eso se suma +1.
+         */
+
+        const count = Math.max(
+          0,
+          commercialEndDay - commercialStartDay + 1
+        );
+
+        // Calcular el salario correspondiente
+        if (count > 0) {
+
+          const isFullMonth = count === 30;
+
+          const salary = Number(
+            (dailyRate * count).toFixed(2)
+          );
+
           this.months.push({
             name: cursor.format("MMMM YYYY"),
-            count: 30,
-            salary: Number(this.selectedCharge.base_wage).toFixed(2),
-            type: "complete"
-          });
-        } else {
-         
-          let lastCount = Number(endDate.format("D"));
-          let lastDayOfMonth = Number(endDate.clone().endOf("month").format("D"));
-          let isFullMonth = lastCount == lastDayOfMonth;
-
-          this.months.push({
-            name: endDate.format("MMMM YYYY"),
-            count: isFullMonth ? 30 : lastCount,
-            salary: (dailyRate * (isFullMonth ? 30 : lastCount)).toFixed(2),
-            type: isFullMonth ? "complete" : "partial"
+            count: count,
+            salary: salary,
+            type: isFullMonth
+              ? "complete"
+              : "partial"
           });
         }
+
+        // Pasar al siguiente mes
+        cursor.add(1, "month");
       }
     }
   }
