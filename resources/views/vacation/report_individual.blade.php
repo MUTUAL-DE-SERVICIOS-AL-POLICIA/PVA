@@ -20,7 +20,8 @@ use App\Helpers\Util;
 </head>
 
 <body>
-    {{-- logos y título --}}
+        <!-- ENCABEZADO -->
+
     <table class="w-100">
         <thead>
             <tr>
@@ -45,7 +46,8 @@ use App\Helpers\Util;
         </tbody>
     </table>
 
-    {{-- datos generales --}}
+    <!-- DATOS DEL FUNCIONARIO -->
+
     <table class="table-info w-100 m-b-10 text-center uppercase" style="float: left; margin-left: 1px;">
         <tr>
             <th class="bg-grey-darker text-xs text-white" width="35%">Nombres y Apellidos</th>
@@ -90,8 +92,9 @@ use App\Helpers\Util;
 
     </table>
     <br><br>
-    {{-- contenido --}}
-    <table table class="table-info w-100 m-b-10 uppercase text-center">
+    <!--  DETALLE DE VACACIONES -->
+
+    <table class="table-info w-100 m-b-10 uppercase text-center">
         <thead>
             <tr class="bg-grey-darker text-xs text-white">
                 <th width="4%">N°</th>
@@ -103,28 +106,51 @@ use App\Helpers\Util;
                 <th width="9%">Saldo</th>
             </tr>
         </thead>
+
         <tbody>
-            <?php
-            $vacation_days = 0;
-            ?>
-            @foreach ($data_report as $key => $report)
+
+            @foreach ($data_report as $report)
+
+                {{-- =================================================
+                     FILA DE COLA DE VACACIONES
+                ================================================== --}}
+
                 @if ($report->type == 'vacation')
+
                     <tr class="bg-grey-lightest">
-                        <td colspan="2"> CAS - Días: {{ intval($report->days) }} 
-                            (<span class="text-xs">Periódo: {{ Carbon::parse($report->date_ini)->format('d-m-Y') }} al {{ Carbon::parse($report->date_end)->format('d-m-Y') }}</span>)
+
+                        <td colspan="2">
+                            CAS - Días:
+                            {{ intval($report->days) }}
+
+                            (<span class="text-xs">
+
+                                Periódo:
+                                {{ Carbon::parse($report->date_ini)->format('d-m-Y') }}
+                                al
+                                {{ Carbon::parse($report->date_end)->format('d-m-Y') }}
+
+                            </span>)
                         </td>
-                        <td colspan="2"> Fecha de asignación: {{ Carbon::parse($report->date_end)->addDay()->format('d-m-Y') }}</td>
-                        <td colspan="3"> Fecha de vencimiento: {{ $report->max_date }}</td>
-                        <?php
-                        $vacation_days = $vacation_days + $report->days;
-                        ?>
+
+                        <td colspan="2">
+                            Fecha de asignación:
+                            {{ Carbon::parse($report->date_end)
+                                ->addDay()
+                                ->format('d-m-Y') }}
+                        </td>
+
+                        <td colspan="3">
+                            Fecha de vencimiento:
+                            {{ $report->max_date }}
+                        </td>
                     </tr>
+                {{-- =================================================
+                     FILA DE DEPARTURE
+                ================================================== --}}
                 @else
                     <?php
-                        $num = $num+1;
-                        $start = Carbon::parse($report->date_ini);
-                        $end = Carbon::parse($report->date_end);
-                        $vacation_days -= $report->departure_days;
+                        $num++;
                     ?>
                     <tr>
                         <td>{{ $num }}</td>
@@ -136,12 +162,14 @@ use App\Helpers\Util;
                             {{ fmod($report->departure_days, 1) == 0
                                 ? intval($report->departure_days)
                                 : number_format($report->departure_days, 1) }}
+
                         </td>
-                        @if ($loop->last)
-                            <td>{{ $vacation_days - $vacation_expires }}</td>
-                        @else
-                            <td>{{ $vacation_days }}</td>
-                        @endif
+                        <td>
+                            {{ fmod($report->saldo, 1) == 0
+                                ? intval($report->saldo)
+                                : number_format($report->saldo, 1) }}
+
+                        </td>
                     </tr>
                 @endif
             @endforeach
