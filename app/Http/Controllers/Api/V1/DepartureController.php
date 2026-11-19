@@ -671,85 +671,282 @@ class DepartureController extends Controller
           ? Carbon::parse($employee->addmission_date)->toDateString()
           : null;
 
-      $daysByDeparture = DB::table('days_on_vacations')
-          ->select('departure_id', DB::raw('SUM(day) AS total_days'))
-          ->groupBy('departure_id');
-      $departures = DB::table('departures')
+      // ============================================================
+      // 1. OBTENER LAS COLAS DE VACACIONES
+      // ============================================================
+      // Cada cola representa una cantidad de días disponibles y tiene
+      // una fecha máxima hasta la cual puede ser utilizada.
+      $vacationQueues = DB::table('vacation_queues')
+          ->select([
+              'id',
+              'employee_id',
+              'start_date',
+              'end_date',
+              'days',
+              'max_date',
+              'rest_days',
+              'is_valid',
+              'created_at',
+          ])
+          ->where('employee_id', $employee_id)
+          ->when($admissionDate, function ($q) use ($admissionDate) {
+              $q->whereDate('end_date', '>', $admissionDate);
+          })
+          ->whereNull('deleted_at')
+          ->orderBy('id', 'asc')
+          ->get();
 
+      // Preparamos las colas para poder ir descontando los días utilizados.
+      $queues = [];
+
+      foreach ($vacationQueues as $queue) {
+
+          // La cola puede comenzar a utilizarse desde el día siguiente a end_date.
+          $assignmentDate = Carbon::parse($queue->end_date)->addDay()->startOfDay();
+
+          $maxDate = !empty($queue->max_date)
+              ? Carbon::parse($queue->max_date)->endOfDay()
+              : null;
+
+          $queues[] = (object) [
+              'id'              => $queue->id,
+              'start_date'      => $queue->start_date,
+              'end_date'        => $queue->end_date,
+              'days'            => (float) $queue->days,
+              'remaining'       => (float) $queue->days,
+              'rest_days'       => (float) ($queue->rest_days ?? $queue->days),
+              'max_date'        => $queue->max_date,
+              'assignment_date' => $assignmentDate,
+              'is_valid'        => $queue->is_valid,
+              'created_at'      => $queue->created_at,
+          ];
+      }
+
+      // ============================================================
+      // 2. OBTENER LOS DÍAS UTILIZADOS POR CADA DEPARTURE
+      // ============================================================
+      // Un departure puede tener varios registros en days_on_vacations,
+      // por eso primero sumamos todos sus días.
+      $daysByDeparture = DB::table('days_on_vacations')
+          ->select(
+              'departure_id',
+              DB::raw('SUM(day) AS total_days')
+          )
+          ->groupBy('departure_id');
+
+      // ============================================================
+      // 3. OBTENER LOS DEPARTURES
+      // ============================================================
+      $departures = DB::table('departures')
           ->leftJoinSub($daysByDeparture, 'dov', function ($join) {
               $join->on('dov.departure_id', '=', 'departures.id');
           })
           ->select([
-              'cite',
-              DB::raw('"departure" as date_ini'),
-              DB::raw('"return" as date_end'),
-              'created_at as date_request',
-              DB::raw('NULL::integer as days'),
-              DB::raw('NULL::date as max_date'),
-              DB::raw("'departure' as type"),
-              DB::raw('"departure" as date_order'),
+              'departures.id',
+              'departures.cite',
+              'departures.departure as date_ini',
+              'departures.return as date_end',
+              'departures.created_at as date_request',
               DB::raw('COALESCE(dov.total_days, 0) AS departure_days'),
           ])
-          ->where('employee_id', $employee_id)
-          ->where('departure_reason_id', 24)
+          ->where('departures.employee_id', $employee_id)
+          ->where('departures.departure_reason_id', 24)
           ->when($admissionDate, function ($q) use ($admissionDate) {
-              $q->whereDate('departure', '>', $admissionDate);
+              $q->whereDate('departures.departure', '>', $admissionDate);
           })
-          ->whereNull('deleted_at');
-
-      $vacation_queues = DB::table('vacation_queues')
-          ->select([
-              DB::raw('NULL as cite'),
-              'start_date as date_ini',
-              'end_date as date_end',
-              'created_at as date_request',
-              'days',
-              'max_date',
-              DB::raw("'vacation' as type"),
-              'end_date as date_order',
-              DB::raw('NULL::numeric as departure_days'),
-          ])
-          ->where('employee_id', $employee_id)
-          ->when($admissionDate, function ($q) use ($admissionDate) {
-              $q->whereDate('end_date', '>', $admissionDate);
-          })
-          ->whereNull('deleted_at');
-
-      $union = $departures->unionAll($vacation_queues);
-
-      $report_vacation = DB::table(DB::raw("({$union->toSql()}) as combined"))
-          ->mergeBindings($union)
-          ->orderBy('date_order', 'asc')
+          ->whereNull('departures.deleted_at')
+          ->orderBy('departures.departure', 'asc')
+          ->orderBy('departures.id', 'asc')
           ->get();
 
-      $vacation_days = DB::table('vacation_queues')
-          ->where('employee_id', $employee_id)
-          ->whereNull('deleted_at')
-          ->orderByDesc('id')
-          ->value('rest_days'); // o 'days' según tu lógica
-      $vacation_days = $vacation_days ?? 0;
+      // ============================================================
+      // 4. CREAR UNA LÍNEA DE TIEMPO CON COLAS Y DEPARTURES
+      // ============================================================
+      // Se procesan en orden cronológico para determinar qué cola
+      // corresponde utilizar en cada departure.
+      $report_vacation = collect();
 
-      $vacation_expires = DB::table('vacation_queues')
-          ->where('employee_id', $employee_id)
-          ->where('is_valid', false)
-          ->when($admissionDate, function ($q) use ($admissionDate) {
-              $q->whereDate('end_date', '>', $admissionDate);
+      $events = collect();
+
+      foreach ($queues as $queue) {
+          $events->push((object) [
+              'event_type' => 'queue',
+              'date'       => $queue->assignment_date->copy(),
+              'queue'      => $queue,
+          ]);
+      }
+
+      foreach ($departures as $departure) {
+          $events->push((object) [
+              'event_type' => 'departure',
+              'date'       => Carbon::parse($departure->date_ini)->startOfDay(),
+              'departure'  => $departure,
+          ]);
+      }
+
+      // Si la cola y el departure tienen la misma fecha, primero se procesa
+      // la cola para que pueda ser utilizada ese mismo día.
+      $events = $events->sort(function ($a, $b) {
+          $dateCompare = $a->date->timestamp <=> $b->date->timestamp;
+
+          if ($dateCompare !== 0) {
+              return $dateCompare;
+          }
+
+          if ($a->event_type === $b->event_type) {
+              return 0;
+          }
+
+          return $a->event_type === 'queue' ? -1 : 1;
+      })->values();
+
+      // ============================================================
+      // 5. PROCESAR COLAS Y DEPARTURES
+      // ============================================================
+      foreach ($events as $event) {
+
+          // ------------------------------------------------------------
+          // Registrar una nueva cola en el reporte.
+          // ------------------------------------------------------------
+          if ($event->event_type === 'queue') {
+
+              $queue = $event->queue;
+
+              $report_vacation->push((object) [
+                  'cite'            => null,
+                  'date_ini'        => $queue->start_date,
+                  'date_end'        => $queue->end_date,
+                  'date_request'    => $queue->created_at,
+                  'days'            => $queue->days,
+                  'max_date'        => $queue->max_date,
+                  'type'            => 'vacation',
+                  'date_order'      => $queue->assignment_date->toDateString(),
+                  'departure_days'  => null,
+                  'saldo'           => null,
+              ]);
+
+              continue;
+          }
+
+          // ------------------------------------------------------------
+          // Procesar un departure y descontar sus días de las colas.
+          // ------------------------------------------------------------
+          $departure = $event->departure;
+
+          $departureDate = Carbon::parse($departure->date_ini)->startOfDay();
+
+          $daysToConsume = (float) $departure->departure_days;
+
+          // Si no existen días registrados, no se realiza ningún descuento.
+          if ($daysToConsume < 0) {
+              $daysToConsume = 0;
+          }
+
+          // Una cola se utiliza únicamente si:
+          // 1. Ya fue asignada.
+          // 2. No ha vencido.
+          // 3. Todavía tiene días disponibles.
+          foreach ($queues as $queue) {
+
+              if ($daysToConsume <= 0) {
+                  break;
+              }
+
+              if ($queue->assignment_date->gt($departureDate)) {
+                  continue;
+              }
+
+              if (
+                  !empty($queue->max_date) &&
+                  $departureDate->gt(Carbon::parse($queue->max_date)->endOfDay())
+              ) {
+                  continue;
+              }
+
+              if ($queue->remaining <= 0) {
+                  continue;
+              }
+
+              // Se consume primero la cola más antigua disponible.
+              $consume = min(
+                  $daysToConsume,
+                  $queue->remaining
+              );
+
+              $queue->remaining -= $consume;
+              $daysToConsume -= $consume;
+          }
+
+          // ============================================================
+          // CALCULAR EL SALDO
+          // ============================================================
+          // El saldo corresponde a los días que aún quedan disponibles
+          // en las colas vigentes para la fecha del departure.
+          $saldo = 0;
+
+          foreach ($queues as $queue) {
+
+              if ($queue->assignment_date->gt($departureDate)) {
+                  continue;
+              }
+
+              if (
+                  !empty($queue->max_date) &&
+                  $departureDate->gt(Carbon::parse($queue->max_date)->endOfDay())
+              ) {
+                  continue;
+              }
+
+              if ($queue->remaining > 0) {
+                  $saldo += $queue->remaining;
+              }
+          }
+
+          // Guardamos el departure junto con el saldo calculado.
+          $report_vacation->push((object) [
+              'cite'            => $departure->cite,
+              'date_ini'        => $departure->date_ini,
+              'date_end'        => $departure->date_end,
+              'date_request'    => $departure->date_request,
+              'days'            => null,
+              'max_date'        => null,
+              'type'            => 'departure',
+              'date_order'      => $departureDate->toDateString(),
+              'departure_days'  => (float) $departure->departure_days,
+              'saldo'           => $saldo,
+          ]);
+      }
+
+      // ============================================================
+      // 6. ORDENAR EL REPORTE FINAL
+      // ============================================================
+      // Si dos registros tienen la misma fecha, la cola aparece primero.
+      $report_vacation = $report_vacation
+          ->sort(function ($a, $b) {
+
+              $dateA = Carbon::parse($a->date_order)->timestamp;
+              $dateB = Carbon::parse($b->date_order)->timestamp;
+
+              if ($dateA !== $dateB) {
+                  return $dateA <=> $dateB;
+              }
+
+              if ($a->type === $b->type) {
+                  return 0;
+              }
+
+              return $a->type === 'vacation' ? -1 : 1;
           })
-          ->whereNull('deleted_at')
-          ->sum('rest_days') ?? 0;
+          ->values();
 
-      $total_departure_days = $report_vacation
-          ->where('type', 'departure')
-          ->sum('departure_days');
-
-      $vacation_days = max(0, $vacation_days - $total_departure_days);
-
+      // ============================================================
+      // 7. PREPARAR DATOS PARA EL PDF
+      // ============================================================
+      // El saldo ya fue calculado durante el procesamiento de cada departure.
       $data = [
-          'num'               => $num,
-          'employee'          => $employee,
-          'data_report'       => $report_vacation,
-          'vacation_days'     => $vacation_days,
-          'vacation_expires'  => $vacation_expires,
+          'num'          => $num,
+          'employee'     => $employee,
+          'data_report'  => $report_vacation,
       ];
 
       $file_name = implode('_', ['reporte', 'vacaciones', $employee->first_name, $employee->last_name]) . '.pdf';
